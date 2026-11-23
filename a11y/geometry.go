@@ -1,9 +1,14 @@
 package a11y
 
 import (
+	"encoding/json/jsontext"
+	"encoding/json/v2"
 	"math"
+	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/megascan/gpui-go/internal/jsonschema"
 )
 
 // Affine is a 2D affine transform. Derived from kurbo.
@@ -156,8 +161,8 @@ func (a Affine) String() string {
 
 // Point is a 2D point. Derived from kurbo.
 type Point struct {
-	X float64
-	Y float64
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
 }
 
 // PointZero returns the point (0, 0).
@@ -212,10 +217,10 @@ func (p Point) String() string {
 
 // Rect is a rectangle. Derived from kurbo.
 type Rect struct {
-	X0 float64
-	Y0 float64
-	X1 float64
-	Y1 float64
+	X0 float64 `json:"x0"`
+	Y0 float64 `json:"y0"`
+	X1 float64 `json:"x1"`
+	Y1 float64 `json:"y1"`
 }
 
 // RectZero returns the empty rectangle at the origin.
@@ -355,8 +360,8 @@ func (r Rect) String() string {
 
 // Size is a 2D size. Derived from kurbo.
 type Size struct {
-	Width  float64
-	Height float64
+	Width  float64 `json:"width"`
+	Height float64 `json:"height"`
 }
 
 // SizeZero returns a size with zero width and height.
@@ -428,8 +433,8 @@ func (s *Size) SubAssign(o Size) {
 //
 // It is intended primarily for a vector in the mathematical sense, but it can be interpreted as a translation, and converted to and from a point and size.
 type Vec2 struct {
-	X float64
-	Y float64
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
 }
 
 // Vec2Zero returns the vector (0, 0).
@@ -532,6 +537,14 @@ func rustMax(a, b float64) float64 {
 }
 
 func debugF64(v float64) string {
+	return debugFloat(v, 64)
+}
+
+func debugF32(v float32) string {
+	return debugFloat(float64(v), 32)
+}
+
+func debugFloat(v float64, bits int) string {
 	switch {
 	case math.IsNaN(v):
 		return "NaN"
@@ -541,7 +554,7 @@ func debugF64(v float64) string {
 		return "-inf"
 	}
 	if a := math.Abs(v); a != 0 && (a < 1e-4 || a >= 1e16) {
-		mantissa, exp, _ := strings.Cut(strconv.FormatFloat(v, 'e', -1, 64), "e")
+		mantissa, exp, _ := strings.Cut(strconv.FormatFloat(v, 'e', -1, bits), "e")
 		sign := ""
 		if exp[0] == '-' {
 			sign = "-"
@@ -549,9 +562,24 @@ func debugF64(v float64) string {
 		digits := strings.TrimLeft(strings.TrimLeft(exp, "+-"), "0")
 		return mantissa + "e" + sign + digits
 	}
-	s := strconv.FormatFloat(v, 'f', -1, 64)
+	s := strconv.FormatFloat(v, 'f', -1, bits)
 	if !strings.Contains(s, ".") {
 		s += ".0"
 	}
 	return s
+}
+
+// MarshalJSONTo encodes a as the six-element coefficient array serde uses for the newtype.
+func (a Affine) MarshalJSONTo(enc *jsontext.Encoder) error {
+	return json.MarshalEncode(enc, a.c)
+}
+
+// UnmarshalJSONFrom decodes a six-element coefficient array.
+func (a *Affine) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
+	return json.UnmarshalDecode(dec, &a.c)
+}
+
+// JSONSchema describes a as its six-element coefficient array.
+func (a *Affine) JSONSchema(g *jsonschema.Generator) *jsonschema.Schema {
+	return g.SchemaFor(reflect.TypeFor[[6]float64]())
 }
