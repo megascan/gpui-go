@@ -955,7 +955,12 @@ Go target: `internal/taffy/style_grid.go` (package `taffy`), tests in `style_gri
 | `impl From<LengthPercentage / LengthPercentageAuto / Dimension / MaxTrackSizingFunction> for MinTrackSizingFunction` | trait-impl | 1209 |  | `MinTrackSizingFunctionFromMaxTrackSizingFunction` | done |
 | `impl From<MinTrackSizingFunction> for ExpandedMinTrackSizingFunction` and back | trait-impl | 1464 |  | `ExpandedMinTrackSizingFunctionFromMinTrackSizingFunction` | done |
 | `impl From<MinTrackSizingFunction> for ExpandedMinTrackSizingFunction` and back | trait-impl | 1464 |  | `MinTrackSizingFunctionFromExpandedMinTrackSizingFunction` | done |
-| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for TrackSizingFunction` | trait-impl | 1503 |  | `TrackSizingFunctionAuto`, `TrackSizingFunctionMinContent`, `TrackSizingFunctionMaxContent`, `TrackSizingFunctionZero`, `TrackSizingFunctionFitContent`, methods on `MinMax` | dev:D-COND |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for TrackSizingFunction` | trait-impl | 1503 |  | `TrackSizingFunctionAuto` | dev:D-COND |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for TrackSizingFunction` | trait-impl | 1503 |  | `TrackSizingFunctionMinContent` | dev:D-COND |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for TrackSizingFunction` | trait-impl | 1503 |  | `TrackSizingFunctionMaxContent` | dev:D-COND |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for TrackSizingFunction` | trait-impl | 1503 |  | `TrackSizingFunctionZero` | dev:D-COND |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for TrackSizingFunction` | trait-impl | 1503 |  | `TrackSizingFunctionFitContent` | dev:D-COND |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for TrackSizingFunction` | trait-impl | 1503 |  | methods on `MinMax` | dev:D-COND |
 | `impl From<LengthPercentage / LengthPercentageAuto / Dimension> for TrackSizingFunction` | trait-impl | 1541 |  | `TrackSizingFunctionFromLengthPercentage` | done |
 | `impl From<LengthPercentage / LengthPercentageAuto / Dimension> for TrackSizingFunction` | trait-impl | 1541 |  | `TrackSizingFunctionFromLengthPercentageAuto` | done |
 | `impl From<LengthPercentage / LengthPercentageAuto / Dimension> for TrackSizingFunction` | trait-impl | 1541 |  | `TrackSizingFunctionFromDimension` | done |
@@ -1163,26 +1168,28 @@ Go target: `internal/taffy/tree_cache.go` (package `taffy`), tests in `tree_cach
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `cache_mode_change_evictions` | fn | 197 | std | `CacheModeChangeEvictions` | todo |
-| `Cache` | struct | 214 |  | `Cache` | todo |
-| `Cache::new` | assoc-fn | 239 |  | `NewCache` | todo |
-| `Cache::get` | method | 254 |  | `(Cache).Get` | todo |
-| `Cache::store` | method | 283 |  | `(Cache).Store` | todo |
-| `Cache::clear` | method | 341 |  | `(Cache).Clear` | todo |
-| `Cache::is_empty` | method | 356 |  | `(Cache).IsEmpty` | todo |
-| `ClearState` | enum | 362 |  | `ClearState` | todo |
+| `cache_mode_change_evictions` | fn | 197 | std | `CacheModeChangeEvictions` | done |
+| `Cache` | struct | 214 |  | `Cache` | done |
+| `Cache::new` | assoc-fn | 239 |  | `NewCache` | done |
+| `Cache::get` | method | 254 |  | `(Cache).Get` | done |
+| `Cache::store` | method | 283 |  | `(Cache).Store` | done |
+| `Cache::clear` | method | 341 |  | `(Cache).Clear` | done |
+| `Cache::is_empty` | method | 356 |  | `(Cache).IsEmpty` | done |
+| `ClearState` | enum | 362 |  | `ClearState` | done |
+| `impl Default for Cache` | trait-impl | 231 |  | `NewCache` | done |
+| `derive(Clone) for Cache` | trait-impl | 202 |  | `(Cache).Clone` | dev:D-TAFFY-CLONE |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `recently_used_measure_entries_get_a_second_chance` | test | 393 |  | `TestTreeCache_RecentlyUsedMeasureEntriesGetASecondChance` | todo |
-| `storing_an_existing_measurement_updates_it_in_place` | test | 408 |  | `TestTreeCache_StoringAnExistingMeasurementUpdatesItInPlace` | todo |
-| `measurements_with_margin_collapse_metadata_are_not_cached` | test | 419 |  | `TestTreeCache_MeasurementsWithMarginCollapseMetadataAreNotCached` | todo |
-| `retrieving_a_measurement_only_marks_its_slot_as_used` | test | 434 |  | `TestTreeCache_RetrievingAMeasurementOnlyMarksItsSlotAsUsed` | todo |
-| `cache_mode_distinguishes_every_combination_of_inputs` | test | 466 |  | `TestTreeCache_CacheModeDistinguishesEveryCombinationOfInputs` | todo |
-| `retrieving_with_a_different_mode_misses_and_keeps_the_entries` | test | 481 |  | `TestTreeCache_RetrievingWithADifferentModeMissesAndKeepsTheEntries` | todo |
-| `storing_with_a_different_mode_drops_the_existing_entries` | test | 498 |  | `TestTreeCache_StoringWithADifferentModeDropsTheExistingEntries` | todo |
-| `hidden_layouts_do_not_affect_the_cache` | test | 530 |  | `TestTreeCache_HiddenLayoutsDoNotAffectTheCache` | todo |
-| `mode_change_evictions_are_counted_for_non_empty_caches_only` | test | 539 | std | `TestTreeCache_ModeChangeEvictionsAreCountedForNonEmptyCachesOnly` | todo |
+| `recently_used_measure_entries_get_a_second_chance` | test | 393 |  | `TestTreeCache_RecentlyUsedMeasureEntriesGetASecondChance` | done |
+| `storing_an_existing_measurement_updates_it_in_place` | test | 408 |  | `TestTreeCache_StoringAnExistingMeasurementUpdatesItInPlace` | done |
+| `measurements_with_margin_collapse_metadata_are_not_cached` | test | 419 |  | `TestTreeCache_MeasurementsWithMarginCollapseMetadataAreNotCached` | done |
+| `retrieving_a_measurement_only_marks_its_slot_as_used` | test | 434 |  | `TestTreeCache_RetrievingAMeasurementOnlyMarksItsSlotAsUsed` | done |
+| `cache_mode_distinguishes_every_combination_of_inputs` | test | 466 |  | `TestTreeCache_CacheModeDistinguishesEveryCombinationOfInputs` | done |
+| `retrieving_with_a_different_mode_misses_and_keeps_the_entries` | test | 481 |  | `TestTreeCache_RetrievingWithADifferentModeMissesAndKeepsTheEntries` | done |
+| `storing_with_a_different_mode_drops_the_existing_entries` | test | 498 |  | `TestTreeCache_StoringWithADifferentModeDropsTheExistingEntries` | done |
+| `hidden_layouts_do_not_affect_the_cache` | test | 530 |  | `TestTreeCache_HiddenLayoutsDoNotAffectTheCache` | done |
+| `mode_change_evictions_are_counted_for_non_empty_caches_only` | test | 539 | std | `TestTreeCache_ModeChangeEvictionsAreCountedForNonEmptyCachesOnly` | done |
 
 ## src/tree/layout.rs
 
@@ -1190,60 +1197,69 @@ Go target: `internal/taffy/tree_layout.go` (package `taffy`), tests in `tree_lay
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `RunMode` | enum | 12 |  | `RunMode` | todo |
-| `SizingMode` | enum | 25 |  | `SizingMode` | todo |
-| `CollapsibleMarginSet` | struct | 35 |  | `CollapsibleMarginSet` | todo |
-| `CollapsibleMarginSet::ZERO` | assoc-const | 44 |  | `CollapsibleMarginSetZero` | todo |
-| `CollapsibleMarginSet::from_margin` | assoc-fn | 47 |  | `CollapsibleMarginSetFromMargin` | todo |
-| `CollapsibleMarginSet::collapse_with_margin` | method | 56 |  | `(CollapsibleMarginSet).CollapseWithMargin` | todo |
-| `CollapsibleMarginSet::collapse_with_set` | method | 66 |  | `(CollapsibleMarginSet).CollapseWithSet` | todo |
-| `CollapsibleMarginSet::resolve` | method | 74 |  | `(CollapsibleMarginSet).Resolve` | todo |
-| `RequestedAxis` | enum | 82 |  | `RequestedAxis` | todo |
-| `RequestedAxis::transpose` | method | 94 |  | `(RequestedAxis).Transpose` | todo |
-| `LayoutInput` | struct | 125 |  | `LayoutInput` | todo |
-| `LayoutInput::HIDDEN` | assoc-const | 168 |  | `LayoutInputHidden` | todo |
-| `LayoutInput::transpose` | method | 187 |  | `(LayoutInput).Transpose` | todo |
-| `Baselines` | struct | 208 |  | `Baselines` | todo |
-| `Baselines::NONE` | assoc-const | 217 |  | `BaselinesNone` | todo |
-| `Baselines::from_first` | assoc-fn | 220 |  | `BaselinesFromFirst` | todo |
-| `AxisStaticEdge` | enum | 234 |  | `AxisStaticEdge` | todo |
-| `AxisStaticAlign` | struct | 250 |  | `AxisStaticAlign` | todo |
-| `AxisStaticAlign::from_keyword` | assoc-fn | 263 |  | `AxisStaticAlignFromKeyword` | todo |
-| `AxisStaticPosition` | struct | 278 |  | `AxisStaticPosition` | todo |
-| `AxisStaticPosition::from_edge` | assoc-fn | 288 |  | `AxisStaticPositionFromEdge` | todo |
-| `AxisStaticPosition::from_alignment` | assoc-fn | 302 |  | `AxisStaticPositionFromAlignment` | todo |
-| `OofCandidate` | struct | 341 |  | `OofCandidate` | todo |
-| `OofCandidates` | struct | 356 |  | `OofCandidates` | todo |
-| `OofCandidates::NONE` | assoc-const | 363 |  | `OofCandidatesNone` | todo |
-| `OofCandidates::new` | assoc-fn | 366 |  | `NewOofCandidates` | todo |
-| `OofCandidates::is_empty` | method | 372 |  | `(OofCandidates).IsEmpty` | todo |
-| `OofCandidates::as_slice` | method | 378 |  | `(OofCandidates).AsSlice` | todo |
-| `OofCandidates::as_mut_slice` | method | 384 |  | `(OofCandidates).AsMutSlice` | todo |
-| `OofCandidates::push` | method | 390 |  | `(OofCandidates).Push` | todo |
-| `OofCandidates::append` | method | 396 |  | `(OofCandidates).Append` | todo |
-| `OofCandidates::take` | method | 408 |  | `(OofCandidates).Take` | todo |
-| `OofCandidates::clear` | method | 414 |  | `(OofCandidates).Clear` | todo |
-| `OofCandidates::iter` | method | 420 |  | `(OofCandidates).Iter` | todo |
-| `OofCandidates::translate` | method | 429 |  | `(OofCandidates).Translate` | todo |
-| `OofPositioningArea` | struct | 457 |  | `OofPositioningArea` | todo |
-| `LayoutOutput` | struct | 472 |  | `LayoutOutput` | todo |
-| `LayoutOutput::HIDDEN` | assoc-const | 511 |  | `LayoutOutputHidden` | todo |
-| `LayoutOutput::DEFAULT` | assoc-const | 524 |  | `LayoutOutputDefault` | todo |
-| `LayoutOutput::from_sizes_and_baselines` | assoc-fn | 527 |  | `LayoutOutputFromSizesAndBaselines` | todo |
-| `LayoutOutput::from_sizes` | assoc-fn | 546 |  | `LayoutOutputFromSizes` | todo |
-| `LayoutOutput::transpose` | method | 554 |  | `(LayoutOutput).Transpose` | todo |
-| `LayoutOutput::from_outer_size` | assoc-fn | 571 |  | `LayoutOutputFromOuterSize` | todo |
-| `Layout` | struct | 579 |  | `Layout` | todo |
-| `Layout::new` | assoc-fn | 627 |  | `NewLayout` | todo |
-| `Layout::with_order` | assoc-fn | 646 |  | `LayoutWithOrder` | todo |
-| `Layout::content_box_width` | method | 662 |  | `(Layout).ContentBoxWidth` | todo |
-| `Layout::content_box_height` | method | 668 |  | `(Layout).ContentBoxHeight` | todo |
-| `Layout::content_box_size` | method | 674 |  | `(Layout).ContentBoxSize` | todo |
-| `Layout::content_box_x` | method | 679 |  | `(Layout).ContentBoxX` | todo |
-| `Layout::content_box_y` | method | 684 |  | `(Layout).ContentBoxY` | todo |
-| `Layout::scroll_width` | method | 693 | content_size | `(Layout).ScrollWidth` | todo |
-| `Layout::scroll_height` | method | 704 | content_size | `(Layout).ScrollHeight` | todo |
-| `DetailedLayoutInfo` | enum | 717 |  | `DetailedLayoutInfo` | todo |
+| `RunMode` | enum | 12 |  | `RunMode` | done |
+| `SizingMode` | enum | 25 |  | `SizingMode` | done |
+| `CollapsibleMarginSet` | struct | 35 |  | `CollapsibleMarginSet` | done |
+| `CollapsibleMarginSet::ZERO` | assoc-const | 44 |  | `CollapsibleMarginSetZero` | done |
+| `CollapsibleMarginSet::from_margin` | assoc-fn | 47 |  | `CollapsibleMarginSetFromMargin` | done |
+| `CollapsibleMarginSet::collapse_with_margin` | method | 56 |  | `(CollapsibleMarginSet).CollapseWithMargin` | done |
+| `CollapsibleMarginSet::collapse_with_set` | method | 66 |  | `(CollapsibleMarginSet).CollapseWithSet` | done |
+| `CollapsibleMarginSet::resolve` | method | 74 |  | `(CollapsibleMarginSet).Resolve` | done |
+| `RequestedAxis` | enum | 82 |  | `RequestedAxis` | done |
+| `RequestedAxis::transpose` | method | 94 |  | `(RequestedAxis).Transpose` | done |
+| `LayoutInput` | struct | 125 |  | `LayoutInput` | done |
+| `LayoutInput::HIDDEN` | assoc-const | 168 |  | `LayoutInputHidden` | done |
+| `LayoutInput::transpose` | method | 187 |  | `(LayoutInput).Transpose` | done |
+| `Baselines` | struct | 208 |  | `Baselines` | done |
+| `Baselines::NONE` | assoc-const | 217 |  | `BaselinesNone` | done |
+| `Baselines::from_first` | assoc-fn | 220 |  | `BaselinesFromFirst` | done |
+| `AxisStaticEdge` | enum | 234 |  | `AxisStaticEdge` | done |
+| `AxisStaticAlign` | struct | 250 |  | `AxisStaticAlign` | done |
+| `AxisStaticAlign::from_keyword` | assoc-fn | 263 |  | `AxisStaticAlignFromKeyword` | done |
+| `AxisStaticPosition` | struct | 278 |  | `AxisStaticPosition` | done |
+| `AxisStaticPosition::from_edge` | assoc-fn | 288 |  | `AxisStaticPositionFromEdge` | done |
+| `AxisStaticPosition::from_alignment` | assoc-fn | 302 |  | `AxisStaticPositionFromAlignment` | done |
+| `OofCandidate` | struct | 341 |  | `OofCandidate` | done |
+| `OofCandidates` | struct | 356 |  | `OofCandidates` | done |
+| `OofCandidates::NONE` | assoc-const | 363 |  | `OofCandidatesNone` | done |
+| `OofCandidates::new` | assoc-fn | 366 |  | `NewOofCandidates` | done |
+| `OofCandidates::is_empty` | method | 372 |  | `(OofCandidates).IsEmpty` | done |
+| `OofCandidates::as_slice` | method | 378 |  | `(OofCandidates).AsSlice` | done |
+| `OofCandidates::as_mut_slice` | method | 384 |  | `(OofCandidates).AsMutSlice` | done |
+| `OofCandidates::push` | method | 390 |  | `(OofCandidates).Push` | done |
+| `OofCandidates::append` | method | 396 |  | `(OofCandidates).Append` | done |
+| `OofCandidates::take` | method | 408 |  | `(OofCandidates).Take` | done |
+| `OofCandidates::clear` | method | 414 |  | `(OofCandidates).Clear` | done |
+| `OofCandidates::iter` | method | 420 |  | `(OofCandidates).Iter` | done |
+| `OofCandidates::translate` | method | 429 |  | `(OofCandidates).Translate` | done |
+| `OofPositioningArea` | struct | 457 |  | `OofPositioningArea` | done |
+| `LayoutOutput` | struct | 472 |  | `LayoutOutput` | done |
+| `LayoutOutput::HIDDEN` | assoc-const | 511 |  | `LayoutOutputHidden` | done |
+| `LayoutOutput::DEFAULT` | assoc-const | 524 |  | `LayoutOutputDefault` | done |
+| `LayoutOutput::from_sizes_and_baselines` | assoc-fn | 527 |  | `LayoutOutputFromSizesAndBaselines` | done |
+| `LayoutOutput::from_sizes` | assoc-fn | 546 |  | `LayoutOutputFromSizes` | done |
+| `LayoutOutput::transpose` | method | 554 |  | `(LayoutOutput).Transpose` | done |
+| `LayoutOutput::from_outer_size` | assoc-fn | 571 |  | `LayoutOutputFromOuterSize` | done |
+| `Layout` | struct | 579 |  | `Layout` | done |
+| `Layout::new` | assoc-fn | 627 |  | `NewLayout` | done |
+| `Layout::with_order` | assoc-fn | 646 |  | `LayoutWithOrder` | done |
+| `Layout::content_box_width` | method | 662 |  | `(Layout).ContentBoxWidth` | done |
+| `Layout::content_box_height` | method | 668 |  | `(Layout).ContentBoxHeight` | done |
+| `Layout::content_box_size` | method | 674 |  | `(Layout).ContentBoxSize` | done |
+| `Layout::content_box_x` | method | 679 |  | `(Layout).ContentBoxX` | done |
+| `Layout::content_box_y` | method | 684 |  | `(Layout).ContentBoxY` | done |
+| `Layout::scroll_width` | method | 693 | content_size | `(Layout).ScrollWidth` | done |
+| `Layout::scroll_height` | method | 704 | content_size | `(Layout).ScrollHeight` | done |
+| `DetailedLayoutInfo` | enum | 717 |  | `DetailedLayoutInfo` | done |
+| `impl From<AbsoluteAxis> for RequestedAxis` | trait-impl | 103 |  | `RequestedAxisFromAbsoluteAxis` | done |
+| `impl TryFrom<RequestedAxis> for AbsoluteAxis` | trait-impl | 111 |  | `AbsoluteAxisTryFromRequestedAxis` | done |
+| `impl Default for OofCandidates` | trait-impl | 355 |  | `NewOofCandidates` | done |
+| `derive(Clone, PartialEq) for OofCandidates` | trait-impl | 355 |  | `(OofCandidates).Clone` | dev:D-TAFFY-CLONE |
+| `derive(Clone, PartialEq) for OofCandidates` | trait-impl | 355 |  | `(OofCandidates).Equal` | dev:D-TAFFY-CLONE |
+| `impl IntoIterator for &OofCandidates` | trait-impl | 439 |  | `(OofCandidates).Iter` | done |
+| `derive(Clone, PartialEq) for LayoutOutput` | trait-impl | 470 |  | `(LayoutOutput).Clone` | dev:D-TAFFY-CLONE |
+| `derive(Clone, PartialEq) for LayoutOutput` | trait-impl | 470 |  | `(LayoutOutput).Equal` | dev:D-TAFFY-CLONE |
+| `impl Default for Layout` | trait-impl | 614 |  | `NewLayout` | done |
 
 ## src/tree/mod.rs
 
@@ -1257,8 +1273,15 @@ Go target: `internal/taffy/tree_node.go` (package `taffy`), tests in `tree_node_
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `NodeId` | struct | 13 |  | `NodeID` | todo |
-| `NodeId::new` | assoc-fn | 16 |  | `NewNodeID` | todo |
+| `NodeId` | struct | 13 |  | `NodeID` | done |
+| `NodeId::new` | assoc-fn | 16 |  | `NewNodeID` | done |
+| `impl From<u64> for NodeId` | trait-impl | 21 |  | `NodeIDFromU64` | done |
+| `impl From<NodeId> for u64` | trait-impl | 27 |  | `U64FromNodeID` | done |
+| `impl From<usize> for NodeId` | trait-impl | 33 |  | `NodeIDFromUsize` | done |
+| `impl From<NodeId> for usize` | trait-impl | 39 |  | `UsizeFromNodeID` | done |
+| `impl From<DefaultKey> for NodeId` | trait-impl | 47 | taffy_tree | - | blocked:M0-taffy-compute |
+| `impl From<NodeId> for DefaultKey` | trait-impl | 55 | taffy_tree | - | blocked:M0-taffy-compute |
+| `derive(Debug) for NodeId` | trait-impl | 12 |  | `(NodeID).String` | done |
 
 ## src/tree/taffy_tree.rs
 
@@ -1346,45 +1369,53 @@ Go target: `internal/taffy/tree_traits.go` (package `taffy`), tests in `tree_tra
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `TraversePartialTree` | trait | 147 |  | `TraversePartialTree` | todo |
-| `TraversePartialTree::child_ids` | trait-method | 154 |  | `TraversePartialTree.ChildIds` | todo |
-| `TraversePartialTree::child_count` | trait-method | 157 |  | `TraversePartialTree.ChildCount` | todo |
-| `TraversePartialTree::get_child_id` | trait-method | 160 |  | `TraversePartialTree.GetChildID` | todo |
-| `TraverseTree` | trait | 167 |  | `TraverseTree` | todo |
-| `LayoutPartialTree` | trait | 173 |  | `LayoutPartialTree` | todo |
-| `LayoutPartialTree::get_core_container_style` | trait-method | 189 |  | `LayoutPartialTree.GetCoreContainerStyle` | todo |
-| `LayoutPartialTree::resolve_calc_value` | trait-method | 193 |  | `LayoutPartialTree.ResolveCalcValue` | todo |
-| `LayoutPartialTree::set_unrounded_layout` | trait-method | 200 |  | `LayoutPartialTree.SetUnroundedLayout` | todo |
-| `LayoutPartialTree::compute_child_layout` | trait-method | 203 |  | `LayoutPartialTree.ComputeChildLayout` | todo |
-| `LayoutContainingBlock` | trait | 212 |  | `LayoutContainingBlock` | todo |
-| `LayoutContainingBlock::get_oof_item_style` | trait-method | 222 |  | `LayoutContainingBlock.GetOofItemStyle` | todo |
-| `LayoutContainingBlock::clear_hoisted_children` | trait-method | 229 |  | `LayoutContainingBlock.ClearHoistedChildren` | todo |
-| `LayoutContainingBlock::add_hoisted_children` | trait-method | 240 |  | `LayoutContainingBlock.AddHoistedChildren` | todo |
-| `LayoutContainingBlock::get_detailed_layout_info` | trait-method | 251 |  | `LayoutContainingBlock.GetDetailedLayoutInfo` | todo |
-| `CacheTree` | trait | 260 |  | `CacheTree` | todo |
-| `CacheTree::cache_get` | trait-method | 262 |  | `CacheTree.CacheGet` | todo |
-| `CacheTree::cache_store` | trait-method | 265 |  | `CacheTree.CacheStore` | todo |
-| `CacheTree::cache_clear` | trait-method | 268 |  | `CacheTree.CacheClear` | todo |
-| `RoundTree` | trait | 275 |  | `RoundTree` | todo |
-| `RoundTree::get_unrounded_layout` | trait-method | 277 |  | `RoundTree.GetUnroundedLayout` | todo |
-| `RoundTree::set_final_layout` | trait-method | 279 |  | `RoundTree.SetFinalLayout` | todo |
-| `RoundTree::is_out_of_flow` | trait-method | 286 |  | `RoundTree.IsOutOfFlow` | todo |
-| `RoundTree::hoisted_child_count` | trait-method | 289 |  | `RoundTree.HoistedChildCount` | todo |
-| `RoundTree::get_hoisted_child_id` | trait-method | 292 |  | `RoundTree.GetHoistedChildID` | todo |
-| `PrintTree` | trait | 298 |  | `PrintTree` | todo |
-| `PrintTree::get_debug_label` | trait-method | 300 |  | `PrintTree.GetDebugLabel` | todo |
-| `PrintTree::get_final_layout` | trait-method | 302 |  | `PrintTree.GetFinalLayout` | todo |
-| `LayoutFlexboxContainer` | trait | 307 | flexbox | `LayoutFlexboxContainer` | todo |
-| `LayoutFlexboxContainer::get_flexbox_container_style` | trait-method | 318 | flexbox | `LayoutFlexboxContainer.GetFlexboxContainerStyle` | todo |
-| `LayoutFlexboxContainer::get_flexbox_child_style` | trait-method | 323 | flexbox | `LayoutFlexboxContainer.GetFlexboxChildStyle` | todo |
-| `LayoutGridContainer` | trait | 328 | grid | `LayoutGridContainer` | todo |
-| `LayoutGridContainer::get_grid_container_style` | trait-method | 340 | grid | `LayoutGridContainer.GetGridContainerStyle` | todo |
-| `LayoutGridContainer::get_grid_child_style` | trait-method | 345 | grid | `LayoutGridContainer.GetGridChildStyle` | todo |
-| `LayoutGridContainer::set_detailed_grid_info` | trait-method | 351 | grid | `LayoutGridContainer.SetDetailedGridInfo` | todo |
-| `LayoutBlockContainer` | trait | 358 | block_layout | `LayoutBlockContainer` | todo |
-| `LayoutBlockContainer::get_block_container_style` | trait-method | 369 | block_layout | `LayoutBlockContainer.GetBlockContainerStyle` | todo |
-| `LayoutBlockContainer::get_block_child_style` | trait-method | 374 | block_layout | `LayoutBlockContainer.GetBlockChildStyle` | todo |
-| `LayoutBlockContainer::compute_block_child_layout` | trait-method | 378 | block_layout | `LayoutBlockContainer.ComputeBlockChildLayout` | todo |
+| `TraversePartialTree` | trait | 147 |  | `TraversePartialTree` | done |
+| `TraversePartialTree::child_ids` | trait-method | 154 |  | `TraversePartialTree.ChildIds` | done |
+| `TraversePartialTree::child_count` | trait-method | 157 |  | `TraversePartialTree.ChildCount` | done |
+| `TraversePartialTree::get_child_id` | trait-method | 160 |  | `TraversePartialTree.GetChildID` | done |
+| `TraverseTree` | trait | 167 |  | `TraverseTree` | done |
+| `LayoutPartialTree` | trait | 173 |  | `LayoutPartialTree` | done |
+| `LayoutPartialTree::get_core_container_style` | trait-method | 189 |  | `LayoutPartialTree.GetCoreContainerStyle` | done |
+| `LayoutPartialTree::resolve_calc_value` | trait-method | 193 |  | `LayoutPartialTree.ResolveCalcValue` | done |
+| `LayoutPartialTree::set_unrounded_layout` | trait-method | 200 |  | `LayoutPartialTree.SetUnroundedLayout` | done |
+| `LayoutPartialTree::compute_child_layout` | trait-method | 203 |  | `LayoutPartialTree.ComputeChildLayout` | done |
+| `LayoutContainingBlock` | trait | 212 |  | `LayoutContainingBlock` | done |
+| `LayoutContainingBlock::get_oof_item_style` | trait-method | 222 |  | `LayoutContainingBlock.GetOofItemStyle` | done |
+| `LayoutContainingBlock::clear_hoisted_children` | trait-method | 229 |  | `LayoutContainingBlock.ClearHoistedChildren` | done |
+| `LayoutContainingBlock::add_hoisted_children` | trait-method | 240 |  | `LayoutContainingBlock.AddHoistedChildren` | done |
+| `LayoutContainingBlock::get_detailed_layout_info` | trait-method | 251 |  | `LayoutContainingBlock.GetDetailedLayoutInfo` | done |
+| `CacheTree` | trait | 260 |  | `CacheTree` | done |
+| `CacheTree::cache_get` | trait-method | 262 |  | `CacheTree.CacheGet` | done |
+| `CacheTree::cache_store` | trait-method | 265 |  | `CacheTree.CacheStore` | done |
+| `CacheTree::cache_clear` | trait-method | 268 |  | `CacheTree.CacheClear` | done |
+| `RoundTree` | trait | 275 |  | `RoundTree` | done |
+| `RoundTree::get_unrounded_layout` | trait-method | 277 |  | `RoundTree.GetUnroundedLayout` | done |
+| `RoundTree::set_final_layout` | trait-method | 279 |  | `RoundTree.SetFinalLayout` | done |
+| `RoundTree::is_out_of_flow` | trait-method | 286 |  | `RoundTree.IsOutOfFlow` | done |
+| `RoundTree::hoisted_child_count` | trait-method | 289 |  | `RoundTree.HoistedChildCount` | done |
+| `RoundTree::get_hoisted_child_id` | trait-method | 292 |  | `RoundTree.GetHoistedChildID` | done |
+| `PrintTree` | trait | 298 |  | `PrintTree` | done |
+| `PrintTree::get_debug_label` | trait-method | 300 |  | `PrintTree.GetDebugLabel` | done |
+| `PrintTree::get_final_layout` | trait-method | 302 |  | `PrintTree.GetFinalLayout` | done |
+| `LayoutFlexboxContainer` | trait | 307 | flexbox | `LayoutFlexboxContainer` | done |
+| `LayoutFlexboxContainer::get_flexbox_container_style` | trait-method | 318 | flexbox | `LayoutFlexboxContainer.GetFlexboxContainerStyle` | done |
+| `LayoutFlexboxContainer::get_flexbox_child_style` | trait-method | 323 | flexbox | `LayoutFlexboxContainer.GetFlexboxChildStyle` | done |
+| `LayoutGridContainer` | trait | 328 | grid | `LayoutGridContainer` | done |
+| `LayoutGridContainer::get_grid_container_style` | trait-method | 340 | grid | `LayoutGridContainer.GetGridContainerStyle` | done |
+| `LayoutGridContainer::get_grid_child_style` | trait-method | 345 | grid | `LayoutGridContainer.GetGridChildStyle` | done |
+| `LayoutGridContainer::set_detailed_grid_info` | trait-method | 351 | grid | `LayoutGridContainer.SetDetailedGridInfo` | done |
+| `LayoutBlockContainer` | trait | 358 | block_layout | `LayoutBlockContainer` | done |
+| `LayoutBlockContainer::get_block_container_style` | trait-method | 369 | block_layout | `LayoutBlockContainer.GetBlockContainerStyle` | done |
+| `LayoutBlockContainer::get_block_child_style` | trait-method | 374 | block_layout | `LayoutBlockContainer.GetBlockChildStyle` | done |
+| `LayoutBlockContainer::compute_block_child_layout` | trait-method | 378 | block_layout | `LayoutBlockContainer.ComputeBlockChildLayout` | done |
+| `LayoutPartialTreeExt` (`pub(crate)`) | trait | 393 |  | `measureChildSize` | done |
+| `LayoutPartialTreeExt` (`pub(crate)`) | trait | 393 |  | `measureChildSizeBoth` | done |
+| `LayoutPartialTreeExt` (`pub(crate)`) | trait | 393 |  | `performChildLayout` | done |
+| `LayoutPartialTreeExt` (`pub(crate)`) | trait | 393 |  | `calc` | done |
+| `LayoutPartialTree::resolve_calc_value` default body | trait-method | 193 |  | `LayoutPartialTreeDefaults.ResolveCalcValue` | done |
+| `LayoutContainingBlock::get_detailed_layout_info` default body | trait-method | 251 |  | `LayoutContainingBlockDefaults.GetDetailedLayoutInfo` | done |
+| `LayoutGridContainer::set_detailed_grid_info` default body | trait-method | 351 | grid | `LayoutGridContainerDefaults.SetDetailedGridInfo` | done |
+| `LayoutBlockContainer::compute_block_child_layout` default body | trait-method | 378 | block_layout | `LayoutBlockContainerDefaultComputeBlockChildLayout` | done |
 
 ## src/util/debug.rs
 
@@ -1392,14 +1423,14 @@ Go target: `internal/taffy/util_debug.go` (package `taffy`), tests in `util_debu
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `DebugLogger` | struct | 10 | debug, profile | `DebugLogger` | todo |
-| `DebugLogger::new` | assoc-fn | 18 | debug, profile | `NewDebugLogger` | todo |
-| `DebugLogger::push_node` | method | 22 | debug, profile | `(DebugLogger).PushNode` | todo |
-| `DebugLogger::pop_node` | method | 29 | debug, profile | `(DebugLogger).PopNode` | todo |
-| `DebugLogger::log` | method | 34 | debug, profile | `(DebugLogger).Log` | todo |
-| `DebugLogger::labelled_log` | method | 42 | debug, profile | `(DebugLogger).LabelledLog` | todo |
-| `DebugLogger::debug_log` | method | 50 | debug, profile | `(DebugLogger).DebugLog` | todo |
-| `DebugLogger::labelled_debug_log` | method | 58 | debug, profile | `(DebugLogger).LabelledDebugLog` | todo |
+| `DebugLogger` | struct | 10 | debug, profile | `DebugLogger` | n/a:D-TAFFY-FEATURE |
+| `DebugLogger::new` | assoc-fn | 18 | debug, profile | `NewDebugLogger` | n/a:D-TAFFY-FEATURE |
+| `DebugLogger::push_node` | method | 22 | debug, profile | `(DebugLogger).PushNode` | n/a:D-TAFFY-FEATURE |
+| `DebugLogger::pop_node` | method | 29 | debug, profile | `(DebugLogger).PopNode` | n/a:D-TAFFY-FEATURE |
+| `DebugLogger::log` | method | 34 | debug, profile | `(DebugLogger).Log` | n/a:D-TAFFY-FEATURE |
+| `DebugLogger::labelled_log` | method | 42 | debug, profile | `(DebugLogger).LabelledLog` | n/a:D-TAFFY-FEATURE |
+| `DebugLogger::debug_log` | method | 50 | debug, profile | `(DebugLogger).DebugLog` | n/a:D-TAFFY-FEATURE |
+| `DebugLogger::labelled_debug_log` | method | 58 | debug, profile | `(DebugLogger).LabelledDebugLog` | n/a:D-TAFFY-FEATURE |
 
 ## src/util/front_back_vec_builder.rs
 
@@ -1407,15 +1438,15 @@ Go target: `internal/taffy/util_front_back_vec_builder.go` (package `taffy`), te
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `front_items_keep_their_order_and_back_items_are_reversed` | test | 86 |  | `TestUtilFrontBackVecBuilder_FrontItemsKeepTheirOrderAndBackItemsAreReversed` | todo |
-| `all_items_pushed_to_one_end` | test | 101 |  | `TestUtilFrontBackVecBuilder_AllItemsPushedToOneEnd` | todo |
-| `zero_capacity` | test | 112 |  | `TestUtilFrontBackVecBuilder_ZeroCapacity` | todo |
-| `owned_items_are_moved_into_the_vec` | test | 119 |  | `TestUtilFrontBackVecBuilder_OwnedItemsAreMovedIntoTheVec` | todo |
-| `pushing_too_many_items_to_the_front_panics_in_into_vec` | test | 130 |  | `TestUtilFrontBackVecBuilder_PushingTooManyItemsToTheFrontPanicsInIntoVec` | todo |
-| `pushing_too_many_items_to_the_back_panics_in_into_vec` | test | 139 |  | `TestUtilFrontBackVecBuilder_PushingTooManyItemsToTheBackPanicsInIntoVec` | todo |
-| `push_front_out_of_bounds_panics` | test | 148 |  | `TestUtilFrontBackVecBuilder_PushFrontOutOfBoundsPanics` | todo |
-| `push_back_out_of_bounds_panics` | test | 155 |  | `TestUtilFrontBackVecBuilder_PushBackOutOfBoundsPanics` | todo |
-| `into_vec_before_full_panics` | test | 163 |  | `TestUtilFrontBackVecBuilder_IntoVecBeforeFullPanics` | todo |
+| `front_items_keep_their_order_and_back_items_are_reversed` | test | 86 |  | `TestUtilFrontBackVecBuilder_FrontItemsKeepTheirOrderAndBackItemsAreReversed` | done |
+| `all_items_pushed_to_one_end` | test | 101 |  | `TestUtilFrontBackVecBuilder_AllItemsPushedToOneEnd` | done |
+| `zero_capacity` | test | 112 |  | `TestUtilFrontBackVecBuilder_ZeroCapacity` | done |
+| `owned_items_are_moved_into_the_vec` | test | 119 |  | `TestUtilFrontBackVecBuilder_OwnedItemsAreMovedIntoTheVec` | done |
+| `pushing_too_many_items_to_the_front_panics_in_into_vec` | test | 130 |  | `TestUtilFrontBackVecBuilder_PushingTooManyItemsToTheFrontPanicsInIntoVec` | done |
+| `pushing_too_many_items_to_the_back_panics_in_into_vec` | test | 139 |  | `TestUtilFrontBackVecBuilder_PushingTooManyItemsToTheBackPanicsInIntoVec` | done |
+| `push_front_out_of_bounds_panics` | test | 148 |  | `TestUtilFrontBackVecBuilder_PushFrontOutOfBoundsPanics` | done |
+| `push_back_out_of_bounds_panics` | test | 155 |  | `TestUtilFrontBackVecBuilder_PushBackOutOfBoundsPanics` | done |
+| `into_vec_before_full_panics` | test | 163 |  | `TestUtilFrontBackVecBuilder_IntoVecBeforeFullPanics` | done |
 
 ## src/util/math.rs
 
@@ -1509,8 +1540,8 @@ Go target: `internal/taffy/util_parse.go` (package `taffy`), tests in `util_pars
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `ParseError` | struct | 15 |  | `ParseError` | todo |
-| `ParseResult` | type | 36 |  | `ParseResult` | todo |
+| `ParseError` | struct | 15 |  | `ParseError` | n/a:D-TAFFY-FEATURE |
+| `ParseResult` | type | 36 |  | `ParseResult` | n/a:D-TAFFY-FEATURE |
 
 ## src/util/print.rs
 
@@ -1518,8 +1549,8 @@ Go target: `internal/taffy/util_print.go` (package `taffy`), tests in `util_prin
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `print_tree` | fn | 6 |  | `PrintTree` | todo |
-| `write_tree` | fn | 14 |  | `WriteTree` | todo |
+| `print_tree` | fn | 6 |  | `PrintTreeStdout` | dev:D-TAFFY-TREETRAITS |
+| `write_tree` | fn | 14 |  | `WriteTree` | done |
 
 ## src/util/resolve.rs
 
@@ -1527,28 +1558,41 @@ Go target: `internal/taffy/util_resolve.go` (package `taffy`), tests in `util_re
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `MaybeResolve` | trait | 13 |  | `MaybeResolve` | todo |
-| `MaybeResolve::maybe_resolve` | trait-method | 15 |  | `MaybeResolve.MaybeResolve` | todo |
-| `ResolveOrZero` | trait | 23 |  | `ResolveOrZero` | todo |
-| `ResolveOrZero::resolve_or_zero` | trait-method | 25 |  | `ResolveOrZero.ResolveOrZero` | todo |
+| `MaybeResolve` | trait | 13 |  | `MaybeResolve` | done |
+| `MaybeResolve::maybe_resolve` | trait-method | 15 |  | `MaybeResolve.MaybeResolve` | done |
+| `ResolveOrZero` | trait | 23 |  | `ResolveOrZero` | done |
+| `ResolveOrZero::resolve_or_zero` | trait-method | 25 |  | `ResolveOrZero.ResolveOrZero` | done |
+| `impl MaybeResolve<Option<f32>, Option<f32>> for LengthPercentage` / `LengthPercentageAuto` / `Dimension` | trait-impl | 28 |  | `(LengthPercentage).MaybeResolve` | done |
+| `impl MaybeResolve<Option<f32>, Option<f32>> for LengthPercentage` / `LengthPercentageAuto` / `Dimension` | trait-impl | 28 |  | `(LengthPercentageAuto).MaybeResolve` | done |
+| `impl MaybeResolve<Option<f32>, Option<f32>> for LengthPercentage` / `LengthPercentageAuto` / `Dimension` | trait-impl | 28 |  | `(Dimension).MaybeResolve` | done |
+| `impl MaybeResolve<f32, Option<f32>> for T` | trait-impl | 81 |  | `MaybeResolveF32` | dev:D-TAFFY-RESOLVE |
+| `impl MaybeResolve<Size<In>, Size<Out>> for Size<T>` | trait-impl | 90 |  | `SizeMaybeResolve` | dev:D-TAFFY-RESOLVE |
+| `impl MaybeResolve<Size<In>, Size<Out>> for Size<T>` | trait-impl | 90 |  | `SizeMaybeResolveF32` | dev:D-TAFFY-RESOLVE |
+| `impl ResolveOrZero<Option<f32>, f32> for LengthPercentage` / `LengthPercentageAuto` / `Dimension` | trait-impl | 102 |  | `(LengthPercentage).ResolveOrZero` | done |
+| `impl ResolveOrZero<Option<f32>, f32> for LengthPercentage` / `LengthPercentageAuto` / `Dimension` | trait-impl | 102 |  | `(LengthPercentageAuto).ResolveOrZero` | done |
+| `impl ResolveOrZero<Option<f32>, f32> for LengthPercentage` / `LengthPercentageAuto` / `Dimension` | trait-impl | 102 |  | `(Dimension).ResolveOrZero` | done |
+| `impl ResolveOrZero<Size<In>, Size<Out>> for Size<T>` | trait-impl | 124 |  | `SizeResolveOrZero` | dev:D-TAFFY-RESOLVE |
+| `impl ResolveOrZero<Size<In>, Rect<Out>> for Rect<T>` | trait-impl | 136 |  | `RectResolveOrZero` | dev:D-TAFFY-RESOLVE |
+| `impl ResolveOrZero<Option<f32>, Rect<Out>> for Rect<T>` | trait-impl | 149 |  | `RectResolveOrZeroOptionF32` | dev:D-TAFFY-RESOLVE |
+| `impl ResolveOrZero<f32, Rect<Out>> for Rect<T>` | trait-impl | 163 |  | `RectResolveOrZeroF32` | dev:D-TAFFY-RESOLVE |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `resolve_auto` | test | 205 |  | `TestUtilResolve_ResolveAuto` | todo |
-| `resolve_length` | test | 217 |  | `TestUtilResolve_ResolveLength` | todo |
-| `resolve_percent` | test | 230 |  | `TestUtilResolve_ResolvePercent` | todo |
-| `maybe_resolve_auto` | test | 247 |  | `TestUtilResolve_MaybeResolveAuto` | todo |
-| `maybe_resolve_length` | test | 259 |  | `TestUtilResolve_MaybeResolveLength` | todo |
-| `maybe_resolve_percent` | test | 272 |  | `TestUtilResolve_MaybeResolvePercent` | todo |
-| `resolve_or_zero_auto` | test | 286 |  | `TestUtilResolve_ResolveOrZeroAuto` | todo |
-| `resolve_or_zero_length` | test | 293 |  | `TestUtilResolve_ResolveOrZeroLength` | todo |
-| `resolve_or_zero_percent` | test | 300 |  | `TestUtilResolve_ResolveOrZeroPercent` | todo |
-| `resolve_or_zero_auto` | test | 314 |  | `TestUtilResolve_ResolveOrZeroAuto` | todo |
-| `resolve_or_zero_length` | test | 322 |  | `TestUtilResolve_ResolveOrZeroLength` | todo |
-| `resolve_or_zero_percent` | test | 330 |  | `TestUtilResolve_ResolveOrZeroPercent` | todo |
-| `resolve_or_zero_auto` | test | 348 |  | `TestUtilResolve_ResolveOrZeroAuto` | todo |
-| `resolve_or_zero_length` | test | 356 |  | `TestUtilResolve_ResolveOrZeroLength` | todo |
-| `resolve_or_zero_percent` | test | 364 |  | `TestUtilResolve_ResolveOrZeroPercent` | todo |
+| `maybe_resolve_dimension::resolve_auto` | test | 205 |  | `TestUtilResolve_MaybeResolveDimension_ResolveAuto` | done |
+| `maybe_resolve_dimension::resolve_length` | test | 217 |  | `TestUtilResolve_MaybeResolveDimension_ResolveLength` | done |
+| `maybe_resolve_dimension::resolve_percent` | test | 230 |  | `TestUtilResolve_MaybeResolveDimension_ResolvePercent` | done |
+| `maybe_resolve_size_dimension::maybe_resolve_auto` | test | 247 |  | `TestUtilResolve_MaybeResolveSizeDimension_MaybeResolveAuto` | done |
+| `maybe_resolve_size_dimension::maybe_resolve_length` | test | 259 |  | `TestUtilResolve_MaybeResolveSizeDimension_MaybeResolveLength` | done |
+| `maybe_resolve_size_dimension::maybe_resolve_percent` | test | 272 |  | `TestUtilResolve_MaybeResolveSizeDimension_MaybeResolvePercent` | done |
+| `resolve_or_zero_dimension_to_option_f32::resolve_or_zero_auto` | test | 286 |  | `TestUtilResolve_ResolveOrZeroDimensionToOptionF32_ResolveOrZeroAuto` | done |
+| `resolve_or_zero_dimension_to_option_f32::resolve_or_zero_length` | test | 293 |  | `TestUtilResolve_ResolveOrZeroDimensionToOptionF32_ResolveOrZeroLength` | done |
+| `resolve_or_zero_dimension_to_option_f32::resolve_or_zero_percent` | test | 300 |  | `TestUtilResolve_ResolveOrZeroDimensionToOptionF32_ResolveOrZeroPercent` | done |
+| `resolve_or_zero_rect_dimension_to_rect::resolve_or_zero_auto` | test | 314 |  | `TestUtilResolve_ResolveOrZeroRectDimensionToRect_ResolveOrZeroAuto` | done |
+| `resolve_or_zero_rect_dimension_to_rect::resolve_or_zero_length` | test | 322 |  | `TestUtilResolve_ResolveOrZeroRectDimensionToRect_ResolveOrZeroLength` | done |
+| `resolve_or_zero_rect_dimension_to_rect::resolve_or_zero_percent` | test | 330 |  | `TestUtilResolve_ResolveOrZeroRectDimensionToRect_ResolveOrZeroPercent` | done |
+| `resolve_or_zero_rect_dimension_to_rect_f32_via_option::resolve_or_zero_auto` | test | 348 |  | `TestUtilResolve_ResolveOrZeroRectDimensionToRectF32ViaOption_ResolveOrZeroAuto` | done |
+| `resolve_or_zero_rect_dimension_to_rect_f32_via_option::resolve_or_zero_length` | test | 356 |  | `TestUtilResolve_ResolveOrZeroRectDimensionToRectF32ViaOption_ResolveOrZeroLength` | done |
+| `resolve_or_zero_rect_dimension_to_rect_f32_via_option::resolve_or_zero_percent` | test | 364 |  | `TestUtilResolve_ResolveOrZeroRectDimensionToRectF32ViaOption_ResolveOrZeroPercent` | done |
 
 ## src/util/sys.rs
 
@@ -1589,3 +1633,6 @@ No `pub` items. The `std` branch is ported as unexported helpers: `round`, `ceil
 | D-TAFFY-SIZES | `style_sizes` checks only sizes that Go lays out like Rust; `Option<AlignItems>` (Go 3 bytes, no niche), the string-dependent grid types and `Style` sizes differ and are not asserted. | `src/style/mod.rs:1742-1815` | `internal/taffy/style_mod_test.go` |
 | D-TAFFY-GRIDLISTS | The associated iterator types of `GridContainerStyle` and `GenericRepetition` are slices: template track lists are `[]GenericGridTemplateComponent[S, GenericRepetition[S]]` (the repetition is the interface, so `R` is not a trait parameter), auto track lists `[]TrackSizingFunction`, line names `TemplateLineNames[S]` (alias of `[][]S`), areas `[]GridTemplateArea[S]`. `StyleRef.GridTemplateRows` / `GridTemplateColumns` allocate the component-ref slice per call where upstream maps lazily. | `src/style/grid.rs:81-270`, `src/style/mod.rs:1386-1480` | `internal/taffy/style_grid.go`, `style_mod.go` |
 | D-TAFFY-HELPERS | `style_helpers`: `line` is `NewLine` (Go cannot have a function and the type `Line` with one name). Go cannot add methods to `float32` or `gpuiutil.Option`, so the `f32` / `Option` impls are runtime cases inside the Point / Line / Size / Rect helpers (`PointZero[float32]`, `SizeLength[Option[float32]]`) and are not usable with the top-level generic helpers; `Option<T>` is covered for `T = f32` only. `repeat`'s `TryInto<RepetitionCount>` input is the union of `uint16`, `string` and `RepetitionCount`. | `src/style_helpers.rs` | `internal/taffy/style_helpers.go` |
+| D-TAFFY-TREETRAITS | Tree traits are Go interfaces with the conventions of D-TAFFY-TRAITS: associated style types are the style interfaces (`CoreStyle`, `OofItemStyle[S]`, ...), `CustomIdent` is the type parameter `S` of `LayoutContainingBlock` / `LayoutGridContainer` (`LayoutPartialTree` is not generic because `CoreStyle` is not), `ChildIter` is `iter.Seq[NodeID]`, `*const ()` is `unsafe.Pointer`, `BlockContext<'_>` is `*BlockContext`, and default bodies live in `<Trait>Defaults` structs or, when they call another trait method, in `<Trait>Default<Method>` functions. The marker trait `TraverseTree` has the marker method `TraverseTree()`. `get_detailed_layout_info` returns the value, not a reference. `print_tree` is `PrintTreeStdout`, because the trait `PrintTree` takes the name. `LayoutPartialTreeExt` methods are unexported free functions taking the tree. | `src/tree/traits.rs`, `src/util/print.rs` | `internal/taffy/tree_traits.go`, `util_print.go` |
+| D-TAFFY-CLONE | `OofCandidates` holds its lazily allocated list behind a pointer (nil is upstream's `None`, a non-nil pointer to an empty slice is `Some(empty)`), so Go value copies of `OofCandidates`, `LayoutOutput` and `Cache` share it; ported code calls `Clone()` where upstream clones (`Cache::get` does) and `Equal` where upstream compares. The debug-build `MODE_CHANGE_EVICTIONS` thread-local is one process-wide atomic counter, counted while `gpuiutil.DebugAssertions` is set. | `src/tree/layout.rs:355-574`, `src/tree/cache.rs:180-360` | `internal/taffy/tree_layout.go`, `tree_cache.go` |
+| D-TAFFY-RESOLVE | `MaybeResolve` / `ResolveOrZero` are generic interfaces implemented by `LengthPercentage`, `LengthPercentageAuto` and `Dimension` for an `Option<f32>` context; the blanket `f32`-context impl is `MaybeResolveF32`, and the `Size` / `Rect` impls are free generic functions (`SizeMaybeResolve`, `SizeMaybeResolveF32`, `SizeResolveOrZero`, `RectResolveOrZero`, `RectResolveOrZeroOptionF32`, `RectResolveOrZeroF32`). The `calc` closure is `func(unsafe.Pointer, float32) float32`. | `src/util/resolve.rs` | `internal/taffy/util_resolve.go` |

@@ -28,3 +28,9 @@ type OriginZeroLine int16
 type GridCoordinate interface {
 	GridLine | OriginZeroLine
 }
+
+// DetailedGridInfo is the detailed information of a grid container's layout (owner: M0-taffy-grid-sizing).
+type DetailedGridInfo[S CheapCloneStr] struct{}
+
+// BlockContext is the per-container state of a block formatting context (owner: M0-taffy-block).
+type BlockContext struct{}
