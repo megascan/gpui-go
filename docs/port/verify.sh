@@ -327,7 +327,7 @@ M3-bench-context)
 M3-randomized-tree)
   ( go build . && go vet . && go test . && test -z "$(gofmt -l *.go)" ) || exit 1
   ( go test -run xxx -bench FocusCleanup -benchtime 1x . ) || exit 1
-  ( go run ./internal/cmd/paritycheck -area core-tests -done gpui/src/randomized_element_tree.rs ) || exit 1
+  ( go run ./internal/cmd/paritycheck -area core-profiler -done gpui/src/randomized_element_tree.rs ) || exit 1
   ;;
 M3-profiler-hang)
   ( go build . && go vet . && go test . && test -z "$(gofmt -l *.go)" ) || exit 1
@@ -430,7 +430,7 @@ M4-macos-a11y)
   ;;
 M4-ios-app)
   ( GOOS=ios GOARCH=arm64 CGO_ENABLED=0 go vet ./internal/apple/... ./platform/ios/... ./platform && GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go test -c -o /dev/null ./platform/ios/... && test -z "$(gofmt -l platform/ios internal/apple/uikit)" ) || exit 1
-  ( go run ./internal/cmd/paritycheck -area ios -done gpui_ios/src/application.rs,gpui_ios/src/display.rs,gpui_ios/src/events.rs,gpui_ios/src/platform.rs ) || exit 1
+  ( go run ./internal/cmd/paritycheck -area ios -done gpui_ios/src/ios/application.rs,gpui_ios/src/ios/events.rs,gpui_ios/src/ios/platform.rs ) || exit 1
   ;;
 M4-ios-window)
   ( GOOS=ios GOARCH=arm64 CGO_ENABLED=0 go vet ./internal/apple/... ./platform/ios/... ./platform && GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go test -c -o /dev/null ./platform/ios/... && test -z "$(gofmt -l platform/ios examples/ios_ios)" ) || exit 1

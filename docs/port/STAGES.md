@@ -689,7 +689,7 @@ go run ./internal/cmd/paritycheck -area core-geometry -done gpui/src/gpui.rs
 - Tier: core. Risky: yes.
 - Depends on: M0-contracts
 - Owns: `platform.go`, `platform_layer_shell.go`, `platform_platform_info.go`, `platform_keyboard.go`, `platform_cfg_linux.go`, `platform_cfg_windows.go`, `platform_cfg_other.go`, `stubs.go`, `docs/api-contracts.md`, `docs/port/parity/core-platform.md`, `docs/port/parity/core-input.md`
-- Core task: platform.rs:1-2126 plus platform/keyboard.rs, layer_shell.rs and platform_info.rs. Interfaces method for method in upstream order: Platform (83), PlatformWindow (108), PlatformDisplay, PlatformDispatcher, PlatformTextSystem, PlatformAtlas, AtlasBackend, PlatformHeadlessRenderer, ScreenCaptureSource / Stream, PlatformKeyboardLayout / Mapper; `PlatformDefaults` and `PlatformWindowDefaults` carry upstream's default bodies; cfg-gated methods exist on every GOOS. Data types of this range: WindowVisibility, DisplayEvent, ActivationPolicy, ActivityGuard (Release per the Drop table), the three GraphicalEnvironment cfg variants in platform_cfg_<goos>.go, SystemNotification*, PowerMode, ThermalState, SourceMetadata, ScreenCaptureFrame, DisplayId, ResizeEdge, WindowDecorations, Decorations, WindowControls, WindowButtonLayout, Tiling, A11yCallbacks, FrameRequestSource, RequestFrameOptions, PlatformFrameSignal, AppLifecyclePhase, WindowInsets, TextInputStateChange, TasksIncluded, RunnableVariant, TimerResolutionGuard (a gpuiutil.Deferred), NoopTextSystem, AtlasKey / AtlasTile / AtlasState / HeadlessAtlas / AtlasTextureList / AtlasTextureID / AtlasTextureKind / TileID. `RawWindowHandle` is a tagged struct (Wayland display+surface, Xcb connection+window+visual, AppKit view, UIKit view, Win32 hwnd+hinstance, Web canvas id). Also the screen-capture back-end seam (DESIGN 8.6): `type ScapBackend interface` and `RegisterScapBackend(ScapBackend)` with a real body, so back ends can be written before M3-root-capture ports the glue. Types the interfaces mention but later stages own (Keymap, Menu, WindowOptions, ...) are stubbed. etagere conversions are not written here.
+- Core task: platform.rs:1-2126 plus platform/keyboard.rs, layer_shell.rs and platform_info.rs. Interfaces method for method in upstream order: Platform (83), PlatformWindow (108), PlatformDisplay, PlatformDispatcher, PlatformTextSystem, PlatformAtlas, AtlasBackend, PlatformHeadlessRenderer, ScreenCaptureSource / Stream, PlatformKeyboardLayout / Mapper; `PlatformDefaults` and `PlatformWindowDefaults` carry upstream's default bodies; cfg-gated methods exist on every GOOS. Data types of this range: WindowVisibility, DisplayEvent, ActivationPolicy, ActivityGuard (Release per the Drop table), the three GraphicalEnvironment cfg variants in platform_cfg_<goos>.go, SystemNotification*, PowerMode, ThermalState, SourceMetadata, ScreenCaptureFrame, DisplayId, ResizeEdge, WindowDecorations, Decorations, WindowControls, WindowButtonLayout, Tiling, A11yCallbacks, FrameRequestSource, RequestFrameOptions, PlatformFrameSignal, AppLifecyclePhase, WindowInsets, TextInputStateChange, TasksIncluded, RunnableVariant, TimerResolutionGuard (a gpuiutil.Deferred), NoopTextSystem, AtlasKey / AtlasTile / AtlasState / HeadlessAtlas / AtlasTextureList / AtlasTextureID / AtlasTextureKind / TileID. `RawWindowHandle` is a tagged struct (Wayland display+surface, Xcb connection+window+visual, AppKit view, UIKit view, Win32 hwnd+hinstance, Web canvas id). Also the screen-capture back-end seam (DESIGN 6.9): `type ScapBackend interface` and `RegisterScapBackend(ScapBackend)` with a real body, so back ends can be written before M3-root-capture ports the glue. Types the interfaces mention but later stages own (Keymap, Menu, WindowOptions, ...) are stubbed. etagere conversions are not written here.
 - Verify (`sh docs/port/verify.sh M0-platform-types` runs exactly these, from the worktree root):
 
 ```sh
@@ -1441,7 +1441,7 @@ go run ./internal/cmd/paritycheck -area core-profiler,core-tests -done gpui/src/
 ```sh
 go build . && go vet . && go test . && test -z "$(gofmt -l *.go)"
 go test -run xxx -bench FocusCleanup -benchtime 1x .
-go run ./internal/cmd/paritycheck -area core-tests -done gpui/src/randomized_element_tree.rs
+go run ./internal/cmd/paritycheck -area core-profiler -done gpui/src/randomized_element_tree.rs
 ```
 
 ### M3-profiler-hang
@@ -1808,7 +1808,7 @@ go run ./internal/cmd/paritycheck -area ext-a11y-macos -all-done
 
 ```sh
 GOOS=ios GOARCH=arm64 CGO_ENABLED=0 go vet ./internal/apple/... ./platform/ios/... ./platform && GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go test -c -o /dev/null ./platform/ios/... && test -z "$(gofmt -l platform/ios internal/apple/uikit)"
-go run ./internal/cmd/paritycheck -area ios -done gpui_ios/src/application.rs,gpui_ios/src/display.rs,gpui_ios/src/events.rs,gpui_ios/src/platform.rs
+go run ./internal/cmd/paritycheck -area ios -done gpui_ios/src/ios/application.rs,gpui_ios/src/ios/events.rs,gpui_ios/src/ios/platform.rs
 ```
 
 ### M4-ios-window
@@ -2118,3 +2118,5 @@ s=$(find . -name '*_gen.go' | sort | xargs sha256sum) && go generate ./... && [ 
 go run ./internal/cmd/paritycheck -all-done -rescan -lint
 gh pr checks feat/port
 ```
+
+- Re-review (Gemini, APPROVED) minors applied: randomized-tree parity area core-profiler; ios -done paths; M3-platform-benches now depends on M4-web-text, M4-ios-app; platform/ios pure-logic files //go:build darwin; dup M0-scene verify removed; DESIGN 6.9 ref.
