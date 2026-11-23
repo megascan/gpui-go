@@ -53,10 +53,20 @@ Public items in gpui include the 3099 macro-generated `Styled` methods. Test att
 | [parity/core-text.md](parity/core-text.md) | gpui: text system, line layout and wrapping, svg renderer | M0, M2 | root | 7 | 144 | 58 |
 | [parity/core-elements.md](parity/core-elements.md) | gpui: elements/* | M0, M3 | root | 14 | 393 | 102 |
 | [parity/core-profiler.md](parity/core-profiler.md) | gpui: profiler, debug overlay, hot reload, randomized element tree, bench context | M3 | root | 10 | 241 | 82 |
-| [parity/core-examples.md](parity/core-examples.md) | gpui: examples, integration tests, benches | M3 | `examples/`, root `_test` files | 56 | 0 | 21 |
+| [parity/examples-m2.md](parity/examples-m2.md) | gpui: examples (M1, M2 subset) | M1, M2 | `examples/` (hello_world, text, svg, image, internal/support) | 5 | 0 | 0 |
+| [parity/examples-a.md](parity/examples-a.md) | gpui: examples | M3 | `examples/` (active_state_bug to popover) | 13 | 0 | 0 |
+| [parity/examples-b.md](parity/examples-b.md) | gpui: examples | M3 | `examples/` (text_layout to painting) | 11 | 0 | 0 |
+| [parity/examples-c.md](parity/examples-c.md) | gpui: examples | M3 | `examples/` (window to native_view_appkit_field) | 15 | 0 | 0 |
+| [parity/examples-d.md](parity/examples-d.md) | gpui: examples (view_example, testing, input, animation) | M3 | `examples/view_example/`, `examples/testing/`, `examples/input/`, `examples/animation/` | 8 | 0 | 15 |
+| [parity/core-tests.md](parity/core-tests.md) | gpui: integration tests and benches | M0, M3 | root `_test` files, `bench_focus_cleanup_test.go` | 4 | 0 | 6 |
 | [parity/platform-select.md](parity/platform-select.md) | gpui_platform | M1 | `platform/` | 5 | 10 | 30 |
-| [parity/linux.md](parity/linux.md) | gpui_linux | M1 | `platform/linux/**` | 28 | 91 | 55 |
-| [parity/wgpu.md](parity/wgpu.md) | gpui_wgpu | M1, M2 | `render/wgpu`, `text/gotext` | 6 | 57 | 48 |
+| [parity/linux-common.md](parity/linux-common.md) | gpui_linux: shared state (dispatcher, platform, headless, keyboard, text system) | M1 | `platform/linux/internal/common/`, `platform/linux/platform.go` | 6 | 5 | 17 |
+| [parity/linux-dbus.md](parity/linux-dbus.md) | gpui_linux: D-Bus services (power, notifications, portal) | M1 | `platform/linux/internal/dbus/` | 3 | 3 | 4 |
+| [parity/linux-platform.md](parity/linux-platform.md) | gpui_linux: entry points, display connection | M1 | `platform/linux/linux.go`, `platform/linux/display_connection.go` | 3 | 2 | 0 |
+| [parity/linux-wayland.md](parity/linux-wayland.md) | gpui_linux: Wayland back end | M1 | `platform/linux/wayland/` | 9 | 65 | 22 |
+| [parity/linux-x11.md](parity/linux-x11.md) | gpui_linux: X11 back end | M1 | `platform/linux/x11/` | 7 | 16 | 12 |
+| [parity/wgpu.md](parity/wgpu.md) | gpui_wgpu: renderer, atlas, context | M1, M4 | `render/wgpu` | 4 | 52 | 18 |
+| [parity/gotext.md](parity/gotext.md) | gpui_wgpu: cosmic-text system | M2 | `text/gotext` | 2 | 5 | 30 |
 | [parity/apple.md](parity/apple.md) | gpui_apple | M4 | `platform/apple` | 10 | 53 | 21 |
 | [parity/macos.md](parity/macos.md) | gpui_macos | M4 | `platform/macos` | 12 | 60 | 18 |
 | [parity/ios.md](parity/ios.md) | gpui_ios | M4 | `platform/ios` | 10 | 11 | 12 |
@@ -297,67 +307,91 @@ Every upstream `.rs` file, its Go target, and how many rows it has in its area f
 | `gpui/src/profiler/journal.rs` | 3544 | `profiler_journal.go` | 34 | 27 |
 | `gpui/src/profiler/hang/monitor.rs` | 120 | `profiler_hang_monitor.go` | 4 | 0 |
 
-### core-examples
+### examples-m2
 
 | Upstream file | LOC | Go file | Public items | Tests |
 |---|---|---|---|---|
-| `gpui/build.rs` | 47 | `-` | 0 | 0 |
-| `gpui/benches/focus_cleanup.rs` | 141 | `bench_focus_cleanup_test.go` | 0 | 3 |
-| `gpui/examples/a11y.rs` | 272 | `examples/a11y/main.go` | 0 | 0 |
+| `gpui/examples/hello_world.rs` | 127 | `examples/hello_world/main.go` | 0 | 0 |
+| `gpui/examples/text.rs` | 432 | `examples/text/main.go` | 0 | 0 |
+| `gpui/examples/example_support/fonts.rs` | 44 | `examples/internal/support/fonts.go` | 0 | 0 |
+| `gpui/examples/image/image.rs` | 220 | `examples/image_example/main.go` | 0 | 0 |
+| `gpui/examples/svg/svg.rs` | 108 | `examples/svg_example/main.go` | 0 | 0 |
+
+### examples-a
+
+| Upstream file | LOC | Go file | Public items | Tests |
+|---|---|---|---|---|
 | `gpui/examples/active_state_bug.rs` | 47 | `examples/active_state_bug/main.go` | 0 | 0 |
 | `gpui/examples/anchor.rs` | 207 | `examples/anchor/main.go` | 0 | 0 |
-| `gpui/examples/animation.rs` | 373 | `examples/animation/main.go` | 0 | 1 |
 | `gpui/examples/data_table.rs` | 494 | `examples/data_table/main.go` | 0 | 0 |
-| `gpui/examples/drag_drop.rs` | 158 | `examples/drag_drop/main.go` | 0 | 0 |
-| `gpui/examples/focus_visible.rs` | 235 | `examples/focus_visible/main.go` | 0 | 0 |
-| `gpui/examples/gif_viewer.rs` | 62 | `examples/gif_viewer/main.go` | 0 | 0 |
 | `gpui/examples/gradient.rs` | 278 | `examples/gradient/main.go` | 0 | 0 |
 | `gpui/examples/grid_layout.rs` | 95 | `examples/grid_layout/main.go` | 0 | 0 |
-| `gpui/examples/hello_world.rs` | 127 | `examples/hello_world/main.go` | 0 | 0 |
-| `gpui/examples/image_gallery.rs` | 300 | `examples/image_gallery/main.go` | 0 | 0 |
-| `gpui/examples/image_loading.rs` | 232 | `examples/image_loading/main.go` | 0 | 0 |
-| `gpui/examples/input.rs` | 912 | `examples/input/main.go` | 0 | 3 |
-| `gpui/examples/layer_shell.rs` | 101 | `examples/layer_shell/main.go` | 0 | 0 |
 | `gpui/examples/list_example.rs` | 176 | `examples/list_example/main.go` | 0 | 0 |
-| `gpui/examples/mouse_pressure.rs` | 87 | `examples/mouse_pressure/main.go` | 0 | 0 |
-| `gpui/examples/move_entity_between_windows.rs` | 160 | `examples/move_entity_between_windows/main.go` | 0 | 0 |
-| `gpui/examples/native_view.rs` | 571 | `examples/native_view/main.go` | 0 | 0 |
-| `gpui/examples/native_view_appkit_field.rs` | 226 | `examples/native_view_appkit_field/main.go` | 0 | 0 |
-| `gpui/examples/on_window_close_quit.rs` | 103 | `examples/on_window_close_quit/main.go` | 0 | 0 |
 | `gpui/examples/opacity.rs` | 195 | `examples/opacity/main.go` | 0 | 0 |
-| `gpui/examples/ownership_post.rs` | 56 | `examples/ownership_post/main.go` | 0 | 0 |
-| `gpui/examples/painting.rs` | 533 | `examples/painting/main.go` | 0 | 0 |
 | `gpui/examples/paths_bench.rs` | 113 | `examples/paths_bench/main.go` | 0 | 0 |
 | `gpui/examples/pattern.rs` | 136 | `examples/pattern/main.go` | 0 | 0 |
 | `gpui/examples/popover.rs` | 197 | `examples/popover/main.go` | 0 | 0 |
 | `gpui/examples/scrollable.rs` | 78 | `examples/scrollable/main.go` | 0 | 0 |
-| `gpui/examples/set_menus.rs` | 134 | `examples/set_menus/main.go` | 0 | 0 |
-| `gpui/examples/shadow.rs` | 622 | `examples/shadow/main.go` | 0 | 0 |
-| `gpui/examples/svg_animation.rs` | 222 | `examples/svg_animation/main.go` | 0 | 0 |
-| `gpui/examples/system_notifications.rs` | 155 | `examples/system_notifications/main.go` | 0 | 0 |
-| `gpui/examples/tab_stop.rs` | 220 | `examples/tab_stop/main.go` | 0 | 0 |
-| `gpui/examples/testing.rs` | 561 | `examples/testing/main.go` | 0 | 7 |
-| `gpui/examples/text.rs` | 432 | `examples/text/main.go` | 0 | 0 |
-| `gpui/examples/text_layout.rs` | 117 | `examples/text_layout/main.go` | 0 | 0 |
-| `gpui/examples/text_wrapper.rs` | 144 | `examples/text_wrapper/main.go` | 0 | 0 |
-| `gpui/examples/toggle_headless.rs` | 309 | `examples/toggle_headless/main.go` | 0 | 0 |
 | `gpui/examples/tree.rs` | 64 | `examples/tree/main.go` | 0 | 0 |
 | `gpui/examples/uniform_list.rs` | 71 | `examples/uniform_list/main.go` | 0 | 0 |
+
+### examples-b
+
+| Upstream file | LOC | Go file | Public items | Tests |
+|---|---|---|---|---|
+| `gpui/examples/a11y.rs` | 272 | `examples/a11y/main.go` | 0 | 0 |
+| `gpui/examples/drag_drop.rs` | 158 | `examples/drag_drop/main.go` | 0 | 0 |
+| `gpui/examples/focus_visible.rs` | 235 | `examples/focus_visible/main.go` | 0 | 0 |
+| `gpui/examples/mouse_pressure.rs` | 87 | `examples/mouse_pressure/main.go` | 0 | 0 |
+| `gpui/examples/ownership_post.rs` | 56 | `examples/ownership_post/main.go` | 0 | 0 |
+| `gpui/examples/painting.rs` | 533 | `examples/painting/main.go` | 0 | 0 |
+| `gpui/examples/shadow.rs` | 622 | `examples/shadow/main.go` | 0 | 0 |
+| `gpui/examples/svg_animation.rs` | 222 | `examples/svg_animation/main.go` | 0 | 0 |
+| `gpui/examples/tab_stop.rs` | 220 | `examples/tab_stop/main.go` | 0 | 0 |
+| `gpui/examples/text_layout.rs` | 117 | `examples/text_layout/main.go` | 0 | 0 |
+| `gpui/examples/text_wrapper.rs` | 144 | `examples/text_wrapper/main.go` | 0 | 0 |
+
+### examples-c
+
+| Upstream file | LOC | Go file | Public items | Tests |
+|---|---|---|---|---|
+| `gpui/examples/gif_viewer.rs` | 62 | `examples/gif_viewer/main.go` | 0 | 0 |
+| `gpui/examples/image_gallery.rs` | 300 | `examples/image_gallery/main.go` | 0 | 0 |
+| `gpui/examples/image_loading.rs` | 232 | `examples/image_loading/main.go` | 0 | 0 |
+| `gpui/examples/layer_shell.rs` | 101 | `examples/layer_shell/main.go` | 0 | 0 |
+| `gpui/examples/move_entity_between_windows.rs` | 160 | `examples/move_entity_between_windows/main.go` | 0 | 0 |
+| `gpui/examples/native_view.rs` | 571 | `examples/native_view/main.go` | 0 | 0 |
+| `gpui/examples/native_view_appkit_field.rs` | 226 | `examples/native_view_appkit_field/main.go` | 0 | 0 |
+| `gpui/examples/on_window_close_quit.rs` | 103 | `examples/on_window_close_quit/main.go` | 0 | 0 |
+| `gpui/examples/set_menus.rs` | 134 | `examples/set_menus/main.go` | 0 | 0 |
+| `gpui/examples/system_notifications.rs` | 155 | `examples/system_notifications/main.go` | 0 | 0 |
+| `gpui/examples/toggle_headless.rs` | 309 | `examples/toggle_headless/main.go` | 0 | 0 |
 | `gpui/examples/window.rs` | 355 | `examples/window/main.go` | 0 | 0 |
 | `gpui/examples/window_movable.rs` | 131 | `examples/window_movable/main.go` | 0 | 0 |
 | `gpui/examples/window_positioning.rs` | 246 | `examples/window_positioning/main.go` | 0 | 0 |
 | `gpui/examples/window_shadow.rs` | 252 | `examples/window_shadow/main.go` | 0 | 0 |
-| `gpui/examples/example_support/fonts.rs` | 44 | `examples/internal/support/fonts.go` | 0 | 0 |
-| `gpui/examples/image/image.rs` | 220 | `examples/image_example/main.go` | 0 | 0 |
-| `gpui/examples/svg/svg.rs` | 108 | `examples/svg_example/main.go` | 0 | 0 |
+
+### examples-d
+
+| Upstream file | LOC | Go file | Public items | Tests |
+|---|---|---|---|---|
+| `gpui/examples/animation.rs` | 373 | `examples/animation/main.go` | 0 | 1 |
+| `gpui/examples/input.rs` | 912 | `examples/input/main.go` | 0 | 3 |
+| `gpui/examples/testing.rs` | 561 | `examples/testing/main.go` | 0 | 7 |
 | `gpui/examples/view_example/example_editor.rs` | 541 | `examples/view_example/example_editor.go` | 0 | 0 |
 | `gpui/examples/view_example/example_input.rs` | 121 | `examples/view_example/example_input.go` | 0 | 0 |
 | `gpui/examples/view_example/example_tests.rs` | 131 | `examples/view_example/example_tests.go` | 0 | 4 |
 | `gpui/examples/view_example/example_text_area.rs` | 118 | `examples/view_example/example_text_area.go` | 0 | 0 |
 | `gpui/examples/view_example/view_example_main.rs` | 179 | `examples/view_example/view_example_main.go` | 0 | 0 |
+
+### core-tests
+
+| Upstream file | LOC | Go file | Public items | Tests |
+|---|---|---|---|---|
+| `gpui/build.rs` | 47 | `-` | 0 | 0 |
+| `gpui/benches/focus_cleanup.rs` | 141 | `bench_focus_cleanup_test.go` | 0 | 3 |
 | `gpui/tests/action_macros.rs` | 55 | `integration_action_macros_test.go` | 0 | 1 |
 | `gpui/tests/eq_hash.rs` | 36 | `integration_eq_hash_test.go` | 0 | 2 |
-
 ### platform-select
 
 | Upstream file | LOC | Go file | Public items | Tests |
@@ -368,24 +402,38 @@ Every upstream `.rs` file, its Go target, and how many rows it has in its area f
 | `gpui_platform/benches/randomized_element_tree.rs` | 1603 | `platform/bench_randomized_element_tree_test.go` | 0 | 24 |
 | `gpui_platform/src/gpui_platform.rs` | 231 | `platform/platform.go` | 10 | 3 |
 
-### linux
+### linux-common
+
+| Upstream file | LOC | Go file | Public items | Tests |
+|---|---|---|---|---|
+| `gpui_linux/src/linux/dispatcher.rs` | 369 | `platform/linux/internal/common/dispatcher.go` | 4 | 1 |
+| `gpui_linux/src/linux/headless.rs` | 47 | `platform/linux/internal/common/headless.go` | 0 | 0 |
+| `gpui_linux/src/linux/keyboard.rs` | 22 | `platform/linux/internal/common/keyboard.go` | 0 | 0 |
+| `gpui_linux/src/linux/platform.rs` | 2223 | `platform/linux (+internal/common)/platform.go (+common.go)` | 1 | 16 |
+| `gpui_linux/src/linux/text_system.rs` | 1 | `platform/linux/internal/common/text_system.go` | 0 | 0 |
+| `gpui_linux/src/linux/headless/window.rs` | 208 | `platform/linux/internal/common/headless_window.go` | 0 | 0 |
+
+### linux-dbus
+
+| Upstream file | LOC | Go file | Public items | Tests |
+|---|---|---|---|---|
+| `gpui_linux/src/linux/power.rs` | 265 | `platform/linux/internal/dbus/power.go` | 0 | 2 |
+| `gpui_linux/src/linux/system_notifications.rs` | 154 | `platform/linux/internal/dbus/system_notifications.go` | 0 | 1 |
+| `gpui_linux/src/linux/xdg_desktop_portal.rs` | 249 | `platform/linux/internal/dbus/xdg_desktop_portal.go` | 3 | 1 |
+
+### linux-platform
 
 | Upstream file | LOC | Go file | Public items | Tests |
 |---|---|---|---|---|
 | `gpui_linux/src/gpui_linux.rs` | 4 | `platform/linux/linux.go` | 0 | 0 |
 | `gpui_linux/src/linux.rs` | 54 | `platform/linux/linux.go` | 2 | 0 |
-| `gpui_linux/src/linux/dispatcher.rs` | 369 | `platform/linux/internal/common/dispatcher.go` | 4 | 1 |
 | `gpui_linux/src/linux/display_connection.rs` | 222 | `platform/linux/display_connection.go` | 0 | 0 |
-| `gpui_linux/src/linux/headless.rs` | 47 | `platform/linux/internal/common/headless.go` | 0 | 0 |
-| `gpui_linux/src/linux/keyboard.rs` | 22 | `platform/linux/internal/common/keyboard.go` | 0 | 0 |
-| `gpui_linux/src/linux/platform.rs` | 2223 | `platform/linux (+internal/common)/platform.go (+common.go)` | 1 | 16 |
-| `gpui_linux/src/linux/power.rs` | 265 | `platform/linux/internal/dbus/power.go` | 0 | 2 |
-| `gpui_linux/src/linux/system_notifications.rs` | 154 | `platform/linux/internal/dbus/system_notifications.go` | 0 | 1 |
-| `gpui_linux/src/linux/text_system.rs` | 1 | `platform/linux/internal/common/text_system.go` | 0 | 0 |
+
+### linux-wayland
+
+| Upstream file | LOC | Go file | Public items | Tests |
+|---|---|---|---|---|
 | `gpui_linux/src/linux/wayland.rs` | 42 | `platform/linux/wayland/wayland.go` | 0 | 0 |
-| `gpui_linux/src/linux/x11.rs` | 13 | `platform/linux/x11/x11.go` | 0 | 0 |
-| `gpui_linux/src/linux/xdg_desktop_portal.rs` | 249 | `platform/linux/internal/dbus/xdg_desktop_portal.go` | 3 | 1 |
-| `gpui_linux/src/linux/headless/window.rs` | 208 | `platform/linux/internal/common/headless_window.go` | 0 | 0 |
 | `gpui_linux/src/linux/wayland/client.rs` | 3454 | `platform/linux/wayland/client.go` (1-1967), `client_input.go` (1968-3454) | 20 | 10 |
 | `gpui_linux/src/linux/wayland/clipboard.rs` | 257 | `platform/linux/wayland/clipboard.go` | 0 | 0 |
 | `gpui_linux/src/linux/wayland/cursor.rs` | 152 | `platform/linux/wayland/cursor.go` | 0 | 0 |
@@ -394,24 +442,33 @@ Every upstream `.rs` file, its Go target, and how many rows it has in its area f
 | `gpui_linux/src/linux/wayland/popup.rs` | 38 | `platform/linux/wayland/popup.go` | 0 | 0 |
 | `gpui_linux/src/linux/wayland/serial.rs` | 169 | `platform/linux/wayland/serial.go` | 0 | 5 |
 | `gpui_linux/src/linux/wayland/window.rs` | 2627 | `platform/linux/wayland/window.go` | 45 | 6 |
+
+### linux-x11
+
+| Upstream file | LOC | Go file | Public items | Tests |
+|---|---|---|---|---|
+| `gpui_linux/src/linux/x11.rs` | 13 | `platform/linux/x11/x11.go` | 0 | 0 |
 | `gpui_linux/src/linux/x11/client.rs` | 3219 | `platform/linux/x11/client.go` | 8 | 11 |
 | `gpui_linux/src/linux/x11/clipboard.rs` | 1287 | `platform/linux/x11/clipboard.go` | 2 | 0 |
 | `gpui_linux/src/linux/x11/display.rs` | 56 | `platform/linux/x11/display.go` | 0 | 0 |
 | `gpui_linux/src/linux/x11/event.rs` | 154 | `platform/linux/x11/event.go` | 0 | 1 |
 | `gpui_linux/src/linux/x11/window.rs` | 2098 | `platform/linux/x11/window.go` | 3 | 0 |
 | `gpui_linux/src/linux/x11/xim_handler.rs` | 133 | `platform/linux/x11/xim_handler.go` | 3 | 0 |
-
 ### wgpu
 
 | Upstream file | LOC | Go file | Public items | Tests |
 |---|---|---|---|---|
-| `gpui_wgpu/benches/layout_line.rs` | 104 | `text/gotext/bench_layout_line_test.go` | 0 | 0 |
-| `gpui_wgpu/src/cosmic_text_system.rs` | 1900 | `text/gotext/text_system.go` | 5 | 30 |
 | `gpui_wgpu/src/gpui_wgpu.rs` | 15 | `render/wgpu/gpui_wgpu.go` | 0 | 0 |
 | `gpui_wgpu/src/wgpu_atlas.rs` | 568 | `render/wgpu/wgpu_atlas.go` | 8 | 5 |
 | `gpui_wgpu/src/wgpu_context.rs` | 848 | `render/wgpu/wgpu_context.go` | 21 | 3 |
 | `gpui_wgpu/src/wgpu_renderer.rs` | 2900 | `render/wgpu/wgpu_renderer.go` | 23 | 10 |
 
+### gotext
+
+| Upstream file | LOC | Go file | Public items | Tests |
+|---|---|---|---|---|
+| `gpui_wgpu/benches/layout_line.rs` | 104 | `text/gotext/bench_layout_line_test.go` | 0 | 0 |
+| `gpui_wgpu/src/cosmic_text_system.rs` | 1900 | `text/gotext/text_system.go` | 5 | 30 |
 ### apple
 
 | Upstream file | LOC | Go file | Public items | Tests |

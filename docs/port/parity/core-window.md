@@ -11,14 +11,14 @@ Go target: `element.go` (package `gpui`), tests in `element_test.go`
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
 | `Element` | trait | 52 |  | `Element` | todo |
-| `Element::id` | trait-method | 66 |  | `Element.ElementID` | todo dev:D-NAME |
+| `Element::id` | trait-method | 66 |  | `Element.ElementID` | dev:D-NAME |
 | `Element::source_location` | trait-method | 70 |  | `Element.SourceLocation` | todo |
 | `Element::request_layout` | trait-method | 74 |  | `Element.RequestLayout` | todo |
 | `Element::prepaint` | trait-method | 84 |  | `Element.Prepaint` | todo |
 | `Element::paint` | trait-method | 96 |  | `Element.Paint` | todo |
 | `Element::a11y_role` | trait-method | 113 |  | `Element.A11yRole` | todo |
 | `Element::write_a11y_info` | trait-method | 121 |  | `Element.WriteA11yInfo` | todo |
-| `Element::a11y_synthetic_children` | trait-method | 132 |  | `Element.ElementA11ySyntheticChildren` | todo dev:D-NAME |
+| `Element::a11y_synthetic_children` | trait-method | 132 |  | `Element.ElementA11ySyntheticChildren` | dev:D-NAME |
 | `Element::into_any` | trait-method | 140 |  | `Element.IntoAny` | todo |
 | `IntoElement` | trait | 154 |  | `IntoElement` | todo |
 | `IntoElement::into_element` | trait-method | 160 |  | `IntoElement.IntoElement` | todo |

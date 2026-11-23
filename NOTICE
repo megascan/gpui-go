@@ -1,0 +1,17 @@
+gpui-go
+Copyright 2026 The gpui-go Authors
+
+This product is a Go port of GPUI, the UI framework of the Zed editor,
+developed by Zed Industries, Inc. (https://zed.dev,
+https://github.com/zed-industries/zed), ported from commit
+6501df15765d66d6c2a2b66b1eb22434ccef3f86.
+
+GPUI
+Copyright 2022 - 2025 Zed Industries, Inc.
+Licensed under the Apache License, Version 2.0.
+
+Parts of this product are ported from third-party Rust crates that GPUI
+depends on, each under its own licence (Apache-2.0 and/or MIT): taffy,
+etagere, lyon, tiny-skia, accesskit, cosmic-text, swash, zeno, scap,
+windows-capture, pipewire-rs, wgpu, xim-rs, x11-clipboard, x11rb and
+xkbcommon-rs.
