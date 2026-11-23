@@ -275,13 +275,13 @@ func TestTree_RootNodeHasChildren(t *testing.T) {
 	state := tree.State()
 	eq(t, nodeID(0), must(must(state.NodeByID(nodeID(1))).Parent()).ID())
 	eq(t, nodeID(0), must(must(state.NodeByID(nodeID(2))).Parent()).ID())
-	eq(t, 2, len(state.Root().Children()))
+	eq(t, 2, state.Root().Children().Len())
 }
 
 func TestTree_AddChildToRootNode(t *testing.T) {
 	rootNode := a11y.NewNode(a11y.RoleWindow)
 	tree := NewTree(rootUpdate(0, ent(0, rootNode.Clone())), false)
-	eq(t, 0, len(tree.State().Root().Children()))
+	eq(t, 0, tree.State().Root().Children().Len())
 	second := rootNode
 	second.PushChild(1)
 	secondUpdate := treeUpdate(a11y.TreeIDRoot(), noTree(), 0,
@@ -309,8 +309,8 @@ func TestTree_AddChildToRootNode(t *testing.T) {
 	check(t, gotNewChildNode)
 	check(t, gotUpdatedRootNode)
 	state := tree.State()
-	eq(t, 1, len(state.Root().Children()))
-	eq(t, nodeID(1), state.Root().Children()[0].ID())
+	eq(t, 1, state.Root().Children().Len())
+	eq(t, nodeID(1), state.Root().Children().collect()[0].ID())
 	eq(t, nodeID(0), must(must(state.NodeByID(nodeID(1))).Parent()).ID())
 }
 
@@ -319,7 +319,7 @@ func TestTree_RemoveChildFromRootNode(t *testing.T) {
 	first := rootNode.Clone()
 	first.PushChild(1)
 	tree := NewTree(rootUpdate(0, ent(0, first), ent(1, node(a11y.RoleRootWebArea))), false)
-	eq(t, 1, len(tree.State().Root().Children()))
+	eq(t, 1, tree.State().Root().Children().Len())
 	secondUpdate := treeUpdate(a11y.TreeIDRoot(), noTree(), 0, ent(0, rootNode))
 	gotUpdatedRootNode, gotRemovedChildNode := false, false
 	const msg = "expected only removed child node and updated root node"
@@ -342,7 +342,7 @@ func TestTree_RemoveChildFromRootNode(t *testing.T) {
 	tree.UpdateAndProcessChanges(secondUpdate, h)
 	check(t, gotUpdatedRootNode)
 	check(t, gotRemovedChildNode)
-	eq(t, 0, len(tree.State().Root().Children()))
+	eq(t, 0, tree.State().Root().Children().Len())
 	_, ok := tree.State().NodeByID(nodeID(1))
 	check(t, !ok)
 }
@@ -424,8 +424,8 @@ func TestTree_MoveNode(t *testing.T) {
 	const msg = "expected only updated root and removed container"
 	h := strictHandler(msg)
 	h.updated = func(oldNode, newNode *Node) {
-		if newNode.ID() == nodeID(0) && slices.Equal(oldNode.ChildIDs(), []NodeID{nodeID(1)}) &&
-			slices.Equal(newNode.ChildIDs(), []NodeID{nodeID(2)}) {
+		if newNode.ID() == nodeID(0) && slices.Equal(oldNode.ChildIDs().collect(), []NodeID{nodeID(1)}) &&
+			slices.Equal(newNode.ChildIDs().collect(), []NodeID{nodeID(2)}) {
 			gotUpdatedRoot = true
 			return
 		}
@@ -454,7 +454,7 @@ func TestTree_MoveNode(t *testing.T) {
 	check(t, gotUpdatedRoot)
 	check(t, gotUpdatedChild)
 	check(t, gotRemovedContainer)
-	check(t, slices.Equal(must(tree.State().NodeByID(nodeID(0))).ChildIDs(), []NodeID{nodeID(2)}))
+	check(t, slices.Equal(must(tree.State().NodeByID(nodeID(0))).ChildIDs().collect(), []NodeID{nodeID(2)}))
 	_, ok := tree.State().NodeByID(nodeID(1))
 	check(t, !ok)
 	eq(t, someID(nodeID(0)), parentOpt(must(tree.State().NodeByID(nodeID(2)))))
@@ -587,7 +587,7 @@ func TestTree_SubtreeRootParentIsGraftWhenGraftExistsFirst(t *testing.T) {
 	subtreeRoot := must(tree.State().NodeByID(subtreeNodeID(0)))
 	eq(t, someID(nodeID(1)), parentOpt(subtreeRoot))
 	graft := must(tree.State().NodeByID(nodeID(1)))
-	children := graft.ChildIDs()
+	children := graft.ChildIDs().collect()
 	eq(t, 1, len(children))
 	eq(t, subtreeNodeID(0), children[0])
 }
@@ -659,8 +659,8 @@ func TestTree_SubtreeNodesRemovedWhenGraftTreeIdCleared(t *testing.T) {
 func TestTree_GraftNodeHasNoChildrenWhenSubtreeNotPushed(t *testing.T) {
 	tree := graftTree(false)
 	graft := must(tree.State().NodeByID(nodeID(1)))
-	eq(t, 0, len(graft.ChildIDs()))
-	eq(t, 0, len(graft.Children()))
+	eq(t, 0, len(graft.ChildIDs().collect()))
+	eq(t, 0, graft.Children().Len())
 }
 
 func TestTree_GraftNodeWithChildrenPanics(t *testing.T) {
@@ -844,7 +844,7 @@ func TestTree_SubtreeRootChangeUpdatesGraftAndParent(t *testing.T) {
 		ent(3, node(a11y.RoleButton)),
 	), h)
 	s := tree.State()
-	children := must(s.NodeByID(nodeID(1))).ChildIDs()
+	children := must(s.NodeByID(nodeID(1))).ChildIDs().collect()
 	eq(t, 1, len(children))
 	eq(t, subtreeNodeID(2), children[0])
 	newSubtreeRoot := must(s.NodeByID(subtreeNodeID(2)))
@@ -868,7 +868,7 @@ func TestTree_SubtreeRootChangeToExistingChild(t *testing.T) {
 		ent(2, node(a11y.RoleParagraph)),
 	), noOpHandler)
 	s := tree.State()
-	eq(t, someID(subtreeNodeID(0)), gpuiutil.Some(must(s.NodeByID(nodeID(1))).ChildIDs()[0]))
+	eq(t, someID(subtreeNodeID(0)), gpuiutil.Some(must(s.NodeByID(nodeID(1))).ChildIDs().collect()[0]))
 	oldRoot := must(s.NodeByID(subtreeNodeID(0)))
 	eq(t, a11y.RoleDocument, oldRoot.Role())
 	eq(t, someID(nodeID(1)), parentOpt(oldRoot))
@@ -882,7 +882,7 @@ func TestTree_SubtreeRootChangeToExistingChild(t *testing.T) {
 		ent(2, node(a11y.RoleParagraph)),
 	), h)
 	s = tree.State()
-	children := must(s.NodeByID(nodeID(1))).ChildIDs()
+	children := must(s.NodeByID(nodeID(1))).ChildIDs().collect()
 	eq(t, 1, len(children))
 	eq(t, subtreeNodeID(1), children[0])
 	newRoot := must(s.NodeByID(subtreeNodeID(1)))
@@ -909,7 +909,7 @@ func TestTree_SubtreeRootChangeToNewParentOfOldRoot(t *testing.T) {
 		ent(1, node(a11y.RoleParagraph)),
 	), h)
 	s := tree.State()
-	children := must(s.NodeByID(nodeID(1))).ChildIDs()
+	children := must(s.NodeByID(nodeID(1))).ChildIDs().collect()
 	eq(t, 1, len(children))
 	eq(t, subtreeNodeID(2), children[0])
 	newRoot := must(s.NodeByID(subtreeNodeID(2)))
@@ -941,7 +941,7 @@ func TestTree_SubtreeUpdateWithoutTreePreservesRoot(t *testing.T) {
 	subtreeRoot := must(s.NodeByID(subtreeNodeID(0)))
 	eq(t, a11y.RoleDocument, subtreeRoot.Role())
 	eq(t, someID(nodeID(1)), parentOpt(subtreeRoot))
-	eq(t, subtreeNodeID(0), must(s.NodeByID(nodeID(1))).ChildIDs()[0])
+	eq(t, subtreeNodeID(0), must(s.NodeByID(nodeID(1))).ChildIDs().collect()[0])
 	eq(t, gpuiutil.Some("modified"), gpuiutil.OptionFrom(must(s.NodeByID(subtreeNodeID(1))).Label()))
 	check(t, len(h.removedNodes) == 0)
 	check(t, len(h.addedNodes) == 0)

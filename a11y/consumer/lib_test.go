@@ -95,3 +95,18 @@ func testTree() *Tree {
 	}
 	return NewTree(initialUpdate, false)
 }
+
+func testTreeFilter(node *Node) FilterResult {
+	id := node.ID()
+	if node.IsHidden() {
+		return FilterResultExcludeSubtree
+	} else if id == nid(label00IgnoredID) ||
+		id == nid(paragraph1IgnoredID) ||
+		id == nid(paragraph3IgnoredID) ||
+		id == nid(emptyContainer30IgnoredID) ||
+		id == nid(link31IgnoredID) ||
+		id == nid(emptyContainer33IgnoredID) {
+		return FilterResultExcludeNode
+	}
+	return FilterResultInclude
+}
