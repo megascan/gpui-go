@@ -10,13 +10,13 @@ Go target: `scheduler/clock.go` (package `scheduler`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Clock` | trait | 7 |  | `Clock` | todo |
-| `Clock::utc_now` | trait-method | 8 |  | `Clock.UtcNow` | todo |
-| `Clock::now` | trait-method | 9 |  | `Clock.Now` | todo |
-| `TestClock` | struct | 12 |  | `TestClock` | todo |
-| `TestClock::new` | assoc-fn | 20 |  | `NewTestClock` | todo |
-| `TestClock::set_utc_now` | method | 29 |  | `(TestClock).SetUtcNow` | todo |
-| `TestClock::advance` | method | 34 |  | `(TestClock).Advance` | todo |
+| `Clock` | trait | 7 |  | `Clock` | done |
+| `Clock::utc_now` | trait-method | 8 |  | `Clock.UTCNow` | dev:S-NAME |
+| `Clock::now` | trait-method | 9 |  | `Clock.Now` | done |
+| `TestClock` | struct | 12 |  | `TestClock` | done |
+| `TestClock::new` | assoc-fn | 20 |  | `NewTestClock` | done |
+| `TestClock::set_utc_now` | method | 29 |  | `(TestClock).SetUTCNow` | dev:S-NAME |
+| `TestClock::advance` | method | 34 |  | `(TestClock).Advance` | done |
 
 ## scheduler/src/executor.rs
 
@@ -24,44 +24,44 @@ Go target: `scheduler/executor.go` (package `scheduler`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `LocalExecutor` | struct | 22 |  | `LocalExecutor` | todo |
-| `LocalExecutor::new` | assoc-fn | 41 |  | `NewLocalExecutor` | todo |
-| `LocalExecutor::to_send` | method | 55 |  | `(LocalExecutor).ToSend` | todo |
-| `LocalExecutor::session_id` | method | 62 |  | `(LocalExecutor).SessionID` | todo |
-| `LocalExecutor::scheduler` | method | 66 |  | `(LocalExecutor).Scheduler` | todo |
-| `LocalExecutor::is_test` | method | 71 |  | `(LocalExecutor).IsTest` | todo |
-| `LocalExecutor::spawn` | method | 76 |  | `(LocalExecutor).Spawn` | todo |
-| `LocalExecutor::spawn_with_dispatch` | method | 100 |  | `(LocalExecutor).SpawnWithDispatch` | todo |
-| `LocalExecutor::block_on` | method | 123 | wasm | `(LocalExecutor).BlockOn` | todo |
-| `LocalExecutor::block_with_timeout` | method | 141 | wasm | `(LocalExecutor).BlockWithTimeout` | todo |
-| `LocalExecutor::timer` | method | 169 |  | `(LocalExecutor).Timer` | todo |
-| `LocalExecutor::now` | method | 173 |  | `(LocalExecutor).Now` | todo |
-| `LocalExecutor::spawn_dedicated` | method | 186 |  | `(LocalExecutor).SpawnDedicated` | todo |
-| `SendLocalExecutor` | struct | 208 |  | `SendLocalExecutor` | todo |
-| `SendLocalExecutor::spawn` | method | 216 |  | `(SendLocalExecutor).Spawn` | todo |
-| `BackgroundExecutor` | struct | 256 |  | `BackgroundExecutor` | todo |
-| `BackgroundExecutor::new` | assoc-fn | 261 |  | `NewBackgroundExecutor` | todo |
-| `BackgroundExecutor::spawn` | method | 266 |  | `(BackgroundExecutor).Spawn` | todo |
-| `BackgroundExecutor::spawn_with_priority` | method | 275 |  | `(BackgroundExecutor).SpawnWithPriority` | todo |
-| `BackgroundExecutor::spawn_realtime` | method | 294 |  | `(BackgroundExecutor).SpawnRealtime` | todo |
-| `BackgroundExecutor::timer` | method | 324 |  | `(BackgroundExecutor).Timer` | todo |
-| `BackgroundExecutor::now` | method | 328 |  | `(BackgroundExecutor).Now` | todo |
-| `BackgroundExecutor::scheduler` | method | 332 |  | `(BackgroundExecutor).Scheduler` | todo |
-| `BackgroundExecutor::is_test` | method | 337 |  | `(BackgroundExecutor).IsTest` | todo |
-| `BackgroundExecutor::spawn_dedicated` | method | 350 |  | `(BackgroundExecutor).SpawnDedicated` | todo |
-| `DedicatedExecutor` | struct | 385 |  | `DedicatedExecutor` | todo |
-| `DedicatedExecutor::new` | assoc-fn | 395 |  | `NewDedicatedExecutor` | todo |
-| `DedicatedExecutor::spawn` | method | 414 |  | `(DedicatedExecutor).Spawn` | todo |
-| `Task` | struct | 440 |  | `Task` | todo |
-| `Task::ready` | assoc-fn | 577 |  | `TaskReady` | todo |
-| `Task::from_async_task` | assoc-fn | 596 |  | `TaskFromAsyncTask` | todo |
-| `Task::is_ready` | method | 600 |  | `(Task).IsReady` | todo |
-| `Task::detach` | method | 610 |  | `(Task).Detach` | todo |
-| `Task::fallible` | method | 620 |  | `(Task).Fallible` | todo |
-| `Task::downcast` | method | 642 |  | `(Task).Downcast` | todo |
-| `FallibleTask` | struct | 665 |  | `FallibleTask` | todo |
-| `FallibleTask::ready` | assoc-fn | 686 |  | `FallibleTaskReady` | todo |
-| `FallibleTask::detach` | method | 691 |  | `(FallibleTask).Detach` | todo |
+| `LocalExecutor` | struct | 22 |  | `LocalExecutor` | done |
+| `LocalExecutor::new` | assoc-fn | 41 |  | `NewLocalExecutor` | done |
+| `LocalExecutor::to_send` | method | 55 |  | `(LocalExecutor).ToSend` | done |
+| `LocalExecutor::session_id` | method | 62 |  | `(LocalExecutor).SessionID` | done |
+| `LocalExecutor::scheduler` | method | 66 |  | `(LocalExecutor).Scheduler` | done |
+| `LocalExecutor::is_test` | method | 71 |  | `(LocalExecutor).IsTest` | done |
+| `LocalExecutor::spawn` | method | 76 |  | `(LocalExecutor).Spawn` | done |
+| `LocalExecutor::spawn_with_dispatch` | method | 100 |  | `(LocalExecutor).SpawnWithDispatch` | done |
+| `LocalExecutor::block_on` | method | 123 | wasm | `(LocalExecutor).BlockOn` | done |
+| `LocalExecutor::block_with_timeout` | method | 141 | wasm | `(LocalExecutor).BlockWithTimeout` | done |
+| `LocalExecutor::timer` | method | 169 |  | `(LocalExecutor).Timer` | done |
+| `LocalExecutor::now` | method | 173 |  | `(LocalExecutor).Now` | done |
+| `LocalExecutor::spawn_dedicated` | method | 186 |  | `(LocalExecutor).SpawnDedicated` | done |
+| `SendLocalExecutor` | struct | 208 |  | `SendLocalExecutor` | done |
+| `SendLocalExecutor::spawn` | method | 216 |  | `(SendLocalExecutor).Spawn` | done |
+| `BackgroundExecutor` | struct | 256 |  | `BackgroundExecutor` | done |
+| `BackgroundExecutor::new` | assoc-fn | 261 |  | `NewBackgroundExecutor` | done |
+| `BackgroundExecutor::spawn` | method | 266 |  | `(BackgroundExecutor).Spawn` | done |
+| `BackgroundExecutor::spawn_with_priority` | method | 275 |  | `(BackgroundExecutor).SpawnWithPriority` | done |
+| `BackgroundExecutor::spawn_realtime` | method | 294 |  | `(BackgroundExecutor).SpawnRealtime` | done |
+| `BackgroundExecutor::timer` | method | 324 |  | `(BackgroundExecutor).Timer` | done |
+| `BackgroundExecutor::now` | method | 328 |  | `(BackgroundExecutor).Now` | done |
+| `BackgroundExecutor::scheduler` | method | 332 |  | `(BackgroundExecutor).Scheduler` | done |
+| `BackgroundExecutor::is_test` | method | 337 |  | `(BackgroundExecutor).IsTest` | done |
+| `BackgroundExecutor::spawn_dedicated` | method | 350 |  | `(BackgroundExecutor).SpawnDedicated` | done |
+| `DedicatedExecutor` | struct | 385 |  | `DedicatedExecutor` | done |
+| `DedicatedExecutor::new` | assoc-fn | 395 |  | `NewDedicatedExecutor` | done |
+| `DedicatedExecutor::spawn` | method | 414 |  | `(DedicatedExecutor).Spawn` | done |
+| `Task` | struct | 440 |  | `Task` | done |
+| `Task::ready` | assoc-fn | 577 |  | `ReadyTask` | dev:S-NAME |
+| `Task::from_async_task` | assoc-fn | 596 |  | `TaskFromAsyncTask` | done |
+| `Task::is_ready` | method | 600 |  | `(Task).IsReady` | done |
+| `Task::detach` | method | 610 |  | `(Task).Detach` | done |
+| `Task::fallible` | method | 620 |  | `(Task).Fallible` | done |
+| `Task::downcast` | method | 642 |  | `TaskAnyDowncast` | dev:S-NAME |
+| `FallibleTask` | struct | 665 |  | `FallibleTask` | done |
+| `FallibleTask::ready` | assoc-fn | 686 |  | `FallibleTaskReady` | done |
+| `FallibleTask::detach` | method | 691 |  | `(FallibleTask).Detach` | done |
 
 ## scheduler/src/scheduler.rs
 
@@ -69,27 +69,27 @@ Go target: `scheduler/scheduler.go` (package `scheduler`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `test_scheduler_created` | fn | 21 |  | `TestSchedulerCreated` | todo |
-| `Priority` | enum | 44 |  | `Priority` | todo |
-| `Priority::weight` | method | 61 |  | `(Priority).Weight` | todo |
-| `SpawnTime` | struct | 73 |  | `SpawnTime` | todo |
-| `RunnableMeta` | struct | 77 |  | `RunnableMeta` | todo |
-| `RunnableMeta::new_with_callers_location` | assoc-fn | 86 |  | `NewRunnableMetaWithCallersLocation` | todo |
-| `Scheduler` | trait | 94 |  | `Scheduler` | todo |
-| `Scheduler::block` | trait-method | 101 | wasm | `Scheduler.Block` | todo |
-| `Scheduler::schedule_local` | trait-method | 112 |  | `Scheduler.ScheduleLocal` | todo |
-| `Scheduler::schedule_background_with_priority` | trait-method | 115 |  | `Scheduler.ScheduleBackgroundWithPriority` | todo |
-| `Scheduler::spawn_realtime` | trait-method | 122 |  | `Scheduler.SpawnRealtime` | todo |
-| `Scheduler::schedule_background` | trait-method | 125 |  | `Scheduler.ScheduleBackground` | todo |
-| `Scheduler::timer` | trait-method | 130 |  | `Scheduler.Timer` | todo |
-| `Scheduler::clock` | trait-method | 131 |  | `Scheduler.Clock` | todo |
-| `Scheduler::spawn_dedicated` | trait-method | 146 |  | `Scheduler.SpawnDedicated` | todo |
-| `Scheduler::as_test` | trait-method | 158 |  | `Scheduler.AsTest` | todo |
-| `spawn_dedicated_thread` | fn | 187 |  | `SpawnDedicatedThread` | todo |
-| `SessionId` | struct | 241 |  | `SessionID` | todo |
-| `SessionId::new` | assoc-fn | 244 |  | `NewSessionID` | todo |
-| `Timer` | struct | 249 |  | `Timer` | todo |
-| `Timer::new` | assoc-fn | 252 |  | `NewTimer` | todo |
+| `test_scheduler_created` | fn | 21 |  | `TestSchedulerCreated` | done |
+| `Priority` | enum | 44 |  | `Priority` | done |
+| `Priority::weight` | method | 61 |  | `(Priority).Weight` | done |
+| `SpawnTime` | struct | 73 |  | `SpawnTime` | done |
+| `RunnableMeta` | struct | 77 |  | `RunnableMeta` | done |
+| `RunnableMeta::new_with_callers_location` | assoc-fn | 86 |  | `NewRunnableMetaWithCallersLocation` | done |
+| `Scheduler` | trait | 94 |  | `Scheduler` | done |
+| `Scheduler::block` | trait-method | 101 | wasm | `Scheduler.Block` | done |
+| `Scheduler::schedule_local` | trait-method | 112 |  | `Scheduler.ScheduleLocal` | done |
+| `Scheduler::schedule_background_with_priority` | trait-method | 115 |  | `Scheduler.ScheduleBackgroundWithPriority` | done |
+| `Scheduler::spawn_realtime` | trait-method | 122 |  | `Scheduler.SpawnRealtime` | done |
+| `Scheduler::schedule_background` | trait-method | 125 |  | `Scheduler.ScheduleBackground` | done |
+| `Scheduler::timer` | trait-method | 130 |  | `Scheduler.Timer` | done |
+| `Scheduler::clock` | trait-method | 131 |  | `Scheduler.Clock` | done |
+| `Scheduler::spawn_dedicated` | trait-method | 146 |  | `Scheduler.SpawnDedicated` | done |
+| `Scheduler::as_test` | trait-method | 158 |  | `Scheduler.AsTest` | done |
+| `spawn_dedicated_thread` | fn | 187 |  | `SpawnDedicatedThread` | done |
+| `SessionId` | struct | 241 |  | `SessionID` | done |
+| `SessionId::new` | assoc-fn | 244 |  | `NewSessionID` | done |
+| `Timer` | struct | 249 |  | `Timer` | done |
+| `Timer::new` | assoc-fn | 252 |  | `NewTimer` | done |
 
 ## scheduler/src/test_scheduler.rs
 
@@ -124,7 +124,7 @@ Go target: `scheduler/test_scheduler.go` (package `scheduler`)
 | `TestScheduler::advance_clock` | method | 451 |  | `(TestScheduler).AdvanceClock` | todo |
 | `TestSchedulerConfig` | struct | 743 |  | `TestSchedulerConfig` | todo |
 | `TestSchedulerConfig::with_seed` | assoc-fn | 752 |  | `TestSchedulerConfigWithSeed` | todo |
-| `Yield` | struct | 899 |  | `Yield` | todo |
+| `Yield` | struct | 899 |  | `Yield` | done |
 | `SharedRng` | struct | 904 |  | `SharedRng` | todo |
 | `SharedRng::lock` | method | 909 |  | `(SharedRng).Lock` | todo |
 | `SharedRng::random_range` | method | 914 |  | `(SharedRng).RandomRange` | todo |
@@ -170,3 +170,10 @@ Go target: `scheduler/scheduler_test.go` (package `scheduler`), tests in `schedu
 | `test_spawn_dedicated_dropping_task_cancels_future` | test | 992 |  | `TestScheduler_SpawnDedicatedDroppingTaskCancelsFuture` | todo |
 | `test_spawn_dedicated_detached_child_runs_after_root_completes` | test | 1033 |  | `TestScheduler_SpawnDedicatedDetachedChildRunsAfterRootCompletes` | todo |
 
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| S-NAME | Go names fixed by DESIGN 6.3 / STAGES or rule N7 instead of the scanned name: `utc_now` -> `UTCNow`, `set_utc_now` -> `SetUTCNow`, `Task::ready` -> `ReadyTask`, `Task<Box<dyn Any>>::downcast` -> `TaskAnyDowncast` | `scheduler/src/clock.rs:8`, `:29`, `scheduler/src/executor.rs:577`, `:642` | Same behaviour; DESIGN 6.3 and STAGES spell these names, and a method on one instantiation is a free function in Go |
+| S-THREADCHECK | Local tasks are not checked for being polled or dropped on the spawning thread; upstream panics with "local task polled by a thread that didn't spawn it" | `scheduler/src/executor.rs:780-859` | Go exposes no goroutine or thread identity; only the session's dispatch destination ever runs a local runnable |
+| S-DEDICATEDEXIT | The goroutine of a `spawn_dedicated_thread` session exits after the garbage collector finds its dispatch handle unreachable, not at the last `Arc` drop | `scheduler/src/scheduler.rs:187-226` | Go has no reference counts on the dispatch closure copies; tasks themselves are never stopped by GC |
