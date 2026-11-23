@@ -413,81 +413,94 @@ Go target: `internal/taffy/style_alignment.go` (package `taffy`), tests in `styl
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `AlignItemsKeyword` | enum | 24 |  | `AlignItemsKeyword` | todo |
-| `AlignContentKeyword` | enum | 69 |  | `AlignContentKeyword` | todo |
-| `AlignmentSafety` | enum | 135 |  | `AlignmentSafety` | todo |
-| `AlignItems` | struct | 155 |  | `AlignItems` | todo |
-| `AlignItems::NORMAL` | assoc-const | 164 |  | `AlignItemsNormal` | todo |
-| `AlignItems::START` | assoc-const | 166 |  | `AlignItemsStart` | todo |
-| `AlignItems::END` | assoc-const | 168 |  | `AlignItemsEnd` | todo |
-| `AlignItems::FLEX_START` | assoc-const | 170 |  | `AlignItemsFlexStart` | todo |
-| `AlignItems::FLEX_END` | assoc-const | 172 |  | `AlignItemsFlexEnd` | todo |
-| `AlignItems::SELF_START` | assoc-const | 174 |  | `AlignItemsSelfStart` | todo |
-| `AlignItems::SELF_END` | assoc-const | 176 |  | `AlignItemsSelfEnd` | todo |
-| `AlignItems::CENTER` | assoc-const | 178 |  | `AlignItemsCenter` | todo |
-| `AlignItems::BASELINE` | assoc-const | 180 |  | `AlignItemsBaseline` | todo |
-| `AlignItems::STRETCH` | assoc-const | 182 |  | `AlignItemsStretch` | todo |
-| `AlignItems::SAFE_START` | assoc-const | 185 |  | `AlignItemsSafeStart` | todo |
-| `AlignItems::SAFE_END` | assoc-const | 188 |  | `AlignItemsSafeEnd` | todo |
-| `AlignItems::SAFE_FLEX_START` | assoc-const | 191 |  | `AlignItemsSafeFlexStart` | todo |
-| `AlignItems::SAFE_FLEX_END` | assoc-const | 194 |  | `AlignItemsSafeFlexEnd` | todo |
-| `AlignItems::SAFE_CENTER` | assoc-const | 197 |  | `AlignItemsSafeCenter` | todo |
-| `AlignItems::SAFE_SELF_START` | assoc-const | 200 |  | `AlignItemsSafeSelfStart` | todo |
-| `AlignItems::SAFE_SELF_END` | assoc-const | 203 |  | `AlignItemsSafeSelfEnd` | todo |
-| `AlignItems::is_safe` | method | 207 |  | `(AlignItems).IsSafe` | todo |
-| `AlignItems::with_safety` | method | 213 |  | `(AlignItems).WithSafety` | todo |
-| `AlignItems::keyword` | method | 219 |  | `(AlignItems).Keyword` | todo |
-| `AlignItems::is_stretch_or_normal` | method | 226 |  | `(AlignItems).IsStretchOrNormal` | todo |
-| `AlignItems::resolve_self_relative` | method | 241 |  | `(AlignItems).ResolveSelfRelative` | todo |
-| `JustifyItems` | type | 324 |  | `JustifyItems` | todo |
-| `AlignSelf` | type | 332 |  | `AlignSelf` | todo |
-| `JustifySelf` | type | 340 |  | `JustifySelf` | todo |
-| `AlignContent` | struct | 348 |  | `AlignContent` | todo |
-| `AlignContent::NORMAL` | assoc-const | 357 |  | `AlignContentNormal` | todo |
-| `AlignContent::START` | assoc-const | 359 |  | `AlignContentStart` | todo |
-| `AlignContent::END` | assoc-const | 361 |  | `AlignContentEnd` | todo |
-| `AlignContent::FLEX_START` | assoc-const | 363 |  | `AlignContentFlexStart` | todo |
-| `AlignContent::FLEX_END` | assoc-const | 365 |  | `AlignContentFlexEnd` | todo |
-| `AlignContent::CENTER` | assoc-const | 367 |  | `AlignContentCenter` | todo |
-| `AlignContent::STRETCH` | assoc-const | 369 |  | `AlignContentStretch` | todo |
-| `AlignContent::SPACE_BETWEEN` | assoc-const | 371 |  | `AlignContentSpaceBetween` | todo |
-| `AlignContent::SPACE_EVENLY` | assoc-const | 374 |  | `AlignContentSpaceEvenly` | todo |
-| `AlignContent::SPACE_AROUND` | assoc-const | 376 |  | `AlignContentSpaceAround` | todo |
-| `AlignContent::SAFE_START` | assoc-const | 379 |  | `AlignContentSafeStart` | todo |
-| `AlignContent::SAFE_END` | assoc-const | 382 |  | `AlignContentSafeEnd` | todo |
-| `AlignContent::SAFE_FLEX_START` | assoc-const | 385 |  | `AlignContentSafeFlexStart` | todo |
-| `AlignContent::SAFE_FLEX_END` | assoc-const | 388 |  | `AlignContentSafeFlexEnd` | todo |
-| `AlignContent::SAFE_CENTER` | assoc-const | 391 |  | `AlignContentSafeCenter` | todo |
-| `AlignContent::is_safe` | method | 395 |  | `(AlignContent).IsSafe` | todo |
-| `AlignContent::with_safety` | method | 401 |  | `(AlignContent).WithSafety` | todo |
-| `AlignContent::keyword` | method | 407 |  | `(AlignContent).Keyword` | todo |
-| `JustifyContent` | type | 463 |  | `JustifyContent` | todo |
+| `AlignItemsKeyword` | enum | 24 |  | `AlignItemsKeyword` | done |
+| `AlignContentKeyword` | enum | 69 |  | `AlignContentKeyword` | done |
+| `AlignmentSafety` | enum | 135 |  | `AlignmentSafety` | done |
+| `AlignItems` | struct | 155 |  | `AlignItems` | done |
+| `AlignItems::NORMAL` | assoc-const | 164 |  | `AlignItemsNormal` | done |
+| `AlignItems::START` | assoc-const | 166 |  | `AlignItemsStart` | done |
+| `AlignItems::END` | assoc-const | 168 |  | `AlignItemsEnd` | done |
+| `AlignItems::FLEX_START` | assoc-const | 170 |  | `AlignItemsFlexStart` | done |
+| `AlignItems::FLEX_END` | assoc-const | 172 |  | `AlignItemsFlexEnd` | done |
+| `AlignItems::SELF_START` | assoc-const | 174 |  | `AlignItemsSelfStart` | done |
+| `AlignItems::SELF_END` | assoc-const | 176 |  | `AlignItemsSelfEnd` | done |
+| `AlignItems::CENTER` | assoc-const | 178 |  | `AlignItemsCenter` | done |
+| `AlignItems::BASELINE` | assoc-const | 180 |  | `AlignItemsBaseline` | done |
+| `AlignItems::STRETCH` | assoc-const | 182 |  | `AlignItemsStretch` | done |
+| `AlignItems::SAFE_START` | assoc-const | 185 |  | `AlignItemsSafeStart` | done |
+| `AlignItems::SAFE_END` | assoc-const | 188 |  | `AlignItemsSafeEnd` | done |
+| `AlignItems::SAFE_FLEX_START` | assoc-const | 191 |  | `AlignItemsSafeFlexStart` | done |
+| `AlignItems::SAFE_FLEX_END` | assoc-const | 194 |  | `AlignItemsSafeFlexEnd` | done |
+| `AlignItems::SAFE_CENTER` | assoc-const | 197 |  | `AlignItemsSafeCenter` | done |
+| `AlignItems::SAFE_SELF_START` | assoc-const | 200 |  | `AlignItemsSafeSelfStart` | done |
+| `AlignItems::SAFE_SELF_END` | assoc-const | 203 |  | `AlignItemsSafeSelfEnd` | done |
+| `AlignItems::is_safe` | method | 207 |  | `(AlignItems).IsSafe` | done |
+| `AlignItems::with_safety` | method | 213 |  | `(AlignItems).WithSafety` | done |
+| `AlignItems::keyword` | method | 219 |  | `(AlignItems).Keyword` | done |
+| `AlignItems::is_stretch_or_normal` | method | 226 |  | `(AlignItems).IsStretchOrNormal` | done |
+| `AlignItems::resolve_self_relative` | method | 241 |  | `(AlignItems).ResolveSelfRelative` | done |
+| `JustifyItems` | type | 324 |  | `JustifyItems` | done |
+| `AlignSelf` | type | 332 |  | `AlignSelf` | done |
+| `JustifySelf` | type | 340 |  | `JustifySelf` | done |
+| `AlignContent` | struct | 348 |  | `AlignContent` | done |
+| `AlignContent::NORMAL` | assoc-const | 357 |  | `AlignContentNormal` | done |
+| `AlignContent::START` | assoc-const | 359 |  | `AlignContentStart` | done |
+| `AlignContent::END` | assoc-const | 361 |  | `AlignContentEnd` | done |
+| `AlignContent::FLEX_START` | assoc-const | 363 |  | `AlignContentFlexStart` | done |
+| `AlignContent::FLEX_END` | assoc-const | 365 |  | `AlignContentFlexEnd` | done |
+| `AlignContent::CENTER` | assoc-const | 367 |  | `AlignContentCenter` | done |
+| `AlignContent::STRETCH` | assoc-const | 369 |  | `AlignContentStretch` | done |
+| `AlignContent::SPACE_BETWEEN` | assoc-const | 371 |  | `AlignContentSpaceBetween` | done |
+| `AlignContent::SPACE_EVENLY` | assoc-const | 374 |  | `AlignContentSpaceEvenly` | done |
+| `AlignContent::SPACE_AROUND` | assoc-const | 376 |  | `AlignContentSpaceAround` | done |
+| `AlignContent::SAFE_START` | assoc-const | 379 |  | `AlignContentSafeStart` | done |
+| `AlignContent::SAFE_END` | assoc-const | 382 |  | `AlignContentSafeEnd` | done |
+| `AlignContent::SAFE_FLEX_START` | assoc-const | 385 |  | `AlignContentSafeFlexStart` | done |
+| `AlignContent::SAFE_FLEX_END` | assoc-const | 388 |  | `AlignContentSafeFlexEnd` | done |
+| `AlignContent::SAFE_CENTER` | assoc-const | 391 |  | `AlignContentSafeCenter` | done |
+| `AlignContent::is_safe` | method | 395 |  | `(AlignContent).IsSafe` | done |
+| `AlignContent::with_safety` | method | 401 |  | `(AlignContent).WithSafety` | done |
+| `AlignContent::keyword` | method | 407 |  | `(AlignContent).Keyword` | done |
+| `JustifyContent` | type | 463 |  | `JustifyContent` | done |
+| `AlignContentKeyword::reversed` (`pub(crate)`) | method | 71 |  | `(AlignContentKeyword).reversed` | done |
+| `AlignItems::keyword` / `AlignItems::safety` (fields) | field | 157 |  | `(AlignItems).Keyword` | dev:D-TAFFY-ALIGNFIELDS |
+| `AlignItems::keyword` / `AlignItems::safety` (fields) | field | 157 |  | `(AlignItems).Safety` | dev:D-TAFFY-ALIGNFIELDS |
+| `AlignItems::keyword` / `AlignItems::safety` (fields) | field | 157 |  | `NewAlignItems` | dev:D-TAFFY-ALIGNFIELDS |
+| `AlignContent::keyword` / `AlignContent::safety` (fields) | field | 350 |  | `(AlignContent).Keyword` | dev:D-TAFFY-ALIGNFIELDS |
+| `AlignContent::keyword` / `AlignContent::safety` (fields) | field | 350 |  | `(AlignContent).Safety` | dev:D-TAFFY-ALIGNFIELDS |
+| `AlignContent::keyword` / `AlignContent::safety` (fields) | field | 350 |  | `NewAlignContent` | dev:D-TAFFY-ALIGNFIELDS |
+| `impl Default for AlignItemsKeyword` / `AlignContentKeyword` / `AlignItems` / `AlignContent` | trait-impl | 21 |  | `AlignItemsKeywordDefault` | done |
+| `impl Default for AlignItemsKeyword` / `AlignContentKeyword` / `AlignItems` / `AlignContent` | trait-impl | 21 |  | `AlignContentKeywordDefault` | done |
+| `impl Default for AlignItemsKeyword` / `AlignContentKeyword` / `AlignItems` / `AlignContent` | trait-impl | 21 |  | `AlignItemsDefault` | done |
+| `impl Default for AlignItemsKeyword` / `AlignContentKeyword` / `AlignItems` / `AlignContent` | trait-impl | 21 |  | `AlignContentDefault` | done |
+| `impl FromCss for AlignItems` / `AlignContent` | trait-impl | 252 | parse | - | n/a:D-TAFFY-FEATURE |
+| `impl Serialize` / `Deserialize for AlignItems` / `AlignContent` | trait-impl | 497 | serde | - | n/a:D-TAFFY-FEATURE |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `align_types_within_size_budget` | test | 679 |  | `TestStyleAlignment_AlignTypesWithinSizeBudget` | todo |
-| `align_items_is_safe` | test | 686 |  | `TestStyleAlignment_AlignItemsIsSafe` | todo |
-| `align_items_keyword_strips_safe` | test | 707 |  | `TestStyleAlignment_AlignItemsKeywordStripsSafe` | todo |
-| `align_items_keyword_passthrough` | test | 718 |  | `TestStyleAlignment_AlignItemsKeywordPassthrough` | todo |
-| `align_items_default_is_normal` | test | 727 |  | `TestStyleAlignment_AlignItemsDefaultIsNormal` | todo |
-| `resolve_self_relative_inline_axis` | test | 734 |  | `TestStyleAlignment_ResolveSelfRelativeInlineAxis` | todo |
-| `resolve_self_relative_block_axis` | test | 755 |  | `TestStyleAlignment_ResolveSelfRelativeBlockAxis` | todo |
-| `align_content_is_safe` | test | 763 |  | `TestStyleAlignment_AlignContentIsSafe` | todo |
-| `align_content_keyword_strips_safe` | test | 772 |  | `TestStyleAlignment_AlignContentKeywordStripsSafe` | todo |
-| `align_content_keyword_reversed_swaps_start_end` | test | 782 |  | `TestStyleAlignment_AlignContentKeywordReversedSwapsStartEnd` | todo |
-| `parse_align_items_plain` | test | 798 | parse | `TestStyleAlignment_ParseAlignItemsPlain` | todo |
-| `align_content_default_is_normal` | test | 811 |  | `TestStyleAlignment_AlignContentDefaultIsNormal` | todo |
-| `parse_align_items_normal` | test | 818 | parse | `TestStyleAlignment_ParseAlignItemsNormal` | todo |
-| `parse_align_items_safe` | test | 828 | parse | `TestStyleAlignment_ParseAlignItemsSafe` | todo |
-| `parse_align_items_safe_case_insensitive` | test | 840 | parse | `TestStyleAlignment_ParseAlignItemsSafeCaseInsensitive` | todo |
-| `parse_align_items_unsafe` | test | 847 | parse | `TestStyleAlignment_ParseAlignItemsUnsafe` | todo |
-| `parse_align_items_rejects_invalid_safe_combos` | test | 860 | parse | `TestStyleAlignment_ParseAlignItemsRejectsInvalidSafeCombos` | todo |
-| `parse_align_content_plain` | test | 876 | parse | `TestStyleAlignment_ParseAlignContentPlain` | todo |
-| `parse_align_content_safe` | test | 889 | parse | `TestStyleAlignment_ParseAlignContentSafe` | todo |
-| `parse_align_content_unsafe` | test | 899 | parse | `TestStyleAlignment_ParseAlignContentUnsafe` | todo |
-| `parse_align_content_rejects_invalid_safe_combos` | test | 907 | parse | `TestStyleAlignment_ParseAlignContentRejectsInvalidSafeCombos` | todo |
-| `serde_align_items_round_trip` | test | 922 |  | `TestStyleAlignment_SerdeAlignItemsRoundTrip` | todo |
-| `serde_align_content_round_trip` | test | 953 |  | `TestStyleAlignment_SerdeAlignContentRoundTrip` | todo |
+| `align_types_within_size_budget` | test | 679 |  | `TestStyleAlignment_AlignTypesWithinSizeBudget` | done |
+| `align_items_is_safe` | test | 686 |  | `TestStyleAlignment_AlignItemsIsSafe` | done |
+| `align_items_keyword_strips_safe` | test | 707 |  | `TestStyleAlignment_AlignItemsKeywordStripsSafe` | done |
+| `align_items_keyword_passthrough` | test | 718 |  | `TestStyleAlignment_AlignItemsKeywordPassthrough` | done |
+| `align_items_default_is_normal` | test | 727 |  | `TestStyleAlignment_AlignItemsDefaultIsNormal` | done |
+| `resolve_self_relative_inline_axis` | test | 734 |  | `TestStyleAlignment_ResolveSelfRelativeInlineAxis` | done |
+| `resolve_self_relative_block_axis` | test | 755 |  | `TestStyleAlignment_ResolveSelfRelativeBlockAxis` | done |
+| `align_content_is_safe` | test | 763 |  | `TestStyleAlignment_AlignContentIsSafe` | done |
+| `align_content_keyword_strips_safe` | test | 772 |  | `TestStyleAlignment_AlignContentKeywordStripsSafe` | done |
+| `align_content_keyword_reversed_swaps_start_end` | test | 782 |  | `TestStyleAlignment_AlignContentKeywordReversedSwapsStartEnd` | done |
+| `parse_align_items_plain` | test | 798 | parse | `TestStyleAlignment_ParseAlignItemsPlain` | n/a:D-TAFFY-FEATURE |
+| `align_content_default_is_normal` | test | 811 |  | `TestStyleAlignment_AlignContentDefaultIsNormal` | done |
+| `parse_align_items_normal` | test | 818 | parse | `TestStyleAlignment_ParseAlignItemsNormal` | n/a:D-TAFFY-FEATURE |
+| `parse_align_items_safe` | test | 828 | parse | `TestStyleAlignment_ParseAlignItemsSafe` | n/a:D-TAFFY-FEATURE |
+| `parse_align_items_safe_case_insensitive` | test | 840 | parse | `TestStyleAlignment_ParseAlignItemsSafeCaseInsensitive` | n/a:D-TAFFY-FEATURE |
+| `parse_align_items_unsafe` | test | 847 | parse | `TestStyleAlignment_ParseAlignItemsUnsafe` | n/a:D-TAFFY-FEATURE |
+| `parse_align_items_rejects_invalid_safe_combos` | test | 860 | parse | `TestStyleAlignment_ParseAlignItemsRejectsInvalidSafeCombos` | n/a:D-TAFFY-FEATURE |
+| `parse_align_content_plain` | test | 876 | parse | `TestStyleAlignment_ParseAlignContentPlain` | n/a:D-TAFFY-FEATURE |
+| `parse_align_content_safe` | test | 889 | parse | `TestStyleAlignment_ParseAlignContentSafe` | n/a:D-TAFFY-FEATURE |
+| `parse_align_content_unsafe` | test | 899 | parse | `TestStyleAlignment_ParseAlignContentUnsafe` | n/a:D-TAFFY-FEATURE |
+| `parse_align_content_rejects_invalid_safe_combos` | test | 907 | parse | `TestStyleAlignment_ParseAlignContentRejectsInvalidSafeCombos` | n/a:D-TAFFY-FEATURE |
+| `serde_align_items_round_trip` | test | 922 |  | `TestStyleAlignment_SerdeAlignItemsRoundTrip` | n/a:D-TAFFY-FEATURE |
+| `serde_align_content_round_trip` | test | 953 |  | `TestStyleAlignment_SerdeAlignContentRoundTrip` | n/a:D-TAFFY-FEATURE |
 
 ## src/style/available_space.rs
 
@@ -526,18 +539,22 @@ Go target: `internal/taffy/style_block.go` (package `taffy`), tests in `style_bl
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `BlockContainerStyle` | trait | 6 |  | `BlockContainerStyle` | todo |
-| `BlockContainerStyle::text_align` | trait-method | 9 |  | `BlockContainerStyle.TextAlign` | todo |
-| `BlockContainerStyle::align_content` | trait-method | 15 |  | `BlockContainerStyle.AlignContent` | todo |
-| `BlockContainerStyle::justify_items` | trait-method | 23 |  | `BlockContainerStyle.JustifyItems` | todo |
-| `BlockItemStyle` | trait | 29 |  | `BlockItemStyle` | todo |
-| `BlockItemStyle::is_table` | trait-method | 32 |  | `BlockItemStyle.IsTable` | todo |
-| `BlockItemStyle::align_self` | trait-method | 39 |  | `BlockItemStyle.AlignSelf` | todo |
-| `BlockItemStyle::justify_self` | trait-method | 46 |  | `BlockItemStyle.JustifySelf` | todo |
-| `BlockItemStyle::align_content` | trait-method | 55 |  | `BlockItemStyle.AlignContent` | todo |
-| `BlockItemStyle::float` | trait-method | 62 | float_layout | `BlockItemStyle.Float` | todo |
-| `BlockItemStyle::clear` | trait-method | 69 | float_layout | `BlockItemStyle.Clear` | todo |
-| `TextAlign` | enum | 77 |  | `TextAlign` | todo |
+| `BlockContainerStyle` | trait | 6 |  | `BlockContainerStyle` | done |
+| `BlockContainerStyle::text_align` | trait-method | 9 |  | `BlockContainerStyle.TextAlign` | done |
+| `BlockContainerStyle::align_content` | trait-method | 15 |  | `BlockContainerStyle.AlignContent` | done |
+| `BlockContainerStyle::justify_items` | trait-method | 23 |  | `BlockContainerStyle.JustifyItems` | done |
+| `BlockItemStyle` | trait | 29 |  | `BlockItemStyle` | done |
+| `BlockItemStyle::is_table` | trait-method | 32 |  | `BlockItemStyle.IsTable` | done |
+| `BlockItemStyle::align_self` | trait-method | 39 |  | `BlockItemStyle.AlignSelf` | done |
+| `BlockItemStyle::justify_self` | trait-method | 46 |  | `BlockItemStyle.JustifySelf` | done |
+| `BlockItemStyle::align_content` | trait-method | 55 |  | `BlockItemStyle.AlignContent` | done |
+| `BlockItemStyle::float` | trait-method | 62 | float_layout | `BlockItemStyle.Float` | done |
+| `BlockItemStyle::clear` | trait-method | 69 | float_layout | `BlockItemStyle.Clear` | done |
+| `TextAlign` | enum | 77 |  | `TextAlign` | done |
+| default methods of `BlockContainerStyle` / `BlockItemStyle` | trait-impl | 6 |  | `BlockContainerStyleDefaults` | dev:D-TAFFY-TRAITS |
+| default methods of `BlockContainerStyle` / `BlockItemStyle` | trait-impl | 6 |  | `BlockItemStyleDefaults` | dev:D-TAFFY-TRAITS |
+| `impl Default for TextAlign` | trait-impl | 75 |  | `TextAlignDefault` | done |
+| `impl FromCss for TextAlign` | trait-impl | 89 | parse | - | n/a:D-TAFFY-FEATURE |
 
 ## src/style/compact_length.rs
 
@@ -724,27 +741,40 @@ Go target: `internal/taffy/style_flex.go` (package `taffy`), tests in `style_fle
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `FlexboxContainerStyle` | trait | 6 |  | `FlexboxContainerStyle` | todo |
-| `FlexboxContainerStyle::flex_direction` | trait-method | 9 |  | `FlexboxContainerStyle.FlexDirection` | todo |
-| `FlexboxContainerStyle::flex_wrap` | trait-method | 14 |  | `FlexboxContainerStyle.FlexWrap` | todo |
-| `FlexboxContainerStyle::flex_line_count` | trait-method | 23 | flexbox_balance | `FlexboxContainerStyle.FlexLineCount` | todo |
-| `FlexboxContainerStyle::gap` | trait-method | 29 |  | `FlexboxContainerStyle.Gap` | todo |
-| `FlexboxContainerStyle::align_content` | trait-method | 37 |  | `FlexboxContainerStyle.AlignContent` | todo |
-| `FlexboxContainerStyle::align_items` | trait-method | 42 |  | `FlexboxContainerStyle.AlignItems` | todo |
-| `FlexboxContainerStyle::justify_content` | trait-method | 47 |  | `FlexboxContainerStyle.JustifyContent` | todo |
-| `FlexboxItemStyle` | trait | 53 |  | `FlexboxItemStyle` | todo |
-| `FlexboxItemStyle::flex_basis` | trait-method | 56 |  | `FlexboxItemStyle.FlexBasis` | todo |
-| `FlexboxItemStyle::flex_grow` | trait-method | 61 |  | `FlexboxItemStyle.FlexGrow` | todo |
-| `FlexboxItemStyle::flex_shrink` | trait-method | 66 |  | `FlexboxItemStyle.FlexShrink` | todo |
-| `FlexboxItemStyle::align_self` | trait-method | 73 |  | `FlexboxItemStyle.AlignSelf` | todo |
-| `FlexWrap` | enum | 87 |  | `FlexWrap` | todo |
-| `FlexDirection` | enum | 198 |  | `FlexDirection` | todo |
+| `FlexboxContainerStyle` | trait | 6 |  | `FlexboxContainerStyle` | done |
+| `FlexboxContainerStyle::flex_direction` | trait-method | 9 |  | `FlexboxContainerStyle.FlexDirection` | done |
+| `FlexboxContainerStyle::flex_wrap` | trait-method | 14 |  | `FlexboxContainerStyle.FlexWrap` | done |
+| `FlexboxContainerStyle::flex_line_count` | trait-method | 23 | flexbox_balance | `FlexboxContainerStyle.FlexLineCount` | n/a:D-TAFFY-FEATURE |
+| `FlexboxContainerStyle::gap` | trait-method | 29 |  | `FlexboxContainerStyle.Gap` | done |
+| `FlexboxContainerStyle::align_content` | trait-method | 37 |  | `FlexboxContainerStyle.AlignContent` | done |
+| `FlexboxContainerStyle::align_items` | trait-method | 42 |  | `FlexboxContainerStyle.AlignItems` | done |
+| `FlexboxContainerStyle::justify_content` | trait-method | 47 |  | `FlexboxContainerStyle.JustifyContent` | done |
+| `FlexboxItemStyle` | trait | 53 |  | `FlexboxItemStyle` | done |
+| `FlexboxItemStyle::flex_basis` | trait-method | 56 |  | `FlexboxItemStyle.FlexBasis` | done |
+| `FlexboxItemStyle::flex_grow` | trait-method | 61 |  | `FlexboxItemStyle.FlexGrow` | done |
+| `FlexboxItemStyle::flex_shrink` | trait-method | 66 |  | `FlexboxItemStyle.FlexShrink` | done |
+| `FlexboxItemStyle::align_self` | trait-method | 73 |  | `FlexboxItemStyle.AlignSelf` | done |
+| `FlexWrap` | enum | 87 |  | `FlexWrap` | done |
+| `FlexDirection` | enum | 198 |  | `FlexDirection` | done |
+| default methods of `FlexboxContainerStyle` / `FlexboxItemStyle` | trait-impl | 6 |  | `FlexboxContainerStyleDefaults` | dev:D-TAFFY-TRAITS |
+| default methods of `FlexboxContainerStyle` / `FlexboxItemStyle` | trait-impl | 6 |  | `FlexboxItemStyleDefaults` | dev:D-TAFFY-TRAITS |
+| `FlexWrap::is_multi_line` (`pub(crate)`) | method | 107 |  | `(FlexWrap).isMultiLine` | done |
+| `FlexWrap::is_reverse` (`pub(crate)`) | method | 113 |  | `(FlexWrap).isReverse` | done |
+| `FlexWrap::is_balance` (`pub(crate)`) | method | 124 | flexbox_balance | - | n/a:D-TAFFY-FEATURE |
+| `FlexDirection::is_row` / `is_column` / `is_reverse` / `main_axis` / `cross_axis` (`pub(crate)`) | method | 228 |  | `(FlexDirection).isRow` | done |
+| `FlexDirection::is_row` / `is_column` / `is_reverse` / `main_axis` / `cross_axis` (`pub(crate)`) | method | 228 |  | `(FlexDirection).isColumn` | done |
+| `FlexDirection::is_row` / `is_column` / `is_reverse` / `main_axis` / `cross_axis` (`pub(crate)`) | method | 228 |  | `(FlexDirection).isReverse` | done |
+| `FlexDirection::is_row` / `is_column` / `is_reverse` / `main_axis` / `cross_axis` (`pub(crate)`) | method | 228 |  | `(FlexDirection).mainAxis` | done |
+| `FlexDirection::is_row` / `is_column` / `is_reverse` / `main_axis` / `cross_axis` (`pub(crate)`) | method | 228 |  | `(FlexDirection).crossAxis` | done |
+| `impl Default for FlexWrap` / `FlexDirection` | trait-impl | 85 |  | `FlexWrapDefault` | done |
+| `impl Default for FlexWrap` / `FlexDirection` | trait-impl | 85 |  | `FlexDirectionDefault` | done |
+| `impl FromCss for FlexWrap` / `FlexDirection` | trait-impl | 132 | parse | - | n/a:D-TAFFY-FEATURE |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `flex_direction_is_row` | test | 270 |  | `TestStyleFlex_FlexDirectionIsRow` | todo |
-| `flex_direction_is_column` | test | 278 |  | `TestStyleFlex_FlexDirectionIsColumn` | todo |
-| `flex_direction_is_reverse` | test | 286 |  | `TestStyleFlex_FlexDirectionIsReverse` | todo |
+| `test_flex_direction::flex_direction_is_row` | test | 270 |  | `TestStyleFlex_FlexDirection_FlexDirectionIsRow` | done |
+| `test_flex_direction::flex_direction_is_column` | test | 278 |  | `TestStyleFlex_FlexDirection_FlexDirectionIsColumn` | done |
+| `test_flex_direction::flex_direction_is_reverse` | test | 286 |  | `TestStyleFlex_FlexDirection_FlexDirectionIsReverse` | done |
 
 ## src/style/float.rs
 
@@ -752,11 +782,14 @@ Go target: `internal/taffy/style_float.go` (package `taffy`), tests in `style_fl
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Float` | enum | 9 |  | `Float` | todo |
-| `FloatDirection` | enum | 33 |  | `FloatDirection` | todo |
-| `Float::is_floated` | method | 42 |  | `(Float).IsFloated` | todo |
-| `Float::float_direction` | method | 47 |  | `(Float).FloatDirection` | todo |
-| `Clear` | enum | 62 |  | `Clear` | todo |
+| `Float` | enum | 9 |  | `Float` | done |
+| `FloatDirection` | enum | 33 |  | `FloatDirection` | done |
+| `Float::is_floated` | method | 42 |  | `(Float).IsFloated` | done |
+| `Float::float_direction` | method | 47 |  | `(Float).FloatDirection` | done |
+| `Clear` | enum | 62 |  | `Clear` | done |
+| `impl Default for Float` / `Clear` | trait-impl | 7 |  | `FloatDefault` | done |
+| `impl Default for Float` / `Clear` | trait-impl | 7 |  | `ClearDefault` | done |
+| `impl FromCss for Float` / `Clear` | trait-impl | 20 | parse | - | n/a:D-TAFFY-FEATURE |
 
 ## src/style/grid.rs
 
@@ -892,72 +925,99 @@ Go target: `internal/taffy/style_mod.go` (package `taffy`), tests in `style_mod_
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `CheapCloneStr` | trait | 63 |  | `CheapCloneStr` | todo |
-| `CoreStyle` | trait | 77 |  | `CoreStyle` | todo |
-| `CoreStyle::box_generation_mode` | trait-method | 83 |  | `CoreStyle.BoxGenerationMode` | todo |
-| `CoreStyle::is_block` | trait-method | 92 |  | `CoreStyle.IsBlock` | todo |
-| `CoreStyle::is_compressible_replaced` | trait-method | 101 |  | `CoreStyle.IsCompressibleReplaced` | todo |
-| `CoreStyle::is_replaced` | trait-method | 109 |  | `CoreStyle.IsReplaced` | todo |
-| `CoreStyle::box_sizing` | trait-method | 114 |  | `CoreStyle.BoxSizing` | todo |
-| `CoreStyle::direction` | trait-method | 120 |  | `CoreStyle.Direction` | todo |
-| `CoreStyle::overflow` | trait-method | 127 |  | `CoreStyle.Overflow` | todo |
-| `CoreStyle::scrollbar_width` | trait-method | 132 |  | `CoreStyle.ScrollbarWidth` | todo |
-| `CoreStyle::position` | trait-method | 139 |  | `CoreStyle.Position` | todo |
-| `CoreStyle::inset` | trait-method | 144 |  | `CoreStyle.Inset` | todo |
-| `CoreStyle::is_containing_block` | trait-method | 158 |  | `CoreStyle.IsContainingBlock` | todo |
-| `CoreStyle::size` | trait-method | 165 |  | `CoreStyle.Size` | todo |
-| `CoreStyle::min_size` | trait-method | 170 |  | `CoreStyle.MinSize` | todo |
-| `CoreStyle::max_size` | trait-method | 175 |  | `CoreStyle.MaxSize` | todo |
-| `CoreStyle::aspect_ratio` | trait-method | 181 |  | `CoreStyle.AspectRatio` | todo |
-| `CoreStyle::margin` | trait-method | 188 |  | `CoreStyle.Margin` | todo |
-| `CoreStyle::padding` | trait-method | 193 |  | `CoreStyle.Padding` | todo |
-| `CoreStyle::border` | trait-method | 198 |  | `CoreStyle.Border` | todo |
-| `CoreStyle::contain` | trait-method | 204 |  | `CoreStyle.Contain` | todo |
-| `OofItemStyle` | trait | 211 |  | `OofItemStyle` | todo |
-| `OofItemStyle::align_self` | trait-method | 215 |  | `OofItemStyle.AlignSelf` | todo |
-| `OofItemStyle::justify_self` | trait-method | 221 |  | `OofItemStyle.JustifySelf` | todo |
-| `OofItemStyle::is_table` | trait-method | 227 |  | `OofItemStyle.IsTable` | todo |
-| `OofItemStyle::grid_row` | trait-method | 234 | grid | `OofItemStyle.GridRow` | todo |
-| `OofItemStyle::grid_column` | trait-method | 241 | grid | `OofItemStyle.GridColumn` | todo |
-| `Display` | enum | 251 |  | `Display` | todo |
-| `Display::DEFAULT` | assoc-const | 271 | flexbox | `DisplayDefault` | todo |
-| `Display::DEFAULT` | assoc-const | 275 | grid, flexbox | `DisplayDefault` | todo |
-| `Display::DEFAULT` | assoc-const | 279 | block_layout, flexbox, grid | `DisplayDefault` | todo |
-| `Display::DEFAULT` | assoc-const | 283 | flexbox, grid, block_layout | `DisplayDefault` | todo |
-| `BoxGenerationMode` | enum | 325 |  | `BoxGenerationMode` | todo |
-| `BoxGenerationMode::DEFAULT` | assoc-const | 334 |  | `BoxGenerationModeDefault` | todo |
-| `Position` | enum | 354 |  | `Position` | todo |
-| `Position::is_out_of_flow` | method | 382 |  | `(Position).IsOutOfFlow` | todo |
-| `Position::is_positioned` | method | 389 |  | `(Position).IsPositioned` | todo |
-| `ContainingBlockClaims` | struct | 398 |  | `ContainingBlockClaims` | todo |
-| `ContainingBlockClaims::NONE` | assoc-const | 407 |  | `ContainingBlockClaimsNone` | todo |
-| `ContainingBlockClaims::ALL` | assoc-const | 409 |  | `ContainingBlockClaimsAll` | todo |
-| `ContainingBlockClaims::for_position` | method | 413 |  | `(ContainingBlockClaims).ForPosition` | todo |
-| `BoxSizing` | enum | 446 |  | `BoxSizing` | todo |
-| `Overflow` | enum | 475 |  | `Overflow` | todo |
-| `Overflow::is_scroll_container` | method | 496 |  | `(Overflow).IsScrollContainer` | todo |
-| `Contain` | struct | 540 |  | `Contain` | todo |
-| `Contain::NONE` | assoc-const | 544 |  | `ContainNone` | todo |
-| `Contain::LAYOUT` | assoc-const | 548 |  | `ContainLayout` | todo |
-| `Contain::PAINT` | assoc-const | 552 |  | `ContainPaint` | todo |
-| `Contain::CONTENT` | assoc-const | 554 |  | `ContainContent` | todo |
-| `Contain::DEFAULT` | assoc-const | 557 |  | `ContainDefault` | todo |
-| `Contain::contains` | method | 561 |  | `(Contain).Contains` | todo |
-| `Contain::intersects` | method | 567 |  | `(Contain).Intersects` | todo |
-| `Contain::union` | method | 573 |  | `(Contain).Union` | todo |
-| `Contain::establishes_independent_formatting_context` | method | 580 |  | `(Contain).EstablishesIndependentFormattingContext` | todo |
-| `Contain::suppresses_baseline` | method | 587 |  | `(Contain).SuppressesBaseline` | todo |
-| `Contain::contains_scrollable_overflow` | method | 595 |  | `(Contain).ContainsScrollableOverflow` | todo |
-| `Direction` | enum | 670 |  | `Direction` | todo |
-| `Direction::is_rtl` | method | 681 |  | `(Direction).IsRtl` | todo |
-| `Style` | struct | 709 |  | `Style` | todo |
-| `Style::DEFAULT` | assoc-const | 876 |  | `StyleDefault` | todo |
+| `CheapCloneStr` | trait | 63 |  | `CheapCloneStr` | done |
+| `CoreStyle` | trait | 77 |  | `CoreStyle` | done |
+| `CoreStyle::box_generation_mode` | trait-method | 83 |  | `CoreStyle.BoxGenerationMode` | done |
+| `CoreStyle::is_block` | trait-method | 92 |  | `CoreStyle.IsBlock` | done |
+| `CoreStyle::is_compressible_replaced` | trait-method | 101 |  | `CoreStyle.IsCompressibleReplaced` | done |
+| `CoreStyle::is_replaced` | trait-method | 109 |  | `CoreStyle.IsReplaced` | done |
+| `CoreStyle::box_sizing` | trait-method | 114 |  | `CoreStyle.BoxSizing` | done |
+| `CoreStyle::direction` | trait-method | 120 |  | `CoreStyle.Direction` | done |
+| `CoreStyle::overflow` | trait-method | 127 |  | `CoreStyle.Overflow` | done |
+| `CoreStyle::scrollbar_width` | trait-method | 132 |  | `CoreStyle.ScrollbarWidth` | done |
+| `CoreStyle::position` | trait-method | 139 |  | `CoreStyle.Position` | done |
+| `CoreStyle::inset` | trait-method | 144 |  | `CoreStyle.Inset` | done |
+| `CoreStyle::is_containing_block` | trait-method | 158 |  | `CoreStyle.IsContainingBlock` | done |
+| `CoreStyle::size` | trait-method | 165 |  | `CoreStyle.Size` | done |
+| `CoreStyle::min_size` | trait-method | 170 |  | `CoreStyle.MinSize` | done |
+| `CoreStyle::max_size` | trait-method | 175 |  | `CoreStyle.MaxSize` | done |
+| `CoreStyle::aspect_ratio` | trait-method | 181 |  | `CoreStyle.AspectRatio` | done |
+| `CoreStyle::margin` | trait-method | 188 |  | `CoreStyle.Margin` | done |
+| `CoreStyle::padding` | trait-method | 193 |  | `CoreStyle.Padding` | done |
+| `CoreStyle::border` | trait-method | 198 |  | `CoreStyle.Border` | done |
+| `CoreStyle::contain` | trait-method | 204 |  | `CoreStyle.Contain` | done |
+| `OofItemStyle` | trait | 211 |  | `OofItemStyle` | done |
+| `OofItemStyle::align_self` | trait-method | 215 |  | `OofItemStyle.AlignSelf` | done |
+| `OofItemStyle::justify_self` | trait-method | 221 |  | `OofItemStyle.JustifySelf` | done |
+| `OofItemStyle::is_table` | trait-method | 227 |  | `OofItemStyle.IsTable` | done |
+| `OofItemStyle::grid_row` | trait-method | 234 | grid | `OofItemStyle.GridRow` | done |
+| `OofItemStyle::grid_column` | trait-method | 241 | grid | `OofItemStyle.GridColumn` | done |
+| `Display` | enum | 251 |  | `Display` | done |
+| `Display::DEFAULT` | assoc-const | 271 | flexbox | `DisplayDefault` | done |
+| `Display::DEFAULT` | assoc-const | 275 | grid, flexbox | `DisplayDefault` | n/a:D-TAFFY-FEATURE |
+| `Display::DEFAULT` | assoc-const | 279 | block_layout, flexbox, grid | `DisplayDefault` | n/a:D-TAFFY-FEATURE |
+| `Display::DEFAULT` | assoc-const | 283 | flexbox, grid, block_layout | `DisplayDefault` | n/a:D-TAFFY-FEATURE |
+| `BoxGenerationMode` | enum | 325 |  | `BoxGenerationMode` | done |
+| `BoxGenerationMode::DEFAULT` | assoc-const | 334 |  | `BoxGenerationModeDefault` | done |
+| `Position` | enum | 354 |  | `Position` | done |
+| `Position::is_out_of_flow` | method | 382 |  | `(Position).IsOutOfFlow` | done |
+| `Position::is_positioned` | method | 389 |  | `(Position).IsPositioned` | done |
+| `ContainingBlockClaims` | struct | 398 |  | `ContainingBlockClaims` | done |
+| `ContainingBlockClaims::NONE` | assoc-const | 407 |  | `ContainingBlockClaimsNone` | done |
+| `ContainingBlockClaims::ALL` | assoc-const | 409 |  | `ContainingBlockClaimsAll` | done |
+| `ContainingBlockClaims::for_position` | method | 413 |  | `(ContainingBlockClaims).ForPosition` | done |
+| `BoxSizing` | enum | 446 |  | `BoxSizing` | done |
+| `Overflow` | enum | 475 |  | `Overflow` | done |
+| `Overflow::is_scroll_container` | method | 496 |  | `(Overflow).IsScrollContainer` | done |
+| `Contain` | struct | 540 |  | `Contain` | done |
+| `Contain::NONE` | assoc-const | 544 |  | `ContainNone` | done |
+| `Contain::LAYOUT` | assoc-const | 548 |  | `ContainLayout` | done |
+| `Contain::PAINT` | assoc-const | 552 |  | `ContainPaint` | done |
+| `Contain::CONTENT` | assoc-const | 554 |  | `ContainContent` | done |
+| `Contain::DEFAULT` | assoc-const | 557 |  | `ContainDefault` | done |
+| `Contain::contains` | method | 561 |  | `(Contain).Contains` | done |
+| `Contain::intersects` | method | 567 |  | `(Contain).Intersects` | done |
+| `Contain::union` | method | 573 |  | `(Contain).Union` | done |
+| `Contain::establishes_independent_formatting_context` | method | 580 |  | `(Contain).EstablishesIndependentFormattingContext` | done |
+| `Contain::suppresses_baseline` | method | 587 |  | `(Contain).SuppressesBaseline` | done |
+| `Contain::contains_scrollable_overflow` | method | 595 |  | `(Contain).ContainsScrollableOverflow` | done |
+| `Direction` | enum | 670 |  | `Direction` | done |
+| `Direction::is_rtl` | method | 681 |  | `(Direction).IsRtl` | done |
+| `Style` | struct | 709 |  | `Style` | done |
+| `Style::DEFAULT` | assoc-const | 876 |  | `StyleDefault` | done |
+| default methods of `CoreStyle` / `OofItemStyle` | trait-impl | 77 |  | `CoreStyleDefaults` | dev:D-TAFFY-TRAITS |
+| default methods of `CoreStyle` / `OofItemStyle` | trait-impl | 77 |  | `CoreStyleDefaultIsContainingBlock` | dev:D-TAFFY-TRAITS |
+| default methods of `CoreStyle` / `OofItemStyle` | trait-impl | 77 |  | `OofItemStyleDefaults` | dev:D-TAFFY-TRAITS |
+| `CoreStyle::CustomIdent` (associated type) | assoc-type | 79 |  | type parameter `S` of `OofItemStyle[S]` | dev:D-TAFFY-TRAITS |
+| `Overflow::maybe_into_automatic_min_size` (`pub(crate)`) | method | 505 |  | `(Overflow).maybeIntoAutomaticMinSize` | done |
+| `impl BitOr` / `BitOrAssign for Contain` | trait-impl | 600 |  | `(Contain).Union` | done |
+| `impl Default for Display` / `BoxGenerationMode` / `Position` / `BoxSizing` / `Overflow` / `Contain` / `Direction` | trait-impl | 287 |  | `DisplayDefault` | done |
+| `impl Default for Display` / `BoxGenerationMode` / `Position` / `BoxSizing` / `Overflow` / `Contain` / `Direction` | trait-impl | 287 |  | `BoxGenerationModeDefault` | done |
+| `impl Default for Display` / `BoxGenerationMode` / `Position` / `BoxSizing` / `Overflow` / `Contain` / `Direction` | trait-impl | 287 |  | `PositionDefault` | done |
+| `impl Default for Display` / `BoxGenerationMode` / `Position` / `BoxSizing` / `Overflow` / `Contain` / `Direction` | trait-impl | 287 |  | `BoxSizingDefault` | done |
+| `impl Default for Display` / `BoxGenerationMode` / `Position` / `BoxSizing` / `Overflow` / `Contain` / `Direction` | trait-impl | 287 |  | `OverflowDefault` | done |
+| `impl Default for Display` / `BoxGenerationMode` / `Position` / `BoxSizing` / `Overflow` / `Contain` / `Direction` | trait-impl | 287 |  | `ContainDefault` | done |
+| `impl Default for Display` / `BoxGenerationMode` / `Position` / `BoxSizing` / `Overflow` / `Contain` / `Direction` | trait-impl | 287 |  | `DirectionDefault` | done |
+| `impl core::fmt::Display for Display` | trait-impl | 304 |  | `(Display).String` | done |
+| `impl FromCss` for `Display` / `Position` / `BoxSizing` / `Overflow` / `Contain` / `Direction` | trait-impl | 292 | parse | - | n/a:D-TAFFY-FEATURE |
+| `Style::dummy` (field) | field | 712 |  | - | n/a:D-TAFFY-TRAITS |
+| `impl Default for Style` | trait-impl | 966 |  | `StyleDefault` | done |
+| `impl CoreStyle for Style` | trait-impl | 972 |  | `StyleRef` | dev:D-TAFFY-TRAITS |
+| `impl CoreStyle for Style` | trait-impl | 972 |  | `(*Style).Ref` | dev:D-TAFFY-TRAITS |
+| `impl OofItemStyle for Style` | trait-impl | 1061 |  | `StyleRef` | dev:D-TAFFY-TRAITS |
+| `impl CoreStyle` / `OofItemStyle` / `BlockContainerStyle` / `BlockItemStyle` / `FlexboxContainerStyle` / `FlexboxItemStyle` / `GridContainerStyle` / `GridItemStyle for &T` | trait-impl | 1086 |  | - (Go interface values already forward) | n/a:D-TAFFY-TRAITS |
+| `impl BlockContainerStyle for Style` | trait-impl | 1196 |  | `StyleRef` | dev:D-TAFFY-TRAITS |
+| `impl BlockItemStyle for Style` | trait-impl | 1232 |  | `StyleRef` | dev:D-TAFFY-TRAITS |
+| `impl FlexboxContainerStyle for Style` | trait-impl | 1290 |  | `StyleRef` | dev:D-TAFFY-TRAITS |
+| `impl FlexboxItemStyle for Style` | trait-impl | 1346 |  | `StyleRef` | dev:D-TAFFY-TRAITS |
+| `impl GridContainerStyle for Style` | trait-impl | 1386 |  | `StyleRef` | blocked:M0-taffy-style-grid |
+| `impl GridItemStyle for Style` | trait-impl | 1561 |  | `StyleRef` | blocked:M0-taffy-style-grid |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `defaults_match` | test | 1631 |  | `TestStyleMod_DefaultsMatch` | todo |
-| `parse_contain` | test | 1712 | parse | `TestStyleMod_ParseContain` | todo |
-| `style_sizes` | test | 1742 |  | `TestStyleMod_StyleSizes` | todo |
+| `defaults_match` | test | 1631 |  | `TestStyleMod_DefaultsMatch` | done |
+| `parse_contain` | test | 1712 | parse | `TestStyleMod_ParseContain` | n/a:D-TAFFY-FEATURE |
+| `style_sizes` | test | 1742 |  | `TestStyleMod_StyleSizes` | dev:D-TAFFY-SIZES |
 
 ## src/style_helpers.rs
 
@@ -1457,3 +1517,6 @@ No `pub` items. The `std` branch is ported as unexported helpers: `round`, `ceil
 | D-TAFFY-COMPACT | `CompactLength` is a `{tag uint8, bits uint32}` struct instead of a tagged pointer: no pointer packing, the `compat` transmutes are `math.Float32bits` / `Float32frombits`, `tag_ptr` / `untag_ptr` do not exist. Equality stays bitwise. | `src/style/compact_length.rs:10-222` | `internal/taffy/style_compact_length.go` |
 | D-TAFFY-MAYBEMATH | The `MaybeMath` trait is not a Go interface: its impls for `Option<f32>` and `f32` are free functions, the two `AvailableSpace` impls are methods with an `F32` suffix for the `f32` right-hand side, and the blanket `Size<T>` impl is one function per instantiation (naming in the notes). | `src/util/math.rs:11-252` | `internal/taffy/util_math.go` |
 | D-TAFFY-SYS | The `sys` type aliases for `String`, `Map`, `Vec`, `Box`, `ChildrenVec` and `GridTrackVec` are not declared; ported code uses `string`, Go maps and slices directly | `src/util/sys.rs:15-28` | - |
+| D-TAFFY-TRAITS | Style traits are Go interfaces. Default method bodies live in embeddable `<Trait>Defaults` structs (`CoreStyleDefaults`, `FlexboxItemStyleDefaults`, ...); `CoreStyle::is_containing_block`, whose default calls `position()`, is the free function `CoreStyleDefaultIsContainingBlock(s)` that implementors call. The associated type `CustomIdent` is the type parameter `S` of the interfaces that use it (`OofItemStyle[S]`); `CheapCloneStr` is the constraint `~string`. `Style`'s fields share names with the trait methods, which Go forbids on one type, so `impl ... for Style` is implemented by `StyleRef[S]` (`(*Style[S]).Ref()`, upstream's `&Style`); `PhantomData` field `dummy` and the `impl for &T` forwarding impls do not exist. | `src/style/mod.rs:63-250,880-1600`, `src/style/flex.rs`, `src/style/block.rs` | `internal/taffy/style_mod.go`, `style_flex.go`, `style_block.go` |
+| D-TAFFY-ALIGNFIELDS | `AlignItems` / `AlignContent` keep their `keyword` / `safety` fields unexported because the `keyword()` method would collide with an exported field; read them with `Keyword()` / `Safety()`, build with `NewAlignItems` / `NewAlignContent` or the `AlignItems<Name>` vars. Upstream's associated consts are package vars (Go has no struct consts). | `src/style/alignment.rs:155-460` | `internal/taffy/style_alignment.go` |
+| D-TAFFY-SIZES | `style_sizes` checks only sizes that Go lays out like Rust; `Option<AlignItems>` (Go 3 bytes, no niche), the string-dependent grid types and `Style` sizes differ and are not asserted. | `src/style/mod.rs:1742-1815` | `internal/taffy/style_mod_test.go` |

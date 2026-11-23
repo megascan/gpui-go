@@ -153,42 +153,42 @@ func (r Rect[T]) SumAxes() Size[T] {
 }
 
 func (r Rect[T]) mainAxisSum(direction FlexDirection) T {
-	if direction.IsRow() {
+	if direction.isRow() {
 		return r.HorizontalAxisSum()
 	}
 	return r.VerticalAxisSum()
 }
 
 func (r Rect[T]) crossAxisSum(direction FlexDirection) T {
-	if direction.IsRow() {
+	if direction.isRow() {
 		return r.VerticalAxisSum()
 	}
 	return r.HorizontalAxisSum()
 }
 
 func (r Rect[T]) mainStart(direction FlexDirection) T {
-	if direction.IsRow() {
+	if direction.isRow() {
 		return r.Left
 	}
 	return r.Top
 }
 
 func (r Rect[T]) mainEnd(direction FlexDirection) T {
-	if direction.IsRow() {
+	if direction.isRow() {
 		return r.Right
 	}
 	return r.Bottom
 }
 
 func (r Rect[T]) crossStart(direction FlexDirection) T {
-	if direction.IsRow() {
+	if direction.isRow() {
 		return r.Top
 	}
 	return r.Left
 }
 
 func (r Rect[T]) crossEnd(direction FlexDirection) T {
-	if direction.IsRow() {
+	if direction.isRow() {
 		return r.Bottom
 	}
 	return r.Right
@@ -278,7 +278,7 @@ func (s Size[T]) ZipMap[Other, Ret any](other Size[Other], f func(T, Other) Ret)
 }
 
 func (s *Size[T]) setMain(direction FlexDirection, value T) {
-	if direction.IsRow() {
+	if direction.isRow() {
 		s.Width = value
 	} else {
 		s.Height = value
@@ -286,7 +286,7 @@ func (s *Size[T]) setMain(direction FlexDirection, value T) {
 }
 
 func (s *Size[T]) setCross(direction FlexDirection, value T) {
-	if direction.IsRow() {
+	if direction.isRow() {
 		s.Height = value
 	} else {
 		s.Width = value
@@ -295,7 +295,7 @@ func (s *Size[T]) setCross(direction FlexDirection, value T) {
 
 func (s Size[T]) withMain(direction FlexDirection, value T) Size[T] {
 	n := s
-	if direction.IsRow() {
+	if direction.isRow() {
 		n.Width = value
 	} else {
 		n.Height = value
@@ -305,7 +305,7 @@ func (s Size[T]) withMain(direction FlexDirection, value T) Size[T] {
 
 func (s Size[T]) withCross(direction FlexDirection, value T) Size[T] {
 	n := s
-	if direction.IsRow() {
+	if direction.isRow() {
 		n.Height = value
 	} else {
 		n.Width = value
@@ -315,7 +315,7 @@ func (s Size[T]) withCross(direction FlexDirection, value T) Size[T] {
 
 func (s Size[T]) mapMain(direction FlexDirection, mapper func(T) T) Size[T] {
 	n := s
-	if direction.IsRow() {
+	if direction.isRow() {
 		n.Width = mapper(n.Width)
 	} else {
 		n.Height = mapper(n.Height)
@@ -325,7 +325,7 @@ func (s Size[T]) mapMain(direction FlexDirection, mapper func(T) T) Size[T] {
 
 func (s Size[T]) mapCross(direction FlexDirection, mapper func(T) T) Size[T] {
 	n := s
-	if direction.IsRow() {
+	if direction.isRow() {
 		n.Height = mapper(n.Height)
 	} else {
 		n.Width = mapper(n.Width)
@@ -334,14 +334,14 @@ func (s Size[T]) mapCross(direction FlexDirection, mapper func(T) T) Size[T] {
 }
 
 func (s Size[T]) main(direction FlexDirection) T {
-	if direction.IsRow() {
+	if direction.isRow() {
 		return s.Width
 	}
 	return s.Height
 }
 
 func (s Size[T]) cross(direction FlexDirection) T {
-	if direction.IsRow() {
+	if direction.isRow() {
 		return s.Height
 	}
 	return s.Width
@@ -409,7 +409,7 @@ func NewSizeOptionF32(width, height float32) Size[Option[float32]] {
 // SizeOptionF32FromCross creates a Size with either the width or height set based on direction.
 func SizeOptionF32FromCross(direction FlexDirection, value Option[float32]) Size[Option[float32]] {
 	n := SizeOptionF32None
-	if direction.IsRow() {
+	if direction.isRow() {
 		n.Height = value
 	} else {
 		n.Width = value
@@ -507,14 +507,14 @@ func (p *Point[T]) Set(axis AbstractAxis, value T) {
 }
 
 func (p Point[T]) main(direction FlexDirection) T {
-	if direction.IsRow() {
+	if direction.isRow() {
 		return p.X
 	}
 	return p.Y
 }
 
 func (p Point[T]) cross(direction FlexDirection) T {
-	if direction.IsRow() {
+	if direction.isRow() {
 		return p.Y
 	}
 	return p.X
