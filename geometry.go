@@ -3,8 +3,14 @@ package gpui
 import (
 	"cmp"
 	"encoding/json/jsontext"
+	"errors"
 	"fmt"
 	"math"
+	"strconv"
+	"strings"
+
+	"github.com/megascan/gpui-go/gpuiutil"
+	"github.com/megascan/gpui-go/internal/jsonschema"
 )
 
 //go:generate go run github.com/megascan/gpui-go/internal/cmd/refinegen geometry.go
@@ -817,10 +823,10 @@ func (b Bounds[T]) ToPixels(scaleFactor float32) Bounds[Pixels] {
 //
 //gpui:refineable Debug, PartialEq, Serialize
 type Edges[T Number] struct {
-	Top    T
-	Right  T
-	Bottom T
-	Left   T
+	Top    T `json:"top"`
+	Right  T `json:"right"`
+	Bottom T `json:"bottom"`
+	Left   T `json:"left"`
 }
 
 // EdgesAll constructs Edges with every side set to value.
@@ -905,10 +911,10 @@ func (e Edges[T]) String() string {
 //
 //gpui:refineable Debug, PartialEq, Serialize
 type EdgesOf[T any] struct {
-	Top    T
-	Right  T
-	Bottom T
-	Left   T
+	Top    T `json:"top"`
+	Right  T `json:"right"`
+	Bottom T `json:"bottom"`
+	Left   T `json:"left"`
 }
 
 // EdgesOfAll constructs EdgesOf with every side set to value.
@@ -1065,17 +1071,1152 @@ func (a Anchor) String() string {
 	return fmt.Sprintf("Anchor(%d)", uint8(a))
 }
 
-// Pixels is a length in logical pixels.
+// Corners holds a value for each corner of a box, such as corner radii.
+//
+//gpui:refineable Debug, PartialEq, Serialize
+type Corners[T Number] struct {
+	TopLeft     T `json:"top_left"`
+	TopRight    T `json:"top_right"`
+	BottomRight T `json:"bottom_right"`
+	BottomLeft  T `json:"bottom_left"`
+}
+
+// CornersAll constructs Corners with every corner set to value.
+func CornersAll[T Number](value T) Corners[T] {
+	return Corners[T]{TopLeft: value, TopRight: value, BottomRight: value, BottomLeft: value}
+}
+
+// Corner returns the requested corner value; center anchors average the two adjacent corners.
+func (c Corners[T]) Corner(corner Anchor) T {
+	switch corner {
+	case AnchorTopLeft:
+		return c.TopLeft
+	case AnchorTopRight:
+		return c.TopRight
+	case AnchorBottomLeft:
+		return c.BottomLeft
+	case AnchorBottomRight:
+		return c.BottomRight
+	case AnchorTopCenter:
+		return half(c.TopLeft + c.TopRight)
+	case AnchorBottomCenter:
+		return half(c.BottomLeft + c.BottomRight)
+	case AnchorLeftCenter:
+		return half(c.TopLeft + c.BottomLeft)
+	default:
+		return half(c.TopRight + c.BottomRight)
+	}
+}
+
+// Scale scales every corner by factor, producing scaled pixels.
+func (c Corners[T]) Scale(factor float32) Corners[ScaledPixels] {
+	return Corners[ScaledPixels]{
+		TopLeft:     scalePixels(c.TopLeft, factor),
+		TopRight:    scalePixels(c.TopRight, factor),
+		BottomRight: scalePixels(c.BottomRight, factor),
+		BottomLeft:  scalePixels(c.BottomLeft, factor),
+	}
+}
+
+// Max returns the maximum value of any corner.
+func (c Corners[T]) Max() T {
+	return geomOrdMax(geomOrdMax(geomOrdMax(c.TopLeft, c.TopRight), c.BottomRight), c.BottomLeft)
+}
+
+// ClampRadiiForQuadSize clamps corner radii to at most half the shortest side of a quad.
+func (c Corners[T]) ClampRadiiForQuadSize(size Size[T]) Corners[T] {
+	maxValue := geomOrdMin(size.Width, size.Height) / 2
+	return Corners[T]{
+		TopLeft:     geomOrdMin(c.TopLeft, maxValue),
+		TopRight:    geomOrdMin(c.TopRight, maxValue),
+		BottomRight: geomOrdMin(c.BottomRight, maxValue),
+		BottomLeft:  geomOrdMin(c.BottomLeft, maxValue),
+	}
+}
+
+// Map applies f to each corner, producing a Corners[U].
+func (c Corners[T]) Map[U Number](f func(T) U) Corners[U] {
+	return Corners[U]{TopLeft: f(c.TopLeft), TopRight: f(c.TopRight), BottomRight: f(c.BottomRight), BottomLeft: f(c.BottomLeft)}
+}
+
+// MapOf applies f to each corner, producing a CornersOf[U].
+func (c Corners[T]) MapOf[U any](f func(T) U) CornersOf[U] {
+	return CornersOf[U]{TopLeft: f(c.TopLeft), TopRight: f(c.TopRight), BottomRight: f(c.BottomRight), BottomLeft: f(c.BottomLeft)}
+}
+
+// Mul multiplies two corners component-wise.
+func (c Corners[T]) Mul(rhs Corners[T]) Corners[T] {
+	return Corners[T]{
+		TopLeft:     c.TopLeft * rhs.TopLeft,
+		TopRight:    c.TopRight * rhs.TopRight,
+		BottomRight: c.BottomRight * rhs.BottomRight,
+		BottomLeft:  c.BottomLeft * rhs.BottomLeft,
+	}
+}
+
+// MulAssign multiplies every corner of c by rhs.
+func (c *Corners[T]) MulAssign(rhs T) {
+	c.TopLeft = c.TopLeft * rhs
+	c.TopRight = c.TopRight * rhs
+	c.BottomRight = c.BottomRight * rhs
+	c.BottomLeft = c.BottomLeft * rhs
+}
+
+// IsZero reports whether every corner is zero.
+func (c Corners[T]) IsZero() bool {
+	return c.TopLeft == 0 && c.TopRight == 0 && c.BottomRight == 0 && c.BottomLeft == 0
+}
+
+// String formats the corners like their Rust Debug output.
+func (c Corners[T]) String() string {
+	return fmt.Sprintf("Corners { top_left: %v, top_right: %v, bottom_right: %v, bottom_left: %v }", c.TopLeft, c.TopRight, c.BottomRight, c.BottomLeft)
+}
+
+// CornersOf is Corners for non-numeric contents (D-GEOM).
+//
+//gpui:refineable Debug, PartialEq, Serialize
+type CornersOf[T any] struct {
+	TopLeft     T `json:"top_left"`
+	TopRight    T `json:"top_right"`
+	BottomRight T `json:"bottom_right"`
+	BottomLeft  T `json:"bottom_left"`
+}
+
+// CornersOfAll constructs CornersOf with every corner set to value.
+func CornersOfAll[T any](value T) CornersOf[T] {
+	return CornersOf[T]{TopLeft: value, TopRight: value, BottomRight: value, BottomLeft: value}
+}
+
+// Map applies f to each corner, producing a CornersOf[U].
+func (c CornersOf[T]) Map[U any](f func(T) U) CornersOf[U] {
+	return CornersOf[U]{TopLeft: f(c.TopLeft), TopRight: f(c.TopRight), BottomRight: f(c.BottomRight), BottomLeft: f(c.BottomLeft)}
+}
+
+// MapNumber applies f to each corner, producing a Corners[U].
+func (c CornersOf[T]) MapNumber[U Number](f func(T) U) Corners[U] {
+	return Corners[U]{TopLeft: f(c.TopLeft), TopRight: f(c.TopRight), BottomRight: f(c.BottomRight), BottomLeft: f(c.BottomLeft)}
+}
+
+// String formats the corners like their Rust Debug output.
+func (c CornersOf[T]) String() string {
+	return fmt.Sprintf("Corners { top_left: %v, top_right: %v, bottom_right: %v, bottom_left: %v }", c.TopLeft, c.TopRight, c.BottomRight, c.BottomLeft)
+}
+
+// CornersAbsoluteLengthToPixels converts each corner to pixels using rem size remSize.
+func CornersAbsoluteLengthToPixels(c CornersOf[AbsoluteLength], remSize Pixels) Corners[Pixels] {
+	return Corners[Pixels]{
+		TopLeft:     c.TopLeft.ToPixels(remSize),
+		TopRight:    c.TopRight.ToPixels(remSize),
+		BottomRight: c.BottomRight.ToPixels(remSize),
+		BottomLeft:  c.BottomLeft.ToPixels(remSize),
+	}
+}
+
+// SizeDefiniteLengthFromPixels converts a pixel size to definite lengths.
+func SizeDefiniteLengthFromPixels(size Size[Pixels]) SizeOf[DefiniteLength] {
+	return SizeOf[DefiniteLength]{Width: size.Width.ToDefiniteLength(), Height: size.Height.ToDefiniteLength()}
+}
+
+// SizeAbsoluteLengthFromPixels converts a pixel size to absolute lengths.
+func SizeAbsoluteLengthFromPixels(size Size[Pixels]) SizeOf[AbsoluteLength] {
+	return SizeOf[AbsoluteLength]{Width: size.Width.ToAbsoluteLength(), Height: size.Height.ToAbsoluteLength()}
+}
+
+// SizeLengthFull returns a size whose width and height are 100% of the parent.
+func SizeLengthFull() SizeOf[Length] {
+	return SizeOf[Length]{Width: Relative(1.).ToLength(), Height: Relative(1.).ToLength()}
+}
+
+// SizeLengthAuto returns a size whose width and height are auto.
+func SizeLengthAuto() SizeOf[Length] {
+	return SizeOf[Length]{Width: LengthAuto(), Height: LengthAuto()}
+}
+
+// EdgesLengthAuto returns edges that are all auto.
+func EdgesLengthAuto() EdgesOf[Length] {
+	return EdgesOf[Length]{Top: LengthAuto(), Right: LengthAuto(), Bottom: LengthAuto(), Left: LengthAuto()}
+}
+
+// EdgesLengthZero returns edges that are all zero pixels.
+func EdgesLengthZero() EdgesOf[Length] {
+	return EdgesOf[Length]{Top: Px(0.).ToLength(), Right: Px(0.).ToLength(), Bottom: Px(0.).ToLength(), Left: Px(0.).ToLength()}
+}
+
+// EdgesDefiniteLengthZero returns edges that are all zero pixels.
+func EdgesDefiniteLengthZero() EdgesOf[DefiniteLength] {
+	return EdgesOf[DefiniteLength]{Top: Px(0.).ToDefiniteLength(), Right: Px(0.).ToDefiniteLength(), Bottom: Px(0.).ToDefiniteLength(), Left: Px(0.).ToDefiniteLength()}
+}
+
+// EdgesDefiniteLengthToPixels converts each edge to pixels relative to parentSize and remSize.
+func EdgesDefiniteLengthToPixels(e EdgesOf[DefiniteLength], parentSize SizeOf[AbsoluteLength], remSize Pixels) Edges[Pixels] {
+	return Edges[Pixels]{
+		Top:    e.Top.ToPixels(parentSize.Height, remSize),
+		Right:  e.Right.ToPixels(parentSize.Width, remSize),
+		Bottom: e.Bottom.ToPixels(parentSize.Height, remSize),
+		Left:   e.Left.ToPixels(parentSize.Width, remSize),
+	}
+}
+
+// EdgesAbsoluteLengthZero returns edges that are all zero pixels.
+func EdgesAbsoluteLengthZero() EdgesOf[AbsoluteLength] {
+	return EdgesOf[AbsoluteLength]{Top: Px(0.).ToAbsoluteLength(), Right: Px(0.).ToAbsoluteLength(), Bottom: Px(0.).ToAbsoluteLength(), Left: Px(0.).ToAbsoluteLength()}
+}
+
+// EdgesAbsoluteLengthToPixels converts each edge to pixels using rem size remSize.
+func EdgesAbsoluteLengthToPixels(e EdgesOf[AbsoluteLength], remSize Pixels) Edges[Pixels] {
+	return Edges[Pixels]{
+		Top:    e.Top.ToPixels(remSize),
+		Right:  e.Right.ToPixels(remSize),
+		Bottom: e.Bottom.ToPixels(remSize),
+		Left:   e.Left.ToPixels(remSize),
+	}
+}
+
+// Radians is an angle in radians.
+type Radians float32
+
+// String formats the angle like its Rust Debug output.
+func (r Radians) String() string {
+	return "Radians(" + rustDebugF32(float32(r)) + ")"
+}
+
+// Percentage is a fraction of a whole, between 0 and 1.
+type Percentage float32
+
+// NewPercentage returns a percentage; it panics in debug builds when value is outside 0..=1.
+func NewPercentage(value float32) Percentage {
+	if gpuiutil.DebugAssertions && !(value >= 0 && value <= 1) {
+		panic("Percentage must be between 0 and 1")
+	}
+	return Percentage(value)
+}
+
+// ToRadians converts a fraction of a full circle to radians.
+func (p Percentage) ToRadians() Radians {
+	return Radians(float32(float32(p)*math.Pi) * 2.0)
+}
+
+// String formats the percentage like its Rust Debug output.
+func (p Percentage) String() string {
+	return "Percentage(" + rustDebugF32(float32(p)) + ")"
+}
+
+// Pixels is a length in logical pixels, the base unit of measurement.
 type Pixels float32
+
+const (
+	// PixelsZero is zero pixels.
+	PixelsZero Pixels = 0
+	// PixelsMax is the largest finite pixel value.
+	PixelsMax Pixels = math.MaxFloat32
+	// PixelsMin is the smallest finite pixel value.
+	PixelsMin Pixels = -math.MaxFloat32
+)
+
+// AsF32 returns the raw value.
+func (p Pixels) AsF32() float32 {
+	return float32(p)
+}
+
+// ToI32 truncates to an i32, saturating at the bounds and mapping NaN to 0.
+func (p Pixels) ToI32() int32 {
+	return saturatingF32ToI32(float32(p))
+}
+
+// ToU32 truncates to a u32 like Rust's `as u32`.
+func (p Pixels) ToU32() uint32 {
+	return saturatingF32ToU32(float32(p))
+}
+
+// ToUsize truncates to a uint like Rust's `as usize`.
+func (p Pixels) ToUsize() uint {
+	return uint(saturatingF64ToU64(float64(p)))
+}
+
+// Floor rounds down to the nearest whole pixel.
+func (p Pixels) Floor() Pixels {
+	return Pixels(math.Floor(float64(p)))
+}
+
+// Round rounds to the nearest whole pixel, half away from zero.
+func (p Pixels) Round() Pixels {
+	return Pixels(math.Round(float64(p)))
+}
+
+// Ceil rounds up to the nearest whole pixel.
+func (p Pixels) Ceil() Pixels {
+	return Pixels(math.Ceil(float64(p)))
+}
+
+// Scale scales the pixels by factor, producing scaled pixels.
+func (p Pixels) Scale(factor float32) ScaledPixels {
+	return ScaledPixels(float32(p) * factor)
+}
+
+// Pow raises the pixels to exponent.
+func (p Pixels) Pow(exponent float32) Pixels {
+	return Pixels(math.Pow(float64(p), float64(exponent)))
+}
+
+// Abs returns the absolute value.
+func (p Pixels) Abs() Pixels {
+	return Pixels(math.Abs(float64(p)))
+}
+
+// Signum returns 1 for positive values and +0, -1 for negative values and -0, NaN for NaN.
+func (p Pixels) Signum() float32 {
+	return signumF32(float32(p))
+}
+
+// ToF64 returns the value as a float64.
+func (p Pixels) ToF64() float64 {
+	return float64(p)
+}
+
+// Rem returns the floating-point remainder of p / rhs.
+func (p Pixels) Rem(rhs Pixels) Pixels {
+	return Pixels(math.Mod(float64(p), float64(rhs)))
+}
+
+// Cmp orders pixels by partial order, falling back to total order for NaN.
+func (p Pixels) Cmp(other Pixels) int {
+	c, _ := geomPartialCmp(p, other)
+	return c
+}
+
+// Half returns half of p.
+func (p Pixels) Half() Pixels {
+	return p / 2
+}
+
+// IsZero reports whether p is zero.
+func (p Pixels) IsZero() bool {
+	return p == 0
+}
+
+// ToLength converts p to a Length.
+func (p Pixels) ToLength() Length {
+	return LengthDefinite(p.ToDefiniteLength())
+}
+
+// ToDefiniteLength converts p to a DefiniteLength.
+func (p Pixels) ToDefiniteLength() DefiniteLength {
+	return DefiniteLengthAbsolute(p.ToAbsoluteLength())
+}
+
+// ToAbsoluteLength converts p to an AbsoluteLength.
+func (p Pixels) ToAbsoluteLength() AbsoluteLength {
+	return AbsoluteLengthPixels(p)
+}
+
+// String formats the pixels like Rust's Display, for example `10px`.
+func (p Pixels) String() string {
+	return rustDisplayF32(float32(p)) + "px"
+}
+
+// ParsePixels parses a number with a `px` suffix.
+func ParsePixels(value string) (Pixels, error) {
+	number, ok := strings.CutSuffix(value, "px")
+	if !ok {
+		return 0, errors.New("expected 'px' suffix")
+	}
+	v, err := parseRustF32(number)
+	if err != nil {
+		return 0, err
+	}
+	return Pixels(v), nil
+}
 
 // DevicePixels is a length in physical device pixels.
 type DevicePixels int32
 
+// ToBytes returns the number of bytes covered by d pixels of bytesPerPixel each.
+func (d DevicePixels) ToBytes(bytesPerPixel uint8) uint32 {
+	return uint32(d) * uint32(bytesPerPixel)
+}
+
+// ToScaledPixels converts d to scaled pixels.
+func (d DevicePixels) ToScaledPixels() ScaledPixels {
+	return ScaledPixels(float32(d))
+}
+
+// Half returns half of d, truncated toward zero.
+func (d DevicePixels) Half() DevicePixels {
+	return d / 2
+}
+
+// IsZero reports whether d is zero.
+func (d DevicePixels) IsZero() bool {
+	return d == 0
+}
+
+// String formats the device pixels like their Rust Debug output.
+func (d DevicePixels) String() string {
+	return strconv.FormatInt(int64(d), 10) + " px (device)"
+}
+
 // ScaledPixels is a length in pixels scaled by the display's scale factor.
 type ScaledPixels float32
 
+// AsF32 returns the raw value.
+func (s ScaledPixels) AsF32() float32 {
+	return float32(s)
+}
+
+// Floor rounds down to the nearest whole pixel.
+func (s ScaledPixels) Floor() ScaledPixels {
+	return ScaledPixels(math.Floor(float64(s)))
+}
+
+// Round rounds to the nearest whole pixel, half away from zero.
+func (s ScaledPixels) Round() ScaledPixels {
+	return ScaledPixels(math.Round(float64(s)))
+}
+
+// Ceil rounds up to the nearest whole pixel.
+func (s ScaledPixels) Ceil() ScaledPixels {
+	return ScaledPixels(math.Ceil(float64(s)))
+}
+
+// ToDevicePixels converts s to device pixels, rounding up.
+func (s ScaledPixels) ToDevicePixels() DevicePixels {
+	return DevicePixels(saturatingF32ToI32(float32(math.Ceil(float64(s)))))
+}
+
+// ToU32 truncates to a u32 like Rust's `as u32`.
+func (s ScaledPixels) ToU32() uint32 {
+	return saturatingF32ToU32(float32(s))
+}
+
+// Rem returns the floating-point remainder of s / rhs.
+func (s ScaledPixels) Rem(rhs ScaledPixels) ScaledPixels {
+	return ScaledPixels(math.Mod(float64(s), float64(rhs)))
+}
+
+// Cmp orders scaled pixels by IEEE total order.
+func (s ScaledPixels) Cmp(other ScaledPixels) int {
+	return totalCmpF32(float32(s), float32(other))
+}
+
+// Half returns half of s.
+func (s ScaledPixels) Half() ScaledPixels {
+	return s / 2
+}
+
+// IsZero reports whether s is zero.
+func (s ScaledPixels) IsZero() bool {
+	return s == 0
+}
+
+// String formats the scaled pixels like their Rust Debug output.
+func (s ScaledPixels) String() string {
+	return rustDisplayF32(float32(s)) + "px (scaled)"
+}
+
 // Rems is a length in rems, relative to the window's rem size.
 type Rems float32
+
+// RemsZero is zero rems.
+const RemsZero Rems = 0
+
+// ToPixels converts r to pixels using rem size remSize.
+func (r Rems) ToPixels(remSize Pixels) Pixels {
+	return Pixels(float32(r) * float32(remSize))
+}
+
+// RemsFromPixels converts length to rems using the window's rem size.
+func RemsFromPixels(length Pixels, window *Window) Rems {
+	return Rems(float32(length) / float32(window.RemSize()))
+}
+
+// Half returns half of r.
+func (r Rems) Half() Rems {
+	return r / 2
+}
+
+// IsZero reports whether r is zero.
+func (r Rems) IsZero() bool {
+	return r == 0
+}
+
+// ToLength converts r to a Length.
+func (r Rems) ToLength() Length {
+	return LengthDefinite(r.ToDefiniteLength())
+}
+
+// ToDefiniteLength converts r to a DefiniteLength.
+func (r Rems) ToDefiniteLength() DefiniteLength {
+	return DefiniteLengthAbsolute(r.ToAbsoluteLength())
+}
+
+// ToAbsoluteLength converts r to an AbsoluteLength.
+func (r Rems) ToAbsoluteLength() AbsoluteLength {
+	return AbsoluteLengthRems(r)
+}
+
+// String formats the rems like Rust's Display, for example `1.5rem`.
+func (r Rems) String() string {
+	return rustDisplayF32(float32(r)) + "rem"
+}
+
+// ParseRems parses a number with a `rem` suffix.
+func ParseRems(value string) (Rems, error) {
+	number, ok := strings.CutSuffix(value, "rem")
+	if !ok {
+		return 0, errors.New("expected 'rem' suffix")
+	}
+	v, err := parseRustF32(number)
+	if err != nil {
+		return 0, err
+	}
+	return Rems(v), nil
+}
+
+// IntoLength is implemented by every value convertible to a Length (D-INTO).
+type IntoLength interface {
+	ToLength() Length
+}
+
+// IntoDefiniteLength is implemented by every value convertible to a DefiniteLength (D-INTO).
+type IntoDefiniteLength interface {
+	ToDefiniteLength() DefiniteLength
+}
+
+// IntoAbsoluteLength is implemented by every value convertible to an AbsoluteLength (D-INTO).
+type IntoAbsoluteLength interface {
+	ToAbsoluteLength() AbsoluteLength
+}
+
+type absoluteLengthKind uint8
+
+const (
+	absoluteLengthPixels absoluteLengthKind = iota
+	absoluteLengthRems
+)
+
+// AbsoluteLength is a length in pixels or rems. The zero value is zero pixels.
+type AbsoluteLength struct {
+	kind  absoluteLengthKind
+	value float32
+}
+
+// AbsoluteLengthPixels returns the Pixels variant.
+func AbsoluteLengthPixels(pixels Pixels) AbsoluteLength {
+	return AbsoluteLength{kind: absoluteLengthPixels, value: float32(pixels)}
+}
+
+// AbsoluteLengthRems returns the Rems variant.
+func AbsoluteLengthRems(rems Rems) AbsoluteLength {
+	return AbsoluteLength{kind: absoluteLengthRems, value: float32(rems)}
+}
+
+// AsPixels returns the length in pixels when it is the Pixels variant.
+func (a AbsoluteLength) AsPixels() (Pixels, bool) {
+	return Pixels(a.value), a.kind == absoluteLengthPixels
+}
+
+// AsRems returns the length in rems when it is the Rems variant.
+func (a AbsoluteLength) AsRems() (Rems, bool) {
+	return Rems(a.value), a.kind == absoluteLengthRems
+}
+
+// IsZero reports whether the length is zero.
+func (a AbsoluteLength) IsZero() bool {
+	return a.value == 0
+}
+
+// ToPixels converts the length to pixels using rem size remSize.
+func (a AbsoluteLength) ToPixels(remSize Pixels) Pixels {
+	if a.kind == absoluteLengthRems {
+		return Rems(a.value).ToPixels(remSize)
+	}
+	return Pixels(a.value)
+}
+
+// ToRems converts the length to rems using rem size remSize.
+func (a AbsoluteLength) ToRems(remSize Pixels) Rems {
+	if a.kind == absoluteLengthPixels {
+		return Rems(a.value / float32(remSize))
+	}
+	return Rems(a.value)
+}
+
+// Neg negates the length.
+func (a AbsoluteLength) Neg() AbsoluteLength {
+	return AbsoluteLength{kind: a.kind, value: -a.value}
+}
+
+// ToLength converts a to a Length.
+func (a AbsoluteLength) ToLength() Length {
+	return LengthDefinite(DefiniteLengthAbsolute(a))
+}
+
+// ToDefiniteLength converts a to a DefiniteLength.
+func (a AbsoluteLength) ToDefiniteLength() DefiniteLength {
+	return DefiniteLengthAbsolute(a)
+}
+
+// ToAbsoluteLength returns a.
+func (a AbsoluteLength) ToAbsoluteLength() AbsoluteLength {
+	return a
+}
+
+// String formats the length like Rust's Display, for example `10px` or `1rem`.
+func (a AbsoluteLength) String() string {
+	if a.kind == absoluteLengthRems {
+		return Rems(a.value).String()
+	}
+	return Pixels(a.value).String()
+}
+
+const expectedAbsoluteLength = "number with 'px' or 'rem' suffix"
+
+// ParseAbsoluteLength parses a number with a `px` or `rem` suffix.
+func ParseAbsoluteLength(value string) (AbsoluteLength, error) {
+	if pixels, err := ParsePixels(value); err == nil {
+		return AbsoluteLengthPixels(pixels), nil
+	}
+	if rems, err := ParseRems(value); err == nil {
+		return AbsoluteLengthRems(rems), nil
+	}
+	return AbsoluteLength{}, fmt.Errorf("invalid AbsoluteLength '%s', expected %s", value, expectedAbsoluteLength)
+}
+
+// MarshalJSONTo encodes the length as its Display string.
+func (a AbsoluteLength) MarshalJSONTo(enc *jsontext.Encoder) error {
+	return enc.WriteToken(jsontext.String(a.String()))
+}
+
+// UnmarshalJSONFrom decodes the length from a string.
+func (a *AbsoluteLength) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
+	s, err := readJSONString(dec, expectedAbsoluteLength)
+	if err != nil {
+		return err
+	}
+	v, err := ParseAbsoluteLength(s)
+	if err != nil {
+		return err
+	}
+	*a = v
+	return nil
+}
+
+// JSONSchema describes the length as a string.
+func (AbsoluteLength) JSONSchema(*jsonschema.Generator) *jsonschema.Schema {
+	return &jsonschema.Schema{Type: jsonschema.Types{"string"}}
+}
+
+// DefiniteLength is an absolute length or a fraction of the parent. The zero value is zero pixels.
+type DefiniteLength struct {
+	fraction   bool
+	absolute   AbsoluteLength
+	fractional float32
+}
+
+// DefiniteLengthAbsolute returns the Absolute variant.
+func DefiniteLengthAbsolute(length AbsoluteLength) DefiniteLength {
+	return DefiniteLength{absolute: length}
+}
+
+// DefiniteLengthFraction returns the Fraction variant.
+func DefiniteLengthFraction(fraction float32) DefiniteLength {
+	return DefiniteLength{fraction: true, fractional: fraction}
+}
+
+// AsAbsolute returns the absolute length when it is the Absolute variant.
+func (d DefiniteLength) AsAbsolute() (AbsoluteLength, bool) {
+	return d.absolute, !d.fraction
+}
+
+// AsFraction returns the fraction when it is the Fraction variant.
+func (d DefiniteLength) AsFraction() (float32, bool) {
+	return d.fractional, d.fraction
+}
+
+// ToPixels converts the length to pixels relative to baseSize and remSize.
+func (d DefiniteLength) ToPixels(baseSize AbsoluteLength, remSize Pixels) Pixels {
+	if !d.fraction {
+		return d.absolute.ToPixels(remSize)
+	}
+	if baseSize.kind == absoluteLengthRems {
+		return Pixels(float32(Rems(baseSize.value).ToPixels(remSize)) * d.fractional)
+	}
+	return Pixels(baseSize.value * d.fractional)
+}
+
+// IsZero reports whether the length is zero.
+func (d DefiniteLength) IsZero() bool {
+	if d.fraction {
+		return d.fractional == 0
+	}
+	return d.absolute.IsZero()
+}
+
+// Neg negates the length.
+func (d DefiniteLength) Neg() DefiniteLength {
+	if d.fraction {
+		return DefiniteLengthFraction(-d.fractional)
+	}
+	return DefiniteLengthAbsolute(d.absolute.Neg())
+}
+
+// ToLength converts d to a Length.
+func (d DefiniteLength) ToLength() Length {
+	return LengthDefinite(d)
+}
+
+// ToDefiniteLength returns d.
+func (d DefiniteLength) ToDefiniteLength() DefiniteLength {
+	return d
+}
+
+// String formats the length like Rust's Display, for example `10px` or `50%`.
+func (d DefiniteLength) String() string {
+	if d.fraction {
+		return strconv.FormatInt(int64(saturatingF32ToI32(d.fractional*100.0)), 10) + "%"
+	}
+	return d.absolute.String()
+}
+
+const expectedDefiniteLength = "expected number with 'px', 'rem', or '%' suffix"
+
+// ParseDefiniteLength parses a number with a `px`, `rem` or `%` suffix.
+func ParseDefiniteLength(value string) (DefiniteLength, error) {
+	if percentage, ok := strings.CutSuffix(value, "%"); ok {
+		fraction, err := parseRustF32(percentage)
+		if err != nil {
+			return DefiniteLength{}, fmt.Errorf("invalid DefiniteLength '%s', expected %s: %w", value, expectedDefiniteLength, err)
+		}
+		return DefiniteLengthFraction(fraction / 100.0), nil
+	}
+	if absolute, err := ParseAbsoluteLength(value); err == nil {
+		return DefiniteLengthAbsolute(absolute), nil
+	}
+	return DefiniteLength{}, fmt.Errorf("invalid DefiniteLength '%s', expected %s", value, expectedDefiniteLength)
+}
+
+// MarshalJSONTo encodes the length as its Display string.
+func (d DefiniteLength) MarshalJSONTo(enc *jsontext.Encoder) error {
+	return enc.WriteToken(jsontext.String(d.String()))
+}
+
+// UnmarshalJSONFrom decodes the length from a string.
+func (d *DefiniteLength) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
+	s, err := readJSONString(dec, expectedDefiniteLength)
+	if err != nil {
+		return err
+	}
+	v, err := ParseDefiniteLength(s)
+	if err != nil {
+		return err
+	}
+	*d = v
+	return nil
+}
+
+// JSONSchema describes the length as a string.
+func (DefiniteLength) JSONSchema(*jsonschema.Generator) *jsonschema.Schema {
+	return &jsonschema.Schema{Type: jsonschema.Types{"string"}}
+}
+
+// Length is a definite length or auto. The zero value is zero pixels.
+type Length struct {
+	auto     bool
+	definite DefiniteLength
+}
+
+// LengthDefinite returns the Definite variant.
+func LengthDefinite(length DefiniteLength) Length {
+	return Length{definite: length}
+}
+
+// LengthAuto returns the Auto variant.
+func LengthAuto() Length {
+	return Length{auto: true}
+}
+
+// AsDefinite returns the definite length when it is the Definite variant.
+func (l Length) AsDefinite() (DefiniteLength, bool) {
+	return l.definite, !l.auto
+}
+
+// IsAuto reports whether l is the Auto variant.
+func (l Length) IsAuto() bool {
+	return l.auto
+}
+
+// IsZero reports whether l is a zero definite length.
+func (l Length) IsZero() bool {
+	return !l.auto && l.definite.IsZero()
+}
+
+// ToLength returns l.
+func (l Length) ToLength() Length {
+	return l
+}
+
+// String formats the length like Rust's Display, for example `auto` or `10px`.
+func (l Length) String() string {
+	if l.auto {
+		return "auto"
+	}
+	return l.definite.String()
+}
+
+const expectedLength = "expected 'auto' or number with 'px', 'rem', or '%' suffix"
+
+// ParseLength parses `auto` or a number with a `px`, `rem` or `%` suffix.
+func ParseLength(value string) (Length, error) {
+	if value == "auto" {
+		return LengthAuto(), nil
+	}
+	if definite, err := ParseDefiniteLength(value); err == nil {
+		return LengthDefinite(definite), nil
+	}
+	return Length{}, fmt.Errorf("invalid Length '%s', expected %s", value, expectedLength)
+}
+
+// MarshalJSONTo encodes the length as its Display string.
+func (l Length) MarshalJSONTo(enc *jsontext.Encoder) error {
+	return enc.WriteToken(jsontext.String(l.String()))
+}
+
+// UnmarshalJSONFrom decodes the length from a string.
+func (l *Length) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
+	s, err := readJSONString(dec, expectedLength)
+	if err != nil {
+		return err
+	}
+	v, err := ParseLength(s)
+	if err != nil {
+		return err
+	}
+	*l = v
+	return nil
+}
+
+// JSONSchema describes the length as a string.
+func (Length) JSONSchema(*jsonschema.Generator) *jsonschema.Schema {
+	return &jsonschema.Schema{Type: jsonschema.Types{"string"}}
+}
+
+// Relative returns a fraction of the parent's size.
+func Relative(fraction float32) DefiniteLength {
+	return DefiniteLengthFraction(fraction)
+}
+
+// Phi returns the golden ratio as a relative length.
+func Phi() DefiniteLength {
+	return Relative(math.Phi)
+}
+
+// Px returns a length in pixels.
+func Px(pixels float32) Pixels {
+	return Pixels(pixels)
+}
+
+// Auto returns the auto length.
+func Auto() Length {
+	return LengthAuto()
+}
+
+// GridLocation is the row and column placement of a grid item.
+type GridLocation struct {
+	Row    GridPlacementRange `json:"row"`
+	Column GridPlacementRange `json:"column"`
+}
+
+// String formats the location like its Rust Debug output.
+func (g GridLocation) String() string {
+	return fmt.Sprintf("GridLocation { row: %v, column: %v }", g.Row, g.Column)
+}
+
+// GridPlacementRange is upstream's Range<GridPlacement>, the start and end lines of a grid item.
+type GridPlacementRange struct {
+	Start GridPlacement `json:"start"`
+	End   GridPlacement `json:"end"`
+}
+
+// String formats the range like its Rust Debug output.
+func (r GridPlacementRange) String() string {
+	return r.Start.String() + ".." + r.End.String()
+}
+
+type gridPlacementKind uint8
+
+const (
+	gridPlacementAuto gridPlacementKind = iota
+	gridPlacementLine
+	gridPlacementSpan
+)
+
+// GridPlacement places a grid item on a line, across a span, or automatically. The zero value is Auto.
+type GridPlacement struct {
+	kind  gridPlacementKind
+	value int32
+}
+
+// GridPlacementLine returns the Line variant.
+func GridPlacementLine(index int16) GridPlacement {
+	return GridPlacement{kind: gridPlacementLine, value: int32(index)}
+}
+
+// GridPlacementSpan returns the Span variant.
+func GridPlacementSpan(span uint16) GridPlacement {
+	return GridPlacement{kind: gridPlacementSpan, value: int32(span)}
+}
+
+// GridPlacementAuto returns the Auto variant.
+func GridPlacementAuto() GridPlacement {
+	return GridPlacement{}
+}
+
+// AsLine returns the line index when it is the Line variant.
+func (g GridPlacement) AsLine() (int16, bool) {
+	return int16(g.value), g.kind == gridPlacementLine
+}
+
+// AsSpan returns the span when it is the Span variant.
+func (g GridPlacement) AsSpan() (uint16, bool) {
+	return uint16(g.value), g.kind == gridPlacementSpan
+}
+
+// IsAuto reports whether g is the Auto variant.
+func (g GridPlacement) IsAuto() bool {
+	return g.kind == gridPlacementAuto
+}
+
+// String formats the placement like its Rust Debug output.
+func (g GridPlacement) String() string {
+	switch g.kind {
+	case gridPlacementLine:
+		return "Line(" + strconv.Itoa(int(g.value)) + ")"
+	case gridPlacementSpan:
+		return "Span(" + strconv.Itoa(int(g.value)) + ")"
+	}
+	return "Auto"
+}
+
+// MarshalJSONTo encodes the placement in serde's externally tagged form.
+func (g GridPlacement) MarshalJSONTo(enc *jsontext.Encoder) error {
+	var name string
+	switch g.kind {
+	case gridPlacementLine:
+		name = "Line"
+	case gridPlacementSpan:
+		name = "Span"
+	default:
+		return enc.WriteToken(jsontext.String("Auto"))
+	}
+	if err := enc.WriteToken(jsontext.BeginObject); err != nil {
+		return err
+	}
+	if err := enc.WriteToken(jsontext.String(name)); err != nil {
+		return err
+	}
+	if err := enc.WriteToken(jsontext.Int(int64(g.value))); err != nil {
+		return err
+	}
+	return enc.WriteToken(jsontext.EndObject)
+}
+
+// UnmarshalJSONFrom decodes the placement from serde's externally tagged form.
+func (g *GridPlacement) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
+	tok, err := dec.ReadToken()
+	if err != nil {
+		return err
+	}
+	switch tok.Kind() {
+	case '"':
+		if s := tok.String(); s != "Auto" {
+			return fmt.Errorf("unknown variant `%s`, expected one of `Line`, `Span`, `Auto`", s)
+		}
+		*g = GridPlacementAuto()
+		return nil
+	case '{':
+	default:
+		return fmt.Errorf("invalid type: %v, expected enum GridPlacement", tok.Kind())
+	}
+	nameTok, err := dec.ReadToken()
+	if err != nil {
+		return err
+	}
+	name := nameTok.String()
+	valueTok, err := dec.ReadToken()
+	if err != nil {
+		return err
+	}
+	if valueTok.Kind() != '0' {
+		return fmt.Errorf("invalid type: %v, expected an integer", valueTok.Kind())
+	}
+	switch name {
+	case "Line":
+		v, err := strconv.ParseInt(valueTok.String(), 10, 16)
+		if err != nil {
+			return fmt.Errorf("invalid value for Line: %w", err)
+		}
+		*g = GridPlacementLine(int16(v))
+	case "Span":
+		v, err := strconv.ParseUint(valueTok.String(), 10, 16)
+		if err != nil {
+			return fmt.Errorf("invalid value for Span: %w", err)
+		}
+		*g = GridPlacementSpan(uint16(v))
+	default:
+		return fmt.Errorf("unknown variant `%s`, expected one of `Line`, `Span`, `Auto`", name)
+	}
+	end, err := dec.ReadToken()
+	if err != nil {
+		return err
+	}
+	if end.Kind() != '}' {
+		return errors.New("invalid length 2, expected map with a single key")
+	}
+	return nil
+}
+
+// Half is implemented by values that can be halved.
+type Half[S any] interface {
+	Half() S
+}
+
+// IsZero is implemented by values that can report whether they are zero.
+type IsZero interface {
+	IsZero() bool
+}
+
+// IsZero reports whether both coordinates are zero.
+func (p Point[T]) IsZero() bool {
+	return p.X == 0 && p.Y == 0
+}
+
+// IsZero reports whether the width or the height is zero.
+func (s Size[T]) IsZero() bool {
+	return s.Width == 0 || s.Height == 0
+}
+
+// IsZero reports whether the size is zero.
+func (b Bounds[T]) IsZero() bool {
+	return b.Size.IsZero()
+}
+
+func readJSONString(dec *jsontext.Decoder, expecting string) (string, error) {
+	tok, err := dec.ReadToken()
+	if err != nil {
+		return "", err
+	}
+	if tok.Kind() != '"' {
+		return "", fmt.Errorf("invalid type: %v, expected %s", tok.Kind(), expecting)
+	}
+	return tok.String(), nil
+}
+
+func parseRustF32(s string) (float32, error) {
+	body := s
+	if body != "" && (body[0] == '+' || body[0] == '-') {
+		body = body[1:]
+	}
+	if s == "" {
+		return 0, errors.New("cannot parse float from empty string")
+	}
+	if body == "" || strings.ContainsAny(body, "_xXpP") {
+		return 0, errors.New("invalid float literal")
+	}
+	v, err := strconv.ParseFloat(s, 32)
+	if err != nil {
+		if errors.Is(err, strconv.ErrRange) {
+			return float32(v), nil
+		}
+		return 0, errors.New("invalid float literal")
+	}
+	return float32(v), nil
+}
+
+func rustDisplayF32(v float32) string {
+	switch {
+	case v != v:
+		return "NaN"
+	case math.IsInf(float64(v), 1):
+		return "inf"
+	case math.IsInf(float64(v), -1):
+		return "-inf"
+	}
+	return strconv.FormatFloat(float64(v), 'f', -1, 32)
+}
+
+func rustDebugF32(v float32) string {
+	if v != v || math.IsInf(float64(v), 0) {
+		return rustDisplayF32(v)
+	}
+	a := math.Abs(float64(v))
+	if a != 0 && (a < 1e-4 || a >= 1e16) {
+		s := strconv.FormatFloat(float64(v), 'e', -1, 32)
+		mantissa, exponent, _ := strings.Cut(s, "e")
+		exp, _ := strconv.Atoi(exponent)
+		return mantissa + "e" + strconv.Itoa(exp)
+	}
+	s := strconv.FormatFloat(float64(v), 'f', -1, 32)
+	if !strings.Contains(s, ".") {
+		s += ".0"
+	}
+	return s
+}
+
+func signumF32(v float32) float32 {
+	if v != v {
+		return v
+	}
+	return float32(math.Copysign(1, float64(v)))
+}
+
+func saturatingF32ToU32(v float32) uint32 {
+	switch {
+	case v != v || v <= 0:
+		return 0
+	case v >= 4294967296:
+		return math.MaxUint32
+	}
+	return uint32(v)
+}
+
+func saturatingF32ToU8(v float32) uint8 {
+	switch {
+	case v != v || v <= 0:
+		return 0
+	case v >= 255:
+		return 255
+	}
+	return uint8(v)
+}
+
+func saturatingF64ToU64(v float64) uint64 {
+	switch {
+	case v != v || v <= 0:
+		return 0
+	case v >= 18446744073709551616:
+		return math.MaxUint64
+	}
+	return uint64(v)
+}
+
+func geomOrdCmp[T Number](a, b T) int {
+	c, _ := geomPartialCmp(a, b)
+	return c
+}
+
+func geomOrdMin[T Number](a, b T) T {
+	if geomOrdCmp(b, a) < 0 {
+		return b
+	}
+	return a
+}
+
+func geomOrdMax[T Number](a, b T) T {
+	if geomOrdCmp(b, a) < 0 {
+		return a
+	}
+	return b
+}
 
 func half[T Number](v T) T {
 	return v / 2

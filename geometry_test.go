@@ -318,3 +318,174 @@ func TestGeometry_ComparisonsDoNotAllocate(t *testing.T) {
 		t.Fatalf("allocs = %v, sink = %v", allocs, sink)
 	}
 }
+
+func TestGeometry_PixelsToI32(t *testing.T) {
+	for _, c := range []struct {
+		value    float32
+		expected int32
+	}{
+		{12.9, 12},
+		{-12.9, -12},
+		{math.MaxFloat32, math.MaxInt32},
+		{-math.MaxFloat32, math.MinInt32},
+		{float32(math.Inf(1)), math.MaxInt32},
+		{float32(math.Inf(-1)), math.MinInt32},
+		{float32(math.NaN()), 0},
+	} {
+		if got := Px(c.value).ToI32(); got != c.expected {
+			t.Errorf("px(%v).to_i32() = %d, want %d", c.value, got, c.expected)
+		}
+	}
+}
+
+func TestGeometry_Corners(t *testing.T) {
+	corners := Corners[int]{TopLeft: 10, TopRight: 20, BottomLeft: 30, BottomRight: 40}
+	for _, c := range []struct {
+		anchor Anchor
+		want   int
+	}{
+		{AnchorTopLeft, 10}, {AnchorBottomRight, 40}, {AnchorTopCenter, 15},
+		{AnchorBottomCenter, 35}, {AnchorLeftCenter, 20}, {AnchorRightCenter, 30},
+	} {
+		if got := corners.Corner(c.anchor); got != c.want {
+			t.Errorf("corner(%v) = %d, want %d", c.anchor, got, c.want)
+		}
+	}
+	abs := CornersOf[AbsoluteLength]{
+		TopLeft:     AbsoluteLengthPixels(15),
+		TopRight:    AbsoluteLengthRems(1),
+		BottomRight: AbsoluteLengthPixels(30),
+		BottomLeft:  AbsoluteLengthRems(2),
+	}
+	if got := CornersAbsoluteLengthToPixels(abs, 16); got != (Corners[Pixels]{TopLeft: 15, TopRight: 16, BottomRight: 30, BottomLeft: 32}) {
+		t.Errorf("to_pixels = %v", got)
+	}
+	px := Corners[Pixels]{TopLeft: 10, TopRight: 20, BottomRight: 30, BottomLeft: 40}
+	if got := px.Scale(2); got != (Corners[ScaledPixels]{TopLeft: 20, TopRight: 40, BottomRight: 60, BottomLeft: 80}) {
+		t.Errorf("scale = %v", got)
+	}
+	if px.Max() != 40 {
+		t.Errorf("max = %v", px.Max())
+	}
+	if got := px.ClampRadiiForQuadSize(Size[Pixels]{Width: 50, Height: 60}); got != (Corners[Pixels]{TopLeft: 10, TopRight: 20, BottomRight: 25, BottomLeft: 25}) {
+		t.Errorf("clamp = %v", got)
+	}
+	if got := px.Map(func(p Pixels) Rems { return Rems(float32(p) / 16) }); got != (Corners[Rems]{TopLeft: 0.625, TopRight: 1.25, BottomRight: 1.875, BottomLeft: 2.5}) {
+		t.Errorf("map = %v", got)
+	}
+	if !CornersAll[Pixels](0).IsZero() || px.IsZero() {
+		t.Error("is_zero")
+	}
+	r := CornersRefinement[Pixels]{TopLeft: Some[Pixels](3)}
+	if got := px.Refined(r); got.TopLeft != 3 || got.TopRight != 20 {
+		t.Errorf("refined = %v", got)
+	}
+	data, err := json.Marshal(px)
+	if err != nil || string(data) != `{"top_left":10,"top_right":20,"bottom_right":30,"bottom_left":40}` {
+		t.Errorf("corners json = %s, %v", data, err)
+	}
+}
+
+func TestGeometry_Units(t *testing.T) {
+	cases := []struct{ got, want string }{
+		{fmt.Sprint(Px(10)), "10px"},
+		{fmt.Sprint(Px(1.5)), "1.5px"},
+		{fmt.Sprint(Point[Pixels]{X: 1, Y: 2}), "(1px, 2px)"},
+		{fmt.Sprint(DevicePixels(3)), "3 px (device)"},
+		{fmt.Sprint(ScaledPixels(2.5)), "2.5px (scaled)"},
+		{fmt.Sprint(Rems(1.25)), "1.25rem"},
+		{fmt.Sprint(Relative(0.5)), "50%"},
+		{fmt.Sprint(Auto()), "auto"},
+		{fmt.Sprint(Rems(2).ToLength()), "2rem"},
+		{fmt.Sprint(GridPlacementLine(-2)), "Line(-2)"},
+		{fmt.Sprint(Radians(1)), "Radians(1.0)"},
+		{rustDebugF32(1e-5), "1e-5"},
+		{rustDebugF32(1.5e16), "1.5e16"},
+	}
+	for _, c := range cases {
+		if c.got != c.want {
+			t.Errorf("got %q, want %q", c.got, c.want)
+		}
+	}
+	if Px(2.5).Floor() != 2 || Px(2.5).Round() != 3 || Px(-2.5).Round() != -3 || Px(2.1).Ceil() != 3 {
+		t.Error("rounding")
+	}
+	if Px(-3).Abs() != 3 || Px(2).Pow(3) != 8 || Px(-0.0).Signum() != 1 || Px(float32(math.Copysign(0, -1))).Signum() != -1 {
+		t.Error("abs/pow/signum")
+	}
+	if Px(7).Rem(3) != 1 || Px(-1).ToU32() != 0 || ScaledPixels(1.2).ToDevicePixels() != 2 || DevicePixels(4).ToBytes(4) != 16 {
+		t.Error("conversions")
+	}
+	if Rems(2).ToPixels(16) != 32 || Percentage(0.5).ToRadians() != Radians(math.Pi) {
+		t.Error("rems/radians")
+	}
+	if (DefiniteLength{}) != Px(0).ToDefiniteLength() || (Length{}) != Px(0).ToLength() || (GridPlacement{}) != GridPlacementAuto() {
+		t.Error("defaults")
+	}
+	if Relative(0.5).ToPixels(AbsoluteLengthPixels(100), 16) != 50 || Relative(0.5).ToPixels(AbsoluteLengthRems(2), 16) != 16 {
+		t.Error("definite to_pixels")
+	}
+	if AbsoluteLengthPixels(32).ToRems(16) != 2 || !Auto().IsAuto() || Auto().IsZero() || !Px(0).ToLength().IsZero() {
+		t.Error("lengths")
+	}
+	if Relative(0.5).Neg() != Relative(-0.5) || Px(3).ToDefiniteLength().Neg() != Px(-3).ToDefiniteLength() {
+		t.Error("neg")
+	}
+	if got := SizeLengthFull(); got.Width != Relative(1).ToLength() || got.Height != Relative(1).ToLength() {
+		t.Errorf("full = %v", got)
+	}
+	if got := EdgesDefiniteLengthToPixels(EdgesOf[DefiniteLength]{Top: Relative(0.5), Right: Relative(0.25), Bottom: Px(1).ToDefiniteLength(), Left: Rems(1).ToDefiniteLength()}, SizeOf[AbsoluteLength]{Width: AbsoluteLengthPixels(100), Height: AbsoluteLengthPixels(10)}, 16); got != (Edges[Pixels]{Top: 5, Right: 25, Bottom: 1, Left: 16}) {
+		t.Errorf("edges to_pixels = %v", got)
+	}
+	if EdgesLengthAuto().Top != Auto() || EdgesLengthZero().Left != Px(0).ToLength() || EdgesAbsoluteLengthToPixels(EdgesAbsoluteLengthZero(), 16) != (Edges[Pixels]{}) {
+		t.Error("edges helpers")
+	}
+}
+
+func TestGeometry_LengthParse(t *testing.T) {
+	for _, c := range []struct {
+		in   string
+		want Length
+	}{
+		{"auto", Auto()},
+		{"10px", Px(10).ToLength()},
+		{"-1.5rem", Rems(-1.5).ToLength()},
+		{"50%", Relative(0.5).ToLength()},
+	} {
+		got, err := ParseLength(c.in)
+		if err != nil || got != c.want {
+			t.Errorf("parse %q = %v, %v", c.in, got, err)
+		}
+	}
+	for _, bad := range []string{"", "10", "px", "0x1px", "1_0px", "autox"} {
+		if _, err := ParseLength(bad); err == nil {
+			t.Errorf("%q accepted", bad)
+		}
+	}
+	if _, err := ParseLength("10"); err == nil || err.Error() != "invalid Length '10', expected expected 'auto' or number with 'px', 'rem', or '%' suffix" {
+		t.Errorf("error = %v", err)
+	}
+	if _, err := ParsePixels("10"); err == nil || err.Error() != "expected 'px' suffix" {
+		t.Errorf("error = %v", err)
+	}
+	data, err := json.Marshal(EdgesOf[Length]{Top: Auto(), Right: Px(1).ToLength(), Bottom: Rems(2).ToLength(), Left: Relative(0.25).ToLength()})
+	if err != nil || string(data) != `{"top":"auto","right":"1px","bottom":"2rem","left":"25%"}` {
+		t.Fatalf("length json = %s, %v", data, err)
+	}
+	var back EdgesOf[Length]
+	if err := json.Unmarshal(data, &back); err != nil || back.Left != Relative(0.25).ToLength() || !back.Top.IsAuto() {
+		t.Fatalf("length round trip = %v, %v", back, err)
+	}
+	if err := json.Unmarshal([]byte(`5`), new(AbsoluteLength)); err == nil {
+		t.Error("number accepted as length")
+	}
+	loc := GridLocation{Row: GridPlacementRange{Start: GridPlacementLine(1), End: GridPlacementSpan(2)}}
+	data, err = json.Marshal(loc)
+	if err != nil || string(data) != `{"row":{"start":{"Line":1},"end":{"Span":2}},"column":{"start":"Auto","end":"Auto"}}` {
+		t.Fatalf("grid json = %s, %v", data, err)
+	}
+	var locBack GridLocation
+	if err := json.Unmarshal(data, &locBack); err != nil || locBack != loc {
+		t.Fatalf("grid round trip = %v, %v", locBack, err)
+	}
+}

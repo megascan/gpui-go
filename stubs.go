@@ -22,3 +22,11 @@ type PlatformDisplay interface {
 	Bounds() Bounds[Pixels]
 	VisibleBounds() Bounds[Pixels]
 }
+
+// Window is a GPUI window (M0-window-core ports it).
+type Window struct{}
+
+// RemSize returns the window's rem size (M0-window-core ports it).
+func (w *Window) RemSize() Pixels {
+	panic("gpui: unimplemented Window.RemSize")
+}

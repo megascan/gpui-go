@@ -45,65 +45,65 @@ Go target: `color.go` (package `gpui`), tests in `color_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `rgb` | fn | 14 |  | `Rgb` | todo |
-| `rgba` | fn | 20 |  | `NewRgba` | todo |
-| `swap_rgba_pa_to_bgra` | fn | 26 |  | `SwapRgbaPaToBgra` | todo |
-| `Rgba` | struct | 39 |  | `Rgba` | todo |
-| `Rgba::blend` | method | 58 |  | `(Rgba).Blend` | todo |
-| `Rgba::alpha` | method | 95 |  | `(Rgba).Alpha` | todo |
-| `Rgba::opacity` | method | 126 |  | `(Rgba).Opacity` | todo |
-| `Hsla` | struct | 334 |  | `Hsla` | todo |
-| `Hsla::opaque_strategy` | assoc-fn | 357 | feat:proptest | `HslaOpaqueStrategy` | todo |
-| `hsla` | fn | 424 |  | `NewHsla` | todo |
-| `black` | fn | 434 |  | `Black` | todo |
-| `transparent_black` | fn | 444 |  | `TransparentBlack` | todo |
-| `transparent_white` | fn | 454 |  | `TransparentWhite` | todo |
-| `opaque_grey` | fn | 464 |  | `OpaqueGrey` | todo |
-| `white` | fn | 474 |  | `White` | todo |
-| `red` | fn | 484 |  | `Red` | todo |
-| `blue` | fn | 494 |  | `Blue` | todo |
-| `green` | fn | 504 |  | `Green` | todo |
-| `yellow` | fn | 514 |  | `Yellow` | todo |
-| `Hsla::to_rgb` | method | 525 |  | `(Hsla).ToRgb` | todo |
-| `Hsla::red` | assoc-fn | 530 |  | `HslaRed` | todo |
-| `Hsla::green` | assoc-fn | 535 |  | `HslaGreen` | todo |
-| `Hsla::blue` | assoc-fn | 540 |  | `HslaBlue` | todo |
-| `Hsla::black` | assoc-fn | 545 |  | `HslaBlack` | todo |
-| `Hsla::white` | assoc-fn | 550 |  | `HslaWhite` | todo |
-| `Hsla::transparent_black` | assoc-fn | 555 |  | `HslaTransparentBlack` | todo |
-| `Hsla::is_transparent` | method | 560 |  | `(Hsla).IsTransparent` | todo |
-| `Hsla::is_opaque` | method | 565 |  | `(Hsla).IsOpaque` | todo |
-| `Hsla::blend` | method | 580 |  | `(Hsla).Blend` | todo |
-| `Hsla::grayscale` | method | 596 |  | `(Hsla).Grayscale` | todo |
-| `Hsla::fade_out` | method | 607 |  | `(Hsla).FadeOut` | todo |
-| `Hsla::opacity` | method | 637 |  | `(Hsla).Opacity` | todo |
-| `Hsla::alpha` | method | 667 |  | `(Hsla).Alpha` | todo |
-| `ColorSpace` | enum | 759 |  | `ColorSpace` | todo |
-| `Background` | struct | 779 |  | `Background` | todo |
-| `pattern_slash` | fn | 827 |  | `PatternSlash` | todo |
-| `checkerboard` | fn | 841 |  | `Checkerboard` | todo |
-| `solid_background` | fn | 851 |  | `SolidBackground` | todo |
-| `linear_gradient` | fn | 865 |  | `LinearGradient` | todo |
-| `LinearColorStop` | struct | 883 |  | `LinearColorStop` | todo |
-| `linear_color_stop` | fn | 893 |  | `NewLinearColorStop` | todo |
-| `LinearColorStop::opacity` | method | 902 |  | `(LinearColorStop).Opacity` | todo |
-| `Background::as_solid` | method | 912 |  | `(Background).AsSolid` | todo |
-| `Background::color_space` | method | 923 |  | `(Background).ColorSpace` | todo |
-| `Background::opacity` | method | 929 |  | `(Background).Opacity` | todo |
-| `Background::is_transparent` | method | 940 |  | `(Background).IsTransparent` | todo |
+| `rgb` | fn | 14 |  | `Rgb` | done |
+| `rgba` | fn | 20 |  | `NewRgba` | done |
+| `swap_rgba_pa_to_bgra` | fn | 26 |  | `SwapRgbaPaToBgra` | done |
+| `Rgba` | struct | 39 |  | `Rgba` | done |
+| `Rgba::blend` | method | 58 |  | `(Rgba).Blend` | done |
+| `Rgba::alpha` | method | 95 |  | `(Rgba).Alpha` | done |
+| `Rgba::opacity` | method | 126 |  | `(Rgba).Opacity` | done |
+| `Hsla` | struct | 334 |  | `Hsla` | done |
+| `Hsla::opaque_strategy` | assoc-fn | 357 | feat:proptest | `HslaOpaqueStrategy` | dev:D-PROPTEST |
+| `hsla` | fn | 424 |  | `NewHsla` | done |
+| `black` | fn | 434 |  | `Black` | done |
+| `transparent_black` | fn | 444 |  | `TransparentBlack` | done |
+| `transparent_white` | fn | 454 |  | `TransparentWhite` | done |
+| `opaque_grey` | fn | 464 |  | `OpaqueGrey` | done |
+| `white` | fn | 474 |  | `White` | done |
+| `red` | fn | 484 |  | `Red` | done |
+| `blue` | fn | 494 |  | `Blue` | done |
+| `green` | fn | 504 |  | `Green` | done |
+| `yellow` | fn | 514 |  | `Yellow` | done |
+| `Hsla::to_rgb` | method | 525 |  | `(Hsla).ToRgb` | done |
+| `Hsla::red` | assoc-fn | 530 |  | `HslaRed` | done |
+| `Hsla::green` | assoc-fn | 535 |  | `HslaGreen` | done |
+| `Hsla::blue` | assoc-fn | 540 |  | `HslaBlue` | done |
+| `Hsla::black` | assoc-fn | 545 |  | `HslaBlack` | done |
+| `Hsla::white` | assoc-fn | 550 |  | `HslaWhite` | done |
+| `Hsla::transparent_black` | assoc-fn | 555 |  | `HslaTransparentBlack` | done |
+| `Hsla::is_transparent` | method | 560 |  | `(Hsla).IsTransparent` | done |
+| `Hsla::is_opaque` | method | 565 |  | `(Hsla).IsOpaque` | done |
+| `Hsla::blend` | method | 580 |  | `(Hsla).Blend` | done |
+| `Hsla::grayscale` | method | 596 |  | `(Hsla).Grayscale` | done |
+| `Hsla::fade_out` | method | 607 |  | `(Hsla).FadeOut` | done |
+| `Hsla::opacity` | method | 637 |  | `(Hsla).Opacity` | done |
+| `Hsla::alpha` | method | 667 |  | `(Hsla).Alpha` | done |
+| `ColorSpace` | enum | 759 |  | `ColorSpace` | done |
+| `Background` | struct | 779 |  | `Background` | done |
+| `pattern_slash` | fn | 827 |  | `PatternSlash` | done |
+| `checkerboard` | fn | 841 |  | `Checkerboard` | done |
+| `solid_background` | fn | 851 |  | `SolidBackground` | done |
+| `linear_gradient` | fn | 865 |  | `LinearGradient` | done |
+| `LinearColorStop` | struct | 883 |  | `LinearColorStop` | done |
+| `linear_color_stop` | fn | 893 |  | `NewLinearColorStop` | done |
+| `LinearColorStop::opacity` | method | 902 |  | `(LinearColorStop).Opacity` | done |
+| `Background::as_solid` | method | 912 |  | `(Background).AsSolid` | done |
+| `Background::color_space` | method | 923 |  | `(Background).ColorSpace` | done |
+| `Background::opacity` | method | 929 |  | `(Background).Opacity` | done |
+| `Background::is_transparent` | method | 940 |  | `(Background).IsTransparent` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_deserialize_three_value_hex_to_rgba` | test | 977 |  | `TestColor_DeserializeThreeValueHexToRgba` | todo |
-| `test_deserialize_four_value_hex_to_rgba` | test | 984 |  | `TestColor_DeserializeFourValueHexToRgba` | todo |
-| `test_deserialize_six_value_hex_to_rgba` | test | 991 |  | `TestColor_DeserializeSixValueHexToRgba` | todo |
-| `test_deserialize_eight_value_hex_to_rgba` | test | 998 |  | `TestColor_DeserializeEightValueHexToRgba` | todo |
-| `test_deserialize_eight_value_hex_with_padding_to_rgba` | test | 1005 |  | `TestColor_DeserializeEightValueHexWithPaddingToRgba` | todo |
-| `test_deserialize_eight_value_hex_with_mixed_case_to_rgba` | test | 1012 |  | `TestColor_DeserializeEightValueHexWithMixedCaseToRgba` | todo |
-| `test_background_solid` | test | 1019 |  | `TestColor_BackgroundSolid` | todo |
-| `test_background_linear_gradient` | test | 1032 |  | `TestColor_BackgroundLinearGradient` | todo |
-| `test_rgba_alpha` | test | 1047 |  | `TestColor_RgbaAlpha` | todo |
-| `test_rgba_opacity` | test | 1060 |  | `TestColor_RgbaOpacity` | todo |
+| `test_deserialize_three_value_hex_to_rgba` | test | 977 |  | `TestColor_DeserializeThreeValueHexToRgba` | done |
+| `test_deserialize_four_value_hex_to_rgba` | test | 984 |  | `TestColor_DeserializeFourValueHexToRgba` | done |
+| `test_deserialize_six_value_hex_to_rgba` | test | 991 |  | `TestColor_DeserializeSixValueHexToRgba` | done |
+| `test_deserialize_eight_value_hex_to_rgba` | test | 998 |  | `TestColor_DeserializeEightValueHexToRgba` | done |
+| `test_deserialize_eight_value_hex_with_padding_to_rgba` | test | 1005 |  | `TestColor_DeserializeEightValueHexWithPaddingToRgba` | done |
+| `test_deserialize_eight_value_hex_with_mixed_case_to_rgba` | test | 1012 |  | `TestColor_DeserializeEightValueHexWithMixedCaseToRgba` | done |
+| `test_background_solid` | test | 1019 |  | `TestColor_BackgroundSolid` | done |
+| `test_background_linear_gradient` | test | 1032 |  | `TestColor_BackgroundLinearGradient` | done |
+| `test_rgba_alpha` | test | 1047 |  | `TestColor_RgbaAlpha` | done |
+| `test_rgba_opacity` | test | 1060 |  | `TestColor_RgbaOpacity` | done |
 
 ## gpui/src/colors.rs
 
@@ -150,8 +150,8 @@ Go target: `geometry.go` (package `gpui`), tests in `geometry_test.go`
 | `Size<Pixels>::scale` | method | 498 |  | `(Size).Scale` | done |
 | `Size::max` | method | 553 |  | `(Size).Max` | done |
 | `Size::min` | method | 583 |  | `(Size).Min` | done |
-| `Size<Length>::full` | assoc-fn | 678 |  | `SizeLengthFull` | blocked:M0-geometry-units |
-| `Size<Length>::auto` | assoc-fn | 696 |  | `SizeLengthAuto` | blocked:M0-geometry-units |
+| `Size<Length>::full` | assoc-fn | 678 |  | `SizeLengthFull` | done |
+| `Size<Length>::auto` | assoc-fn | 696 |  | `SizeLengthAuto` | done |
 | `Bounds` | struct | 724 |  | `Bounds` | done |
 | `bounds` | fn | 732 |  | `NewBounds` | done |
 | `Bounds<Pixels>::centered` | assoc-fn | 741 |  | `BoundsCentered` | done |
@@ -198,12 +198,12 @@ Go target: `geometry.go` (package `gpui`), tests in `geometry_test.go`
 | `Edges::all` | assoc-fn | 1868 |  | `EdgesAll` | done |
 | `Edges::map` | method | 1899 |  | `(Edges).Map` | done |
 | `Edges::any` | method | 1938 |  | `(Edges).Any` | done |
-| `Edges<Length>::auto` | assoc-fn | 1965 |  | `EdgesLengthAuto` | blocked:M0-geometry-units |
-| `Edges<Length>::zero` | assoc-fn | 1993 |  | `EdgesLengthZero` | blocked:M0-geometry-units |
-| `Edges<DefiniteLength>::zero` | assoc-fn | 2023 |  | `EdgesDefiniteLengthZero` | blocked:M0-geometry-units |
-| `Edges<DefiniteLength>::to_pixels` | method | 2068 |  | `EdgesDefiniteLengthToPixels` | blocked:M0-geometry-units |
-| `Edges<AbsoluteLength>::zero` | assoc-fn | 2098 |  | `EdgesAbsoluteLengthZero` | blocked:M0-geometry-units |
-| `Edges<AbsoluteLength>::to_pixels` | method | 2138 |  | `EdgesAbsoluteLengthToPixels` | blocked:M0-geometry-units |
+| `Edges<Length>::auto` | assoc-fn | 1965 |  | `EdgesLengthAuto` | done |
+| `Edges<Length>::zero` | assoc-fn | 1993 |  | `EdgesLengthZero` | done |
+| `Edges<DefiniteLength>::zero` | assoc-fn | 2023 |  | `EdgesDefiniteLengthZero` | done |
+| `Edges<DefiniteLength>::to_pixels` | method | 2068 |  | `EdgesDefiniteLengthToPixels` | done |
+| `Edges<AbsoluteLength>::zero` | assoc-fn | 2098 |  | `EdgesAbsoluteLengthZero` | done |
+| `Edges<AbsoluteLength>::to_pixels` | method | 2138 |  | `EdgesAbsoluteLengthToPixels` | done |
 | `Edges<Pixels>::scale` | method | 2177 |  | `(Edges).Scale` | done |
 | `Edges<Pixels>::max` | method | 2191 |  | `(Edges).Max` | done |
 | `Anchor` | enum | 2247 |  | `Anchor` | done |
@@ -211,65 +211,65 @@ Go target: `geometry.go` (package `gpui`), tests in `geometry_test.go`
 | `Anchor::other_side_along` | method | 2299 |  | `(Anchor).OtherSideAlong` | done |
 | `Anchor::is_center` | method | 2326 |  | `(Anchor).IsCenter` | done |
 | `Anchor::is_bottom` | method | 2335 |  | `(Anchor).IsBottom` | done |
-| `Corners` | struct | 2349 |  | `Corners` | todo |
-| `Corners::all` | assoc-fn | 2388 |  | `CornersAll` | todo |
-| `Corners::corner` | method | 2441 |  | `(Corners).Corner` | todo |
-| `Corners<AbsoluteLength>::to_pixels` | method | 2484 |  | `CornersAbsoluteLengthToPixels(recv, ...) func` | todo |
-| `Corners<Pixels>::scale` | method | 2524 |  | `(Corners).Scale` | todo |
-| `Corners<Pixels>::max` | method | 2539 |  | `(Corners).Max` | todo |
-| `Corners::clamp_radii_for_quad_size` | method | 2558 |  | `(Corners).ClampRadiiForQuadSize` | todo |
-| `Corners::map` | method | 2603 |  | `(Corners).Map` | todo |
-| `Radians` | struct | 2687 |  | `Radians` | todo |
-| `radians` | fn | 2690 |  | `Radians(x) conversion` | todo |
-| `Percentage` | struct | 2712 |  | `Percentage` | todo |
-| `percentage` | fn | 2715 |  | `Percentage(x) conversion` | todo |
-| `Pixels` | struct | 2768 |  | `Pixels` | todo |
-| `Pixels::ZERO` | assoc-const | 2874 |  | `PixelsZero` | todo |
-| `Pixels::MAX` | assoc-const | 2876 |  | `PixelsMax` | todo |
-| `Pixels::MIN` | assoc-const | 2878 |  | `PixelsMin` | todo |
-| `Pixels::as_f32` | method | 2881 |  | `(Pixels).AsF32` | todo |
-| `Pixels::to_i32` | method | 2887 |  | `(Pixels).ToI32` | todo |
-| `Pixels::floor` | method | 2896 |  | `(Pixels).Floor` | todo |
-| `Pixels::round` | method | 2905 |  | `(Pixels).Round` | todo |
-| `Pixels::ceil` | method | 2914 |  | `(Pixels).Ceil` | todo |
-| `Pixels::scale` | method | 2927 |  | `(Pixels).Scale` | todo |
-| `Pixels::pow` | method | 2940 |  | `(Pixels).Pow` | todo |
-| `Pixels::abs` | method | 2949 |  | `(Pixels).Abs` | todo |
-| `Pixels::signum` | method | 2960 |  | `(Pixels).Signum` | todo |
-| `Pixels::to_f64` | method | 2969 |  | `(Pixels).ToF64` | todo |
-| `DevicePixels` | struct | 3081 |  | `DevicePixels` | todo |
-| `DevicePixels::to_bytes` | method | 3106 |  | `(DevicePixels).ToBytes` | todo |
-| `ScaledPixels` | struct | 3174 |  | `ScaledPixels` | todo |
-| `ScaledPixels::as_f32` | method | 3178 |  | `(ScaledPixels).AsF32` | todo |
-| `ScaledPixels::floor` | method | 3187 |  | `(ScaledPixels).Floor` | todo |
-| `ScaledPixels::round` | method | 3196 |  | `(ScaledPixels).Round` | todo |
-| `ScaledPixels::ceil` | method | 3205 |  | `(ScaledPixels).Ceil` | todo |
-| `Rems` | struct | 3349 |  | `Rems` | todo |
-| `Rems::ZERO` | assoc-const | 3353 |  | `RemsZero` | todo |
-| `Rems::to_pixels` | method | 3355 |  | `(Rems).ToPixels` | todo |
-| `Rems::from_pixels` | assoc-fn | 3359 |  | `RemsFromPixels` | todo |
-| `AbsoluteLength` | enum | 3409 |  | `AbsoluteLength` | todo |
-| `AbsoluteLength::is_zero` | method | 3418 |  | `(AbsoluteLength).IsZero` | todo |
-| `AbsoluteLength::to_pixels` | method | 3460 |  | `(AbsoluteLength).ToPixels` | todo |
-| `AbsoluteLength::to_rems` | method | 3476 |  | `(AbsoluteLength).ToRems` | todo |
-| `DefiniteLength` | enum | 3571 |  | `DefiniteLength` | todo |
-| `DefiniteLength::to_pixels` | method | 3607 |  | `(DefiniteLength).ToPixels` | todo |
-| `Length` | enum | 3722 |  | `Length` | todo |
-| `relative` | fn | 3816 |  | `Relative` | todo |
-| `phi` | fn | 3821 |  | `Phi` | todo |
-| `rems` | fn | 3834 |  | `Rems(x) conversion` | todo |
-| `px` | fn | 3847 |  | `Px` | todo |
-| `auto` | fn | 3862 |  | `Auto` | todo |
-| `GridLocation` | struct | 3904 |  | `GridLocation` | todo |
-| `GridPlacement` | enum | 3913 |  | `GridPlacement` | todo |
-| `Half` | trait | 3938 |  | `Half` | todo |
-| `Half::half` | trait-method | 3944 |  | `Half.Half` | todo |
-| `IsZero` | trait | 3989 |  | `IsZero` | todo |
-| `IsZero::is_zero` | trait-method | 3995 |  | `IsZero.IsZero` | todo |
+| `Corners` | struct | 2349 |  | `Corners` | done |
+| `Corners::all` | assoc-fn | 2388 |  | `CornersAll` | done |
+| `Corners::corner` | method | 2441 |  | `(Corners).Corner` | done |
+| `Corners<AbsoluteLength>::to_pixels` | method | 2484 |  | `CornersAbsoluteLengthToPixels` | done |
+| `Corners<Pixels>::scale` | method | 2524 |  | `(Corners).Scale` | done |
+| `Corners<Pixels>::max` | method | 2539 |  | `(Corners).Max` | done |
+| `Corners::clamp_radii_for_quad_size` | method | 2558 |  | `(Corners).ClampRadiiForQuadSize` | done |
+| `Corners::map` | method | 2603 |  | `(Corners).Map` | done |
+| `Radians` | struct | 2687 |  | `Radians` | done |
+| `radians` | fn | 2690 |  | `Radians` | done |
+| `Percentage` | struct | 2712 |  | `Percentage` | done |
+| `percentage` | fn | 2715 |  | `NewPercentage` | dev:D-NAME |
+| `Pixels` | struct | 2768 |  | `Pixels` | done |
+| `Pixels::ZERO` | assoc-const | 2874 |  | `PixelsZero` | done |
+| `Pixels::MAX` | assoc-const | 2876 |  | `PixelsMax` | done |
+| `Pixels::MIN` | assoc-const | 2878 |  | `PixelsMin` | done |
+| `Pixels::as_f32` | method | 2881 |  | `(Pixels).AsF32` | done |
+| `Pixels::to_i32` | method | 2887 |  | `(Pixels).ToI32` | done |
+| `Pixels::floor` | method | 2896 |  | `(Pixels).Floor` | done |
+| `Pixels::round` | method | 2905 |  | `(Pixels).Round` | done |
+| `Pixels::ceil` | method | 2914 |  | `(Pixels).Ceil` | done |
+| `Pixels::scale` | method | 2927 |  | `(Pixels).Scale` | done |
+| `Pixels::pow` | method | 2940 |  | `(Pixels).Pow` | done |
+| `Pixels::abs` | method | 2949 |  | `(Pixels).Abs` | done |
+| `Pixels::signum` | method | 2960 |  | `(Pixels).Signum` | done |
+| `Pixels::to_f64` | method | 2969 |  | `(Pixels).ToF64` | done |
+| `DevicePixels` | struct | 3081 |  | `DevicePixels` | done |
+| `DevicePixels::to_bytes` | method | 3106 |  | `(DevicePixels).ToBytes` | done |
+| `ScaledPixels` | struct | 3174 |  | `ScaledPixels` | done |
+| `ScaledPixels::as_f32` | method | 3178 |  | `(ScaledPixels).AsF32` | done |
+| `ScaledPixels::floor` | method | 3187 |  | `(ScaledPixels).Floor` | done |
+| `ScaledPixels::round` | method | 3196 |  | `(ScaledPixels).Round` | done |
+| `ScaledPixels::ceil` | method | 3205 |  | `(ScaledPixels).Ceil` | done |
+| `Rems` | struct | 3349 |  | `Rems` | done |
+| `Rems::ZERO` | assoc-const | 3353 |  | `RemsZero` | done |
+| `Rems::to_pixels` | method | 3355 |  | `(Rems).ToPixels` | done |
+| `Rems::from_pixels` | assoc-fn | 3359 |  | `RemsFromPixels` | done |
+| `AbsoluteLength` | enum | 3409 |  | `AbsoluteLength` | done |
+| `AbsoluteLength::is_zero` | method | 3418 |  | `(AbsoluteLength).IsZero` | done |
+| `AbsoluteLength::to_pixels` | method | 3460 |  | `(AbsoluteLength).ToPixels` | done |
+| `AbsoluteLength::to_rems` | method | 3476 |  | `(AbsoluteLength).ToRems` | done |
+| `DefiniteLength` | enum | 3571 |  | `DefiniteLength` | done |
+| `DefiniteLength::to_pixels` | method | 3607 |  | `(DefiniteLength).ToPixels` | done |
+| `Length` | enum | 3722 |  | `Length` | done |
+| `relative` | fn | 3816 |  | `Relative` | done |
+| `phi` | fn | 3821 |  | `Phi` | done |
+| `rems` | fn | 3834 |  | `Rems` | done |
+| `px` | fn | 3847 |  | `Px` | done |
+| `auto` | fn | 3862 |  | `Auto` | done |
+| `GridLocation` | struct | 3904 |  | `GridLocation` | done |
+| `GridPlacement` | enum | 3913 |  | `GridPlacement` | done |
+| `Half` | trait | 3938 |  | `Half[S]` | done |
+| `Half::half` | trait-method | 3944 |  | `Half.Half` | done |
+| `IsZero` | trait | 3989 |  | `IsZero` | done |
+| `IsZero::is_zero` | trait-method | 3995 |  | `IsZero.IsZero` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_pixels_to_i32` | test | 4087 |  | `TestGeometry_PixelsToI32` | todo |
+| `test_pixels_to_i32` | test | 4087 |  | `TestGeometry_PixelsToI32` | done |
 | `test_bounds_join` | test | 4102 |  | `TestGeometry_BoundsJoin` | done |
 | `test_bounds_intersects` | test | 4133 |  | `TestGeometry_BoundsIntersects` | done |
 
@@ -345,3 +345,14 @@ Go target: `util.go` (package `gpui`), tests in `util_test.go`
 - D-GEOM: numeric family `Point[T Number]`, `Size`, `Bounds`, `Edges` with operator methods (`Add`, `AddAssign`, `Sub`, `SubAssign`, `Neg`, `Mul`, `MulAssign`, `Div`, `Bounds.Add(Point)`, `Bounds.Sub(Point)`) matching upstream's derive_more / ops impls; scalar operands are `rhs T`. Non-numeric family `PointOf[T any]`, `SizeOf`, `EdgesOf` with `Map`, `Along`, `ApplyAlong`, `EdgesOfAll`, `Any`. `Along` is `Along[U, S]`.
 - Cross-family maps: `(Point|Size|Edges).MapOf[U any]` return the Of type; `(PointOf|SizeOf|EdgesOf).MapNumber[U Number]` return the numeric type; `Map` stays within a family. `Bounds` has no Of variant.
 - `Bounds::localize` returns `(Point[T], bool)` (D-OPT); `Bounds::centered` / `maximized` take `Option[DisplayID]`.
+
+## Notes (M0-geometry-units)
+
+- Corners[T Number] / CornersOf[T any] follow D-GEOM; `Corners<AbsoluteLength>::to_pixels` is the free function `CornersAbsoluteLengthToPixels`. Refinements `CornersRefinement[T]`, `CornersOfRefinement[T]` come from refinegen.
+- AbsoluteLength, DefiniteLength, Length and GridPlacement are comparable tagged structs whose zero value is upstream's Default (px(0), Auto for GridPlacement). Variant constructors `AbsoluteLengthPixels`, `AbsoluteLengthRems`, `DefiniteLengthAbsolute`, `DefiniteLengthFraction`, `LengthDefinite`, `LengthAuto`, `GridPlacementLine`, `GridPlacementSpan`, `GridPlacementAuto`; accessors `AsPixels`, `AsRems`, `AsAbsolute`, `AsFraction`, `AsDefinite`, `IsAuto`, `AsLine`, `AsSpan`.
+- `From` impls become methods: `ToLength`, `ToDefiniteLength`, `ToAbsoluteLength` (IntoLength / IntoDefiniteLength / IntoAbsoluteLength), `(Rgba).ToHsla`, `(Hsla).ToRgb`, `(Rgba|Hsla).ToBackground`, `(Rgba).ToU32`, `(ScaledPixels).ToDevicePixels` (ceil), `(DevicePixels).ToScaledPixels`, `(Pixels).ToU32/ToUsize`, `(ScaledPixels).ToU32` (Rust `as` saturation), `(Percentage).ToRadians`, `SizeDefiniteLengthFromPixels`, `SizeAbsoluteLengthFromPixels`. `TryFrom<&str>` impls are `ParsePixels`, `ParseRems`, `ParseAbsoluteLength`, `ParseDefiniteLength`, `ParseLength`, `ParseRgba`.
+- `percentage()` is `NewPercentage` (keeps the debug assertion); `Percentage(x)` is the unchecked conversion.
+- Hsla's PartialEq / Ord (total_cmp) are `(Hsla).Eq` / `(Hsla).Cmp`; Go `==` is IEEE. Background and LinearColorStop have `Eq` using it. refineable.Eq picks up these methods.
+- BackgroundTag and ColorSpace are `uint32` (repr(C) enums are 4 bytes in the GPU struct). Background is 72 bytes, fields unexported as upstream's pub(crate).
+- `Range<GridPlacement>` is `GridPlacementRange{Start, End}`.
+- Edges / EdgesOf got their serde json tags (`top`, ...) which M0-geometry left out.

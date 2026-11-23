@@ -1227,3 +1227,465 @@ func (r EdgesOfRefinement[T]) String() string {
 	}
 	return debugStruct.FinishNonExhaustive()
 }
+
+// CornersRefinement is a refinable version of Corners, see that documentation for details.
+type CornersRefinement[T Number] struct {
+	TopLeft     gpuiutil.Option[T] `json:"top_left,omitzero"`
+	TopRight    gpuiutil.Option[T] `json:"top_right,omitzero"`
+	BottomRight gpuiutil.Option[T] `json:"bottom_right,omitzero"`
+	BottomLeft  gpuiutil.Option[T] `json:"bottom_left,omitzero"`
+}
+
+// Refine applies the Some values of refinement to s.
+func (s *Corners[T]) Refine(refinement *CornersRefinement[T]) {
+	if value, ok := refinement.TopLeft.Get(); ok {
+		s.TopLeft = value
+	}
+	if value, ok := refinement.TopRight.Get(); ok {
+		s.TopRight = value
+	}
+	if value, ok := refinement.BottomRight.Get(); ok {
+		s.BottomRight = value
+	}
+	if value, ok := refinement.BottomLeft.Get(); ok {
+		s.BottomLeft = value
+	}
+}
+
+// Refined returns s with refinement applied.
+func (s Corners[T]) Refined(refinement CornersRefinement[T]) Corners[T] {
+	if value, ok := refinement.TopLeft.Get(); ok {
+		s.TopLeft = value
+	}
+	if value, ok := refinement.TopRight.Get(); ok {
+		s.TopRight = value
+	}
+	if value, ok := refinement.BottomRight.Get(); ok {
+		s.BottomRight = value
+	}
+	if value, ok := refinement.BottomLeft.Get(); ok {
+		s.BottomLeft = value
+	}
+	return s
+}
+
+// IsSupersetOf reports whether s already holds every value refinement sets.
+func (s Corners[T]) IsSupersetOf(refinement *CornersRefinement[T]) bool {
+	if refinementValue, ok := refinement.TopLeft.Get(); ok && !refineable.Eq(s.TopLeft, refinementValue) {
+		return false
+	}
+	if refinementValue, ok := refinement.TopRight.Get(); ok && !refineable.Eq(s.TopRight, refinementValue) {
+		return false
+	}
+	if refinementValue, ok := refinement.BottomRight.Get(); ok && !refineable.Eq(s.BottomRight, refinementValue) {
+		return false
+	}
+	if refinementValue, ok := refinement.BottomLeft.Get(); ok && !refineable.Eq(s.BottomLeft, refinementValue) {
+		return false
+	}
+	return true
+}
+
+// Subtract returns the values of s that refinement does not already hold.
+func (s Corners[T]) Subtract(refinement *CornersRefinement[T]) CornersRefinement[T] {
+	var out CornersRefinement[T]
+	if refinementValue, ok := refinement.TopLeft.Get(); !ok || !refineable.Eq(s.TopLeft, refinementValue) {
+		out.TopLeft = gpuiutil.Some(s.TopLeft)
+	}
+	if refinementValue, ok := refinement.TopRight.Get(); !ok || !refineable.Eq(s.TopRight, refinementValue) {
+		out.TopRight = gpuiutil.Some(s.TopRight)
+	}
+	if refinementValue, ok := refinement.BottomRight.Get(); !ok || !refineable.Eq(s.BottomRight, refinementValue) {
+		out.BottomRight = gpuiutil.Some(s.BottomRight)
+	}
+	if refinementValue, ok := refinement.BottomLeft.Get(); !ok || !refineable.Eq(s.BottomLeft, refinementValue) {
+		out.BottomLeft = gpuiutil.Some(s.BottomLeft)
+	}
+	return out
+}
+
+// Refine applies the Some values of refinement to r.
+func (r *CornersRefinement[T]) Refine(refinement *CornersRefinement[T]) {
+	if refinement.TopLeft.IsSome() {
+		r.TopLeft = refinement.TopLeft
+	}
+	if refinement.TopRight.IsSome() {
+		r.TopRight = refinement.TopRight
+	}
+	if refinement.BottomRight.IsSome() {
+		r.BottomRight = refinement.BottomRight
+	}
+	if refinement.BottomLeft.IsSome() {
+		r.BottomLeft = refinement.BottomLeft
+	}
+}
+
+// Refined returns r with refinement applied.
+func (r CornersRefinement[T]) Refined(refinement CornersRefinement[T]) CornersRefinement[T] {
+	if refinement.TopLeft.IsSome() {
+		r.TopLeft = refinement.TopLeft
+	}
+	if refinement.TopRight.IsSome() {
+		r.TopRight = refinement.TopRight
+	}
+	if refinement.BottomRight.IsSome() {
+		r.BottomRight = refinement.BottomRight
+	}
+	if refinement.BottomLeft.IsSome() {
+		r.BottomLeft = refinement.BottomLeft
+	}
+	return r
+}
+
+// IsSupersetOf reports whether r already holds every value refinement sets.
+func (r CornersRefinement[T]) IsSupersetOf(refinement *CornersRefinement[T]) bool {
+	if refinement.TopLeft.IsSome() && !refineable.OptionEq(r.TopLeft, refinement.TopLeft) {
+		return false
+	}
+	if refinement.TopRight.IsSome() && !refineable.OptionEq(r.TopRight, refinement.TopRight) {
+		return false
+	}
+	if refinement.BottomRight.IsSome() && !refineable.OptionEq(r.BottomRight, refinement.BottomRight) {
+		return false
+	}
+	if refinement.BottomLeft.IsSome() && !refineable.OptionEq(r.BottomLeft, refinement.BottomLeft) {
+		return false
+	}
+	return true
+}
+
+// Subtract returns the values of r that refinement does not already hold.
+func (r CornersRefinement[T]) Subtract(refinement *CornersRefinement[T]) CornersRefinement[T] {
+	var out CornersRefinement[T]
+	if !refineable.OptionEq(r.TopLeft, refinement.TopLeft) {
+		out.TopLeft = r.TopLeft
+	}
+	if !refineable.OptionEq(r.TopRight, refinement.TopRight) {
+		out.TopRight = r.TopRight
+	}
+	if !refineable.OptionEq(r.BottomRight, refinement.BottomRight) {
+		out.BottomRight = r.BottomRight
+	}
+	if !refineable.OptionEq(r.BottomLeft, refinement.BottomLeft) {
+		out.BottomLeft = r.BottomLeft
+	}
+	return out
+}
+
+// IsEmpty reports whether applying r would have no effect.
+func (r CornersRefinement[T]) IsEmpty() bool {
+	return r.TopLeft.IsNone() &&
+		r.TopRight.IsNone() &&
+		r.BottomRight.IsNone() &&
+		r.BottomLeft.IsNone()
+}
+
+// CornersFromRefinement converts a refinement into Corners, using zero values for unset fields.
+func CornersFromRefinement[T Number](value CornersRefinement[T]) Corners[T] {
+	return Corners[T]{
+		TopLeft:     value.TopLeft.UnwrapOrDefault(),
+		TopRight:    value.TopRight.UnwrapOrDefault(),
+		BottomRight: value.BottomRight.UnwrapOrDefault(),
+		BottomLeft:  value.BottomLeft.UnwrapOrDefault(),
+	}
+}
+
+// IsSome reports whether any field of r is set.
+func (r CornersRefinement[T]) IsSome() bool {
+	if r.TopLeft.IsSome() {
+		return true
+	}
+	if r.TopRight.IsSome() {
+		return true
+	}
+	if r.BottomRight.IsSome() {
+		return true
+	}
+	if r.BottomLeft.IsSome() {
+		return true
+	}
+	return false
+}
+
+// Eq reports whether r and other set the same values.
+func (r CornersRefinement[T]) Eq(other CornersRefinement[T]) bool {
+	if !refineable.OptionEq(r.TopLeft, other.TopLeft) {
+		return false
+	}
+	if !refineable.OptionEq(r.TopRight, other.TopRight) {
+		return false
+	}
+	if !refineable.OptionEq(r.BottomRight, other.BottomRight) {
+		return false
+	}
+	if !refineable.OptionEq(r.BottomLeft, other.BottomLeft) {
+		return false
+	}
+	return true
+}
+
+// IsZero reports whether r is empty, so `omitzero` skips it.
+func (r CornersRefinement[T]) IsZero() bool {
+	return r.IsEmpty()
+}
+
+// String formats r like Rust's Debug, listing only the fields that are set.
+func (r CornersRefinement[T]) String() string {
+	debugStruct := refineable.NewDebugStruct("CornersRefinement")
+	allSome := true
+	if r.TopLeft.IsSome() {
+		debugStruct.Field("TopLeft", r.TopLeft)
+	} else {
+		allSome = false
+	}
+	if r.TopRight.IsSome() {
+		debugStruct.Field("TopRight", r.TopRight)
+	} else {
+		allSome = false
+	}
+	if r.BottomRight.IsSome() {
+		debugStruct.Field("BottomRight", r.BottomRight)
+	} else {
+		allSome = false
+	}
+	if r.BottomLeft.IsSome() {
+		debugStruct.Field("BottomLeft", r.BottomLeft)
+	} else {
+		allSome = false
+	}
+	if allSome {
+		return debugStruct.Finish()
+	}
+	return debugStruct.FinishNonExhaustive()
+}
+
+// CornersOfRefinement is a refinable version of CornersOf, see that documentation for details.
+type CornersOfRefinement[T any] struct {
+	TopLeft     gpuiutil.Option[T] `json:"top_left,omitzero"`
+	TopRight    gpuiutil.Option[T] `json:"top_right,omitzero"`
+	BottomRight gpuiutil.Option[T] `json:"bottom_right,omitzero"`
+	BottomLeft  gpuiutil.Option[T] `json:"bottom_left,omitzero"`
+}
+
+// Refine applies the Some values of refinement to s.
+func (s *CornersOf[T]) Refine(refinement *CornersOfRefinement[T]) {
+	if value, ok := refinement.TopLeft.Get(); ok {
+		s.TopLeft = value
+	}
+	if value, ok := refinement.TopRight.Get(); ok {
+		s.TopRight = value
+	}
+	if value, ok := refinement.BottomRight.Get(); ok {
+		s.BottomRight = value
+	}
+	if value, ok := refinement.BottomLeft.Get(); ok {
+		s.BottomLeft = value
+	}
+}
+
+// Refined returns s with refinement applied.
+func (s CornersOf[T]) Refined(refinement CornersOfRefinement[T]) CornersOf[T] {
+	if value, ok := refinement.TopLeft.Get(); ok {
+		s.TopLeft = value
+	}
+	if value, ok := refinement.TopRight.Get(); ok {
+		s.TopRight = value
+	}
+	if value, ok := refinement.BottomRight.Get(); ok {
+		s.BottomRight = value
+	}
+	if value, ok := refinement.BottomLeft.Get(); ok {
+		s.BottomLeft = value
+	}
+	return s
+}
+
+// IsSupersetOf reports whether s already holds every value refinement sets.
+func (s CornersOf[T]) IsSupersetOf(refinement *CornersOfRefinement[T]) bool {
+	if refinementValue, ok := refinement.TopLeft.Get(); ok && !refineable.Eq(s.TopLeft, refinementValue) {
+		return false
+	}
+	if refinementValue, ok := refinement.TopRight.Get(); ok && !refineable.Eq(s.TopRight, refinementValue) {
+		return false
+	}
+	if refinementValue, ok := refinement.BottomRight.Get(); ok && !refineable.Eq(s.BottomRight, refinementValue) {
+		return false
+	}
+	if refinementValue, ok := refinement.BottomLeft.Get(); ok && !refineable.Eq(s.BottomLeft, refinementValue) {
+		return false
+	}
+	return true
+}
+
+// Subtract returns the values of s that refinement does not already hold.
+func (s CornersOf[T]) Subtract(refinement *CornersOfRefinement[T]) CornersOfRefinement[T] {
+	var out CornersOfRefinement[T]
+	if refinementValue, ok := refinement.TopLeft.Get(); !ok || !refineable.Eq(s.TopLeft, refinementValue) {
+		out.TopLeft = gpuiutil.Some(s.TopLeft)
+	}
+	if refinementValue, ok := refinement.TopRight.Get(); !ok || !refineable.Eq(s.TopRight, refinementValue) {
+		out.TopRight = gpuiutil.Some(s.TopRight)
+	}
+	if refinementValue, ok := refinement.BottomRight.Get(); !ok || !refineable.Eq(s.BottomRight, refinementValue) {
+		out.BottomRight = gpuiutil.Some(s.BottomRight)
+	}
+	if refinementValue, ok := refinement.BottomLeft.Get(); !ok || !refineable.Eq(s.BottomLeft, refinementValue) {
+		out.BottomLeft = gpuiutil.Some(s.BottomLeft)
+	}
+	return out
+}
+
+// Refine applies the Some values of refinement to r.
+func (r *CornersOfRefinement[T]) Refine(refinement *CornersOfRefinement[T]) {
+	if refinement.TopLeft.IsSome() {
+		r.TopLeft = refinement.TopLeft
+	}
+	if refinement.TopRight.IsSome() {
+		r.TopRight = refinement.TopRight
+	}
+	if refinement.BottomRight.IsSome() {
+		r.BottomRight = refinement.BottomRight
+	}
+	if refinement.BottomLeft.IsSome() {
+		r.BottomLeft = refinement.BottomLeft
+	}
+}
+
+// Refined returns r with refinement applied.
+func (r CornersOfRefinement[T]) Refined(refinement CornersOfRefinement[T]) CornersOfRefinement[T] {
+	if refinement.TopLeft.IsSome() {
+		r.TopLeft = refinement.TopLeft
+	}
+	if refinement.TopRight.IsSome() {
+		r.TopRight = refinement.TopRight
+	}
+	if refinement.BottomRight.IsSome() {
+		r.BottomRight = refinement.BottomRight
+	}
+	if refinement.BottomLeft.IsSome() {
+		r.BottomLeft = refinement.BottomLeft
+	}
+	return r
+}
+
+// IsSupersetOf reports whether r already holds every value refinement sets.
+func (r CornersOfRefinement[T]) IsSupersetOf(refinement *CornersOfRefinement[T]) bool {
+	if refinement.TopLeft.IsSome() && !refineable.OptionEq(r.TopLeft, refinement.TopLeft) {
+		return false
+	}
+	if refinement.TopRight.IsSome() && !refineable.OptionEq(r.TopRight, refinement.TopRight) {
+		return false
+	}
+	if refinement.BottomRight.IsSome() && !refineable.OptionEq(r.BottomRight, refinement.BottomRight) {
+		return false
+	}
+	if refinement.BottomLeft.IsSome() && !refineable.OptionEq(r.BottomLeft, refinement.BottomLeft) {
+		return false
+	}
+	return true
+}
+
+// Subtract returns the values of r that refinement does not already hold.
+func (r CornersOfRefinement[T]) Subtract(refinement *CornersOfRefinement[T]) CornersOfRefinement[T] {
+	var out CornersOfRefinement[T]
+	if !refineable.OptionEq(r.TopLeft, refinement.TopLeft) {
+		out.TopLeft = r.TopLeft
+	}
+	if !refineable.OptionEq(r.TopRight, refinement.TopRight) {
+		out.TopRight = r.TopRight
+	}
+	if !refineable.OptionEq(r.BottomRight, refinement.BottomRight) {
+		out.BottomRight = r.BottomRight
+	}
+	if !refineable.OptionEq(r.BottomLeft, refinement.BottomLeft) {
+		out.BottomLeft = r.BottomLeft
+	}
+	return out
+}
+
+// IsEmpty reports whether applying r would have no effect.
+func (r CornersOfRefinement[T]) IsEmpty() bool {
+	return r.TopLeft.IsNone() &&
+		r.TopRight.IsNone() &&
+		r.BottomRight.IsNone() &&
+		r.BottomLeft.IsNone()
+}
+
+// CornersOfFromRefinement converts a refinement into CornersOf, using zero values for unset fields.
+func CornersOfFromRefinement[T any](value CornersOfRefinement[T]) CornersOf[T] {
+	return CornersOf[T]{
+		TopLeft:     value.TopLeft.UnwrapOrDefault(),
+		TopRight:    value.TopRight.UnwrapOrDefault(),
+		BottomRight: value.BottomRight.UnwrapOrDefault(),
+		BottomLeft:  value.BottomLeft.UnwrapOrDefault(),
+	}
+}
+
+// IsSome reports whether any field of r is set.
+func (r CornersOfRefinement[T]) IsSome() bool {
+	if r.TopLeft.IsSome() {
+		return true
+	}
+	if r.TopRight.IsSome() {
+		return true
+	}
+	if r.BottomRight.IsSome() {
+		return true
+	}
+	if r.BottomLeft.IsSome() {
+		return true
+	}
+	return false
+}
+
+// Eq reports whether r and other set the same values.
+func (r CornersOfRefinement[T]) Eq(other CornersOfRefinement[T]) bool {
+	if !refineable.OptionEq(r.TopLeft, other.TopLeft) {
+		return false
+	}
+	if !refineable.OptionEq(r.TopRight, other.TopRight) {
+		return false
+	}
+	if !refineable.OptionEq(r.BottomRight, other.BottomRight) {
+		return false
+	}
+	if !refineable.OptionEq(r.BottomLeft, other.BottomLeft) {
+		return false
+	}
+	return true
+}
+
+// IsZero reports whether r is empty, so `omitzero` skips it.
+func (r CornersOfRefinement[T]) IsZero() bool {
+	return r.IsEmpty()
+}
+
+// String formats r like Rust's Debug, listing only the fields that are set.
+func (r CornersOfRefinement[T]) String() string {
+	debugStruct := refineable.NewDebugStruct("CornersOfRefinement")
+	allSome := true
+	if r.TopLeft.IsSome() {
+		debugStruct.Field("TopLeft", r.TopLeft)
+	} else {
+		allSome = false
+	}
+	if r.TopRight.IsSome() {
+		debugStruct.Field("TopRight", r.TopRight)
+	} else {
+		allSome = false
+	}
+	if r.BottomRight.IsSome() {
+		debugStruct.Field("BottomRight", r.BottomRight)
+	} else {
+		allSome = false
+	}
+	if r.BottomLeft.IsSome() {
+		debugStruct.Field("BottomLeft", r.BottomLeft)
+	} else {
+		allSome = false
+	}
+	if allSome {
+		return debugStruct.Finish()
+	}
+	return debugStruct.FinishNonExhaustive()
+}
