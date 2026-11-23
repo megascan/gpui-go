@@ -461,7 +461,7 @@ func (s *Style[S]) Ref() StyleRef[S] {
 	return StyleRef[S]{style: s}
 }
 
-// StyleRef is a reference to a Style implementing the style traits (CoreStyle, OofItemStyle, BlockContainerStyle, BlockItemStyle, FlexboxContainerStyle, FlexboxItemStyle).
+// StyleRef is a reference to a Style implementing the style traits (CoreStyle, OofItemStyle, BlockContainerStyle, BlockItemStyle, FlexboxContainerStyle, FlexboxItemStyle, GridContainerStyle, GridItemStyle).
 type StyleRef[S CheapCloneStr] struct {
 	style *Style[S]
 }
@@ -660,10 +660,94 @@ func (r StyleRef[S]) FlexShrink() float32 {
 	return r.style.FlexShrink
 }
 
+func gridTemplateComponentRefs[S CheapCloneStr](components []GridTemplateComponent[S]) []GenericGridTemplateComponent[S, GenericRepetition[S]] {
+	out := make([]GenericGridTemplateComponent[S, GenericRepetition[S]], len(components))
+	for i := range components {
+		out[i] = components[i].AsComponentRef()
+	}
+	return out
+}
+
+// GridTemplateRows returns the GridTemplateRows field as component refs.
+func (r StyleRef[S]) GridTemplateRows() Option[[]GenericGridTemplateComponent[S, GenericRepetition[S]]] {
+	return some(gridTemplateComponentRefs(r.style.GridTemplateRows))
+}
+
+// GridTemplateColumns returns the GridTemplateColumns field as component refs.
+func (r StyleRef[S]) GridTemplateColumns() Option[[]GenericGridTemplateComponent[S, GenericRepetition[S]]] {
+	return some(gridTemplateComponentRefs(r.style.GridTemplateColumns))
+}
+
+// GridAutoRows returns the GridAutoRows field.
+func (r StyleRef[S]) GridAutoRows() []TrackSizingFunction {
+	return r.style.GridAutoRows
+}
+
+// GridAutoColumns returns the GridAutoColumns field.
+func (r StyleRef[S]) GridAutoColumns() []TrackSizingFunction {
+	return r.style.GridAutoColumns
+}
+
+// GridAutoFlow returns the GridAutoFlow field.
+func (r StyleRef[S]) GridAutoFlow() GridAutoFlow {
+	return r.style.GridAutoFlow
+}
+
+// GridTemplateAreas returns the areas of the GridTemplateAreas field.
+func (r StyleRef[S]) GridTemplateAreas() Option[[]GridTemplateArea[S]] {
+	if template, ok := r.style.GridTemplateAreas.Get(); ok {
+		return some(template.Areas)
+	}
+	return none[[]GridTemplateArea[S]]()
+}
+
+// GridTemplateAreaRowCount returns the row count of the GridTemplateAreas field, or 0.
+func (r StyleRef[S]) GridTemplateAreaRowCount() uint16 {
+	if template, ok := r.style.GridTemplateAreas.Get(); ok {
+		return template.RowCount
+	}
+	return 0
+}
+
+// GridTemplateAreaColumnCount returns the column count of the GridTemplateAreas field, or 0.
+func (r StyleRef[S]) GridTemplateAreaColumnCount() uint16 {
+	if template, ok := r.style.GridTemplateAreas.Get(); ok {
+		return template.ColumnCount
+	}
+	return 0
+}
+
+// GridTemplateColumnNames returns the GridTemplateColumnNames field.
+func (r StyleRef[S]) GridTemplateColumnNames() Option[TemplateLineNames[S]] {
+	return some(r.style.GridTemplateColumnNames)
+}
+
+// GridTemplateRowNames returns the GridTemplateRowNames field.
+func (r StyleRef[S]) GridTemplateRowNames() Option[TemplateLineNames[S]] {
+	return some(r.style.GridTemplateRowNames)
+}
+
+// GridTemplateTracks is upstream's default GridContainerStyle::grid_template_tracks.
+func (r StyleRef[S]) GridTemplateTracks(axis AbsoluteAxis) Option[[]GenericGridTemplateComponent[S, GenericRepetition[S]]] {
+	return GridContainerStyleDefaultGridTemplateTracks[S](r, axis)
+}
+
+// GridAlignContent is upstream's default GridContainerStyle::grid_align_content.
+func (r StyleRef[S]) GridAlignContent(axis AbstractAxis) AlignContent {
+	return GridContainerStyleDefaultGridAlignContent[S](r, axis)
+}
+
+// GridPlacement is upstream's default GridItemStyle::grid_placement.
+func (r StyleRef[S]) GridPlacement(axis AbsoluteAxis) Line[GridPlacement[S]] {
+	return GridItemStyleDefaultGridPlacement[S](r, axis)
+}
+
 var (
-	_ OofItemStyle[string]  = StyleRef[string]{}
-	_ BlockContainerStyle   = StyleRef[string]{}
-	_ BlockItemStyle        = StyleRef[string]{}
-	_ FlexboxContainerStyle = StyleRef[string]{}
-	_ FlexboxItemStyle      = StyleRef[string]{}
+	_ OofItemStyle[string]       = StyleRef[string]{}
+	_ BlockContainerStyle        = StyleRef[string]{}
+	_ BlockItemStyle             = StyleRef[string]{}
+	_ FlexboxContainerStyle      = StyleRef[string]{}
+	_ FlexboxItemStyle           = StyleRef[string]{}
+	_ GridContainerStyle[string] = StyleRef[string]{}
+	_ GridItemStyle[string]      = StyleRef[string]{}
 )

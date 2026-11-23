@@ -17,7 +17,7 @@ Notes on the port (conventions every taffy stage follows):
 - Impls bounded by an operator trait (`impl<T: Add> Rect<T>`, `impl Add for Size<T>`, `Line::sum`, ...) and methods of `impl Size<f32>` / `impl Rect<f32>` are methods on the generic type that work for numeric element types (an unexported `add` / `sub` dispatch, or a `*Size[float32]` assertion) and panic naming the type otherwise (`dev:D-COND`). They do not allocate (`TestGeometry_ArithmeticDoesNotAllocate`). Upstream's `+` / `-` on these types is `.Add(x)` / `.Sub(x)`.
 - Consts and associated functions of an impl on one instantiation are free functions or package vars named `<Type><Inst><Name>` (PARITY N7), `new` -> `New<Type><Inst>`, with Inst `F32` (`f32`), `OptionF32` (`Option<f32>`), `Option` (`Option<T>`), `Bool`, `Dimension`, `AvailableSpace`: `SizeF32Zero`, `RectOptionF32None`, `NewSizeOptionF32`, `SizeDimensionFromLengths`. Methods with `self` of a non-numeric instantiation are free functions of the same shape taking the receiver first: `SizeOptionF32MaybeApplyAspectRatio(s, r)`, `SizeAvailableSpaceIntoOptions(s)`, `SizeOptionUnwrapOr(s, alt)`. A `Type<T>::zero()`-style associated fn generic over `T` keeps `<Type><Name>` (`SizeZero`), which is why the instantiation names carry Inst.
 - `impl From<A> for B` is `BFromA` (`SizeFromPoint`, `DimensionFromLengthPercentage`, `AvailableSpaceFromOptionF32`).
-- style_helpers traits with an associated const (`TaffyZero::ZERO`, `TaffyAuto::AUTO`, `TaffyMinContent::MIN_CONTENT`, `TaffyMaxContent::MAX_CONTENT`) are generic interfaces with one method on a value receiver (`Zero() T`, `Auto() T`, `MinContent() T`, `MaxContent() T`), so a generic helper calls it on the zero value (`var z T; z.Zero()`). `FromLength`, `FromPercent`, `FromFr` take `float64` (upstream `Input: Into<f64>`), `TaffyFitContent` takes a `LengthPercentage`. The const value itself is a package var `<Type><Const>` (`CompactLengthZero`, `DimensionZero`, `AvailableSpaceZero`) unless an associated fn of the same name exists (`Dimension::auto()` -> `DimensionAuto()`, which the `AUTO` const reuses). Until M0-taffy-style-grid ports style_helpers.rs the interfaces live in stubs.go.
+- style_helpers traits with an associated const (`TaffyZero::ZERO`, `TaffyAuto::AUTO`, `TaffyMinContent::MIN_CONTENT`, `TaffyMaxContent::MAX_CONTENT`) are generic interfaces with one method on a value receiver (`Zero() T`, `Auto() T`, `MinContent() T`, `MaxContent() T`), so a generic helper calls it on the zero value (`var z T; z.Zero()`). `FromLength`, `FromPercent`, `FromFr` take `float64` (upstream `Input: Into<f64>`), `TaffyFitContent` takes a `LengthPercentage`. The const value itself is a package var `<Type><Const>` (`CompactLengthZero`, `DimensionZero`, `AvailableSpaceZero`) unless an associated fn of the same name exists (`Dimension::auto()` -> `DimensionAuto()`, which the `AUTO` const reuses). The interfaces live in style_helpers.go; the generic helpers (`Zero[T]`, `Length[T]`, ...) take the interface as constraint, and `Point` / `Line` / `Size` / `Rect` / `MinMax` implement them for every element type with a runtime check (D-COND).
 - MaybeMath (`D-TAFFY-MAYBEMATH`): Go cannot add methods to `Option[float32]` or `float32`, and `AvailableSpace` has two impls. The impls are: lhs `Option<f32>` -> `OptionF32Maybe<Op>`, lhs `f32` -> `F32Maybe<Op>`, lhs `AvailableSpace` -> method `Maybe<Op>`; an `f32` right-hand side adds the suffix `F32` (an `Option<f32>` right-hand side adds nothing); the blanket `impl for Size<T>` is `Size<Lhs>Maybe<Op>[F32]` (`SizeOptionF32MaybeSub`, `SizeF32MaybeMax`, `SizeAvailableSpaceMaybeMinF32`). `x.maybe_min(y)` with `x: Option<f32>, y: f32` is `OptionF32MaybeMinF32(x, y)`.
 - Floating point: arithmetic stays in `float32`, in upstream order. Rust's `f32::min` / `max` return the non-NaN operand, Go's `min` / `max` / `math.Min` propagate NaN, so every `.min()` / `.max()` uses `f32Min` / `f32Max` (util_sys.go); never the builtins. `sys::round` is `floor(v + 0.5)` with the add in `float32`, not `math.Round`. The Go spec lets the compiler fuse a multiplication with a later addition into an FMA, even across statements and through inlined calls (arm64 does; Rust never does), and only an explicit conversion stops it: every float32 multiplication is written `float32(a * b)`. Signed-zero results of `min(0.0, -0.0)` may differ from LLVM's `minnum`; layouts never depend on them.
 - Panics keep upstream's text: `called `Option::unwrap()` on a `None` value`, and `unreachable!(msg)` as `internal error: entered unreachable code: msg`.
@@ -797,127 +797,191 @@ Go target: `internal/taffy/style_grid.go` (package `taffy`), tests in `style_gri
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `GridTemplateAreas` | struct | 25 |  | `GridTemplateAreas` | todo |
-| `GridTemplateArea` | struct | 37 |  | `GridTemplateArea` | todo |
-| `NamedGridLine` | struct | 54 |  | `NamedGridLine` | todo |
-| `GenericRepetition` | trait | 81 |  | `GenericRepetition` | todo |
-| `GenericRepetition::count` | trait-method | 94 |  | `GenericRepetition.Count` | todo |
-| `GenericRepetition::tracks` | trait-method | 96 |  | `GenericRepetition.Tracks` | todo |
-| `GenericRepetition::track_count` | trait-method | 98 |  | `GenericRepetition.TrackCount` | todo |
-| `GenericRepetition::lines_names` | trait-method | 106 |  | `GenericRepetition.LinesNames` | todo |
-| `TemplateLineNames` | trait | 112 |  | `TemplateLineNames` | todo |
-| `GenericGridTemplateComponent` | enum | 130 |  | `GenericGridTemplateComponent` | todo |
-| `GenericGridTemplateComponent::is_auto_repetition` | method | 147 |  | `(GenericGridTemplateComponent).IsAutoRepetition` | todo |
-| `GridContainerStyle` | trait | 156 |  | `GridContainerStyle` | todo |
-| `GridContainerStyle::grid_template_rows` | trait-method | 189 |  | `GridContainerStyle.GridTemplateRows` | todo |
-| `GridContainerStyle::grid_template_columns` | trait-method | 191 |  | `GridContainerStyle.GridTemplateColumns` | todo |
-| `GridContainerStyle::grid_auto_rows` | trait-method | 193 |  | `GridContainerStyle.GridAutoRows` | todo |
-| `GridContainerStyle::grid_auto_columns` | trait-method | 195 |  | `GridContainerStyle.GridAutoColumns` | todo |
-| `GridContainerStyle::grid_template_areas` | trait-method | 198 |  | `GridContainerStyle.GridTemplateAreas` | todo |
-| `GridContainerStyle::grid_template_area_row_count` | trait-method | 201 |  | `GridContainerStyle.GridTemplateAreaRowCount` | todo |
-| `GridContainerStyle::grid_template_area_column_count` | trait-method | 208 |  | `GridContainerStyle.GridTemplateAreaColumnCount` | todo |
-| `GridContainerStyle::grid_template_column_names` | trait-method | 214 |  | `GridContainerStyle.GridTemplateColumnNames` | todo |
-| `GridContainerStyle::grid_template_row_names` | trait-method | 216 |  | `GridContainerStyle.GridTemplateRowNames` | todo |
-| `GridContainerStyle::grid_auto_flow` | trait-method | 220 |  | `GridContainerStyle.GridAutoFlow` | todo |
-| `GridContainerStyle::gap` | trait-method | 226 |  | `GridContainerStyle.Gap` | todo |
-| `GridContainerStyle::align_content` | trait-method | 234 |  | `GridContainerStyle.AlignContent` | todo |
-| `GridContainerStyle::justify_content` | trait-method | 239 |  | `GridContainerStyle.JustifyContent` | todo |
-| `GridContainerStyle::align_items` | trait-method | 244 |  | `GridContainerStyle.AlignItems` | todo |
-| `GridContainerStyle::justify_items` | trait-method | 249 |  | `GridContainerStyle.JustifyItems` | todo |
-| `GridContainerStyle::grid_template_tracks` | trait-method | 255 |  | `GridContainerStyle.GridTemplateTracks` | todo |
-| `GridContainerStyle::grid_align_content` | trait-method | 265 |  | `GridContainerStyle.GridAlignContent` | todo |
-| `GridItemStyle` | trait | 278 |  | `GridItemStyle` | todo |
-| `GridItemStyle::grid_row` | trait-method | 281 |  | `GridItemStyle.GridRow` | todo |
-| `GridItemStyle::grid_column` | trait-method | 286 |  | `GridItemStyle.GridColumn` | todo |
-| `GridItemStyle::align_self` | trait-method | 293 |  | `GridItemStyle.AlignSelf` | todo |
-| `GridItemStyle::justify_self` | trait-method | 299 |  | `GridItemStyle.JustifySelf` | todo |
-| `GridItemStyle::grid_placement` | trait-method | 305 |  | `GridItemStyle.GridPlacement` | todo |
-| `GridAutoFlow` | enum | 322 |  | `GridAutoFlow` | todo |
-| `GridAutoFlow::is_dense` | method | 378 |  | `(GridAutoFlow).IsDense` | todo |
-| `GridAutoFlow::primary_axis` | method | 387 |  | `(GridAutoFlow).PrimaryAxis` | todo |
-| `GenericGridPlacement` | enum | 402 |  | `GenericGridPlacement` | todo |
-| `GridPlacement` | enum | 426 |  | `GridPlacement` | todo |
-| `GridPlacement::into_origin_zero_placement_ignoring_named` | method | 542 |  | `(GridPlacement).IntoOriginZeroPlacementIgnoringNamed` | todo |
-| `Line::into_origin_zero_ignoring_named` | method | 562 |  | `(Line).IntoOriginZeroIgnoringNamed` | todo |
-| `Line::indefinite_span` | method | 595 |  | `(Line).IndefiniteSpan` | todo |
-| `Line::is_definite` | method | 616 |  | `(Line).IsDefinite` | todo |
-| `Line<NonNamedGridPlacement>::is_definite` | method | 632 |  | `(Line).IsDefinite` | todo |
-| `Line<NonNamedGridPlacement>::into_origin_zero` | method | 641 |  | `(Line).IntoOriginZero` | todo |
-| `Line<OriginZeroGridPlacement>::is_definite` | method | 653 |  | `(Line).IsDefinite` | todo |
-| `Line<OriginZeroGridPlacement>::resolve_definite_grid_lines` | method | 659 |  | `(Line).ResolveDefiniteGridLines` | todo |
-| `Line<OriginZeroGridPlacement>::resolve_absolutely_positioned_grid_tracks` | method | 686 |  | `(Line).ResolveAbsolutelyPositionedGridTracks` | todo |
-| `Line<OriginZeroGridPlacement>::resolve_indefinite_grid_tracks` | method | 706 |  | `(Line).ResolveIndefiniteGridTracks` | todo |
-| `MaxTrackSizingFunction` | struct | 732 |  | `MaxTrackSizingFunction` | todo |
-| `MaxTrackSizingFunction::length` | assoc-fn | 853 |  | `MaxTrackSizingFunctionLength` | todo |
-| `MaxTrackSizingFunction::percent` | assoc-fn | 861 |  | `MaxTrackSizingFunctionPercent` | todo |
-| `MaxTrackSizingFunction::auto` | assoc-fn | 868 |  | `MaxTrackSizingFunctionAuto` | todo |
-| `MaxTrackSizingFunction::min_content` | assoc-fn | 875 |  | `MaxTrackSizingFunctionMinContent` | todo |
-| `MaxTrackSizingFunction::max_content` | assoc-fn | 882 |  | `MaxTrackSizingFunctionMaxContent` | todo |
-| `MaxTrackSizingFunction::fit_content_px` | assoc-fn | 896 |  | `MaxTrackSizingFunctionFitContentPx` | todo |
-| `MaxTrackSizingFunction::fit_content_percent` | assoc-fn | 910 |  | `MaxTrackSizingFunctionFitContentPercent` | todo |
-| `MaxTrackSizingFunction::fr` | assoc-fn | 918 |  | `MaxTrackSizingFunctionFr` | todo |
-| `MaxTrackSizingFunction::calc` | assoc-fn | 928 | calc | `MaxTrackSizingFunctionCalc` | todo |
-| `MaxTrackSizingFunction::fit_content_calc` | assoc-fn | 938 | calc | `MaxTrackSizingFunctionFitContentCalc` | todo |
-| `MaxTrackSizingFunction::from_raw` | assoc-fn | 946 |  | `MaxTrackSizingFunctionFromRaw` | todo |
-| `MaxTrackSizingFunction::into_raw` | method | 951 |  | `(MaxTrackSizingFunction).IntoRaw` | todo |
-| `MaxTrackSizingFunction::is_intrinsic` | method | 957 |  | `(MaxTrackSizingFunction).IsIntrinsic` | todo |
-| `MaxTrackSizingFunction::is_max_content_alike` | method | 965 |  | `(MaxTrackSizingFunction).IsMaxContentAlike` | todo |
-| `MaxTrackSizingFunction::is_fr` | method | 971 |  | `(MaxTrackSizingFunction).IsFr` | todo |
-| `MaxTrackSizingFunction::is_auto` | method | 977 |  | `(MaxTrackSizingFunction).IsAuto` | todo |
-| `MaxTrackSizingFunction::is_min_content` | method | 983 |  | `(MaxTrackSizingFunction).IsMinContent` | todo |
-| `MaxTrackSizingFunction::is_max_content` | method | 989 |  | `(MaxTrackSizingFunction).IsMaxContent` | todo |
-| `MaxTrackSizingFunction::is_fit_content` | method | 995 |  | `(MaxTrackSizingFunction).IsFitContent` | todo |
-| `MaxTrackSizingFunction::is_max_or_fit_content` | method | 1001 |  | `(MaxTrackSizingFunction).IsMaxOrFitContent` | todo |
-| `MaxTrackSizingFunction::has_definite_value` | method | 1007 |  | `(MaxTrackSizingFunction).HasDefiniteValue` | todo |
-| `MaxTrackSizingFunction::definite_value` | method | 1021 |  | `(MaxTrackSizingFunction).DefiniteValue` | todo |
-| `MaxTrackSizingFunction::fit_content_limit` | method | 1039 |  | `(MaxTrackSizingFunction).FitContentLimit` | todo |
-| `MaxTrackSizingFunction::definite_limit` | method | 1062 |  | `(MaxTrackSizingFunction).DefiniteLimit` | todo |
-| `MaxTrackSizingFunction::resolved_percentage_size` | method | 1079 |  | `(MaxTrackSizingFunction).ResolvedPercentageSize` | todo |
-| `MaxTrackSizingFunction::uses_percentage` | method | 1089 |  | `(MaxTrackSizingFunction).UsesPercentage` | todo |
-| `MaxTrackSizingFunction::expand` | method | 1098 |  | `(MaxTrackSizingFunction).Expand` | todo |
-| `ExpandedMaxTrackSizingFunction` | enum | 1122 |  | `ExpandedMaxTrackSizingFunction` | todo |
-| `MinTrackSizingFunction` | struct | 1181 |  | `MinTrackSizingFunction` | todo |
-| `MinTrackSizingFunction::length` | assoc-fn | 1289 |  | `MinTrackSizingFunctionLength` | todo |
-| `MinTrackSizingFunction::percent` | assoc-fn | 1297 |  | `MinTrackSizingFunctionPercent` | todo |
-| `MinTrackSizingFunction::auto` | assoc-fn | 1304 |  | `MinTrackSizingFunctionAuto` | todo |
-| `MinTrackSizingFunction::min_content` | assoc-fn | 1311 |  | `MinTrackSizingFunctionMinContent` | todo |
-| `MinTrackSizingFunction::max_content` | assoc-fn | 1318 |  | `MinTrackSizingFunctionMaxContent` | todo |
-| `MinTrackSizingFunction::calc` | assoc-fn | 1328 | calc | `MinTrackSizingFunctionCalc` | todo |
-| `MinTrackSizingFunction::from_raw` | assoc-fn | 1336 |  | `MinTrackSizingFunctionFromRaw` | todo |
-| `MinTrackSizingFunction::into_raw` | method | 1341 |  | `(MinTrackSizingFunction).IntoRaw` | todo |
-| `MinTrackSizingFunction::is_intrinsic` | method | 1347 |  | `(MinTrackSizingFunction).IsIntrinsic` | todo |
-| `MinTrackSizingFunction::is_min_or_max_content` | method | 1353 |  | `(MinTrackSizingFunction).IsMinOrMaxContent` | todo |
-| `MinTrackSizingFunction::is_fr` | method | 1359 |  | `(MinTrackSizingFunction).IsFr` | todo |
-| `MinTrackSizingFunction::is_auto` | method | 1365 |  | `(MinTrackSizingFunction).IsAuto` | todo |
-| `MinTrackSizingFunction::behaves_as_auto` | method | 1371 |  | `(MinTrackSizingFunction).BehavesAsAuto` | todo |
-| `MinTrackSizingFunction::is_min_content` | method | 1377 |  | `(MinTrackSizingFunction).IsMinContent` | todo |
-| `MinTrackSizingFunction::is_max_content` | method | 1383 |  | `(MinTrackSizingFunction).IsMaxContent` | todo |
-| `MinTrackSizingFunction::definite_value` | method | 1391 |  | `(MinTrackSizingFunction).DefiniteValue` | todo |
-| `MinTrackSizingFunction::resolved_percentage_size` | method | 1408 |  | `(MinTrackSizingFunction).ResolvedPercentageSize` | todo |
-| `MinTrackSizingFunction::uses_percentage` | method | 1418 |  | `(MinTrackSizingFunction).UsesPercentage` | todo |
-| `MinTrackSizingFunction::expand` | method | 1427 |  | `(MinTrackSizingFunction).Expand` | todo |
-| `ExpandedMinTrackSizingFunction` | enum | 1446 |  | `ExpandedMinTrackSizingFunction` | todo |
-| `TrackSizingFunction` | type | 1487 |  | `TrackSizingFunction` | todo |
-| `TrackSizingFunction::min_sizing_function` | method | 1490 |  | `(TrackSizingFunction).MinSizingFunction` | todo |
-| `TrackSizingFunction::max_sizing_function` | method | 1494 |  | `(TrackSizingFunction).MaxSizingFunction` | todo |
-| `TrackSizingFunction::has_fixed_component` | method | 1498 |  | `(TrackSizingFunction).HasFixedComponent` | todo |
-| `RepetitionCount` | enum | 1585 |  | `RepetitionCount` | todo |
-| `InvalidStringRepetitionValue` | struct | 1604 |  | `InvalidStringRepetitionValue` | todo |
-| `GridTemplateRepetition` | struct | 1642 |  | `GridTemplateRepetition` | todo |
-| `GridTemplateComponent` | enum | 1684 |  | `GridTemplateComponent` | todo |
-| `GridTemplateComponent::as_component_ref` | method | 1694 |  | `(GridTemplateComponent).AsComponentRef` | todo |
-| `GridTemplateComponent::is_auto_repetition` | method | 1704 |  | `(GridTemplateComponent).IsAutoRepetition` | todo |
-| `GridTemplateTracks` | struct | 1782 |  | `GridTemplateTracks` | todo |
-| `GridAutoTracks` | struct | 1838 |  | `GridAutoTracks` | todo |
+| `GridTemplateAreas` | struct | 25 |  | `GridTemplateAreas` | done |
+| `GridTemplateArea` | struct | 37 |  | `GridTemplateArea` | done |
+| `NamedGridLine` | struct | 54 |  | `NamedGridLine` | done |
+| `GenericRepetition` | trait | 81 |  | `GenericRepetition` | dev:D-TAFFY-GRIDLISTS |
+| `GenericRepetition::count` | trait-method | 94 |  | `GenericRepetition.Count` | done |
+| `GenericRepetition::tracks` | trait-method | 96 |  | `GenericRepetition.Tracks` | done |
+| `GenericRepetition::track_count` | trait-method | 98 |  | `GenericRepetitionDefaultTrackCount` | done |
+| `GenericRepetition::lines_names` | trait-method | 106 |  | `GenericRepetition.LinesNames` | dev:D-TAFFY-GRIDLISTS |
+| `TemplateLineNames` | trait | 112 |  | `TemplateLineNames` | dev:D-TAFFY-GRIDLISTS |
+| `GenericGridTemplateComponent` | enum | 130 |  | `GenericGridTemplateComponent` | done |
+| `GenericGridTemplateComponent::is_auto_repetition` | method | 147 |  | `(GenericGridTemplateComponent).IsAutoRepetition` | done |
+| `GridContainerStyle` | trait | 156 |  | `GridContainerStyle` | dev:D-TAFFY-GRIDLISTS |
+| `GridContainerStyle::grid_template_rows` | trait-method | 189 |  | `GridContainerStyle.GridTemplateRows` | dev:D-TAFFY-GRIDLISTS |
+| `GridContainerStyle::grid_template_columns` | trait-method | 191 |  | `GridContainerStyle.GridTemplateColumns` | dev:D-TAFFY-GRIDLISTS |
+| `GridContainerStyle::grid_auto_rows` | trait-method | 193 |  | `GridContainerStyle.GridAutoRows` | dev:D-TAFFY-GRIDLISTS |
+| `GridContainerStyle::grid_auto_columns` | trait-method | 195 |  | `GridContainerStyle.GridAutoColumns` | dev:D-TAFFY-GRIDLISTS |
+| `GridContainerStyle::grid_template_areas` | trait-method | 198 |  | `GridContainerStyle.GridTemplateAreas` | dev:D-TAFFY-GRIDLISTS |
+| `GridContainerStyle::grid_template_area_row_count` | trait-method | 201 |  | `GridContainerStyleDefaultGridTemplateAreaRowCount` | done |
+| `GridContainerStyle::grid_template_area_column_count` | trait-method | 208 |  | `GridContainerStyleDefaultGridTemplateAreaColumnCount` | done |
+| `GridContainerStyle::grid_template_column_names` | trait-method | 214 |  | `GridContainerStyle.GridTemplateColumnNames` | dev:D-TAFFY-GRIDLISTS |
+| `GridContainerStyle::grid_template_row_names` | trait-method | 216 |  | `GridContainerStyle.GridTemplateRowNames` | dev:D-TAFFY-GRIDLISTS |
+| `GridContainerStyle::grid_auto_flow` | trait-method | 220 |  | `GridContainerStyle.GridAutoFlow` | done |
+| `GridContainerStyle::gap` | trait-method | 226 |  | `GridContainerStyle.Gap` | done |
+| `GridContainerStyle::align_content` | trait-method | 234 |  | `GridContainerStyle.AlignContent` | done |
+| `GridContainerStyle::justify_content` | trait-method | 239 |  | `GridContainerStyle.JustifyContent` | done |
+| `GridContainerStyle::align_items` | trait-method | 244 |  | `GridContainerStyle.AlignItems` | done |
+| `GridContainerStyle::justify_items` | trait-method | 249 |  | `GridContainerStyle.JustifyItems` | done |
+| `GridContainerStyle::grid_template_tracks` | trait-method | 255 |  | `GridContainerStyleDefaultGridTemplateTracks` | done |
+| `GridContainerStyle::grid_align_content` | trait-method | 265 |  | `GridContainerStyleDefaultGridAlignContent` | done |
+| `GridItemStyle` | trait | 278 |  | `GridItemStyle` | done |
+| `GridItemStyle::grid_row` | trait-method | 281 |  | `GridItemStyle.GridRow` | done |
+| `GridItemStyle::grid_column` | trait-method | 286 |  | `GridItemStyle.GridColumn` | done |
+| `GridItemStyle::align_self` | trait-method | 293 |  | `GridItemStyle.AlignSelf` | done |
+| `GridItemStyle::justify_self` | trait-method | 299 |  | `GridItemStyle.JustifySelf` | done |
+| `GridItemStyle::grid_placement` | trait-method | 305 |  | `GridItemStyleDefaultGridPlacement` | done |
+| `GridAutoFlow` | enum | 322 |  | `GridAutoFlow` | done |
+| `GridAutoFlow::is_dense` | method | 378 |  | `(GridAutoFlow).IsDense` | done |
+| `GridAutoFlow::primary_axis` | method | 387 |  | `(GridAutoFlow).PrimaryAxis` | done |
+| `GenericGridPlacement` | enum | 402 |  | `GenericGridPlacement` | done |
+| `GridPlacement` | enum | 426 |  | `GridPlacement` | done |
+| `GridPlacement::into_origin_zero_placement_ignoring_named` | method | 542 |  | `(GridPlacement).IntoOriginZeroPlacementIgnoringNamed` | done |
+| `Line::into_origin_zero_ignoring_named` | method | 562 |  | `LineGridPlacementIntoOriginZeroIgnoringNamed` | done |
+| `Line::indefinite_span` | method | 595 |  | `LineGenericGridPlacementIndefiniteSpan` | done |
+| `Line::is_definite` | method | 616 |  | `LineGridPlacementIsDefinite` | done |
+| `Line<NonNamedGridPlacement>::is_definite` | method | 632 |  | `lineNonNamedGridPlacementIsDefinite` | done |
+| `Line<NonNamedGridPlacement>::into_origin_zero` | method | 641 |  | `lineNonNamedGridPlacementIntoOriginZero` | done |
+| `Line<OriginZeroGridPlacement>::is_definite` | method | 653 |  | `LineOriginZeroGridPlacementIsDefinite` | done |
+| `Line<OriginZeroGridPlacement>::resolve_definite_grid_lines` | method | 659 |  | `LineOriginZeroGridPlacementResolveDefiniteGridLines` | done |
+| `Line<OriginZeroGridPlacement>::resolve_absolutely_positioned_grid_tracks` | method | 686 |  | `LineOriginZeroGridPlacementResolveAbsolutelyPositionedGridTracks` | done |
+| `Line<OriginZeroGridPlacement>::resolve_indefinite_grid_tracks` | method | 706 |  | `LineOriginZeroGridPlacementResolveIndefiniteGridTracks` | done |
+| `MaxTrackSizingFunction` | struct | 732 |  | `MaxTrackSizingFunction` | done |
+| `MaxTrackSizingFunction::length` | assoc-fn | 853 |  | `MaxTrackSizingFunctionLength` | done |
+| `MaxTrackSizingFunction::percent` | assoc-fn | 861 |  | `MaxTrackSizingFunctionPercent` | done |
+| `MaxTrackSizingFunction::auto` | assoc-fn | 868 |  | `MaxTrackSizingFunctionAuto` | done |
+| `MaxTrackSizingFunction::min_content` | assoc-fn | 875 |  | `MaxTrackSizingFunctionMinContent` | done |
+| `MaxTrackSizingFunction::max_content` | assoc-fn | 882 |  | `MaxTrackSizingFunctionMaxContent` | done |
+| `MaxTrackSizingFunction::fit_content_px` | assoc-fn | 896 |  | `MaxTrackSizingFunctionFitContentPx` | done |
+| `MaxTrackSizingFunction::fit_content_percent` | assoc-fn | 910 |  | `MaxTrackSizingFunctionFitContentPercent` | done |
+| `MaxTrackSizingFunction::fr` | assoc-fn | 918 |  | `MaxTrackSizingFunctionFr` | done |
+| `MaxTrackSizingFunction::calc` | assoc-fn | 928 | calc | `MaxTrackSizingFunctionCalc` | n/a:D-TAFFY-FEATURE |
+| `MaxTrackSizingFunction::fit_content_calc` | assoc-fn | 938 | calc | `MaxTrackSizingFunctionFitContentCalc` | n/a:D-TAFFY-FEATURE |
+| `MaxTrackSizingFunction::from_raw` | assoc-fn | 946 |  | `MaxTrackSizingFunctionFromRaw` | done |
+| `MaxTrackSizingFunction::into_raw` | method | 951 |  | `(MaxTrackSizingFunction).IntoRaw` | done |
+| `MaxTrackSizingFunction::is_intrinsic` | method | 957 |  | `(MaxTrackSizingFunction).IsIntrinsic` | done |
+| `MaxTrackSizingFunction::is_max_content_alike` | method | 965 |  | `(MaxTrackSizingFunction).IsMaxContentAlike` | done |
+| `MaxTrackSizingFunction::is_fr` | method | 971 |  | `(MaxTrackSizingFunction).IsFr` | done |
+| `MaxTrackSizingFunction::is_auto` | method | 977 |  | `(MaxTrackSizingFunction).IsAuto` | done |
+| `MaxTrackSizingFunction::is_min_content` | method | 983 |  | `(MaxTrackSizingFunction).IsMinContent` | done |
+| `MaxTrackSizingFunction::is_max_content` | method | 989 |  | `(MaxTrackSizingFunction).IsMaxContent` | done |
+| `MaxTrackSizingFunction::is_fit_content` | method | 995 |  | `(MaxTrackSizingFunction).IsFitContent` | done |
+| `MaxTrackSizingFunction::is_max_or_fit_content` | method | 1001 |  | `(MaxTrackSizingFunction).IsMaxOrFitContent` | done |
+| `MaxTrackSizingFunction::has_definite_value` | method | 1007 |  | `(MaxTrackSizingFunction).HasDefiniteValue` | done |
+| `MaxTrackSizingFunction::definite_value` | method | 1021 |  | `(MaxTrackSizingFunction).DefiniteValue` | done |
+| `MaxTrackSizingFunction::fit_content_limit` | method | 1039 |  | `(MaxTrackSizingFunction).FitContentLimit` | done |
+| `MaxTrackSizingFunction::definite_limit` | method | 1062 |  | `(MaxTrackSizingFunction).DefiniteLimit` | done |
+| `MaxTrackSizingFunction::resolved_percentage_size` | method | 1079 |  | `(MaxTrackSizingFunction).ResolvedPercentageSize` | done |
+| `MaxTrackSizingFunction::uses_percentage` | method | 1089 |  | `(MaxTrackSizingFunction).UsesPercentage` | done |
+| `MaxTrackSizingFunction::expand` | method | 1098 |  | `(MaxTrackSizingFunction).Expand` | done |
+| `ExpandedMaxTrackSizingFunction` | enum | 1122 |  | `ExpandedMaxTrackSizingFunction` | done |
+| `MinTrackSizingFunction` | struct | 1181 |  | `MinTrackSizingFunction` | done |
+| `MinTrackSizingFunction::length` | assoc-fn | 1289 |  | `MinTrackSizingFunctionLength` | done |
+| `MinTrackSizingFunction::percent` | assoc-fn | 1297 |  | `MinTrackSizingFunctionPercent` | done |
+| `MinTrackSizingFunction::auto` | assoc-fn | 1304 |  | `MinTrackSizingFunctionAuto` | done |
+| `MinTrackSizingFunction::min_content` | assoc-fn | 1311 |  | `MinTrackSizingFunctionMinContent` | done |
+| `MinTrackSizingFunction::max_content` | assoc-fn | 1318 |  | `MinTrackSizingFunctionMaxContent` | done |
+| `MinTrackSizingFunction::calc` | assoc-fn | 1328 | calc | `MinTrackSizingFunctionCalc` | n/a:D-TAFFY-FEATURE |
+| `MinTrackSizingFunction::from_raw` | assoc-fn | 1336 |  | `MinTrackSizingFunctionFromRaw` | done |
+| `MinTrackSizingFunction::into_raw` | method | 1341 |  | `(MinTrackSizingFunction).IntoRaw` | done |
+| `MinTrackSizingFunction::is_intrinsic` | method | 1347 |  | `(MinTrackSizingFunction).IsIntrinsic` | done |
+| `MinTrackSizingFunction::is_min_or_max_content` | method | 1353 |  | `(MinTrackSizingFunction).IsMinOrMaxContent` | done |
+| `MinTrackSizingFunction::is_fr` | method | 1359 |  | `(MinTrackSizingFunction).IsFr` | done |
+| `MinTrackSizingFunction::is_auto` | method | 1365 |  | `(MinTrackSizingFunction).IsAuto` | done |
+| `MinTrackSizingFunction::behaves_as_auto` | method | 1371 |  | `(MinTrackSizingFunction).BehavesAsAuto` | done |
+| `MinTrackSizingFunction::is_min_content` | method | 1377 |  | `(MinTrackSizingFunction).IsMinContent` | done |
+| `MinTrackSizingFunction::is_max_content` | method | 1383 |  | `(MinTrackSizingFunction).IsMaxContent` | done |
+| `MinTrackSizingFunction::definite_value` | method | 1391 |  | `(MinTrackSizingFunction).DefiniteValue` | done |
+| `MinTrackSizingFunction::resolved_percentage_size` | method | 1408 |  | `(MinTrackSizingFunction).ResolvedPercentageSize` | done |
+| `MinTrackSizingFunction::uses_percentage` | method | 1418 |  | `(MinTrackSizingFunction).UsesPercentage` | done |
+| `MinTrackSizingFunction::expand` | method | 1427 |  | `(MinTrackSizingFunction).Expand` | done |
+| `ExpandedMinTrackSizingFunction` | enum | 1446 |  | `ExpandedMinTrackSizingFunction` | done |
+| `TrackSizingFunction` | type | 1487 |  | `TrackSizingFunction` | done |
+| `TrackSizingFunction::min_sizing_function` | method | 1490 |  | `TrackSizingFunctionMinSizingFunction` | done |
+| `TrackSizingFunction::max_sizing_function` | method | 1494 |  | `TrackSizingFunctionMaxSizingFunction` | done |
+| `TrackSizingFunction::has_fixed_component` | method | 1498 |  | `TrackSizingFunctionHasFixedComponent` | done |
+| `RepetitionCount` | enum | 1585 |  | `RepetitionCount` | done |
+| `InvalidStringRepetitionValue` | struct | 1604 |  | `InvalidStringRepetitionValue` | done |
+| `GridTemplateRepetition` | struct | 1642 |  | `GridTemplateRepetition` | done |
+| `GridTemplateComponent` | enum | 1684 |  | `GridTemplateComponent` | done |
+| `GridTemplateComponent::as_component_ref` | method | 1694 |  | `(GridTemplateComponent).AsComponentRef` | done |
+| `GridTemplateComponent::is_auto_repetition` | method | 1704 |  | `(GridTemplateComponent).IsAutoRepetition` | done |
+| `GridTemplateTracks` | struct | 1782 |  | `GridTemplateTracks` | done |
+| `GridAutoTracks` | struct | 1838 |  | `GridAutoTracks` | done |
+| `GridAreaAxis` (`pub(crate)`) | enum | 64 |  | `gridAreaAxis` | done |
+| `GridAreaEnd` (`pub(crate)`) | enum | 73 |  | `gridAreaEnd` | done |
+| `OriginZeroGridPlacement` (`pub(crate)`) | type | 419 |  | `originZeroGridPlacement` | done |
+| `NonNamedGridPlacement` (`pub(crate)`) | type | 424 |  | `nonNamedGridPlacement` | done |
+| `NonNamedGridPlacement::into_origin_zero_placement` | method | 573 |  | `nonNamedGridPlacementIntoOriginZeroPlacement` | done |
+| default methods of `GridContainerStyle` / `GridItemStyle` | trait-impl | 156 |  | `GridContainerStyleDefaults` | dev:D-TAFFY-TRAITS |
+| default methods of `GridContainerStyle` / `GridItemStyle` | trait-impl | 278 |  | `GridItemStyleDefaults` | dev:D-TAFFY-TRAITS |
+| `impl TemplateLineNames for Map<slice::Iter<Vec<S>>, ...>` | trait-impl | 119 |  | `TemplateLineNames` (alias of `[][]S`) | dev:D-TAFFY-GRIDLISTS |
+| `impl Default for GridAutoFlow` | trait-impl | 321 |  | `GridAutoFlowDefault` | done |
+| `impl FromCss` / `FromStr` for the grid types, `saturating_i16` / `saturating_u16` | trait-impl | 342 | parse | - | n/a:D-TAFFY-FEATURE |
+| `impl Default for GridPlacement` | trait-impl | 420 |  | `GridPlacementDefault` | done |
+| `impl TaffyAuto for GridPlacement` | trait-impl | 438 |  | `(GridPlacement).Auto` | done |
+| `impl TaffyGridLine for GridPlacement` | trait-impl | 441 |  | `(GridPlacement).FromLineIndex` | done |
+| `impl TaffyGridLine for Line<GridPlacement>` | trait-impl | 446 |  | `(Line).FromLineIndex` | dev:D-COND |
+| `impl TaffyGridSpan for GridPlacement` | trait-impl | 451 |  | `(GridPlacement).FromSpan` | done |
+| `impl TaffyGridSpan for Line<GridPlacement>` | trait-impl | 456 |  | `(Line).FromSpan` | dev:D-COND |
+| `impl Default for Line<GridPlacement>` | trait-impl | 723 |  | `LineGridPlacementDefault` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent` / `TaffyFitContent` / `FromFr for MaxTrackSizingFunction` | trait-impl | 734 |  | `MaxTrackSizingFunctionZero` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent` / `TaffyFitContent` / `FromFr for MaxTrackSizingFunction` | trait-impl | 734 |  | `(MaxTrackSizingFunction).Zero` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent` / `TaffyFitContent` / `FromFr for MaxTrackSizingFunction` | trait-impl | 734 |  | `(MaxTrackSizingFunction).Auto` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent` / `TaffyFitContent` / `FromFr for MaxTrackSizingFunction` | trait-impl | 734 |  | `(MaxTrackSizingFunction).MinContent` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent` / `TaffyFitContent` / `FromFr for MaxTrackSizingFunction` | trait-impl | 734 |  | `(MaxTrackSizingFunction).MaxContent` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent` / `TaffyFitContent` / `FromFr for MaxTrackSizingFunction` | trait-impl | 734 |  | `(MaxTrackSizingFunction).FromLength` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent` / `TaffyFitContent` / `FromFr for MaxTrackSizingFunction` | trait-impl | 734 |  | `(MaxTrackSizingFunction).FromPercent` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent` / `TaffyFitContent` / `FromFr for MaxTrackSizingFunction` | trait-impl | 734 |  | `(MaxTrackSizingFunction).FitContent` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent` / `TaffyFitContent` / `FromFr for MaxTrackSizingFunction` | trait-impl | 734 |  | `(MaxTrackSizingFunction).FromFr` | done |
+| `impl From<LengthPercentage / LengthPercentageAuto / Dimension / MinTrackSizingFunction> for MaxTrackSizingFunction` | trait-impl | 770 |  | `MaxTrackSizingFunctionFromLengthPercentage` | done |
+| `impl From<LengthPercentage / LengthPercentageAuto / Dimension / MinTrackSizingFunction> for MaxTrackSizingFunction` | trait-impl | 770 |  | `MaxTrackSizingFunctionFromLengthPercentageAuto` | done |
+| `impl From<LengthPercentage / LengthPercentageAuto / Dimension / MinTrackSizingFunction> for MaxTrackSizingFunction` | trait-impl | 770 |  | `MaxTrackSizingFunctionFromDimension` | done |
+| `impl From<LengthPercentage / LengthPercentageAuto / Dimension / MinTrackSizingFunction> for MaxTrackSizingFunction` | trait-impl | 770 |  | `MaxTrackSizingFunctionFromMinTrackSizingFunction` | done |
+| `impl Deserialize for MaxTrackSizingFunction` / `MinTrackSizingFunction` | trait-impl | 829 | serde | - | n/a:D-TAFFY-FEATURE |
+| `impl From<MaxTrackSizingFunction> for ExpandedMaxTrackSizingFunction` and back | trait-impl | 1146 |  | `ExpandedMaxTrackSizingFunctionFromMaxTrackSizingFunction` | done |
+| `impl From<MaxTrackSizingFunction> for ExpandedMaxTrackSizingFunction` and back | trait-impl | 1146 |  | `MaxTrackSizingFunctionFromExpandedMaxTrackSizingFunction` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent for MinTrackSizingFunction` | trait-impl | 1183 |  | `MinTrackSizingFunctionZero` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent for MinTrackSizingFunction` | trait-impl | 1183 |  | `(MinTrackSizingFunction).Zero` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent for MinTrackSizingFunction` | trait-impl | 1183 |  | `(MinTrackSizingFunction).Auto` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent for MinTrackSizingFunction` | trait-impl | 1183 |  | `(MinTrackSizingFunction).MinContent` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent for MinTrackSizingFunction` | trait-impl | 1183 |  | `(MinTrackSizingFunction).MaxContent` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent for MinTrackSizingFunction` | trait-impl | 1183 |  | `(MinTrackSizingFunction).FromLength` | done |
+| `impl TaffyZero` / `TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `FromLength` / `FromPercent for MinTrackSizingFunction` | trait-impl | 1183 |  | `(MinTrackSizingFunction).FromPercent` | done |
+| `impl From<LengthPercentage / LengthPercentageAuto / Dimension / MaxTrackSizingFunction> for MinTrackSizingFunction` | trait-impl | 1209 |  | `MinTrackSizingFunctionFromLengthPercentage` | done |
+| `impl From<LengthPercentage / LengthPercentageAuto / Dimension / MaxTrackSizingFunction> for MinTrackSizingFunction` | trait-impl | 1209 |  | `MinTrackSizingFunctionFromLengthPercentageAuto` | done |
+| `impl From<LengthPercentage / LengthPercentageAuto / Dimension / MaxTrackSizingFunction> for MinTrackSizingFunction` | trait-impl | 1209 |  | `MinTrackSizingFunctionFromDimension` | done |
+| `impl From<LengthPercentage / LengthPercentageAuto / Dimension / MaxTrackSizingFunction> for MinTrackSizingFunction` | trait-impl | 1209 |  | `MinTrackSizingFunctionFromMaxTrackSizingFunction` | done |
+| `impl From<MinTrackSizingFunction> for ExpandedMinTrackSizingFunction` and back | trait-impl | 1464 |  | `ExpandedMinTrackSizingFunctionFromMinTrackSizingFunction` | done |
+| `impl From<MinTrackSizingFunction> for ExpandedMinTrackSizingFunction` and back | trait-impl | 1464 |  | `MinTrackSizingFunctionFromExpandedMinTrackSizingFunction` | done |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for TrackSizingFunction` | trait-impl | 1503 |  | `TrackSizingFunctionAuto`, `TrackSizingFunctionMinContent`, `TrackSizingFunctionMaxContent`, `TrackSizingFunctionZero`, `TrackSizingFunctionFitContent`, methods on `MinMax` | dev:D-COND |
+| `impl From<LengthPercentage / LengthPercentageAuto / Dimension> for TrackSizingFunction` | trait-impl | 1541 |  | `TrackSizingFunctionFromLengthPercentage` | done |
+| `impl From<LengthPercentage / LengthPercentageAuto / Dimension> for TrackSizingFunction` | trait-impl | 1541 |  | `TrackSizingFunctionFromLengthPercentageAuto` | done |
+| `impl From<LengthPercentage / LengthPercentageAuto / Dimension> for TrackSizingFunction` | trait-impl | 1541 |  | `TrackSizingFunctionFromDimension` | done |
+| `impl From<u16> for RepetitionCount` | trait-impl | 1597 |  | `RepetitionCountFromU16` | done |
+| `impl Display` / `Error for InvalidStringRepetitionValue` | trait-impl | 1608 |  | `(InvalidStringRepetitionValue).Error` | done |
+| `impl TryFrom<&str> for RepetitionCount` | trait-impl | 1615 |  | `RepetitionCountTryFromStr` | done |
+| `impl GenericRepetition for &GridTemplateRepetition` | trait-impl | 1655 |  | `GridTemplateRepetitionRef` (`(*GridTemplateRepetition).Ref`) | dev:D-TAFFY-TRAITS |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for GridTemplateComponent` | trait-impl | 1715 |  | `(GridTemplateComponent).Auto` | done |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for GridTemplateComponent` | trait-impl | 1715 |  | `(GridTemplateComponent).MinContent` | done |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for GridTemplateComponent` | trait-impl | 1715 |  | `(GridTemplateComponent).MaxContent` | done |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for GridTemplateComponent` | trait-impl | 1715 |  | `(GridTemplateComponent).FitContent` | done |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for GridTemplateComponent` | trait-impl | 1715 |  | `(GridTemplateComponent).Zero` | done |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for GridTemplateComponent` | trait-impl | 1715 |  | `(GridTemplateComponent).FromLength` | done |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for GridTemplateComponent` | trait-impl | 1715 |  | `(GridTemplateComponent).FromPercent` | done |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent` / `TaffyFitContent` / `TaffyZero` / `FromLength` / `FromPercent` / `FromFr for GridTemplateComponent` | trait-impl | 1715 |  | `(GridTemplateComponent).FromFr` | done |
+| `impl From<MinMax<...>> for GridTemplateComponent` | trait-impl | 1749 |  | `GridTemplateComponentFromMinMax` | done |
+| `impl Default for GridTemplateTracks` | trait-impl | 1790 |  | `GridTemplateTracksDefault` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `grid_placement_parser_saturates_numeric_values` | test | 1862 | parse | `TestStyleGrid_GridPlacementParserSaturatesNumericValues` | todo |
-| `repetition_parser_saturates_numeric_values` | test | 1881 | parse | `TestStyleGrid_RepetitionParserSaturatesNumericValues` | todo |
-| `repetition_track_count_saturates` | test | 1892 | parse | `TestStyleGrid_RepetitionTrackCountSaturates` | todo |
-| `max_track_sizing_function_round_trips` | test | 1907 |  | `TestStyleGrid_MaxTrackSizingFunctionRoundTrips` | todo |
-| `min_track_sizing_function_round_trips` | test | 1930 |  | `TestStyleGrid_MinTrackSizingFunctionRoundTrips` | todo |
-| `track_sizing_function_calc_round_trips` | test | 1947 | calc | `TestStyleGrid_TrackSizingFunctionCalcRoundTrips` | todo |
+| `grid_placement_parser_saturates_numeric_values` | test | 1862 | parse | `TestStyleGrid_GridPlacementParserSaturatesNumericValues` | n/a:D-TAFFY-FEATURE |
+| `repetition_parser_saturates_numeric_values` | test | 1881 | parse | `TestStyleGrid_RepetitionParserSaturatesNumericValues` | n/a:D-TAFFY-FEATURE |
+| `repetition_track_count_saturates` | test | 1892 | parse | `TestStyleGrid_RepetitionTrackCountSaturates` | n/a:D-TAFFY-FEATURE |
+| `max_track_sizing_function_round_trips` | test | 1907 |  | `TestStyleGrid_ExpandTests_MaxTrackSizingFunctionRoundTrips` | done |
+| `min_track_sizing_function_round_trips` | test | 1930 |  | `TestStyleGrid_ExpandTests_MinTrackSizingFunctionRoundTrips` | done |
+| `track_sizing_function_calc_round_trips` | test | 1947 | calc | `TestStyleGrid_ExpandTests_TrackSizingFunctionCalcRoundTrips` | n/a:D-TAFFY-FEATURE |
 
 ## src/style/mod.rs
 
@@ -1010,8 +1074,8 @@ Go target: `internal/taffy/style_mod.go` (package `taffy`), tests in `style_mod_
 | `impl BlockItemStyle for Style` | trait-impl | 1232 |  | `StyleRef` | dev:D-TAFFY-TRAITS |
 | `impl FlexboxContainerStyle for Style` | trait-impl | 1290 |  | `StyleRef` | dev:D-TAFFY-TRAITS |
 | `impl FlexboxItemStyle for Style` | trait-impl | 1346 |  | `StyleRef` | dev:D-TAFFY-TRAITS |
-| `impl GridContainerStyle for Style` | trait-impl | 1386 |  | `StyleRef` | blocked:M0-taffy-style-grid |
-| `impl GridItemStyle for Style` | trait-impl | 1561 |  | `StyleRef` | blocked:M0-taffy-style-grid |
+| `impl GridContainerStyle for Style` | trait-impl | 1386 |  | `StyleRef` | dev:D-TAFFY-GRIDLISTS |
+| `impl GridItemStyle for Style` | trait-impl | 1561 |  | `StyleRef` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
@@ -1025,70 +1089,73 @@ Go target: `internal/taffy/style_helpers.go` (package `taffy`), tests in `style_
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `repeat` | fn | 23 | grid | `Repeat` | todo |
-| `evenly_sized_tracks` | fn | 38 | grid | `EvenlySizedTracks` | todo |
-| `line` | fn | 52 |  | `Line` | todo |
-| `TaffyGridLine` | trait | 56 |  | `TaffyGridLine` | todo |
-| `TaffyGridLine::from_line_index` | trait-method | 58 |  | `TaffyGridLine.FromLineIndex` | todo |
-| `span` | fn | 63 |  | `Span` | todo |
-| `TaffyGridSpan` | trait | 67 |  | `TaffyGridSpan` | todo |
-| `TaffyGridSpan::from_span` | trait-method | 69 |  | `TaffyGridSpan.FromSpan` | todo |
-| `minmax` | fn | 75 | grid | `Minmax` | todo |
-| `flex` | fn | 85 | grid | `Flex` | todo |
-| `zero` | fn | 95 |  | `Zero` | todo |
-| `TaffyZero` | trait | 100 |  | `TaffyZero` | todo |
-| `Point::zero` | assoc-fn | 117 |  | `PointZero` | todo |
-| `Line::zero` | assoc-fn | 128 |  | `LineZero` | todo |
-| `Size::zero` | assoc-fn | 139 |  | `SizeZero` | todo |
-| `Rect::zero` | assoc-fn | 150 |  | `RectZero` | todo |
-| `auto` | fn | 157 |  | `Auto` | todo |
-| `TaffyAuto` | trait | 162 |  | `TaffyAuto` | todo |
-| `Point::auto` | assoc-fn | 176 |  | `PointAuto` | todo |
-| `Line::auto` | assoc-fn | 187 |  | `LineAuto` | todo |
-| `Size::auto` | assoc-fn | 198 |  | `SizeAuto` | todo |
-| `Rect::auto` | assoc-fn | 209 |  | `RectAuto` | todo |
-| `min_content` | fn | 216 |  | `MinContent` | todo |
-| `TaffyMinContent` | trait | 221 |  | `TaffyMinContent` | todo |
-| `Point::min_content` | assoc-fn | 235 |  | `PointMinContent` | todo |
-| `Line::min_content` | assoc-fn | 246 |  | `LineMinContent` | todo |
-| `Size::min_content` | assoc-fn | 257 |  | `SizeMinContent` | todo |
-| `Rect::min_content` | assoc-fn | 269 |  | `RectMinContent` | todo |
-| `max_content` | fn | 276 |  | `MaxContent` | todo |
-| `TaffyMaxContent` | trait | 281 |  | `TaffyMaxContent` | todo |
-| `Point::max_content` | assoc-fn | 295 |  | `PointMaxContent` | todo |
-| `Line::max_content` | assoc-fn | 306 |  | `LineMaxContent` | todo |
-| `Size::max_content` | assoc-fn | 317 |  | `SizeMaxContent` | todo |
-| `Rect::max_content` | assoc-fn | 329 |  | `RectMaxContent` | todo |
-| `fit_content` | fn | 337 |  | `FitContent` | todo |
-| `TaffyFitContent` | trait | 342 |  | `TaffyFitContent` | todo |
-| `TaffyFitContent::fit_content` | trait-method | 344 |  | `TaffyFitContent.FitContent` | todo |
-| `Point::fit_content` | assoc-fn | 356 |  | `PointFitContent` | todo |
-| `Line::fit_content` | assoc-fn | 370 |  | `LineFitContent` | todo |
-| `Size::fit_content` | assoc-fn | 384 |  | `SizeFitContent` | todo |
-| `Rect::fit_content` | assoc-fn | 403 |  | `RectFitContent` | todo |
-| `length` | fn | 410 |  | `Length` | todo |
-| `FromLength` | trait | 415 |  | `FromLength` | todo |
-| `FromLength::from_length` | trait-method | 417 |  | `FromLength.FromLength` | todo |
-| `Point::length` | assoc-fn | 440 |  | `PointLength` | todo |
-| `Line::length` | assoc-fn | 453 |  | `LineLength` | todo |
-| `Size::length` | assoc-fn | 466 |  | `SizeLength` | todo |
-| `Rect::length` | assoc-fn | 484 |  | `RectLength` | todo |
-| `percent` | fn | 491 |  | `Percent` | todo |
-| `FromPercent` | trait | 496 |  | `FromPercent` | todo |
-| `FromPercent::from_percent` | trait-method | 498 |  | `FromPercent.FromPercent` | todo |
-| `Point::percent` | assoc-fn | 522 |  | `PointPercent` | todo |
-| `Line::percent` | assoc-fn | 536 |  | `LinePercent` | todo |
-| `Size::percent` | assoc-fn | 550 |  | `SizePercent` | todo |
-| `Rect::percent` | assoc-fn | 569 |  | `RectPercent` | todo |
-| `fr` | fn | 577 | grid | `Fr` | todo |
-| `FromFr` | trait | 582 |  | `FromFr` | todo |
-| `FromFr::from_fr` | trait-method | 584 |  | `FromFr.FromFr` | todo |
+| `repeat` | fn | 23 | grid | `Repeat` | done |
+| `evenly_sized_tracks` | fn | 38 | grid | `EvenlySizedTracks` | done |
+| `line` | fn | 52 |  | `NewLine` | dev:D-TAFFY-HELPERS |
+| `TaffyGridLine` | trait | 56 |  | `TaffyGridLine` | done |
+| `TaffyGridLine::from_line_index` | trait-method | 58 |  | `TaffyGridLine.FromLineIndex` | done |
+| `span` | fn | 63 |  | `Span` | done |
+| `TaffyGridSpan` | trait | 67 |  | `TaffyGridSpan` | done |
+| `TaffyGridSpan::from_span` | trait-method | 69 |  | `TaffyGridSpan.FromSpan` | done |
+| `minmax` | fn | 75 | grid | `Minmax` | done |
+| `flex` | fn | 85 | grid | `Flex` | done |
+| `zero` | fn | 95 |  | `Zero` | done |
+| `TaffyZero` | trait | 100 |  | `TaffyZero` | done |
+| `Point::zero` | assoc-fn | 117 |  | `PointZero` | done |
+| `Line::zero` | assoc-fn | 128 |  | `LineZero` | done |
+| `Size::zero` | assoc-fn | 139 |  | `SizeZero` | done |
+| `Rect::zero` | assoc-fn | 150 |  | `RectZero` | done |
+| `auto` | fn | 157 |  | `Auto` | done |
+| `TaffyAuto` | trait | 162 |  | `TaffyAuto` | done |
+| `Point::auto` | assoc-fn | 176 |  | `PointAuto` | done |
+| `Line::auto` | assoc-fn | 187 |  | `LineAuto` | done |
+| `Size::auto` | assoc-fn | 198 |  | `SizeAuto` | done |
+| `Rect::auto` | assoc-fn | 209 |  | `RectAuto` | done |
+| `min_content` | fn | 216 |  | `MinContent` | done |
+| `TaffyMinContent` | trait | 221 |  | `TaffyMinContent` | done |
+| `Point::min_content` | assoc-fn | 235 |  | `PointMinContent` | done |
+| `Line::min_content` | assoc-fn | 246 |  | `LineMinContent` | done |
+| `Size::min_content` | assoc-fn | 257 |  | `SizeMinContent` | done |
+| `Rect::min_content` | assoc-fn | 269 |  | `RectMinContent` | done |
+| `max_content` | fn | 276 |  | `MaxContent` | done |
+| `TaffyMaxContent` | trait | 281 |  | `TaffyMaxContent` | done |
+| `Point::max_content` | assoc-fn | 295 |  | `PointMaxContent` | done |
+| `Line::max_content` | assoc-fn | 306 |  | `LineMaxContent` | done |
+| `Size::max_content` | assoc-fn | 317 |  | `SizeMaxContent` | done |
+| `Rect::max_content` | assoc-fn | 329 |  | `RectMaxContent` | done |
+| `fit_content` | fn | 337 |  | `FitContent` | done |
+| `TaffyFitContent` | trait | 342 |  | `TaffyFitContent` | done |
+| `TaffyFitContent::fit_content` | trait-method | 344 |  | `TaffyFitContent.FitContent` | done |
+| `Point::fit_content` | assoc-fn | 356 |  | `PointFitContent` | done |
+| `Line::fit_content` | assoc-fn | 370 |  | `LineFitContent` | done |
+| `Size::fit_content` | assoc-fn | 384 |  | `SizeFitContent` | done |
+| `Rect::fit_content` | assoc-fn | 403 |  | `RectFitContent` | done |
+| `length` | fn | 410 |  | `Length` | done |
+| `FromLength` | trait | 415 |  | `FromLength` | done |
+| `FromLength::from_length` | trait-method | 417 |  | `FromLength.FromLength` | done |
+| `Point::length` | assoc-fn | 440 |  | `PointLength` | done |
+| `Line::length` | assoc-fn | 453 |  | `LineLength` | done |
+| `Size::length` | assoc-fn | 466 |  | `SizeLength` | done |
+| `Rect::length` | assoc-fn | 484 |  | `RectLength` | done |
+| `percent` | fn | 491 |  | `Percent` | done |
+| `FromPercent` | trait | 496 |  | `FromPercent` | done |
+| `FromPercent::from_percent` | trait-method | 498 |  | `FromPercent.FromPercent` | done |
+| `Point::percent` | assoc-fn | 522 |  | `PointPercent` | done |
+| `Line::percent` | assoc-fn | 536 |  | `LinePercent` | done |
+| `Size::percent` | assoc-fn | 550 |  | `SizePercent` | done |
+| `Rect::percent` | assoc-fn | 569 |  | `RectPercent` | done |
+| `fr` | fn | 577 | grid | `Fr` | done |
+| `FromFr` | trait | 582 |  | `FromFr` | done |
+| `FromFr::from_fr` | trait-method | 584 |  | `FromFr.FromFr` | done |
+| `impl TaffyZero for f32` / `Option<T>`, `impl FromLength` / `FromPercent for f32` / `Option<f32>` | trait-impl | 103 |  | runtime cases of `zeroOf` / `lengthOf` / `percentOf` (only `Option[float32]`) | dev:D-TAFFY-HELPERS |
+| `impl TaffyAuto` / `TaffyMinContent` / `TaffyMaxContent for Option<T>` | trait-impl | 165 |  | - | dev:D-TAFFY-HELPERS |
+| `impl Taffy* / From* for Point<T>` / `Line<T>` / `Size<T>` / `Rect<T>` | trait-impl | 110 |  | methods `Zero`, `Auto`, `MinContent`, `MaxContent`, `FitContent`, `FromLength`, `FromPercent` on `Point` / `Line` / `Size` / `Rect` | dev:D-COND |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_repeat_u16` | test | 600 | grid | `TestStyleHelpers_RepeatU16` | todo |
-| `test_repeat_auto_fit_str` | test | 612 | grid | `TestStyleHelpers_RepeatAutoFitStr` | todo |
-| `test_repeat_auto_fill_str` | test | 624 | grid | `TestStyleHelpers_RepeatAutoFillStr` | todo |
+| `test_repeat_u16` | test | 600 | grid | `TestStyleHelpers_RepeatFnTests_RepeatU16` | done |
+| `test_repeat_auto_fit_str` | test | 612 | grid | `TestStyleHelpers_RepeatFnTests_RepeatAutoFitStr` | done |
+| `test_repeat_auto_fill_str` | test | 624 | grid | `TestStyleHelpers_RepeatFnTests_RepeatAutoFillStr` | done |
 
 ## src/tree/cache.rs
 
@@ -1520,3 +1587,5 @@ No `pub` items. The `std` branch is ported as unexported helpers: `round`, `ceil
 | D-TAFFY-TRAITS | Style traits are Go interfaces. Default method bodies live in embeddable `<Trait>Defaults` structs (`CoreStyleDefaults`, `FlexboxItemStyleDefaults`, ...); `CoreStyle::is_containing_block`, whose default calls `position()`, is the free function `CoreStyleDefaultIsContainingBlock(s)` that implementors call. The associated type `CustomIdent` is the type parameter `S` of the interfaces that use it (`OofItemStyle[S]`); `CheapCloneStr` is the constraint `~string`. `Style`'s fields share names with the trait methods, which Go forbids on one type, so `impl ... for Style` is implemented by `StyleRef[S]` (`(*Style[S]).Ref()`, upstream's `&Style`); `PhantomData` field `dummy` and the `impl for &T` forwarding impls do not exist. | `src/style/mod.rs:63-250,880-1600`, `src/style/flex.rs`, `src/style/block.rs` | `internal/taffy/style_mod.go`, `style_flex.go`, `style_block.go` |
 | D-TAFFY-ALIGNFIELDS | `AlignItems` / `AlignContent` keep their `keyword` / `safety` fields unexported because the `keyword()` method would collide with an exported field; read them with `Keyword()` / `Safety()`, build with `NewAlignItems` / `NewAlignContent` or the `AlignItems<Name>` vars. Upstream's associated consts are package vars (Go has no struct consts). | `src/style/alignment.rs:155-460` | `internal/taffy/style_alignment.go` |
 | D-TAFFY-SIZES | `style_sizes` checks only sizes that Go lays out like Rust; `Option<AlignItems>` (Go 3 bytes, no niche), the string-dependent grid types and `Style` sizes differ and are not asserted. | `src/style/mod.rs:1742-1815` | `internal/taffy/style_mod_test.go` |
+| D-TAFFY-GRIDLISTS | The associated iterator types of `GridContainerStyle` and `GenericRepetition` are slices: template track lists are `[]GenericGridTemplateComponent[S, GenericRepetition[S]]` (the repetition is the interface, so `R` is not a trait parameter), auto track lists `[]TrackSizingFunction`, line names `TemplateLineNames[S]` (alias of `[][]S`), areas `[]GridTemplateArea[S]`. `StyleRef.GridTemplateRows` / `GridTemplateColumns` allocate the component-ref slice per call where upstream maps lazily. | `src/style/grid.rs:81-270`, `src/style/mod.rs:1386-1480` | `internal/taffy/style_grid.go`, `style_mod.go` |
+| D-TAFFY-HELPERS | `style_helpers`: `line` is `NewLine` (Go cannot have a function and the type `Line` with one name). Go cannot add methods to `float32` or `gpuiutil.Option`, so the `f32` / `Option` impls are runtime cases inside the Point / Line / Size / Rect helpers (`PointZero[float32]`, `SizeLength[Option[float32]]`) and are not usable with the top-level generic helpers; `Option<T>` is covered for `T = f32` only. `repeat`'s `TryInto<RepetitionCount>` input is the union of `uint16`, `string` and `RepetitionCount`. | `src/style_helpers.rs` | `internal/taffy/style_helpers.go` |
