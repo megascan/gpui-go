@@ -53,25 +53,37 @@ Go target: `internal/taffy/compute_block.go` (package `taffy`), tests in `comput
 
 Go target: `internal/taffy/compute_common_alignment.go` (package `taffy`), tests in `compute_common_alignment_test.go`
 
-No public items or tests.
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `resolve_self_alignment_safety` (`pub(crate)`) | fn | 11 |  | `resolveSelfAlignmentSafety` | done |
+| `apply_alignment_fallback` (`pub(crate)`) | fn | 28 |  | `applyAlignmentFallback` | done |
+| `compute_alignment_offset` (`pub(crate)`) | fn | 72 |  | `computeAlignmentOffset` | done |
 
 ## src/compute/common/mod.rs
 
 Go target: `internal/taffy/compute_common_mod.go` (package `taffy`), tests in `compute_common_mod_test.go`
 
-No public items or tests.
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `alignment`, `sizing_keyword`, `scrollable_overflow` modules | mod | 2 | content_size | - | n/a:D-TAFFY-SYS |
 
 ## src/compute/common/scrollable_overflow.rs
 
 Go target: `internal/taffy/compute_common_scrollable_overflow.go` (package `taffy`), tests in `compute_common_scrollable_overflow_test.go`
 
-No public items or tests.
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `compute_scrollable_overflow_contribution` (`pub(crate)`) | fn | 23 |  | `computeScrollableOverflowContribution` | done |
 
 ## src/compute/common/sizing_keyword.rs
 
 Go target: `internal/taffy/compute_common_sizing_keyword.go` (package `taffy`), tests in `compute_common_sizing_keyword_test.go`
 
-No public items or tests.
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `SizingKeywordResolution` (`pub(crate)`) | enum | 9 |  | `sizingKeywordResolution` | done |
+| `resolve_sizing_keyword` (`pub(crate)`) | fn | 28 | calc | `resolveSizingKeyword` | done |
+| `resolve_absolute_sizing_keywords` (`pub(crate)`) | fn | 65 |  | `resolveAbsoluteSizingKeywords` | done |
 
 ## src/compute/flexbox.rs
 
@@ -293,7 +305,7 @@ Go target: `internal/taffy/compute_leaf.go` (package `taffy`), tests in `compute
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `compute_leaf_layout` | fn | 20 |  | `ComputeLeafLayout` | todo |
+| `compute_leaf_layout` | fn | 20 |  | `ComputeLeafLayout` | done |
 
 ## src/compute/mod.rs
 
@@ -301,14 +313,20 @@ Go target: `internal/taffy/compute_mod.go` (package `taffy`), tests in `compute_
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `compute_root_layout` | fn | 77 |  | `ComputeRootLayout` | todo |
-| `compute_cached_layout` | fn | 330 |  | `ComputeCachedLayout` | todo |
-| `round_layout` | fn | 375 |  | `RoundLayout` | todo |
-| `compute_hidden_layout` | fn | 456 |  | `ComputeHiddenLayout` | todo |
+| `compute_root_layout` | fn | 77 |  | `ComputeRootLayout` | done |
+| `compute_in_flow_root_layout` (private) | fn | 188 | block_layout | `computeInFlowRootLayout` | done |
+| `impl LayoutContainingBlock + CacheTree` bound of `compute_root_layout` | type | 78 |  | `RootLayoutTree` | done |
+| `impl LayoutPartialTree + CacheTree` bound of `compute_hidden_layout` | type | 456 |  | `HiddenLayoutTree` | done |
+| `compute_cached_layout` | fn | 330 |  | `ComputeCachedLayout` | done |
+| `round_layout` | fn | 375 |  | `RoundLayout` | done |
+| `round_layout::round_layout_inner` (private) | fn | 379 |  | `roundLayoutInner` | done |
+| `round_layout::round_scrollable_overflow_rect` (private) | fn | 441 | content_size | `roundScrollableOverflowRect` | done |
+| `detailed_info` re-export module | mod | 471 | grid | - | n/a:D-TAFFY-FEATURE |
+| `compute_hidden_layout` | fn | 456 |  | `ComputeHiddenLayout` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `hidden_layout_should_hide_recursively` | test | 486 |  | `TestComputeMod_HiddenLayoutShouldHideRecursively` | todo |
+| `hidden_layout_should_hide_recursively` | test | 486 |  | `TestComputeMod_HiddenLayoutShouldHideRecursively` | done |
 
 ## src/compute/oof.rs
 
@@ -317,7 +335,7 @@ Go target: `internal/taffy/compute_oof.go` (package `taffy`), tests in `compute_
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
 | `resolve_static_offset` | fn | 35 |  | `ResolveStaticOffset` | todo |
-| `compute_oof_layout` | fn | 348 |  | `ComputeOofLayout` | todo |
+| `compute_oof_layout` | fn | 348 |  | `ComputeOofLayout` | done |
 | `OofLayoutResult` | struct | 370 |  | `OofLayoutResult` | todo |
 | `compute_oof_layout_for_area` | fn | 389 |  | `ComputeOofLayoutForArea` | todo |
 
@@ -1279,8 +1297,8 @@ Go target: `internal/taffy/tree_node.go` (package `taffy`), tests in `tree_node_
 | `impl From<NodeId> for u64` | trait-impl | 27 |  | `U64FromNodeID` | done |
 | `impl From<usize> for NodeId` | trait-impl | 33 |  | `NodeIDFromUsize` | done |
 | `impl From<NodeId> for usize` | trait-impl | 39 |  | `UsizeFromNodeID` | done |
-| `impl From<DefaultKey> for NodeId` | trait-impl | 47 | taffy_tree | - | blocked:M0-taffy-compute |
-| `impl From<NodeId> for DefaultKey` | trait-impl | 55 | taffy_tree | - | blocked:M0-taffy-compute |
+| `impl From<DefaultKey> for NodeId` | trait-impl | 47 | taffy_tree | `nodeIDFromKey` | done |
+| `impl From<NodeId> for DefaultKey` | trait-impl | 55 | taffy_tree | `keyFromNodeID` | done |
 | `derive(Debug) for NodeId` | trait-impl | 12 |  | `(NodeID).String` | done |
 
 ## src/tree/taffy_tree.rs
@@ -1289,79 +1307,105 @@ Go target: `internal/taffy/tree_taffy_tree.go` (package `taffy`), tests in `tree
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `TaffyResult` | type | 38 |  | `TaffyResult` | todo |
-| `TaffyError` | enum | 42 |  | `TaffyError` | todo |
-| `TaffyTree` | struct | 150 |  | `TaffyTree` | todo |
-| `TaffyTreeChildIter` | struct | 178 |  | `TaffyTreeChildIter` | todo |
-| `TaffyTree::new` | assoc-fn | 591 |  | `NewTaffyTree` | todo |
-| `TaffyTree::with_capacity` | assoc-fn | 597 |  | `TaffyTreeWithCapacity` | todo |
-| `TaffyTree::enable_rounding` | method | 610 |  | `(TaffyTree).EnableRounding` | todo |
-| `TaffyTree::disable_rounding` | method | 615 |  | `(TaffyTree).DisableRounding` | todo |
-| `TaffyTree::new_leaf` | method | 620 |  | `(TaffyTree).NewLeaf` | todo |
-| `TaffyTree::new_leaf_with_context` | method | 631 |  | `(TaffyTree).NewLeafWithContext` | todo |
-| `TaffyTree::new_with_children` | method | 645 |  | `(TaffyTree).NewWithChildren` | todo |
-| `TaffyTree::clear` | method | 659 |  | `(TaffyTree).Clear` | todo |
-| `TaffyTree::remove` | method | 672 |  | `(TaffyTree).Remove` | todo |
-| `TaffyTree::set_node_context` | method | 698 |  | `(TaffyTree).SetNodeContext` | todo |
-| `TaffyTree::get_node_context` | method | 715 |  | `(TaffyTree).GetNodeContext` | todo |
-| `TaffyTree::get_node_context_mut` | method | 721 |  | `(TaffyTree).GetNodeContextMut` | todo |
-| `TaffyTree::get_disjoint_node_context_mut` | method | 726 |  | `(TaffyTree).GetDisjointNodeContextMut` | todo |
-| `TaffyTree::add_child` | method | 734 |  | `(TaffyTree).AddChild` | todo |
-| `TaffyTree::insert_child_at_index` | method | 745 |  | `(TaffyTree).InsertChildAtIndex` | todo |
-| `TaffyTree::set_children` | method | 761 |  | `(TaffyTree).SetChildren` | todo |
-| `TaffyTree::remove_child` | method | 790 |  | `(TaffyTree).RemoveChild` | todo |
-| `TaffyTree::remove_child_at_index` | method | 798 |  | `(TaffyTree).RemoveChildAtIndex` | todo |
-| `TaffyTree::remove_children_range` | method | 818 |  | `(TaffyTree).RemoveChildrenRange` | todo |
-| `TaffyTree::replace_child_at_index` | method | 834 |  | `(TaffyTree).ReplaceChildAtIndex` | todo |
-| `TaffyTree::child_at_index` | method | 858 |  | `(TaffyTree).ChildAtIndex` | todo |
-| `TaffyTree::total_node_count` | method | 870 |  | `(TaffyTree).TotalNodeCount` | todo |
-| `TaffyTree::parent` | method | 879 |  | `(TaffyTree).Parent` | todo |
-| `TaffyTree::children` | method | 884 |  | `(TaffyTree).Children` | todo |
-| `TaffyTree::hoisted_children` | method | 891 |  | `(TaffyTree).HoistedChildren` | todo |
-| `TaffyTree::set_style` | method | 897 |  | `(TaffyTree).SetStyle` | todo |
-| `TaffyTree::style` | method | 905 |  | `(TaffyTree).Style` | todo |
-| `TaffyTree::layout` | method | 911 |  | `(TaffyTree).Layout` | todo |
-| `TaffyTree::unrounded_layout` | method | 921 |  | `(TaffyTree).UnroundedLayout` | todo |
-| `TaffyTree::detailed_layout_info` | method | 930 |  | `(TaffyTree).DetailedLayoutInfo` | todo |
-| `TaffyTree::mark_dirty` | method | 935 |  | `(TaffyTree).MarkDirty` | todo |
-| `TaffyTree::dirty` | method | 962 |  | `(TaffyTree).Dirty` | todo |
-| `TaffyTree::compute_layout_with_measure` | method | 967 |  | `(TaffyTree).ComputeLayoutWithMeasure` | todo |
-| `TaffyTree::compute_layout` | method | 986 |  | `(TaffyTree).ComputeLayout` | todo |
-| `TaffyTree::print_tree` | method | 994 | std | `(TaffyTree).PrintTree` | todo |
+| `TaffyResult` | type | 38 |  | `TaffyResult` | dev:D-TAFFY-RESULT |
+| `TaffyError` | enum | 42 |  | `TaffyError` | done |
+| `TaffyError::ChildIndexOutOfBounds` | variant | 44 |  | `TaffyErrorChildIndexOutOfBounds` | done |
+| `TaffyError::InvalidParentNode` | variant | 53 |  | `TaffyErrorInvalidParentNode` | done |
+| `TaffyError::InvalidChildNode` | variant | 55 |  | `TaffyErrorInvalidChildNode` | done |
+| `TaffyError::InvalidInputNode` | variant | 57 |  | `TaffyErrorInvalidInputNode` | done |
+| `impl Display for TaffyError` | trait-impl | 60 |  | `(TaffyError).Error` | done |
+| `impl std::error::Error for TaffyError` | trait-impl | 76 | std | `(TaffyError).Error` | done |
+| `TaffyConfig` (`pub(crate)`) + Default | struct | 80 |  | `taffyConfig` | done |
+| `NodeData` (private) | struct | 95 |  | `nodeData` | done |
+| `NodeData::new` | assoc-fn | 124 |  | `newNodeData` | done |
+| `NodeData::mark_dirty` | method | 141 |  | `(nodeData).markDirty` | done |
+| `TaffyTree` | struct | 150 |  | `TaffyTree` | done |
+| `TaffyTreeChildIter` | struct | 178 |  | `TaffyTreeChildIter` | done |
+| `impl Default for TaffyTree` | trait-impl | 171 |  | `NewTaffyTree` | done |
+| `impl TraversePartialTree for TaffyTree` | trait-impl | 189 |  | `(TaffyTree).ChildIds` | done |
+| `impl TraverseTree for TaffyTree` | trait-impl | 212 |  | `(TaffyTree).TraverseTree` | done |
+| `impl CacheTree for TaffyTree` | trait-impl | 215 |  | `(TaffyTree).CacheGet` | done |
+| `impl PrintTree for TaffyTree` | trait-impl | 230 |  | `(TaffyTree).GetDebugLabel` | done |
+| `TaffyView` (`pub(crate)`) | struct | 270 |  | `taffyView` | done |
+| `TaffyView::compute_child_layout` (dispatch by Display) | method | 287 |  | `(taffyView).computeChildLayout` | done |
+| `impl TraversePartialTree / TraverseTree / LayoutPartialTree / LayoutContainingBlock / CacheTree / LayoutBlockContainer / LayoutFlexboxContainer / LayoutGridContainer / RoundTree for TaffyView` | trait-impl | 347 |  | `(taffyView).ComputeChildLayout` | done |
+| `FnMut(LayoutInput, NodeId, Option<&mut NodeContext>, &Style) -> LayoutOutput` measure bound | type | 974 |  | `MeasureFunction` | done |
+| `TaffyTree::as_layout_tree` (`cfg(test)`) | method | 1000 |  | `(TaffyTree).asLayoutTree` | done |
+| `slotmap::SlotMap` (dependency, slotmap 1.1.1) | struct | 6 |  | `slotMap` | done |
+| `slotmap::SparseSecondaryMap` (dependency, slotmap 1.1.1) | struct | 5 |  | `sparseSecondaryMap` | done |
+| `slotmap::KeyData` with `as_ffi` / `from_ffi` (dependency, slotmap 1.1.1) | struct | 6 |  | `keyData` | done |
+| `TaffyTree::new` | assoc-fn | 591 |  | `NewTaffyTree` | done |
+| `TaffyTree::with_capacity` | assoc-fn | 597 |  | `TaffyTreeWithCapacity` | done |
+| `TaffyTree::enable_rounding` | method | 610 |  | `(TaffyTree).EnableRounding` | done |
+| `TaffyTree::disable_rounding` | method | 615 |  | `(TaffyTree).DisableRounding` | done |
+| `TaffyTree::new_leaf` | method | 620 |  | `(TaffyTree).NewLeaf` | done |
+| `TaffyTree::new_leaf_with_context` | method | 631 |  | `(TaffyTree).NewLeafWithContext` | done |
+| `TaffyTree::new_with_children` | method | 645 |  | `(TaffyTree).NewWithChildren` | done |
+| `TaffyTree::clear` | method | 659 |  | `(TaffyTree).Clear` | done |
+| `TaffyTree::remove` | method | 672 |  | `(TaffyTree).Remove` | done |
+| `TaffyTree::set_node_context` | method | 698 |  | `(TaffyTree).SetNodeContext` | done |
+| `TaffyTree::get_node_context` | method | 715 |  | `(TaffyTree).GetNodeContext` | done |
+| `TaffyTree::get_node_context_mut` | method | 721 |  | `(TaffyTree).GetNodeContextMut` | done |
+| `TaffyTree::get_disjoint_node_context_mut` | method | 726 |  | `(TaffyTree).GetDisjointNodeContextMut` | done |
+| `TaffyTree::add_child` | method | 734 |  | `(TaffyTree).AddChild` | done |
+| `TaffyTree::insert_child_at_index` | method | 745 |  | `(TaffyTree).InsertChildAtIndex` | done |
+| `TaffyTree::set_children` | method | 761 |  | `(TaffyTree).SetChildren` | done |
+| `TaffyTree::remove_child` | method | 790 |  | `(TaffyTree).RemoveChild` | done |
+| `TaffyTree::remove_child_at_index` | method | 798 |  | `(TaffyTree).RemoveChildAtIndex` | done |
+| `TaffyTree::remove_children_range` | method | 818 |  | `(TaffyTree).RemoveChildrenRange` | dev:D-TAFFY-RANGE |
+| `TaffyTree::replace_child_at_index` | method | 834 |  | `(TaffyTree).ReplaceChildAtIndex` | done |
+| `TaffyTree::child_at_index` | method | 858 |  | `(TaffyTree).ChildAtIndex` | done |
+| `TaffyTree::total_node_count` | method | 870 |  | `(TaffyTree).TotalNodeCount` | done |
+| `TaffyTree::parent` | method | 879 |  | `(TaffyTree).Parent` | done |
+| `TaffyTree::children` | method | 884 |  | `(TaffyTree).Children` | done |
+| `TaffyTree::hoisted_children` | method | 891 |  | `(TaffyTree).HoistedChildren` | done |
+| `TaffyTree::set_style` | method | 897 |  | `(TaffyTree).SetStyle` | done |
+| `TaffyTree::style` | method | 905 |  | `(TaffyTree).Style` | done |
+| `TaffyTree::layout` | method | 911 |  | `(TaffyTree).Layout` | done |
+| `TaffyTree::unrounded_layout` | method | 921 |  | `(TaffyTree).UnroundedLayout` | done |
+| `TaffyTree::detailed_layout_info` | method | 930 |  | `(TaffyTree).DetailedLayoutInfo` | done |
+| `TaffyTree::mark_dirty` | method | 935 |  | `(TaffyTree).MarkDirty` | done |
+| `TaffyTree::dirty` | method | 962 |  | `(TaffyTree).Dirty` | done |
+| `TaffyTree::compute_layout_with_measure` | method | 967 |  | `(TaffyTree).ComputeLayoutWithMeasure` | done |
+| `TaffyTree::compute_layout` | method | 986 |  | `(TaffyTree).ComputeLayout` | done |
+| `TaffyTree::print_tree` | method | 994 | std | `(TaffyTree).PrintTree` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `new_should_allocate_default_capacity` | test | 1033 |  | `TestTreeTaffyTree_NewShouldAllocateDefaultCapacity` | todo |
-| `test_with_capacity` | test | 1043 |  | `TestTreeTaffyTree_WithCapacity` | todo |
-| `test_new_leaf` | test | 1053 |  | `TestTreeTaffyTree_NewLeaf` | todo |
-| `new_leaf_with_context` | test | 1065 |  | `TestTreeTaffyTree_NewLeafWithContext` | todo |
-| `test_new_with_children` | test | 1078 |  | `TestTreeTaffyTree_NewWithChildren` | todo |
-| `remove_node_should_remove` | test | 1091 |  | `TestTreeTaffyTree_RemoveNodeShouldRemove` | todo |
-| `remove_node_should_detach_hierarchy` | test | 1100 |  | `TestTreeTaffyTree_RemoveNodeShouldDetachHierarchy` | todo |
-| `remove_last_node` | test | 1121 |  | `TestTreeTaffyTree_RemoveLastNode` | todo |
-| `remove_node_marks_parent_dirty` | test | 1134 |  | `TestTreeTaffyTree_RemoveNodeMarksParentDirty` | todo |
-| `set_measure` | test | 1157 |  | `TestTreeTaffyTree_SetMeasure` | todo |
-| `set_measure_of_previously_unmeasured_node` | test | 1169 |  | `TestTreeTaffyTree_SetMeasureOfPreviouslyUnmeasuredNode` | todo |
-| `add_child` | test | 1182 |  | `TestTreeTaffyTree_AddChild` | todo |
-| `insert_child_at_index` | test | 1197 |  | `TestTreeTaffyTree_InsertChildAtIndex` | todo |
-| `set_children` | test | 1224 |  | `TestTreeTaffyTree_SetChildren` | todo |
-| `remove_child` | test | 1246 |  | `TestTreeTaffyTree_RemoveChild` | todo |
-| `remove_child_at_index` | test | 1263 |  | `TestTreeTaffyTree_RemoveChildAtIndex` | todo |
-| `remove_children_range` | test | 1280 |  | `TestTreeTaffyTree_RemoveChildrenRange` | todo |
-| `remove_child_updates_parents` | test | 1303 |  | `TestTreeTaffyTree_RemoveChildUpdatesParents` | todo |
-| `replace_child_at_index` | test | 1318 |  | `TestTreeTaffyTree_ReplaceChildAtIndex` | todo |
-| `test_child_at_index` | test | 1333 |  | `TestTreeTaffyTree_ChildAtIndex` | todo |
-| `test_child_count` | test | 1345 |  | `TestTreeTaffyTree_ChildCount` | todo |
-| `test_children` | test | 1358 |  | `TestTreeTaffyTree_Children` | todo |
-| `test_set_style` | test | 1374 |  | `TestTreeTaffyTree_SetStyle` | todo |
-| `test_style` | test | 1384 |  | `TestTreeTaffyTree_Style` | todo |
-| `test_layout` | test | 1396 |  | `TestTreeTaffyTree_Layout` | todo |
-| `test_mark_dirty` | test | 1406 |  | `TestTreeTaffyTree_MarkDirty` | todo |
-| `compute_layout_should_produce_valid_result` | test | 1431 |  | `TestTreeTaffyTree_ComputeLayoutShouldProduceValidResult` | todo |
-| `make_sure_layout_location_is_top_left` | test | 1447 |  | `TestTreeTaffyTree_MakeSureLayoutLocationIsTopLeft` | todo |
-| `set_children_reparents` | test | 1491 |  | `TestTreeTaffyTree_SetChildrenReparents` | todo |
-| `remove_drops_the_nodes_context` | test | 1513 |  | `TestTreeTaffyTree_RemoveDropsTheNodesContext` | todo |
-| `clear_drops_every_nodes_context` | test | 1528 |  | `TestTreeTaffyTree_ClearDropsEveryNodesContext` | todo |
+| `new_should_allocate_default_capacity` | test | 1033 |  | `TestTreeTaffyTree_NewShouldAllocateDefaultCapacity` | done |
+| `test_with_capacity` | test | 1043 |  | `TestTreeTaffyTree_WithCapacity` | done |
+| `test_new_leaf` | test | 1053 |  | `TestTreeTaffyTree_NewLeaf` | done |
+| `new_leaf_with_context` | test | 1065 |  | `TestTreeTaffyTree_NewLeafWithContext` | done |
+| `test_new_with_children` | test | 1078 |  | `TestTreeTaffyTree_NewWithChildren` | done |
+| `remove_node_should_remove` | test | 1091 |  | `TestTreeTaffyTree_RemoveNodeShouldRemove` | done |
+| `remove_node_should_detach_hierarchy` | test | 1100 |  | `TestTreeTaffyTree_RemoveNodeShouldDetachHierarchy` | done |
+| `remove_last_node` | test | 1121 |  | `TestTreeTaffyTree_RemoveLastNode` | done |
+| `remove_node_marks_parent_dirty` | test | 1134 |  | `TestTreeTaffyTree_RemoveNodeMarksParentDirty` | blocked:M0-taffy-flexbox |
+| `set_measure` | test | 1157 |  | `TestTreeTaffyTree_SetMeasure` | done |
+| `set_measure_of_previously_unmeasured_node` | test | 1169 |  | `TestTreeTaffyTree_SetMeasureOfPreviouslyUnmeasuredNode` | done |
+| `add_child` | test | 1182 |  | `TestTreeTaffyTree_AddChild` | done |
+| `insert_child_at_index` | test | 1197 |  | `TestTreeTaffyTree_InsertChildAtIndex` | done |
+| `set_children` | test | 1224 |  | `TestTreeTaffyTree_SetChildren` | done |
+| `remove_child` | test | 1246 |  | `TestTreeTaffyTree_RemoveChild` | done |
+| `remove_child_at_index` | test | 1263 |  | `TestTreeTaffyTree_RemoveChildAtIndex` | done |
+| `remove_children_range` | test | 1280 |  | `TestTreeTaffyTree_RemoveChildrenRange` | done |
+| `remove_child_updates_parents` | test | 1303 |  | `TestTreeTaffyTree_RemoveChildUpdatesParents` | done |
+| `replace_child_at_index` | test | 1318 |  | `TestTreeTaffyTree_ReplaceChildAtIndex` | done |
+| `test_child_at_index` | test | 1333 |  | `TestTreeTaffyTree_ChildAtIndex` | done |
+| `test_child_count` | test | 1345 |  | `TestTreeTaffyTree_ChildCount` | done |
+| `test_children` | test | 1358 |  | `TestTreeTaffyTree_Children` | done |
+| `test_set_style` | test | 1374 |  | `TestTreeTaffyTree_SetStyle` | done |
+| `test_style` | test | 1384 |  | `TestTreeTaffyTree_Style` | done |
+| `test_layout` | test | 1396 |  | `TestTreeTaffyTree_Layout` | done |
+| `test_mark_dirty` | test | 1406 |  | `TestTreeTaffyTree_MarkDirty` | blocked:M0-taffy-flexbox |
+| `compute_layout_should_produce_valid_result` | test | 1431 |  | `TestTreeTaffyTree_ComputeLayoutShouldProduceValidResult` | done |
+| `make_sure_layout_location_is_top_left` | test | 1447 |  | `TestTreeTaffyTree_MakeSureLayoutLocationIsTopLeft` | blocked:M0-taffy-flexbox |
+| `set_children_reparents` | test | 1491 |  | `TestTreeTaffyTree_SetChildrenReparents` | done |
+| `remove_drops_the_nodes_context` | test | 1513 |  | `TestTreeTaffyTree_RemoveDropsTheNodesContext` | dev:D-TAFFY-CTXDROP |
+| `clear_drops_every_nodes_context` | test | 1528 |  | `TestTreeTaffyTree_ClearDropsEveryNodesContext` | dev:D-TAFFY-CTXDROP |
+| Go-only: NodeId encoding equals slotmap `KeyData::as_ffi` (gpui LayoutId wraps it) | test | - |  | `TestTreeTaffyTree_NodeIDMatchesSlotMapKeyData` | done |
+| Go-only: `TaffyError` Display text | test | - |  | `TestTreeTaffyTree_ErrorDisplay` | done |
+| Go-only: `get_disjoint_node_context_mut` disjointness | test | - |  | `TestTreeTaffyTree_DisjointNodeContextMut` | done |
 
 ## src/tree/traits.rs
 
@@ -1636,3 +1680,6 @@ No `pub` items. The `std` branch is ported as unexported helpers: `round`, `ceil
 | D-TAFFY-TREETRAITS | Tree traits are Go interfaces with the conventions of D-TAFFY-TRAITS: associated style types are the style interfaces (`CoreStyle`, `OofItemStyle[S]`, ...), `CustomIdent` is the type parameter `S` of `LayoutContainingBlock` / `LayoutGridContainer` (`LayoutPartialTree` is not generic because `CoreStyle` is not), `ChildIter` is `iter.Seq[NodeID]`, `*const ()` is `unsafe.Pointer`, `BlockContext<'_>` is `*BlockContext`, and default bodies live in `<Trait>Defaults` structs or, when they call another trait method, in `<Trait>Default<Method>` functions. The marker trait `TraverseTree` has the marker method `TraverseTree()`. `get_detailed_layout_info` returns the value, not a reference. `print_tree` is `PrintTreeStdout`, because the trait `PrintTree` takes the name. `LayoutPartialTreeExt` methods are unexported free functions taking the tree. | `src/tree/traits.rs`, `src/util/print.rs` | `internal/taffy/tree_traits.go`, `util_print.go` |
 | D-TAFFY-CLONE | `OofCandidates` holds its lazily allocated list behind a pointer (nil is upstream's `None`, a non-nil pointer to an empty slice is `Some(empty)`), so Go value copies of `OofCandidates`, `LayoutOutput` and `Cache` share it; ported code calls `Clone()` where upstream clones (`Cache::get` does) and `Equal` where upstream compares. The debug-build `MODE_CHANGE_EVICTIONS` thread-local is one process-wide atomic counter, counted while `gpuiutil.DebugAssertions` is set. | `src/tree/layout.rs:355-574`, `src/tree/cache.rs:180-360` | `internal/taffy/tree_layout.go`, `tree_cache.go` |
 | D-TAFFY-RESOLVE | `MaybeResolve` / `ResolveOrZero` are generic interfaces implemented by `LengthPercentage`, `LengthPercentageAuto` and `Dimension` for an `Option<f32>` context; the blanket `f32`-context impl is `MaybeResolveF32`, and the `Size` / `Rect` impls are free generic functions (`SizeMaybeResolve`, `SizeMaybeResolveF32`, `SizeResolveOrZero`, `RectResolveOrZero`, `RectResolveOrZeroOptionF32`, `RectResolveOrZeroF32`). The `calc` closure is `func(unsafe.Pointer, float32) float32`. | `src/util/resolve.rs` | `internal/taffy/util_resolve.go` |
+| D-TAFFY-RESULT | `TaffyResult<T>` has no Go type: TaffyTree methods return `(T, error)` (or `error` for `()`), the error being a `TaffyError` value comparable with `==`; references (`&Style`, `&Layout`, `&[NodeId]`) are pointers / slices into the tree. `get_node_context(_mut)` return a nil-able pointer, `get_disjoint_node_context_mut` takes variadic ids and returns `([]*C, bool)`. | `src/tree/taffy_tree.rs:38-58,698-731` | `internal/taffy/tree_taffy_tree.go` |
+| D-TAFFY-CTXDROP | Go has no destructors: removing or clearing nodes drops the tree's reference to their contexts, which `remove_drops_the_nodes_context` / `clear_drops_every_nodes_context` check as an empty `node_context_data` instead of a drop counter. | `src/tree/taffy_tree.rs:1502-1542` | `internal/taffy/tree_taffy_tree_test.go` |
+| D-TAFFY-RANGE | `remove_children_range`'s `RangeBounds<usize>` is the half-open pair `start, end` (`1..=2` is `1, 3`); invalid ranges panic with core's slice-range messages. | `src/tree/taffy_tree.rs:818-829` | `internal/taffy/tree_taffy_tree.go` |
