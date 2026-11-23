@@ -30,7 +30,7 @@ Go target: `platform/linux/internal/common/dispatcher.go` (package `common`), te
 
 ## gpui_linux/src/linux/platform.rs
 
-Go target: `platform/linux (+internal/common)/platform.go (+common.go)` (package `linux`), tests in `platform.go (+common._test.go`
+Go target: `platform/linux (+internal/common)/platform.go (+common.go)` (package `linux`), tests in `platform_test.go` (and `internal/common/common_test.go`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
@@ -57,7 +57,7 @@ Go target: `platform/linux (+internal/common)/platform.go (+common.go)` (package
 
 ## gpui_linux/src/linux/power.rs
 
-Go target: `platform/linux/internal/common/power.go` (package `common`), tests in `power_test.go`
+Go target: `platform/linux/internal/dbus/power.go` (package `dbus`), tests in `power_test.go`
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
@@ -66,7 +66,7 @@ Go target: `platform/linux/internal/common/power.go` (package `common`), tests i
 
 ## gpui_linux/src/linux/system_notifications.rs
 
-Go target: `platform/linux/internal/common/system_notifications.go` (package `common`), tests in `system_notifications_test.go`
+Go target: `platform/linux/internal/dbus/system_notifications.go` (package `dbus`), tests in `system_notifications_test.go`
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
@@ -74,7 +74,7 @@ Go target: `platform/linux/internal/common/system_notifications.go` (package `co
 
 ## gpui_linux/src/linux/xdg_desktop_portal.rs
 
-Go target: `platform/linux/internal/common/xdg_desktop_portal.go` (package `common`), tests in `xdg_desktop_portal_test.go`
+Go target: `platform/linux/internal/dbus/xdg_desktop_portal.go` (package `dbus`), tests in `xdg_desktop_portal_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
@@ -88,7 +88,7 @@ Go target: `platform/linux/internal/common/xdg_desktop_portal.go` (package `comm
 
 ## gpui_linux/src/linux/wayland/client.rs
 
-Go target: `platform/linux/wayland/client.go` (package `wayland`), tests in `client_test.go`
+Go target: `platform/linux/wayland/client.go` (lines 1-1967) and `client_input.go` (1968-3454) (package `wayland`), tests in `client_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|

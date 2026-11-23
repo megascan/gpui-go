@@ -23,7 +23,7 @@ Upstream target: zed-industries/zed @ 6501df15765d66d6c2a2b66b1eb22434ccef3f86. 
 - Stable: generic type aliases, range-over-func iterators, `unique`, `weak`, `runtime.AddCleanup`. Arenas: on hold, use per-frame slice pools.
 
 ## Known parity limits
-Linux glyph pixels (unless swash scaler ported), JPEG decode, SVG text.
+Linux glyph pixels (unless swash scaler ported), JPEG decode, SVG text. Added by owner decision (DESIGN.md 14.3): L-WGPUVER (wgpu-native v29 vs upstream wgpu 30) and L-WEBTHREADS (no multi-threaded web dispatcher). The WebGL fallback is ported in-repo (WGSL -> GLSL ES via naga at generate time, a WebGL2 implementation of the renderer's GPU facade), so the binding's missing WebGL backend is not a limit.
 
 # GPU / windowing research (2026-11-23)
 

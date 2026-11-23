@@ -6,11 +6,11 @@ Status values: `todo`, `done`, `dev:<id>` (deviation registered in PARITY.md sec
 
 ## gpui_util/src/arc_cow.rs
 
-Go target: `gpuiutil/arc_cow.go` (package `gpuiutil`)
+Go target: `-` (not ported, D-STRING)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `ArcCow` | enum | 9 |  | `ArcCow` | todo |
+| `ArcCow` | enum | 9 |  | `-` | n/a:D-STRING |
 
 ## gpui_util/src/lib.rs
 

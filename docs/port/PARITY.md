@@ -95,7 +95,7 @@ Files:
 | F3 | A stem that would end in a GOOS or GOARCH word gets `_impl` appended, so no file picks up an implicit build constraint. |
 | F4 | Tests for `x.go` live in `x_test.go` in the same package. Upstream `tests/` directories and `benches/` become `integration_*_test.go` and `bench_*_test.go` in an external test package. |
 | F5 | Generated files end in `_gen.go`. |
-| F6 | No Go file name starts with `_` or `.` (the go tool ignores them). The doc-only modules `gpui/src/_accessibility.rs` and `gpui/src/_ownership_and_data_flow.rs` (`cfg(doc)`, `gpui/src/gpui.rs:96-99`) become pages under `DOCS/`. |
+| F6 | No Go file name starts with `_` or `.` (the go tool ignores them). The doc-only modules `gpui/src/_accessibility.rs` and `gpui/src/_ownership_and_data_flow.rs` (`cfg(doc)`, `gpui/src/gpui.rs:96-99`) become pages under lowercase `docs/` (never `DOCS/`: the macOS and Windows runners have case-insensitive file systems). |
 
 ## 4. File map
 
@@ -105,7 +105,7 @@ Every upstream `.rs` file, its Go target, and how many rows it has in its area f
 
 | Upstream file | LOC | Go file | Public items | Tests |
 |---|---|---|---|---|
-| `gpui_util/src/arc_cow.rs` | 141 | `gpuiutil/arc_cow.go` | 1 | 0 |
+| `gpui_util/src/arc_cow.rs` | 141 | `-` | 1 | 0 |
 | `gpui_util/src/lib.rs` | 705 | `gpuiutil/lib.go` | 36 | 2 |
 | `gpui_shared_string/gpui_shared_string.rs` | 223 | `shared_string.go` | 4 | 0 |
 | `gpui_tokio/src/gpui_tokio.rs` | 100 | `-` | 6 | 0 |
@@ -379,14 +379,14 @@ Every upstream `.rs` file, its Go target, and how many rows it has in its area f
 | `gpui_linux/src/linux/headless.rs` | 47 | `platform/linux/internal/common/headless.go` | 0 | 0 |
 | `gpui_linux/src/linux/keyboard.rs` | 22 | `platform/linux/internal/common/keyboard.go` | 0 | 0 |
 | `gpui_linux/src/linux/platform.rs` | 2223 | `platform/linux (+internal/common)/platform.go (+common.go)` | 1 | 16 |
-| `gpui_linux/src/linux/power.rs` | 265 | `platform/linux/internal/common/power.go` | 0 | 2 |
-| `gpui_linux/src/linux/system_notifications.rs` | 154 | `platform/linux/internal/common/system_notifications.go` | 0 | 1 |
+| `gpui_linux/src/linux/power.rs` | 265 | `platform/linux/internal/dbus/power.go` | 0 | 2 |
+| `gpui_linux/src/linux/system_notifications.rs` | 154 | `platform/linux/internal/dbus/system_notifications.go` | 0 | 1 |
 | `gpui_linux/src/linux/text_system.rs` | 1 | `platform/linux/internal/common/text_system.go` | 0 | 0 |
 | `gpui_linux/src/linux/wayland.rs` | 42 | `platform/linux/wayland/wayland.go` | 0 | 0 |
 | `gpui_linux/src/linux/x11.rs` | 13 | `platform/linux/x11/x11.go` | 0 | 0 |
-| `gpui_linux/src/linux/xdg_desktop_portal.rs` | 249 | `platform/linux/internal/common/xdg_desktop_portal.go` | 3 | 1 |
+| `gpui_linux/src/linux/xdg_desktop_portal.rs` | 249 | `platform/linux/internal/dbus/xdg_desktop_portal.go` | 3 | 1 |
 | `gpui_linux/src/linux/headless/window.rs` | 208 | `platform/linux/internal/common/headless_window.go` | 0 | 0 |
-| `gpui_linux/src/linux/wayland/client.rs` | 3454 | `platform/linux/wayland/client.go` | 20 | 10 |
+| `gpui_linux/src/linux/wayland/client.rs` | 3454 | `platform/linux/wayland/client.go` (1-1967), `client_input.go` (1968-3454) | 20 | 10 |
 | `gpui_linux/src/linux/wayland/clipboard.rs` | 257 | `platform/linux/wayland/clipboard.go` | 0 | 0 |
 | `gpui_linux/src/linux/wayland/cursor.rs` | 152 | `platform/linux/wayland/cursor.go` | 0 | 0 |
 | `gpui_linux/src/linux/wayland/display.rs` | 77 | `platform/linux/wayland/display.go` | 0 | 1 |
@@ -513,7 +513,9 @@ Every upstream `.rs` file, its Go target, and how many rows it has in its area f
 
 ## 5. Deviations and limits
 
-A row may leave `todo` only as `done`, `dev:<id>` or `n/a:<id>` with an id from these tables. New ids are added here by the stage that needs them, with the upstream location and the reason.
+A row may leave `todo` only as `done`, `dev:<id>` or `n/a:<id>` with an id from these tables, or temporarily as `blocked:<stage>` while it waits for a later stage. `blocked:owner` is not used. New ids are registered by the stage that needs them in a `## Deviations registered here` table at the end of its own area file, with the upstream location and the reason; exit stages fold them into this section.
+
+A row that uses a limit cites it as `dev:L-<x>` when the behaviour differs and `n/a:L-<x>` when the item cannot exist in Go.
 
 Known parity limits (behaviour differs):
 
@@ -522,6 +524,8 @@ Known parity limits (behaviour differs):
 | L-GLYPH | Linux glyph rasterisation differs from swash | `gpui_wgpu/src/cosmic_text_system.rs:18`, `:52` | RESEARCH-deps.md |
 | L-JPEG | JPEG decode may differ in pixel values | `gpui/src/platform.rs:3462-3486` | RESEARCH-deps.md |
 | L-SVGTEXT | text and embedded images inside SVG | `gpui/src/svg_renderer.rs:369-517` | RESEARCH-deps.md |
+| L-WGPUVER | the binding is wgpu-native v29 (oliverbestmann/webgpu v1.38.1) while upstream targets wgpu 30; where v29 lacks `EnumerateAdapters`, `DUAL_SOURCE_BLENDING` or `TRANSIENT_ATTACHMENT`, M1-wgpu-context's fallbacks apply (RequestAdapter with the compositor hint, the non-subpixel path, plain RENDER_ATTACHMENT) | `gpui_wgpu/src/wgpu_context.rs:215`, `:531`, `:442-446`, `gpui_wgpu/src/wgpu_renderer.rs:1571` | owner decision (DESIGN.md 14.3); TECH_DEBT.md tracks bumping the binding |
+| L-WEBTHREADS | Go wasm has no threads, so the multi-threaded web dispatcher mode is absent; shared paths follow the single-threaded branch | `gpui_web/src/platform.rs:147-156`, `gpui_web/src/dispatcher.rs` | owner decision (DESIGN.md 14.3) |
 
 Intentional deviations (behaviour kept, form changed):
 
@@ -548,7 +552,7 @@ Intentional deviations (behaviour kept, form changed):
 | D-HTTP | `http_client` crate becomes the `HTTPClient` interface over `net/http` | `gpui/src/gpui.rs:6`, `gpui/src/app.rs:3747` | 5.7 |
 | D-MACRO | Proc macros become generators, embedding, reflection or helpers | `gpui_macros/src/gpui_macros.rs:20-317` | 9 |
 
-Not yet allowed by the definition of done and waiting for a decision (DESIGN.md section 14): no WebGL fallback on web, wgpu-native one major version behind upstream, no multi-threaded web dispatcher, screen capture back ends. They get an `L-` id only when the owner accepts them.
+Owner decisions (DESIGN.md section 14, all decided): the WebGL2 fallback and screen capture (Linux portal + PipeWire and X11, Windows Graphics Capture, macOS ScreenCaptureKit) are ported, not limits; the wgpu version gap and web threading are the accepted limits L-WGPUVER and L-WEBTHREADS above. No other `L-` id may be added without the owner.
 
 ## 6. Examples
 
@@ -618,7 +622,16 @@ These are not in `_ref/` (they are dependencies of the crates above) but their b
 | taffy | =0.15.0 (`../Cargo.toml:932`; features `gpui/Cargo.toml:108-116`) | `internal/taffy` | the generated fixture tests for flexbox, grid, block and float, plus unit tests | `parity/ext-taffy.md` |
 | etagere | 0.2 (`../Cargo.toml:638`) | `internal/etagere` | its unit tests for `BucketedAtlasAllocator` | `parity/ext-etagere.md` |
 | lyon_path, tiny-skia-path | 1.0.19, 0.11 (`gpui/Cargo.toml`) | `internal/lyon` | tests for the subset `gpui/src/path_builder.rs:3-6` uses | `parity/ext-lyon.md` |
-| accesskit (schema only) | 0.24.0 (`../Cargo.toml:539`) | `a11y` | none upstream in scope; schema equality checks | `parity/ext-a11y.md` |
+| accesskit (schema only) | 0.24.1 (`../Cargo.toml:539`) | `a11y` | none upstream in scope; schema equality checks | `parity/ext-a11y.md` |
+| accesskit_consumer | 0.38.0 | `a11y/consumer` | its unit tests | `parity/ext-a11y-consumer.md` |
+| accesskit_atspi_common, accesskit_unix | 0.19.1, 0.22.1 | `a11y/atspi` | their unit tests; bus tests against a private dbus-daemon | `parity/ext-a11y-atspi.md` |
+| accesskit_macos | 0.26.3 | `a11y/macos` | its unit tests (CI) | `parity/ext-a11y-macos.md` |
+| accesskit_windows | 0.34.0 | `a11y/windows` | its unit tests and `tests/` (CI) | `parity/ext-a11y-windows.md` |
+| zed-scap (Linux engines: portal + PipeWire, X11) | 0.0.8-zed (the rev `../Cargo.toml:898` pins) | `platform/linux/internal/screencap`, `internal/linux/pw` | none upstream; binding layout tests, gated capture tests | `parity/ext-scap-linux.md` |
+| zed-scap (Windows engine), windows-capture | 0.0.8-zed, 1.5.0 | `internal/win/wgc`, `internal/win/screencap` | none upstream; COM layout tests (CI) | `parity/ext-scap-windows.md` |
+| zeno (mask rasteriser incl. `CustomSubpixel`), swash (colour glyph sources) | 0.3.3, 0.2.10 | `text/gotext` | rows added under their own headings in `parity/gotext.md` | - |
+| cbindgen header for Metal (`gpui_apple/build.rs:28-120`) | 0.28.0 | `internal/cmd/metalhdr` -> `platform/apple/shaders_scene_gen.go` | offset test against the Go scene structs | rows in `parity/apple.md` |
+| wgpu GL backend (naga WGSL -> GLSL ES 3.00, wgpu-hal GLES) | wgpu rev cddb2f5 (`../Cargo.toml:1013`), wgpu-hal 30.0.1, naga 30.0.1 | `internal/cmd/glslgen`, `internal/webglsl`, `render/wgpu/internal/gpu/webgl2` | binding-table and state tests under node | rows in `parity/wgpu.md` |
 
 Non-Rust upstream files that ship with the port:
 
@@ -628,11 +641,11 @@ Non-Rust upstream files that ship with the port:
 | `gpui_wgpu/src/shaders_storage.wgsl` | 48 | `//go:embed` in `render/wgpu`, byte-identical |
 | `gpui_wgpu/src/shaders_subpixel.wgsl` | 27 | `//go:embed` in `render/wgpu`, byte-identical |
 | `gpui_wgpu/src/shaders_webgl.wgsl` | 286 | `//go:embed` in `render/wgpu`, byte-identical |
-| `gpui_apple/src/shaders.metal` | 1354 | `//go:embed` in `platform/apple`, compiled at start |
-| `gpui_windows/src/shaders.hlsl` | 1372 | `//go:embed` in `platform/windows`, compiled at start |
+| `gpui_apple/src/shaders.metal` | 1354 | `//go:embed` in `platform/apple`, compiled at start after the cbindgen scene.h header |
+| `gpui_windows/src/shaders.hlsl` | 1372 | `//go:embed` in `platform/windows`, compiled at start; its `#include "alpha_correction.hlsl"` is served by an ID3DInclude |
 | `gpui_windows/src/alpha_correction.hlsl` | 49 | `//go:embed` in `platform/windows`, compiled at start |
 | `gpui/examples/image/*` (png, svg, gif, jpg), `gpui/examples/svg/dragon.svg` | - | copied into the Go example directories |
-| `gpui/docs/contexts.md`, `gpui/docs/key_dispatch.md` | - | rewritten for the Go API under `DOCS/` |
+| `gpui/docs/contexts.md`, `gpui/docs/key_dispatch.md` | - | rewritten for the Go API under `docs/` |
 | `gpui/build.rs`, `gpui_apple/build.rs`, `gpui_windows/build.rs` | - | no Go file; their work moves to run time or `go generate` (DESIGN.md 8.3, 8.4) |
 
 ## 8. Workflow
@@ -640,13 +653,13 @@ Non-Rust upstream files that ship with the port:
 1. A stage owns the area files listed against its Go paths in section 2 and edits only those.
 2. When an item is ported, its row becomes `done`. If the Go name differs from the rule-derived one, the Go column is edited and the status is `dev:D-NAME`.
 3. When a test is ported, its row becomes `done`; the Go test must exist under the listed name. Tests gated by `cfg(target_os)` keep the gate as a Go build constraint; `#[ignore]` becomes `t.Skip` with the upstream reason.
-4. An item that cannot exist in Go becomes `n/a:<id>` or `dev:<id>`; a new id is registered in section 5 in the same change.
+4. An item that cannot exist in Go becomes `n/a:<id>` or `dev:<id>`; a new id is registered in the stage's own area file (section 5) in the same change. A row that needs a later stage is `blocked:<stage>`; `paritycheck -all-done -allow-blocked` tolerates it until that stage is done.
 5. A stage that finds a public item or test the scan missed adds the row.
-6. `go run ./internal/cmd/paritycheck` (built in S0) must pass before a stage is complete.
+6. `go run ./internal/cmd/paritycheck` (built in M0-bootstrap) must pass before a stage is complete.
 
 ## 9. How the matrix was generated
 
-A one-off scanner walked the 300 `.rs` files of the 17 crates at the pinned commit. S0 reimplements it as `internal/cmd/paritycheck`, so the rules are stated here.
+A one-off scanner walked the 300 `.rs` files of the 17 crates at the pinned commit. M0-parity-rescan reimplements it as `internal/cmd/paritycheck -rescan`, so the rules are stated here.
 
 - Comments and string contents are blanked; brace depth tracks `mod`, `impl`, `trait` and function bodies.
 - A public item is: a `pub` struct, enum, union, type alias, const, static or free fn at module level; a `pub fn` or `pub const` in an inherent impl whose type is not declared crate-private; every fn of a `pub trait`; a `#[macro_export]` macro; a `#[proc_macro*]` function. `pub(crate)` and narrower are not public. For `gpui_macros` only the proc macros count.
