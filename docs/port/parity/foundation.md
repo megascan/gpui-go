@@ -66,10 +66,10 @@ Go target: `shared_string.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `SharedString` | struct | 15 |  | `SharedString` | todo |
-| `SharedString::new_static` | assoc-fn | 40 |  | `NewSharedStringStatic` | todo |
-| `SharedString::new` | assoc-fn | 45 |  | `NewSharedString` | todo |
-| `SharedString::as_str` | method | 50 |  | `(SharedString).AsStr` | todo |
+| `SharedString` | struct | 15 |  | `SharedString` | done |
+| `SharedString::new_static` | assoc-fn | 40 |  | `NewSharedStringStatic` | done |
+| `SharedString::new` | assoc-fn | 45 |  | `NewSharedString` | done |
+| `SharedString::as_str` | method | 50 |  | `(SharedString).AsStr` | done |
 
 ## gpui_tokio/src/gpui_tokio.rs
 

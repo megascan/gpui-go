@@ -127,90 +127,90 @@ Go target: `geometry.go` (package `gpui`), tests in `geometry_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Axis` | enum | 26 |  | `Axis` | todo |
-| `Axis::invert` | method | 35 |  | `(Axis).Invert` | todo |
-| `Along` | trait | 44 |  | `Along` | todo |
-| `Along::along` | trait-method | 49 |  | `Along.Along` | todo |
-| `Along::apply_along` | trait-method | 52 |  | `Along.ApplyAlong` | todo |
-| `Point` | struct | 86 |  | `Point` | todo |
-| `point` | fn | 112 |  | `NewPoint` | todo |
-| `Point::new` | assoc-fn | 132 |  | `NewPoint` | todo |
-| `Point::map` | method | 155 |  | `(Point).Map` | todo |
-| `Point<Pixels>::scale` | method | 203 |  | `(Point).Scale` | todo |
-| `Point<Pixels>::magnitude` | method | 219 |  | `(Point).Magnitude` | todo |
-| `Point::relative_to` | method | 229 |  | `(Point).RelativeTo` | todo |
-| `Point::max` | method | 297 |  | `(Point).Max` | todo |
-| `Point::min` | method | 327 |  | `(Point).Min` | todo |
-| `Point::clamp` | method | 368 |  | `(Point).Clamp` | todo |
-| `Size` | struct | 397 |  | `Size` | todo |
-| `Size::new` | assoc-fn | 406 |  | `NewSize` | todo |
-| `size` | fn | 426 |  | `NewSize` | todo |
-| `Size::map` | method | 455 |  | `(Size).Map` | todo |
-| `Size::center` | method | 471 |  | `(Size).Center` | todo |
-| `Size<Pixels>::scale` | method | 498 |  | `(Size).Scale` | todo |
-| `Size::max` | method | 553 |  | `(Size).Max` | todo |
-| `Size::min` | method | 583 |  | `(Size).Min` | todo |
-| `Size<Length>::full` | assoc-fn | 678 |  | `SizeLengthFull` | todo |
-| `Size<Length>::auto` | assoc-fn | 696 |  | `SizeLengthAuto` | todo |
-| `Bounds` | struct | 724 |  | `Bounds` | todo |
-| `bounds` | fn | 732 |  | `NewBounds` | todo |
-| `Bounds<Pixels>::centered` | assoc-fn | 741 |  | `BoundsCentered` | todo |
-| `Bounds<Pixels>::maximized` | assoc-fn | 758 |  | `BoundsMaximized` | todo |
-| `Bounds::new` | assoc-fn | 786 |  | `NewBounds` | todo |
-| `Bounds::from_corners` | assoc-fn | 822 |  | `BoundsFromCorners` | todo |
-| `Bounds::from_anchor_and_size` | assoc-fn | 841 |  | `BoundsFromAnchorAndSize` | todo |
-| `Bounds::centered_at` | assoc-fn | 883 |  | `BoundsCenteredAt` | todo |
-| `Bounds::top_center` | method | 897 |  | `(Bounds).TopCenter` | todo |
-| `Bounds::bottom_center` | method | 905 |  | `(Bounds).BottomCenter` | todo |
-| `Bounds::left_center` | method | 913 |  | `(Bounds).LeftCenter` | todo |
-| `Bounds::right_center` | method | 921 |  | `(Bounds).RightCenter` | todo |
-| `Bounds::intersects` | method | 966 |  | `(Bounds).Intersects` | todo |
-| `Bounds::center` | method | 1002 |  | `(Bounds).Center` | todo |
-| `Bounds::half_perimeter` | method | 1032 |  | `(Bounds).HalfPerimeter` | todo |
-| `Bounds::dilate` | method | 1068 |  | `(Bounds).Dilate` | todo |
-| `Bounds::extend` | method | 1078 |  | `(Bounds).Extend` | todo |
-| `Bounds::inset` | method | 1103 |  | `(Bounds).Inset` | todo |
-| `Bounds::intersect` | method | 1144 |  | `(Bounds).Intersect` | todo |
-| `Bounds::union` | method | 1186 |  | `(Bounds).Union` | todo |
-| `Bounds::join` | method | 1213 |  | `(Bounds).Join` | todo |
-| `Bounds::space_within` | method | 1229 |  | `(Bounds).SpaceWithin` | todo |
-| `Bounds::top` | method | 1328 |  | `(Bounds).Top` | todo |
-| `Bounds::bottom` | method | 1337 |  | `(Bounds).Bottom` | todo |
-| `Bounds::left` | method | 1346 |  | `(Bounds).Left` | todo |
-| `Bounds::right` | method | 1355 |  | `(Bounds).Right` | todo |
-| `Bounds::top_right` | method | 1376 |  | `(Bounds).TopRight` | todo |
-| `Bounds::bottom_right` | method | 1400 |  | `(Bounds).BottomRight` | todo |
-| `Bounds::bottom_left` | method | 1424 |  | `(Bounds).BottomLeft` | todo |
-| `Bounds::corner` | method | 1453 |  | `(Bounds).Corner` | todo |
-| `Bounds::contains` | method | 1500 |  | `(Bounds).Contains` | todo |
-| `Bounds::is_contained_within` | method | 1541 |  | `(Bounds).IsContainedWithin` | todo |
-| `Bounds::map` | method | 1574 |  | `(Bounds).Map` | todo |
-| `Bounds::map_origin` | method | 1601 |  | `(Bounds).MapOrigin` | todo |
-| `Bounds::map_size` | method | 1625 |  | `(Bounds).MapSize` | todo |
-| `Bounds::localize` | method | 1638 |  | `(Bounds).Localize` | todo |
-| `Bounds::is_empty` | method | 1656 |  | `(Bounds).IsEmpty` | todo |
-| `Size<DevicePixels>::to_pixels` | method | 1675 |  | `(Size).ToPixels` | todo |
-| `Size<Pixels>::to_device_pixels` | method | 1685 |  | `(Size).ToDevicePixels` | todo |
-| `Bounds<Pixels>::scale` | method | 1730 |  | `(Bounds).Scale` | todo |
-| `Bounds<Pixels>::to_device_pixels` | method | 1738 |  | `(Bounds).ToDevicePixels` | todo |
-| `Bounds<DevicePixels>::to_pixels` | method | 1751 |  | `(Bounds).ToPixels` | todo |
-| `Edges` | struct | 1785 |  | `Edges` | todo |
-| `Edges::all` | assoc-fn | 1868 |  | `EdgesAll` | todo |
-| `Edges::map` | method | 1899 |  | `(Edges).Map` | todo |
-| `Edges::any` | assoc-fn | 1938 |  | `EdgesAny` | todo |
-| `Edges<Length>::auto` | assoc-fn | 1965 |  | `EdgesLengthAuto` | todo |
-| `Edges<Length>::zero` | assoc-fn | 1993 |  | `EdgesLengthZero` | todo |
-| `Edges<DefiniteLength>::zero` | assoc-fn | 2023 |  | `EdgesDefiniteLengthZero` | todo |
-| `Edges<DefiniteLength>::to_pixels` | method | 2068 |  | `EdgesDefiniteLengthToPixels(recv, ...) func` | todo |
-| `Edges<AbsoluteLength>::zero` | assoc-fn | 2098 |  | `EdgesAbsoluteLengthZero` | todo |
-| `Edges<AbsoluteLength>::to_pixels` | method | 2138 |  | `EdgesAbsoluteLengthToPixels(recv, ...) func` | todo |
-| `Edges<Pixels>::scale` | method | 2177 |  | `(Edges).Scale` | todo |
-| `Edges<Pixels>::max` | method | 2191 |  | `(Edges).Max` | todo |
-| `Anchor` | enum | 2247 |  | `Anchor` | todo |
-| `Anchor::opposite` | method | 2276 |  | `(Anchor).Opposite` | todo |
-| `Anchor::other_side_along` | method | 2299 |  | `(Anchor).OtherSideAlong` | todo |
-| `Anchor::is_center` | method | 2326 |  | `(Anchor).IsCenter` | todo |
-| `Anchor::is_bottom` | method | 2335 |  | `(Anchor).IsBottom` | todo |
+| `Axis` | enum | 26 |  | `Axis` | done |
+| `Axis::invert` | method | 35 |  | `(Axis).Invert` | done |
+| `Along` | trait | 44 |  | `Along` | done |
+| `Along::along` | trait-method | 49 |  | `Along.Along` | done |
+| `Along::apply_along` | trait-method | 52 |  | `Along.ApplyAlong` | done |
+| `Point` | struct | 86 |  | `Point` | done |
+| `point` | fn | 112 |  | `NewPoint` | done |
+| `Point::new` | assoc-fn | 132 |  | `NewPoint` | done |
+| `Point::map` | method | 155 |  | `(Point).Map` | done |
+| `Point<Pixels>::scale` | method | 203 |  | `(Point).Scale` | done |
+| `Point<Pixels>::magnitude` | method | 219 |  | `(Point).Magnitude` | done |
+| `Point::relative_to` | method | 229 |  | `(Point).RelativeTo` | done |
+| `Point::max` | method | 297 |  | `(Point).Max` | done |
+| `Point::min` | method | 327 |  | `(Point).Min` | done |
+| `Point::clamp` | method | 368 |  | `(Point).Clamp` | done |
+| `Size` | struct | 397 |  | `Size` | done |
+| `Size::new` | assoc-fn | 406 |  | `NewSize` | done |
+| `size` | fn | 426 |  | `NewSize` | done |
+| `Size::map` | method | 455 |  | `(Size).Map` | done |
+| `Size::center` | method | 471 |  | `(Size).Center` | done |
+| `Size<Pixels>::scale` | method | 498 |  | `(Size).Scale` | done |
+| `Size::max` | method | 553 |  | `(Size).Max` | done |
+| `Size::min` | method | 583 |  | `(Size).Min` | done |
+| `Size<Length>::full` | assoc-fn | 678 |  | `SizeLengthFull` | blocked:M0-geometry-units |
+| `Size<Length>::auto` | assoc-fn | 696 |  | `SizeLengthAuto` | blocked:M0-geometry-units |
+| `Bounds` | struct | 724 |  | `Bounds` | done |
+| `bounds` | fn | 732 |  | `NewBounds` | done |
+| `Bounds<Pixels>::centered` | assoc-fn | 741 |  | `BoundsCentered` | done |
+| `Bounds<Pixels>::maximized` | assoc-fn | 758 |  | `BoundsMaximized` | done |
+| `Bounds::new` | assoc-fn | 786 |  | `NewBounds` | done |
+| `Bounds::from_corners` | assoc-fn | 822 |  | `BoundsFromCorners` | done |
+| `Bounds::from_anchor_and_size` | assoc-fn | 841 |  | `BoundsFromAnchorAndSize` | done |
+| `Bounds::centered_at` | assoc-fn | 883 |  | `BoundsCenteredAt` | done |
+| `Bounds::top_center` | method | 897 |  | `(Bounds).TopCenter` | done |
+| `Bounds::bottom_center` | method | 905 |  | `(Bounds).BottomCenter` | done |
+| `Bounds::left_center` | method | 913 |  | `(Bounds).LeftCenter` | done |
+| `Bounds::right_center` | method | 921 |  | `(Bounds).RightCenter` | done |
+| `Bounds::intersects` | method | 966 |  | `(Bounds).Intersects` | done |
+| `Bounds::center` | method | 1002 |  | `(Bounds).Center` | done |
+| `Bounds::half_perimeter` | method | 1032 |  | `(Bounds).HalfPerimeter` | done |
+| `Bounds::dilate` | method | 1068 |  | `(Bounds).Dilate` | done |
+| `Bounds::extend` | method | 1078 |  | `(Bounds).Extend` | done |
+| `Bounds::inset` | method | 1103 |  | `(Bounds).Inset` | done |
+| `Bounds::intersect` | method | 1144 |  | `(Bounds).Intersect` | done |
+| `Bounds::union` | method | 1186 |  | `(Bounds).Union` | done |
+| `Bounds::join` | method | 1213 |  | `(Bounds).Join` | done |
+| `Bounds::space_within` | method | 1229 |  | `(Bounds).SpaceWithin` | done |
+| `Bounds::top` | method | 1328 |  | `(Bounds).Top` | done |
+| `Bounds::bottom` | method | 1337 |  | `(Bounds).Bottom` | done |
+| `Bounds::left` | method | 1346 |  | `(Bounds).Left` | done |
+| `Bounds::right` | method | 1355 |  | `(Bounds).Right` | done |
+| `Bounds::top_right` | method | 1376 |  | `(Bounds).TopRight` | done |
+| `Bounds::bottom_right` | method | 1400 |  | `(Bounds).BottomRight` | done |
+| `Bounds::bottom_left` | method | 1424 |  | `(Bounds).BottomLeft` | done |
+| `Bounds::corner` | method | 1453 |  | `(Bounds).Corner` | done |
+| `Bounds::contains` | method | 1500 |  | `(Bounds).Contains` | done |
+| `Bounds::is_contained_within` | method | 1541 |  | `(Bounds).IsContainedWithin` | done |
+| `Bounds::map` | method | 1574 |  | `(Bounds).Map` | done |
+| `Bounds::map_origin` | method | 1601 |  | `(Bounds).MapOrigin` | done |
+| `Bounds::map_size` | method | 1625 |  | `(Bounds).MapSize` | done |
+| `Bounds::localize` | method | 1638 |  | `(Bounds).Localize` | done |
+| `Bounds::is_empty` | method | 1656 |  | `(Bounds).IsEmpty` | done |
+| `Size<DevicePixels>::to_pixels` | method | 1675 |  | `(Size).ToPixels` | done |
+| `Size<Pixels>::to_device_pixels` | method | 1685 |  | `(Size).ToDevicePixels` | done |
+| `Bounds<Pixels>::scale` | method | 1730 |  | `(Bounds).Scale` | done |
+| `Bounds<Pixels>::to_device_pixels` | method | 1738 |  | `(Bounds).ToDevicePixels` | done |
+| `Bounds<DevicePixels>::to_pixels` | method | 1751 |  | `(Bounds).ToPixels` | done |
+| `Edges` | struct | 1785 |  | `Edges` | done |
+| `Edges::all` | assoc-fn | 1868 |  | `EdgesAll` | done |
+| `Edges::map` | method | 1899 |  | `(Edges).Map` | done |
+| `Edges::any` | method | 1938 |  | `(Edges).Any` | done |
+| `Edges<Length>::auto` | assoc-fn | 1965 |  | `EdgesLengthAuto` | blocked:M0-geometry-units |
+| `Edges<Length>::zero` | assoc-fn | 1993 |  | `EdgesLengthZero` | blocked:M0-geometry-units |
+| `Edges<DefiniteLength>::zero` | assoc-fn | 2023 |  | `EdgesDefiniteLengthZero` | blocked:M0-geometry-units |
+| `Edges<DefiniteLength>::to_pixels` | method | 2068 |  | `EdgesDefiniteLengthToPixels` | blocked:M0-geometry-units |
+| `Edges<AbsoluteLength>::zero` | assoc-fn | 2098 |  | `EdgesAbsoluteLengthZero` | blocked:M0-geometry-units |
+| `Edges<AbsoluteLength>::to_pixels` | method | 2138 |  | `EdgesAbsoluteLengthToPixels` | blocked:M0-geometry-units |
+| `Edges<Pixels>::scale` | method | 2177 |  | `(Edges).Scale` | done |
+| `Edges<Pixels>::max` | method | 2191 |  | `(Edges).Max` | done |
+| `Anchor` | enum | 2247 |  | `Anchor` | done |
+| `Anchor::opposite` | method | 2276 |  | `(Anchor).Opposite` | done |
+| `Anchor::other_side_along` | method | 2299 |  | `(Anchor).OtherSideAlong` | done |
+| `Anchor::is_center` | method | 2326 |  | `(Anchor).IsCenter` | done |
+| `Anchor::is_bottom` | method | 2335 |  | `(Anchor).IsBottom` | done |
 | `Corners` | struct | 2349 |  | `Corners` | todo |
 | `Corners::all` | assoc-fn | 2388 |  | `CornersAll` | todo |
 | `Corners::corner` | method | 2441 |  | `(Corners).Corner` | todo |
@@ -270,8 +270,8 @@ Go target: `geometry.go` (package `gpui`), tests in `geometry_test.go`
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
 | `test_pixels_to_i32` | test | 4087 |  | `TestGeometry_PixelsToI32` | todo |
-| `test_bounds_join` | test | 4102 |  | `TestGeometry_BoundsJoin` | todo |
-| `test_bounds_intersects` | test | 4133 |  | `TestGeometry_BoundsIntersects` | todo |
+| `test_bounds_join` | test | 4102 |  | `TestGeometry_BoundsJoin` | done |
+| `test_bounds_intersects` | test | 4133 |  | `TestGeometry_BoundsIntersects` | done |
 
 ## gpui/src/gpui.rs
 
@@ -313,7 +313,7 @@ Go target: `shared_uri.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `SharedUri` | struct | 7 |  | `SharedURI` | todo |
+| `SharedUri` | struct | 7 |  | `SharedURI` | done |
 
 ## gpui/src/util.rs
 
@@ -339,3 +339,9 @@ Go target: `util.go` (package `gpui`), tests in `util_test.go`
 | `test_round_half_toward_zero_f64` | test | 220 |  | `TestUtil_RoundHalfTowardZeroF64` | todo |
 | `test_with_timeout` | gpui::test | 229 |  | `TestUtil_WithTimeout` | todo |
 
+
+## Notes (M0-geometry)
+
+- D-GEOM: numeric family `Point[T Number]`, `Size`, `Bounds`, `Edges` with operator methods (`Add`, `AddAssign`, `Sub`, `SubAssign`, `Neg`, `Mul`, `MulAssign`, `Div`, `Bounds.Add(Point)`, `Bounds.Sub(Point)`) matching upstream's derive_more / ops impls; scalar operands are `rhs T`. Non-numeric family `PointOf[T any]`, `SizeOf`, `EdgesOf` with `Map`, `Along`, `ApplyAlong`, `EdgesOfAll`, `Any`. `Along` is `Along[U, S]`.
+- Cross-family maps: `(Point|Size|Edges).MapOf[U any]` return the Of type; `(PointOf|SizeOf|EdgesOf).MapNumber[U Number]` return the numeric type; `Map` stays within a family. `Bounds` has no Of variant.
+- `Bounds::localize` returns `(Point[T], bool)` (D-OPT); `Bounds::centered` / `maximized` take `Option[DisplayID]`.
