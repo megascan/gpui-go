@@ -1,0 +1,341 @@
+# Parity: core-geometry
+
+Scope: gpui: geometry, color, bounds_tree, util, arena, shared_uri. Milestone: M0. Index and rules: [../PARITY.md](../PARITY.md).
+
+Status values: `todo`, `done`, `dev:<id>` (deviation registered in PARITY.md section 5), `n/a:<id>`. A row's Go symbol is the name derived by the naming rules (PARITY.md section 3); if a builder must deviate, edit the Go column and set `dev:<id>`.
+
+## gpui/src/arena.rs
+
+Go target: `arena.go` (package `gpui`), tests in `arena_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Arena` | struct | 81 |  | `Arena` | todo |
+| `Arena::new` | assoc-fn | 97 |  | `NewArena` | todo |
+| `Arena::capacity` | method | 109 |  | `(Arena).Capacity` | todo |
+| `Arena::begin_scope` | method | 116 |  | `(Arena).BeginScope` | todo |
+| `Arena::end_scope` | method | 126 |  | `(Arena).EndScope` | todo |
+| `Arena::clear` | method | 139 |  | `(Arena).Clear` | todo |
+| `Arena::alloc` | method | 161 |  | `(Arena).Alloc` | todo |
+| `ArenaBox` | struct | 218 |  | `ArenaBox` | todo |
+| `ArenaBox::map` | method | 225 |  | `(ArenaBox).Map` | todo |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `test_arena` | test | 266 |  | `TestArena_Arena` | todo |
+| `test_arena_grow` | test | 301 |  | `TestArena_ArenaGrow` | todo |
+| `test_arena_alignment` | test | 315 |  | `TestArena_ArenaAlignment` | todo |
+| `test_arena_use_after_clear` | test | 335 |  | `TestArena_ArenaUseAfterClear` | todo |
+| `test_clear_deferred_while_scope_active` | test | 344 |  | `TestArena_ClearDeferredWhileScopeActive` | todo |
+| `test_clear_without_scope_is_immediate` | test | 385 |  | `TestArena_ClearWithoutScopeIsImmediate` | todo |
+| `test_unbalanced_end_scope_panics` | test | 395 |  | `TestArena_UnbalancedEndScopePanics` | todo |
+
+## gpui/src/bounds_tree.rs
+
+Go target: `bounds_tree.go` (package `gpui`), tests in `bounds_tree_test.go`
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `test_insert` | test | 398 |  | `TestBoundsTree_Insert` | todo |
+| `test_random_iterations` | test | 456 |  | `TestBoundsTree_RandomIterations` | todo |
+
+## gpui/src/color.rs
+
+Go target: `color.go` (package `gpui`), tests in `color_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `rgb` | fn | 14 |  | `Rgb` | todo |
+| `rgba` | fn | 20 |  | `NewRgba` | todo |
+| `swap_rgba_pa_to_bgra` | fn | 26 |  | `SwapRgbaPaToBgra` | todo |
+| `Rgba` | struct | 39 |  | `Rgba` | todo |
+| `Rgba::blend` | method | 58 |  | `(Rgba).Blend` | todo |
+| `Rgba::alpha` | method | 95 |  | `(Rgba).Alpha` | todo |
+| `Rgba::opacity` | method | 126 |  | `(Rgba).Opacity` | todo |
+| `Hsla` | struct | 334 |  | `Hsla` | todo |
+| `Hsla::opaque_strategy` | assoc-fn | 357 | feat:proptest | `HslaOpaqueStrategy` | todo |
+| `hsla` | fn | 424 |  | `NewHsla` | todo |
+| `black` | fn | 434 |  | `Black` | todo |
+| `transparent_black` | fn | 444 |  | `TransparentBlack` | todo |
+| `transparent_white` | fn | 454 |  | `TransparentWhite` | todo |
+| `opaque_grey` | fn | 464 |  | `OpaqueGrey` | todo |
+| `white` | fn | 474 |  | `White` | todo |
+| `red` | fn | 484 |  | `Red` | todo |
+| `blue` | fn | 494 |  | `Blue` | todo |
+| `green` | fn | 504 |  | `Green` | todo |
+| `yellow` | fn | 514 |  | `Yellow` | todo |
+| `Hsla::to_rgb` | method | 525 |  | `(Hsla).ToRgb` | todo |
+| `Hsla::red` | assoc-fn | 530 |  | `HslaRed` | todo |
+| `Hsla::green` | assoc-fn | 535 |  | `HslaGreen` | todo |
+| `Hsla::blue` | assoc-fn | 540 |  | `HslaBlue` | todo |
+| `Hsla::black` | assoc-fn | 545 |  | `HslaBlack` | todo |
+| `Hsla::white` | assoc-fn | 550 |  | `HslaWhite` | todo |
+| `Hsla::transparent_black` | assoc-fn | 555 |  | `HslaTransparentBlack` | todo |
+| `Hsla::is_transparent` | method | 560 |  | `(Hsla).IsTransparent` | todo |
+| `Hsla::is_opaque` | method | 565 |  | `(Hsla).IsOpaque` | todo |
+| `Hsla::blend` | method | 580 |  | `(Hsla).Blend` | todo |
+| `Hsla::grayscale` | method | 596 |  | `(Hsla).Grayscale` | todo |
+| `Hsla::fade_out` | method | 607 |  | `(Hsla).FadeOut` | todo |
+| `Hsla::opacity` | method | 637 |  | `(Hsla).Opacity` | todo |
+| `Hsla::alpha` | method | 667 |  | `(Hsla).Alpha` | todo |
+| `ColorSpace` | enum | 759 |  | `ColorSpace` | todo |
+| `Background` | struct | 779 |  | `Background` | todo |
+| `pattern_slash` | fn | 827 |  | `PatternSlash` | todo |
+| `checkerboard` | fn | 841 |  | `Checkerboard` | todo |
+| `solid_background` | fn | 851 |  | `SolidBackground` | todo |
+| `linear_gradient` | fn | 865 |  | `LinearGradient` | todo |
+| `LinearColorStop` | struct | 883 |  | `LinearColorStop` | todo |
+| `linear_color_stop` | fn | 893 |  | `NewLinearColorStop` | todo |
+| `LinearColorStop::opacity` | method | 902 |  | `(LinearColorStop).Opacity` | todo |
+| `Background::as_solid` | method | 912 |  | `(Background).AsSolid` | todo |
+| `Background::color_space` | method | 923 |  | `(Background).ColorSpace` | todo |
+| `Background::opacity` | method | 929 |  | `(Background).Opacity` | todo |
+| `Background::is_transparent` | method | 940 |  | `(Background).IsTransparent` | todo |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `test_deserialize_three_value_hex_to_rgba` | test | 977 |  | `TestColor_DeserializeThreeValueHexToRgba` | todo |
+| `test_deserialize_four_value_hex_to_rgba` | test | 984 |  | `TestColor_DeserializeFourValueHexToRgba` | todo |
+| `test_deserialize_six_value_hex_to_rgba` | test | 991 |  | `TestColor_DeserializeSixValueHexToRgba` | todo |
+| `test_deserialize_eight_value_hex_to_rgba` | test | 998 |  | `TestColor_DeserializeEightValueHexToRgba` | todo |
+| `test_deserialize_eight_value_hex_with_padding_to_rgba` | test | 1005 |  | `TestColor_DeserializeEightValueHexWithPaddingToRgba` | todo |
+| `test_deserialize_eight_value_hex_with_mixed_case_to_rgba` | test | 1012 |  | `TestColor_DeserializeEightValueHexWithMixedCaseToRgba` | todo |
+| `test_background_solid` | test | 1019 |  | `TestColor_BackgroundSolid` | todo |
+| `test_background_linear_gradient` | test | 1032 |  | `TestColor_BackgroundLinearGradient` | todo |
+| `test_rgba_alpha` | test | 1047 |  | `TestColor_RgbaAlpha` | todo |
+| `test_rgba_opacity` | test | 1060 |  | `TestColor_RgbaOpacity` | todo |
+
+## gpui/src/colors.rs
+
+Go target: `colors.go` (package `gpui`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Colors` | struct | 10 |  | `Colors` | todo |
+| `Colors::for_appearance` | assoc-fn | 37 |  | `ColorsForAppearance` | todo |
+| `Colors::dark` | assoc-fn | 45 |  | `ColorsDark` | todo |
+| `Colors::light` | assoc-fn | 59 |  | `ColorsLight` | todo |
+| `Colors::get_global` | assoc-fn | 73 |  | `ColorsGetGlobal` | todo |
+| `GlobalColors` | struct | 80 |  | `GlobalColors` | todo |
+| `DefaultColors` | trait | 93 |  | `DefaultColors` | todo |
+| `DefaultColors::default_colors` | trait-method | 95 |  | `DefaultColors.DefaultColors` | todo |
+| `DefaultAppearance` | enum | 108 |  | `DefaultAppearance` | todo |
+
+## gpui/src/geometry.rs
+
+Go target: `geometry.go` (package `gpui`), tests in `geometry_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Axis` | enum | 26 |  | `Axis` | todo |
+| `Axis::invert` | method | 35 |  | `(Axis).Invert` | todo |
+| `Along` | trait | 44 |  | `Along` | todo |
+| `Along::along` | trait-method | 49 |  | `Along.Along` | todo |
+| `Along::apply_along` | trait-method | 52 |  | `Along.ApplyAlong` | todo |
+| `Point` | struct | 86 |  | `Point` | todo |
+| `point` | fn | 112 |  | `NewPoint` | todo |
+| `Point::new` | assoc-fn | 132 |  | `NewPoint` | todo |
+| `Point::map` | method | 155 |  | `(Point).Map` | todo |
+| `Point<Pixels>::scale` | method | 203 |  | `(Point).Scale` | todo |
+| `Point<Pixels>::magnitude` | method | 219 |  | `(Point).Magnitude` | todo |
+| `Point::relative_to` | method | 229 |  | `(Point).RelativeTo` | todo |
+| `Point::max` | method | 297 |  | `(Point).Max` | todo |
+| `Point::min` | method | 327 |  | `(Point).Min` | todo |
+| `Point::clamp` | method | 368 |  | `(Point).Clamp` | todo |
+| `Size` | struct | 397 |  | `Size` | todo |
+| `Size::new` | assoc-fn | 406 |  | `NewSize` | todo |
+| `size` | fn | 426 |  | `NewSize` | todo |
+| `Size::map` | method | 455 |  | `(Size).Map` | todo |
+| `Size::center` | method | 471 |  | `(Size).Center` | todo |
+| `Size<Pixels>::scale` | method | 498 |  | `(Size).Scale` | todo |
+| `Size::max` | method | 553 |  | `(Size).Max` | todo |
+| `Size::min` | method | 583 |  | `(Size).Min` | todo |
+| `Size<Length>::full` | assoc-fn | 678 |  | `SizeLengthFull` | todo |
+| `Size<Length>::auto` | assoc-fn | 696 |  | `SizeLengthAuto` | todo |
+| `Bounds` | struct | 724 |  | `Bounds` | todo |
+| `bounds` | fn | 732 |  | `NewBounds` | todo |
+| `Bounds<Pixels>::centered` | assoc-fn | 741 |  | `BoundsCentered` | todo |
+| `Bounds<Pixels>::maximized` | assoc-fn | 758 |  | `BoundsMaximized` | todo |
+| `Bounds::new` | assoc-fn | 786 |  | `NewBounds` | todo |
+| `Bounds::from_corners` | assoc-fn | 822 |  | `BoundsFromCorners` | todo |
+| `Bounds::from_anchor_and_size` | assoc-fn | 841 |  | `BoundsFromAnchorAndSize` | todo |
+| `Bounds::centered_at` | assoc-fn | 883 |  | `BoundsCenteredAt` | todo |
+| `Bounds::top_center` | method | 897 |  | `(Bounds).TopCenter` | todo |
+| `Bounds::bottom_center` | method | 905 |  | `(Bounds).BottomCenter` | todo |
+| `Bounds::left_center` | method | 913 |  | `(Bounds).LeftCenter` | todo |
+| `Bounds::right_center` | method | 921 |  | `(Bounds).RightCenter` | todo |
+| `Bounds::intersects` | method | 966 |  | `(Bounds).Intersects` | todo |
+| `Bounds::center` | method | 1002 |  | `(Bounds).Center` | todo |
+| `Bounds::half_perimeter` | method | 1032 |  | `(Bounds).HalfPerimeter` | todo |
+| `Bounds::dilate` | method | 1068 |  | `(Bounds).Dilate` | todo |
+| `Bounds::extend` | method | 1078 |  | `(Bounds).Extend` | todo |
+| `Bounds::inset` | method | 1103 |  | `(Bounds).Inset` | todo |
+| `Bounds::intersect` | method | 1144 |  | `(Bounds).Intersect` | todo |
+| `Bounds::union` | method | 1186 |  | `(Bounds).Union` | todo |
+| `Bounds::join` | method | 1213 |  | `(Bounds).Join` | todo |
+| `Bounds::space_within` | method | 1229 |  | `(Bounds).SpaceWithin` | todo |
+| `Bounds::top` | method | 1328 |  | `(Bounds).Top` | todo |
+| `Bounds::bottom` | method | 1337 |  | `(Bounds).Bottom` | todo |
+| `Bounds::left` | method | 1346 |  | `(Bounds).Left` | todo |
+| `Bounds::right` | method | 1355 |  | `(Bounds).Right` | todo |
+| `Bounds::top_right` | method | 1376 |  | `(Bounds).TopRight` | todo |
+| `Bounds::bottom_right` | method | 1400 |  | `(Bounds).BottomRight` | todo |
+| `Bounds::bottom_left` | method | 1424 |  | `(Bounds).BottomLeft` | todo |
+| `Bounds::corner` | method | 1453 |  | `(Bounds).Corner` | todo |
+| `Bounds::contains` | method | 1500 |  | `(Bounds).Contains` | todo |
+| `Bounds::is_contained_within` | method | 1541 |  | `(Bounds).IsContainedWithin` | todo |
+| `Bounds::map` | method | 1574 |  | `(Bounds).Map` | todo |
+| `Bounds::map_origin` | method | 1601 |  | `(Bounds).MapOrigin` | todo |
+| `Bounds::map_size` | method | 1625 |  | `(Bounds).MapSize` | todo |
+| `Bounds::localize` | method | 1638 |  | `(Bounds).Localize` | todo |
+| `Bounds::is_empty` | method | 1656 |  | `(Bounds).IsEmpty` | todo |
+| `Size<DevicePixels>::to_pixels` | method | 1675 |  | `(Size).ToPixels` | todo |
+| `Size<Pixels>::to_device_pixels` | method | 1685 |  | `(Size).ToDevicePixels` | todo |
+| `Bounds<Pixels>::scale` | method | 1730 |  | `(Bounds).Scale` | todo |
+| `Bounds<Pixels>::to_device_pixels` | method | 1738 |  | `(Bounds).ToDevicePixels` | todo |
+| `Bounds<DevicePixels>::to_pixels` | method | 1751 |  | `(Bounds).ToPixels` | todo |
+| `Edges` | struct | 1785 |  | `Edges` | todo |
+| `Edges::all` | assoc-fn | 1868 |  | `EdgesAll` | todo |
+| `Edges::map` | method | 1899 |  | `(Edges).Map` | todo |
+| `Edges::any` | assoc-fn | 1938 |  | `EdgesAny` | todo |
+| `Edges<Length>::auto` | assoc-fn | 1965 |  | `EdgesLengthAuto` | todo |
+| `Edges<Length>::zero` | assoc-fn | 1993 |  | `EdgesLengthZero` | todo |
+| `Edges<DefiniteLength>::zero` | assoc-fn | 2023 |  | `EdgesDefiniteLengthZero` | todo |
+| `Edges<DefiniteLength>::to_pixels` | method | 2068 |  | `EdgesDefiniteLengthToPixels(recv, ...) func` | todo |
+| `Edges<AbsoluteLength>::zero` | assoc-fn | 2098 |  | `EdgesAbsoluteLengthZero` | todo |
+| `Edges<AbsoluteLength>::to_pixels` | method | 2138 |  | `EdgesAbsoluteLengthToPixels(recv, ...) func` | todo |
+| `Edges<Pixels>::scale` | method | 2177 |  | `(Edges).Scale` | todo |
+| `Edges<Pixels>::max` | method | 2191 |  | `(Edges).Max` | todo |
+| `Anchor` | enum | 2247 |  | `Anchor` | todo |
+| `Anchor::opposite` | method | 2276 |  | `(Anchor).Opposite` | todo |
+| `Anchor::other_side_along` | method | 2299 |  | `(Anchor).OtherSideAlong` | todo |
+| `Anchor::is_center` | method | 2326 |  | `(Anchor).IsCenter` | todo |
+| `Anchor::is_bottom` | method | 2335 |  | `(Anchor).IsBottom` | todo |
+| `Corners` | struct | 2349 |  | `Corners` | todo |
+| `Corners::all` | assoc-fn | 2388 |  | `CornersAll` | todo |
+| `Corners::corner` | method | 2441 |  | `(Corners).Corner` | todo |
+| `Corners<AbsoluteLength>::to_pixels` | method | 2484 |  | `CornersAbsoluteLengthToPixels(recv, ...) func` | todo |
+| `Corners<Pixels>::scale` | method | 2524 |  | `(Corners).Scale` | todo |
+| `Corners<Pixels>::max` | method | 2539 |  | `(Corners).Max` | todo |
+| `Corners::clamp_radii_for_quad_size` | method | 2558 |  | `(Corners).ClampRadiiForQuadSize` | todo |
+| `Corners::map` | method | 2603 |  | `(Corners).Map` | todo |
+| `Radians` | struct | 2687 |  | `Radians` | todo |
+| `radians` | fn | 2690 |  | `Radians(x) conversion` | todo |
+| `Percentage` | struct | 2712 |  | `Percentage` | todo |
+| `percentage` | fn | 2715 |  | `Percentage(x) conversion` | todo |
+| `Pixels` | struct | 2768 |  | `Pixels` | todo |
+| `Pixels::ZERO` | assoc-const | 2874 |  | `PixelsZero` | todo |
+| `Pixels::MAX` | assoc-const | 2876 |  | `PixelsMax` | todo |
+| `Pixels::MIN` | assoc-const | 2878 |  | `PixelsMin` | todo |
+| `Pixels::as_f32` | method | 2881 |  | `(Pixels).AsF32` | todo |
+| `Pixels::to_i32` | method | 2887 |  | `(Pixels).ToI32` | todo |
+| `Pixels::floor` | method | 2896 |  | `(Pixels).Floor` | todo |
+| `Pixels::round` | method | 2905 |  | `(Pixels).Round` | todo |
+| `Pixels::ceil` | method | 2914 |  | `(Pixels).Ceil` | todo |
+| `Pixels::scale` | method | 2927 |  | `(Pixels).Scale` | todo |
+| `Pixels::pow` | method | 2940 |  | `(Pixels).Pow` | todo |
+| `Pixels::abs` | method | 2949 |  | `(Pixels).Abs` | todo |
+| `Pixels::signum` | method | 2960 |  | `(Pixels).Signum` | todo |
+| `Pixels::to_f64` | method | 2969 |  | `(Pixels).ToF64` | todo |
+| `DevicePixels` | struct | 3081 |  | `DevicePixels` | todo |
+| `DevicePixels::to_bytes` | method | 3106 |  | `(DevicePixels).ToBytes` | todo |
+| `ScaledPixels` | struct | 3174 |  | `ScaledPixels` | todo |
+| `ScaledPixels::as_f32` | method | 3178 |  | `(ScaledPixels).AsF32` | todo |
+| `ScaledPixels::floor` | method | 3187 |  | `(ScaledPixels).Floor` | todo |
+| `ScaledPixels::round` | method | 3196 |  | `(ScaledPixels).Round` | todo |
+| `ScaledPixels::ceil` | method | 3205 |  | `(ScaledPixels).Ceil` | todo |
+| `Rems` | struct | 3349 |  | `Rems` | todo |
+| `Rems::ZERO` | assoc-const | 3353 |  | `RemsZero` | todo |
+| `Rems::to_pixels` | method | 3355 |  | `(Rems).ToPixels` | todo |
+| `Rems::from_pixels` | assoc-fn | 3359 |  | `RemsFromPixels` | todo |
+| `AbsoluteLength` | enum | 3409 |  | `AbsoluteLength` | todo |
+| `AbsoluteLength::is_zero` | method | 3418 |  | `(AbsoluteLength).IsZero` | todo |
+| `AbsoluteLength::to_pixels` | method | 3460 |  | `(AbsoluteLength).ToPixels` | todo |
+| `AbsoluteLength::to_rems` | method | 3476 |  | `(AbsoluteLength).ToRems` | todo |
+| `DefiniteLength` | enum | 3571 |  | `DefiniteLength` | todo |
+| `DefiniteLength::to_pixels` | method | 3607 |  | `(DefiniteLength).ToPixels` | todo |
+| `Length` | enum | 3722 |  | `Length` | todo |
+| `relative` | fn | 3816 |  | `Relative` | todo |
+| `phi` | fn | 3821 |  | `Phi` | todo |
+| `rems` | fn | 3834 |  | `Rems(x) conversion` | todo |
+| `px` | fn | 3847 |  | `Px` | todo |
+| `auto` | fn | 3862 |  | `Auto` | todo |
+| `GridLocation` | struct | 3904 |  | `GridLocation` | todo |
+| `GridPlacement` | enum | 3913 |  | `GridPlacement` | todo |
+| `Half` | trait | 3938 |  | `Half` | todo |
+| `Half::half` | trait-method | 3944 |  | `Half.Half` | todo |
+| `IsZero` | trait | 3989 |  | `IsZero` | todo |
+| `IsZero::is_zero` | trait-method | 3995 |  | `IsZero.IsZero` | todo |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `test_pixels_to_i32` | test | 4087 |  | `TestGeometry_PixelsToI32` | todo |
+| `test_bounds_join` | test | 4102 |  | `TestGeometry_BoundsJoin` | todo |
+| `test_bounds_intersects` | test | 4133 |  | `TestGeometry_BoundsIntersects` | todo |
+
+## gpui/src/gpui.rs
+
+Go target: `gpui.go` (package `gpui`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Sealed` | trait | 169 |  | `Sealed` | todo |
+| `AppContext` | trait | 174 |  | `AppContext` | todo |
+| `AppContext::new` | trait-method | 180 |  | `AppContext.New` | todo |
+| `AppContext::reserve_entity` | trait-method | 184 |  | `AppContext.ReserveEntity` | todo |
+| `AppContext::insert_entity` | trait-method | 189 |  | `AppContext.InsertEntity` | todo |
+| `AppContext::update_entity` | trait-method | 196 |  | `AppContext.UpdateEntity` | todo |
+| `AppContext::as_mut` | trait-method | 205 |  | `AppContext.AsMut` | todo |
+| `AppContext::read_entity` | trait-method | 210 |  | `AppContext.ReadEntity` | todo |
+| `AppContext::update_window` | trait-method | 216 |  | `AppContext.UpdateWindow` | todo |
+| `AppContext::with_window` | trait-method | 224 |  | `AppContext.WithWindow` | todo |
+| `AppContext::read_window` | trait-method | 231 |  | `AppContext.ReadWindow` | todo |
+| `AppContext::background_spawn` | trait-method | 240 |  | `AppContext.BackgroundSpawn` | todo |
+| `AppContext::read_global` | trait-method | 245 |  | `AppContext.ReadGlobal` | todo |
+| `Reservation` | struct | 252 |  | `Reservation` | todo |
+| `Reservation::entity_id` | method | 256 |  | `(Reservation).EntityID` | todo |
+| `VisualContext` | trait | 263 |  | `VisualContext` | todo |
+| `VisualContext::window_handle` | trait-method | 268 |  | `VisualContext.WindowHandle` | todo |
+| `VisualContext::update_window_entity` | trait-method | 271 |  | `VisualContext.UpdateWindowEntity` | todo |
+| `VisualContext::new_window_entity` | trait-method | 278 |  | `VisualContext.NewWindowEntity` | todo |
+| `VisualContext::replace_root_view` | trait-method | 284 |  | `VisualContext.ReplaceRootView` | todo |
+| `VisualContext::focus` | trait-method | 292 |  | `VisualContext.Focus` | todo |
+| `EventEmitter` | trait | 299 |  | `EventEmitter` | todo |
+| `BorrowAppContext` | trait | 303 |  | `BorrowAppContext` | todo |
+| `BorrowAppContext::set_global` | trait-method | 305 |  | `BorrowAppContext.SetGlobal` | todo |
+| `BorrowAppContext::update_global` | trait-method | 307 |  | `BorrowAppContext.UpdateGlobal` | todo |
+| `BorrowAppContext::update_default_global` | trait-method | 311 |  | `BorrowAppContext.UpdateDefaultGlobal` | todo |
+| `GpuSpecs` | struct | 346 |  | `GPUSpecs` | todo |
+
+## gpui/src/shared_uri.rs
+
+Go target: `shared_uri.go` (package `gpui`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `SharedUri` | struct | 7 |  | `SharedURI` | todo |
+
+## gpui/src/util.rs
+
+Go target: `util.go` (package `gpui`), tests in `util_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `FluentBuilder` | trait | 11 |  | `Fluent[S] mixin` | todo |
+| `FluentBuilder::map` | trait-method | 13 |  | `(Fluent[S]).Map` | todo |
+| `FluentBuilder::when` | trait-method | 21 |  | `(Fluent[S]).When` | todo |
+| `FluentBuilder::when_else` | trait-method | 29 |  | `(Fluent[S]).WhenElse` | todo |
+| `FluentBuilder::when_some` | trait-method | 42 |  | `(Fluent[S]).WhenSome` | todo |
+| `FluentBuilder::when_none` | trait-method | 55 |  | `(Fluent[S]).WhenNone` | todo |
+| `FutureExt` | trait | 64 |  | `FutureExt` | todo |
+| `FutureExt::with_timeout` | trait-method | 67 |  | `FutureExt.WithTimeout` | todo |
+| `WithTimeout` | struct | 85 |  | `WithTimeout` | todo |
+| `Timeout` | struct | 95 |  | `Timeout` | todo |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `test_round_half_toward_zero` | test | 170 |  | `TestUtil_RoundHalfTowardZero` | todo |
+| `test_device_pixel_helpers` | test | 192 |  | `TestUtil_DevicePixelHelpers` | todo |
+| `test_round_half_toward_zero_f64` | test | 220 |  | `TestUtil_RoundHalfTowardZeroF64` | todo |
+| `test_with_timeout` | gpui::test | 229 |  | `TestUtil_WithTimeout` | todo |
+
