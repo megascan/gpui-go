@@ -9,7 +9,7 @@ Notes on the port:
 - `Result<T>` returns are `(T, error)` with an `Error` value; `Option<NodeId>` returns are `(consumer.NodeID, bool, error)`.
 - `FromIterator` collectors (`map_children`, `map_descendants`, ...) are generic methods returning slices; `HashMap<&'static str, String>` is `map[string]string`.
 - `Weak<Context>` / `Weak<RwLock<AppContext>>` are `weak.Pointer`; see `D-ATSPIWEAK`.
-- `stubs.go` holds the context.rs / events.rs / adapter.rs shapes node.rs needs; `Context` / `AppContext` field access and lock helpers are real, `Adapter.emit_object_event` panics until M3-a11y-atspi-adapter.
+- M3-a11y-atspi-adapter replaced `stubs.go` with `context.go`, `events.go`, `adapter.go` and `lib.go`; `impl Drop for Adapter` is `(*Adapter).Release` (DESIGN 5.2), which also sets the context's `released` flag (`D-ATSPIWEAK`). Data enums (`Event`, `CacheEvent`, `ObjectEvent`, `Property`, `EventData`) are sealed interfaces. `Debug` impls are `String` methods that print shared contexts by pointer / adapter IDs instead of recursing.
 - None of the files ported here has upstream unit tests; `node_test.go` adds coverage of its own.
 
 ## accesskit_atspi_common-0.19.1/src/node.rs
@@ -271,6 +271,8 @@ Go target: `a11y/atspi/`, in `atspi_common.go` (see `D-ATSPICOMMON`).
 | `StateSet` (state.rs) | struct | 354 |  | `StateSet` | done |
 | `Interface` (interface.rs) | enum | 19 |  | `Interface` | done |
 | `InterfaceSet` (interface.rs) | struct | 84 |  | `InterfaceSet` | done |
+| `impl BitAnd for InterfaceSet` (interface.rs) | trait-impl | 205 |  | `(InterfaceSet).Intersection` | done |
+| `impl BitXor for InterfaceSet` (interface.rs) | trait-impl | 213 |  | `(InterfaceSet).SymmetricDifference` | done |
 | `CoordType` (lib.rs) | enum | 74 |  | `CoordType` | done |
 | `Granularity` (lib.rs) | enum | 100 |  | `Granularity` | done |
 | `Layer` (lib.rs) | enum | 128 |  | `Layer` | done |
@@ -283,70 +285,70 @@ Go target: `a11y/atspi/`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `AdapterChangeHandler` | struct | 30 |  | `AdapterChangeHandler` | blocked:M3-a11y-atspi-adapter |
-| `AdapterChangeHandler::new` | method | 39 |  | `(AdapterChangeHandler).new` | blocked:M3-a11y-atspi-adapter |
-| `AdapterChangeHandler::add_node` | method | 49 |  | `(AdapterChangeHandler).addNode` | blocked:M3-a11y-atspi-adapter |
-| `AdapterChangeHandler::add_subtree` | method | 84 |  | `(AdapterChangeHandler).addSubtree` | blocked:M3-a11y-atspi-adapter |
-| `AdapterChangeHandler::remove_node` | method | 91 |  | `(AdapterChangeHandler).removeNode` | blocked:M3-a11y-atspi-adapter |
-| `AdapterChangeHandler::remove_subtree` | method | 114 |  | `(AdapterChangeHandler).removeSubtree` | blocked:M3-a11y-atspi-adapter |
-| `AdapterChangeHandler::emit_text_change_if_needed_parent` | method | 121 |  | `(AdapterChangeHandler).emitTextChangeIfNeededParent` | blocked:M3-a11y-atspi-adapter |
-| `AdapterChangeHandler::emit_text_change_if_needed` | method | 184 |  | `(AdapterChangeHandler).emitTextChangeIfNeeded` | blocked:M3-a11y-atspi-adapter |
-| `AdapterChangeHandler::emit_text_selection_change` | method | 197 |  | `(AdapterChangeHandler).emitTextSelectionChange` | blocked:M3-a11y-atspi-adapter |
-| `AdapterChangeHandler::enqueue_selection_changed_if_needed_parent` | method | 249 |  | `(AdapterChangeHandler).enqueueSelectionChangedIfNeededParent` | blocked:M3-a11y-atspi-adapter |
-| `AdapterChangeHandler::enqueue_selection_changed_if_needed` | method | 260 |  | `(AdapterChangeHandler).enqueueSelectionChangedIfNeeded` | blocked:M3-a11y-atspi-adapter |
-| `AdapterChangeHandler::emit_selection_changed` | method | 269 |  | `(AdapterChangeHandler).emitSelectionChanged` | blocked:M3-a11y-atspi-adapter |
-| `impl TreeChangeHandler for AdapterChangeHandler: node_added` | method | 281 |  | `(AdapterChangeHandler).nodeAdded` | blocked:M3-a11y-atspi-adapter |
-| `impl TreeChangeHandler for AdapterChangeHandler: node_updated` | method | 287 |  | `(AdapterChangeHandler).nodeUpdated` | blocked:M3-a11y-atspi-adapter |
-| `impl TreeChangeHandler for AdapterChangeHandler: focus_moved` | method | 324 |  | `(AdapterChangeHandler).focusMoved` | blocked:M3-a11y-atspi-adapter |
-| `impl TreeChangeHandler for AdapterChangeHandler: node_removed` | method | 345 |  | `(AdapterChangeHandler).nodeRemoved` | blocked:M3-a11y-atspi-adapter |
-| `next_adapter_id` | fn | 356 |  | `NextAdapterID` | blocked:M3-a11y-atspi-adapter |
-| `Adapter` | struct | 360 |  | `Adapter` | blocked:M3-a11y-atspi-adapter |
-| `impl Debug for Adapter: fmt` | method | 367 |  | `(Adapter).fmt` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::new` | method | 377 |  | `(Adapter).New` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::with_id` | method | 397 |  | `(Adapter).WithID` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::with_wrapped_action_handler` | method | 419 |  | `(Adapter).WithWrappedActionHandler` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::register_tree` | method | 444 |  | `(Adapter).registerTree` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::add_children` | method | 445 |  | `(Adapter).addChildren` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::platform_node` | method | 480 |  | `(Adapter).PlatformNode` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::root_id` | method | 484 |  | `(Adapter).RootID` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::platform_root` | method | 488 |  | `(Adapter).PlatformRoot` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::register_interfaces` | method | 492 |  | `(Adapter).registerInterfaces` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::unregister_interfaces` | method | 496 |  | `(Adapter).unregisterInterfaces` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::emit_object_event` | method | 501 |  | `(Adapter).emitObjectEvent` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::emit_root_object_event` | method | 507 |  | `(Adapter).emitRootObjectEvent` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::emit_cache_added` | method | 513 |  | `(Adapter).emitCacheAdded` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::emit_cache_removed` | method | 518 |  | `(Adapter).emitCacheRemoved` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::set_root_window_bounds` | method | 523 |  | `(Adapter).SetRootWindowBounds` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::update` | method | 528 |  | `(Adapter).Update` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::update_window_focus_state` | method | 536 |  | `(Adapter).UpdateWindowFocusState` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::window_created` | method | 542 |  | `(Adapter).windowCreated` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::window_activated` | method | 546 |  | `(Adapter).windowActivated` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::window_deactivated` | method | 559 |  | `(Adapter).windowDeactivated` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::window_destroyed` | method | 571 |  | `(Adapter).windowDestroyed` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::id` | method | 575 |  | `(Adapter).ID` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::is_window_focused` | method | 579 |  | `(Adapter).IsWindowFocused` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::root_window_bounds` | method | 583 |  | `(Adapter).RootWindowBounds` | blocked:M3-a11y-atspi-adapter |
-| `Adapter::wrapped_action_handler` | method | 589 |  | `(Adapter).WrappedActionHandler` | blocked:M3-a11y-atspi-adapter |
-| `root_window` | fn | 594 |  | `rootWindow` | blocked:M3-a11y-atspi-adapter |
-| `impl Drop for Adapter: drop` | method | 605 |  | `(Adapter).drop` | blocked:M3-a11y-atspi-adapter |
-| `register_interfaces` | fn | 636 |  | `registerInterfaces` | blocked:M3-a11y-atspi-adapter |
-| `unregister_interfaces` | fn | 637 |  | `unregisterInterfaces` | blocked:M3-a11y-atspi-adapter |
-| `emit_event` | fn | 638 |  | `emitEvent` | blocked:M3-a11y-atspi-adapter |
-| `do_action` | fn | 650 |  | `doAction` | blocked:M3-a11y-atspi-adapter |
-| `with_children` | fn | 653 |  | `withChildren` | blocked:M3-a11y-atspi-adapter |
-| `build` | fn | 659 |  | `build` | blocked:M3-a11y-atspi-adapter |
-| `initial_tree` | fn | 673 |  | `initialTree` | blocked:M3-a11y-atspi-adapter |
-| `update` | fn | 688 |  | `update` | blocked:M3-a11y-atspi-adapter |
+| `AdapterChangeHandler` | struct | 30 |  | `adapterChangeHandler` | done |
+| `AdapterChangeHandler::new` | method | 39 |  | `newAdapterChangeHandler` | done |
+| `AdapterChangeHandler::add_node` | method | 49 |  | `(adapterChangeHandler).addNode` | done |
+| `AdapterChangeHandler::add_subtree` | method | 84 |  | `(adapterChangeHandler).addSubtree` | done |
+| `AdapterChangeHandler::remove_node` | method | 91 |  | `(adapterChangeHandler).removeNode` | done |
+| `AdapterChangeHandler::remove_subtree` | method | 114 |  | `(adapterChangeHandler).removeSubtree` | done |
+| `AdapterChangeHandler::emit_text_change_if_needed_parent` | method | 121 |  | `(adapterChangeHandler).emitTextChangeIfNeededParent` | done |
+| `AdapterChangeHandler::emit_text_change_if_needed` | method | 184 |  | `(adapterChangeHandler).emitTextChangeIfNeeded` | done |
+| `AdapterChangeHandler::emit_text_selection_change` | method | 197 |  | `(adapterChangeHandler).emitTextSelectionChange` | done |
+| `AdapterChangeHandler::enqueue_selection_changed_if_needed_parent` | method | 249 |  | `(adapterChangeHandler).enqueueSelectionChangedIfNeededParent` | done |
+| `AdapterChangeHandler::enqueue_selection_changed_if_needed` | method | 260 |  | `(adapterChangeHandler).enqueueSelectionChangedIfNeeded` | done |
+| `AdapterChangeHandler::emit_selection_changed` | method | 269 |  | `(adapterChangeHandler).emitSelectionChanged` | done |
+| `impl TreeChangeHandler for AdapterChangeHandler: node_added` | method | 281 |  | `(adapterChangeHandler).NodeAdded` | done |
+| `impl TreeChangeHandler for AdapterChangeHandler: node_updated` | method | 287 |  | `(adapterChangeHandler).NodeUpdated` | done |
+| `impl TreeChangeHandler for AdapterChangeHandler: focus_moved` | method | 324 |  | `(adapterChangeHandler).FocusMoved` | done |
+| `impl TreeChangeHandler for AdapterChangeHandler: node_removed` | method | 345 |  | `(adapterChangeHandler).NodeRemoved` | done |
+| `next_adapter_id` | fn | 356 |  | `NextAdapterID` | done |
+| `Adapter` | struct | 360 |  | `Adapter` | done |
+| `impl Debug for Adapter: fmt` | method | 367 |  | `(Adapter).String` | done |
+| `Adapter::new` | method | 377 |  | `NewAdapter` | done |
+| `Adapter::with_id` | method | 397 |  | `NewAdapterWithID` | done |
+| `Adapter::with_wrapped_action_handler` | method | 419 |  | `NewAdapterWithWrappedActionHandler` | done |
+| `Adapter::register_tree` | method | 444 |  | `(Adapter).registerTree` | done |
+| `Adapter::add_children` | method | 445 |  | `addChildren` | done |
+| `Adapter::platform_node` | method | 480 |  | `(Adapter).PlatformNode` | done |
+| `Adapter::root_id` | method | 484 |  | `(Adapter).RootID` | done |
+| `Adapter::platform_root` | method | 488 |  | `(Adapter).PlatformRoot` | done |
+| `Adapter::register_interfaces` | method | 492 |  | `(Adapter).registerInterfaces` | done |
+| `Adapter::unregister_interfaces` | method | 496 |  | `(Adapter).unregisterInterfaces` | done |
+| `Adapter::emit_object_event` | method | 501 |  | `(Adapter).emitObjectEvent` | done |
+| `Adapter::emit_root_object_event` | method | 507 |  | `(Adapter).emitRootObjectEvent` | done |
+| `Adapter::emit_cache_added` | method | 513 |  | `(Adapter).emitCacheAdded` | done |
+| `Adapter::emit_cache_removed` | method | 518 |  | `(Adapter).emitCacheRemoved` | done |
+| `Adapter::set_root_window_bounds` | method | 523 |  | `(Adapter).SetRootWindowBounds` | done |
+| `Adapter::update` | method | 528 |  | `(Adapter).Update` | done |
+| `Adapter::update_window_focus_state` | method | 536 |  | `(Adapter).UpdateWindowFocusState` | done |
+| `Adapter::window_created` | method | 542 |  | `(Adapter).windowCreated` | done |
+| `Adapter::window_activated` | method | 546 |  | `(Adapter).windowActivated` | done |
+| `Adapter::window_deactivated` | method | 559 |  | `(Adapter).windowDeactivated` | done |
+| `Adapter::window_destroyed` | method | 571 |  | `(Adapter).windowDestroyed` | done |
+| `Adapter::id` | method | 575 |  | `(Adapter).ID` | done |
+| `Adapter::is_window_focused` | method | 579 |  | `(Adapter).IsWindowFocused` | done |
+| `Adapter::root_window_bounds` | method | 583 |  | `(Adapter).RootWindowBounds` | done |
+| `Adapter::wrapped_action_handler` | method | 589 |  | `(Adapter).WrappedActionHandler` | done |
+| `root_window` | fn | 594 |  | `rootWindow` | done |
+| `impl Drop for Adapter: drop` | method | 605 |  | `(Adapter).Release` | done |
+| `register_interfaces` | fn | 636 |  | `registerInterfaces` | dev:D-ATSPITESTHELPERS |
+| `unregister_interfaces` | fn | 637 |  | `unregisterInterfaces` | dev:D-ATSPITESTHELPERS |
+| `emit_event` | fn | 638 |  | `emitEvent` | dev:D-ATSPITESTHELPERS |
+| `do_action` | fn | 650 |  | `doAction` | dev:D-ATSPITESTHELPERS |
+| `with_children` | fn | 653 |  | `withChildren` | dev:D-ATSPITESTHELPERS |
+| `build` | fn | 659 |  | `build` | dev:D-ATSPITESTHELPERS |
+| `initial_tree` | fn | 673 |  | `initialTree` | dev:D-ATSPITESTHELPERS |
+| `update` | fn | 688 |  | `update` | dev:D-ATSPITESTHELPERS |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `tests::no_cache_events_on_construction` | test | 698 | test | `TestAdapter_NoCacheEventsOnConstruction` | blocked:M3-a11y-atspi-adapter|
-| `tests::add_node_emits_one_added` | test | 704 | test | `TestAdapter_AddNodeEmitsOneAdded` | blocked:M3-a11y-atspi-adapter|
-| `tests::remove_node_emits_removed_for_same_id` | test | 720 | test | `TestAdapter_RemoveNodeEmitsRemovedForSameID` | blocked:M3-a11y-atspi-adapter|
-| `tests::subtree_add_emits_added_per_node` | test | 742 | test | `TestAdapter_SubtreeAddEmitsAddedPerNode` | blocked:M3-a11y-atspi-adapter|
-| `tests::subtree_remove_emits_removed_per_node` | test | 763 | test | `TestAdapter_SubtreeRemoveEmitsRemovedPerNode` | blocked:M3-a11y-atspi-adapter|
-| `tests::filter_transition_into_tree_emits_added` | test | 788 | test | `TestAdapter_FilterTransitionIntoTreeEmitsAdded` | blocked:M3-a11y-atspi-adapter|
-| `tests::filter_transition_out_of_tree_emits_removed` | test | 812 | test | `TestAdapter_FilterTransitionOutOfTreeEmitsRemoved` | blocked:M3-a11y-atspi-adapter|
+| `tests::no_cache_events_on_construction` | test | 698 | test | `TestAdapter_NoCacheEventsOnConstruction` | done |
+| `tests::add_node_emits_one_added` | test | 704 | test | `TestAdapter_AddNodeEmitsOneAdded` | done |
+| `tests::remove_node_emits_removed_for_same_id` | test | 720 | test | `TestAdapter_RemoveNodeEmitsRemovedForSameID` | done |
+| `tests::subtree_add_emits_added_per_node` | test | 742 | test | `TestAdapter_SubtreeAddEmitsAddedPerNode` | done |
+| `tests::subtree_remove_emits_removed_per_node` | test | 763 | test | `TestAdapter_SubtreeRemoveEmitsRemovedPerNode` | done |
+| `tests::filter_transition_into_tree_emits_added` | test | 788 | test | `TestAdapter_FilterTransitionIntoTreeEmitsAdded` | done |
+| `tests::filter_transition_out_of_tree_emits_removed` | test | 812 | test | `TestAdapter_FilterTransitionOutOfTreeEmitsRemoved` | done |
 
 ## accesskit_atspi_common-0.19.1/src/context.rs
 
@@ -354,24 +356,24 @@ Go target: `a11y/atspi/`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `ActionHandlerNoMut` | trait | 15 |  | `ActionHandlerNoMut` | blocked:M3-a11y-atspi-adapter |
-| `ActionHandlerNoMut::do_action` | method | 16 |  | `(ActionHandlerNoMut).doAction` | blocked:M3-a11y-atspi-adapter |
-| `ActionHandlerWrapper` | struct | 21 |  | `ActionHandlerWrapper` | blocked:M3-a11y-atspi-adapter |
-| `ActionHandlerWrapper::new` | method | 24 |  | `(ActionHandlerWrapper).New` | blocked:M3-a11y-atspi-adapter |
-| `impl ActionHandlerNoMut for ActionHandlerWrapper: do_action` | method | 30 |  | `(ActionHandlerWrapper).doAction` | blocked:M3-a11y-atspi-adapter |
-| `Context` | struct | 35 |  | `Context` | blocked:M3-a11y-atspi-adapter |
-| `impl Debug for Context: fmt` | method | 43 |  | `(Context).fmt` | blocked:M3-a11y-atspi-adapter |
-| `Context::new` | method | 54 |  | `(Context).new` | blocked:M3-a11y-atspi-adapter |
-| `Context::read_tree` | method | 68 |  | `(Context).readTree` | blocked:M3-a11y-atspi-adapter |
-| `Context::read_root_window_bounds` | method | 72 |  | `(Context).readRootWindowBounds` | blocked:M3-a11y-atspi-adapter |
-| `Context::do_action` | method | 76 |  | `(Context).DoAction` | blocked:M3-a11y-atspi-adapter |
-| `Context::read_app_context` | method | 80 |  | `(Context).readAppContext` | blocked:M3-a11y-atspi-adapter |
-| `Context::write_app_context` | method | 84 |  | `(Context).writeAppContext` | blocked:M3-a11y-atspi-adapter |
-| `AppContext` | struct | 90 |  | `AppContext` | blocked:M3-a11y-atspi-adapter |
-| `AppContext::new` | method | 99 |  | `(AppContext).New` | blocked:M3-a11y-atspi-adapter |
-| `AppContext::adapter_index` | method | 109 |  | `(AppContext).adapterIndex` | blocked:M3-a11y-atspi-adapter |
-| `AppContext::push_adapter` | method | 113 |  | `(AppContext).pushAdapter` | blocked:M3-a11y-atspi-adapter |
-| `AppContext::remove_adapter` | method | 117 |  | `(AppContext).removeAdapter` | blocked:M3-a11y-atspi-adapter |
+| `ActionHandlerNoMut` | trait | 15 |  | `ActionHandlerNoMut` | done |
+| `ActionHandlerNoMut::do_action` | method | 16 |  | `(ActionHandlerNoMut).DoAction` | done |
+| `ActionHandlerWrapper` | struct | 21 |  | `ActionHandlerWrapper` | done |
+| `ActionHandlerWrapper::new` | method | 24 |  | `NewActionHandlerWrapper` | done |
+| `impl ActionHandlerNoMut for ActionHandlerWrapper: do_action` | method | 30 |  | `(ActionHandlerWrapper).DoAction` | done |
+| `Context` | struct | 35 |  | `Context` | done |
+| `impl Debug for Context: fmt` | method | 43 |  | `(Context).String` | done |
+| `Context::new` | method | 54 |  | `newContext` | done |
+| `Context::read_tree` | method | 68 |  | `(Context).readTree` | done |
+| `Context::read_root_window_bounds` | method | 72 |  | `(Context).readRootWindowBounds` | done |
+| `Context::do_action` | method | 76 |  | `(Context).DoAction` | done |
+| `Context::read_app_context` | method | 80 |  | `(Context).readAppContext` | done |
+| `Context::write_app_context` | method | 84 |  | `(Context).writeAppContext` | done |
+| `AppContext` | struct | 90 |  | `AppContext` | done |
+| `AppContext::new` | method | 99 |  | `NewAppContext` | done |
+| `AppContext::adapter_index` | method | 109 |  | `(AppContext).adapterIndex` | done |
+| `AppContext::push_adapter` | method | 113 |  | `(AppContext).pushAdapter` | done |
+| `AppContext::remove_adapter` | method | 117 |  | `(AppContext).removeAdapter` | done |
 
 ## accesskit_atspi_common-0.19.1/src/events.rs
 
@@ -379,110 +381,110 @@ Go target: `a11y/atspi/`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Event` | enum | 12 |  | `Event` | blocked:M3-a11y-atspi-adapter |
-| `CacheEvent` | enum | 26 |  | `CacheEvent` | blocked:M3-a11y-atspi-adapter |
-| `Property` | enum | 32 |  | `Property` | blocked:M3-a11y-atspi-adapter |
-| `ObjectEvent` | enum | 42 |  | `ObjectEvent` | blocked:M3-a11y-atspi-adapter |
-| `WindowEvent` | enum | 66 |  | `WindowEvent` | blocked:M3-a11y-atspi-adapter |
+| `Event` | enum | 12 |  | `Event` | done |
+| `CacheEvent` | enum | 26 |  | `CacheEvent` | done |
+| `Property` | enum | 32 |  | `Property` | done |
+| `ObjectEvent` | enum | 42 |  | `ObjectEvent` | done |
+| `WindowEvent` | enum | 66 |  | `WindowEvent` | done |
 
 ## accesskit_atspi_common-0.19.1/src/simplified.rs
 
-Go target: `a11y/atspi/`
+Go target: `a11y/atspi/simplified/` (see `D-ATSPISIMPLIFIED`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Accessible` | enum | 22 |  | `Accessible` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::role` | method | 28 |  | `(Accessible).Role` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::localized_role_name` | method | 35 |  | `(Accessible).LocalizedRoleName` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::name` | method | 42 |  | `(Accessible).Name` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::description` | method | 49 |  | `(Accessible).Description` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::state` | method | 56 |  | `(Accessible).State` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::attributes` | method | 63 |  | `(Accessible).Attributes` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::parent` | method | 70 |  | `(Accessible).Parent` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::index_in_parent` | method | 80 |  | `(Accessible).IndexInParent` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::child_count` | method | 87 |  | `(Accessible).ChildCount` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::accessible_id` | method | 94 |  | `(Accessible).AccessibleID` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::child_at_index` | method | 101 |  | `(Accessible).ChildAtIndex` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::map_children` | method | 112 |  | `(Accessible).MapChildren` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::relation_set` | method | 122 |  | `(Accessible).RelationSet` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::application` | method | 129 |  | `(Accessible).Application` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::toolkit_name` | method | 136 |  | `(Accessible).ToolkitName` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::toolkit_version` | method | 143 |  | `(Accessible).ToolkitVersion` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::supports_action` | method | 150 |  | `(Accessible).SupportsAction` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::n_actions` | method | 157 |  | `(Accessible).NActions` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::action_name` | method | 164 |  | `(Accessible).ActionName` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::do_action` | method | 171 |  | `(Accessible).DoAction` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::supports_component` | method | 178 |  | `(Accessible).SupportsComponent` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::contains` | method | 185 |  | `(Accessible).Contains` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::accessible_at_point` | method | 192 |  | `(Accessible).AccessibleAtPoint` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::extents` | method | 206 |  | `(Accessible).Extents` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::layer` | method | 213 |  | `(Accessible).Layer` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::grab_focus` | method | 220 |  | `(Accessible).GrabFocus` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::scroll_to` | method | 227 |  | `(Accessible).ScrollTo` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::scroll_to_point` | method | 234 |  | `(Accessible).ScrollToPoint` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::supports_hyperlink` | method | 241 |  | `(Accessible).SupportsHyperlink` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::n_anchors` | method | 248 |  | `(Accessible).NAnchors` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::hyperlink_start_index` | method | 255 |  | `(Accessible).HyperlinkStartIndex` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::hyperlink_end_index` | method | 262 |  | `(Accessible).HyperlinkEndIndex` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::hyperlink_object` | method | 269 |  | `(Accessible).HyperlinkObject` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::uri` | method | 278 |  | `(Accessible).URI` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::hyperlink_is_valid` | method | 285 |  | `(Accessible).HyperlinkIsValid` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::supports_selection` | method | 292 |  | `(Accessible).SupportsSelection` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::n_selected_children` | method | 299 |  | `(Accessible).NSelectedChildren` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::selected_child` | method | 306 |  | `(Accessible).SelectedChild` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::select_child` | method | 315 |  | `(Accessible).SelectChild` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::deselect_selected_child` | method | 322 |  | `(Accessible).DeselectSelectedChild` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::is_child_selected` | method | 329 |  | `(Accessible).IsChildSelected` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::select_all` | method | 336 |  | `(Accessible).SelectAll` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::clear_selection` | method | 343 |  | `(Accessible).ClearSelection` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::deselect_child` | method | 350 |  | `(Accessible).DeselectChild` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::supports_text` | method | 357 |  | `(Accessible).SupportsText` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::character_count` | method | 364 |  | `(Accessible).CharacterCount` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::caret_offset` | method | 371 |  | `(Accessible).CaretOffset` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::string_at_offset` | method | 378 |  | `(Accessible).StringAtOffset` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::text` | method | 389 |  | `(Accessible).Text` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::set_caret_offset` | method | 396 |  | `(Accessible).SetCaretOffset` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::text_attribute_value` | method | 403 |  | `(Accessible).TextAttributeValue` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::text_attributes` | method | 410 |  | `(Accessible).TextAttributes` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::default_text_attributes` | method | 420 |  | `(Accessible).DefaultTextAttributes` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::character_extents` | method | 427 |  | `(Accessible).CharacterExtents` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::offset_at_point` | method | 434 |  | `(Accessible).OffsetAtPoint` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::n_selections` | method | 441 |  | `(Accessible).NSelections` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::selection` | method | 448 |  | `(Accessible).Selection` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::add_selection` | method | 455 |  | `(Accessible).AddSelection` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::remove_selection` | method | 462 |  | `(Accessible).RemoveSelection` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::set_selection` | method | 469 |  | `(Accessible).SetSelection` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::range_extents` | method | 481 |  | `(Accessible).RangeExtents` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::text_attribute_run` | method | 493 |  | `(Accessible).TextAttributeRun` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::scroll_substring_to` | method | 504 |  | `(Accessible).ScrollSubstringTo` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::scroll_substring_to_point` | method | 516 |  | `(Accessible).ScrollSubstringToPoint` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::supports_value` | method | 532 |  | `(Accessible).SupportsValue` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::minimum_value` | method | 539 |  | `(Accessible).MinimumValue` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::maximum_value` | method | 546 |  | `(Accessible).MaximumValue` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::minimum_increment` | method | 553 |  | `(Accessible).MinimumIncrement` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::current_value` | method | 560 |  | `(Accessible).CurrentValue` | blocked:M3-a11y-atspi-adapter |
-| `Accessible::set_current_value` | method | 567 |  | `(Accessible).SetCurrentValue` | blocked:M3-a11y-atspi-adapter |
-| `Cache` | struct | 575 |  | `Cache` | blocked:M3-a11y-atspi-adapter |
-| `Cache::new` | method | 580 |  | `(Cache).New` | blocked:M3-a11y-atspi-adapter |
-| `Cache::items` | method | 584 |  | `(Cache).Items` | blocked:M3-a11y-atspi-adapter |
-| `EventData` | enum | 596 |  | `EventData` | blocked:M3-a11y-atspi-adapter |
-| `Event` | struct | 605 |  | `Event` | blocked:M3-a11y-atspi-adapter |
-| `Event::new` | method | 614 |  | `(Event).New` | blocked:M3-a11y-atspi-adapter |
-| `do_action` | fn | 796 |  | `doAction` | blocked:M3-a11y-atspi-adapter |
-| `register_interfaces` | fn | 804 |  | `registerInterfaces` | blocked:M3-a11y-atspi-adapter |
-| `unregister_interfaces` | fn | 805 |  | `unregisterInterfaces` | blocked:M3-a11y-atspi-adapter |
-| `emit_event` | fn | 806 |  | `emitEvent` | blocked:M3-a11y-atspi-adapter |
-| `register_interfaces` | fn | 816 |  | `registerInterfaces` | blocked:M3-a11y-atspi-adapter |
-| `unregister_interfaces` | fn | 817 |  | `unregisterInterfaces` | blocked:M3-a11y-atspi-adapter |
-| `emit_event` | fn | 818 |  | `emitEvent` | blocked:M3-a11y-atspi-adapter |
-| `with_children` | fn | 821 |  | `withChildren` | blocked:M3-a11y-atspi-adapter |
-| `initial_tree` | fn | 827 |  | `initialTree` | blocked:M3-a11y-atspi-adapter |
-| `build_cache` | fn | 880 |  | `buildCache` | blocked:M3-a11y-atspi-adapter |
+| `Accessible` | enum | 22 |  | `Accessible` | done |
+| `Accessible::role` | method | 28 |  | `(Accessible).Role` | done |
+| `Accessible::localized_role_name` | method | 35 |  | `(Accessible).LocalizedRoleName` | done |
+| `Accessible::name` | method | 42 |  | `(Accessible).Name` | done |
+| `Accessible::description` | method | 49 |  | `(Accessible).Description` | done |
+| `Accessible::state` | method | 56 |  | `(Accessible).State` | done |
+| `Accessible::attributes` | method | 63 |  | `(Accessible).Attributes` | done |
+| `Accessible::parent` | method | 70 |  | `(Accessible).Parent` | done |
+| `Accessible::index_in_parent` | method | 80 |  | `(Accessible).IndexInParent` | done |
+| `Accessible::child_count` | method | 87 |  | `(Accessible).ChildCount` | done |
+| `Accessible::accessible_id` | method | 94 |  | `(Accessible).AccessibleID` | done |
+| `Accessible::child_at_index` | method | 101 |  | `(Accessible).ChildAtIndex` | done |
+| `Accessible::map_children` | method | 112 |  | `(Accessible).MapChildren` | done |
+| `Accessible::relation_set` | method | 122 |  | `(Accessible).RelationSet` | done |
+| `Accessible::application` | method | 129 |  | `(Accessible).Application` | done |
+| `Accessible::toolkit_name` | method | 136 |  | `(Accessible).ToolkitName` | done |
+| `Accessible::toolkit_version` | method | 143 |  | `(Accessible).ToolkitVersion` | done |
+| `Accessible::supports_action` | method | 150 |  | `(Accessible).SupportsAction` | done |
+| `Accessible::n_actions` | method | 157 |  | `(Accessible).NActions` | done |
+| `Accessible::action_name` | method | 164 |  | `(Accessible).ActionName` | done |
+| `Accessible::do_action` | method | 171 |  | `(Accessible).DoAction` | done |
+| `Accessible::supports_component` | method | 178 |  | `(Accessible).SupportsComponent` | done |
+| `Accessible::contains` | method | 185 |  | `(Accessible).Contains` | done |
+| `Accessible::accessible_at_point` | method | 192 |  | `(Accessible).AccessibleAtPoint` | done |
+| `Accessible::extents` | method | 206 |  | `(Accessible).Extents` | done |
+| `Accessible::layer` | method | 213 |  | `(Accessible).Layer` | done |
+| `Accessible::grab_focus` | method | 220 |  | `(Accessible).GrabFocus` | done |
+| `Accessible::scroll_to` | method | 227 |  | `(Accessible).ScrollTo` | done |
+| `Accessible::scroll_to_point` | method | 234 |  | `(Accessible).ScrollToPoint` | done |
+| `Accessible::supports_hyperlink` | method | 241 |  | `(Accessible).SupportsHyperlink` | done |
+| `Accessible::n_anchors` | method | 248 |  | `(Accessible).NAnchors` | done |
+| `Accessible::hyperlink_start_index` | method | 255 |  | `(Accessible).HyperlinkStartIndex` | done |
+| `Accessible::hyperlink_end_index` | method | 262 |  | `(Accessible).HyperlinkEndIndex` | done |
+| `Accessible::hyperlink_object` | method | 269 |  | `(Accessible).HyperlinkObject` | done |
+| `Accessible::uri` | method | 278 |  | `(Accessible).URI` | done |
+| `Accessible::hyperlink_is_valid` | method | 285 |  | `(Accessible).HyperlinkIsValid` | done |
+| `Accessible::supports_selection` | method | 292 |  | `(Accessible).SupportsSelection` | done |
+| `Accessible::n_selected_children` | method | 299 |  | `(Accessible).NSelectedChildren` | done |
+| `Accessible::selected_child` | method | 306 |  | `(Accessible).SelectedChild` | done |
+| `Accessible::select_child` | method | 315 |  | `(Accessible).SelectChild` | done |
+| `Accessible::deselect_selected_child` | method | 322 |  | `(Accessible).DeselectSelectedChild` | done |
+| `Accessible::is_child_selected` | method | 329 |  | `(Accessible).IsChildSelected` | done |
+| `Accessible::select_all` | method | 336 |  | `(Accessible).SelectAll` | done |
+| `Accessible::clear_selection` | method | 343 |  | `(Accessible).ClearSelection` | done |
+| `Accessible::deselect_child` | method | 350 |  | `(Accessible).DeselectChild` | done |
+| `Accessible::supports_text` | method | 357 |  | `(Accessible).SupportsText` | done |
+| `Accessible::character_count` | method | 364 |  | `(Accessible).CharacterCount` | done |
+| `Accessible::caret_offset` | method | 371 |  | `(Accessible).CaretOffset` | done |
+| `Accessible::string_at_offset` | method | 378 |  | `(Accessible).StringAtOffset` | done |
+| `Accessible::text` | method | 389 |  | `(Accessible).Text` | done |
+| `Accessible::set_caret_offset` | method | 396 |  | `(Accessible).SetCaretOffset` | done |
+| `Accessible::text_attribute_value` | method | 403 |  | `(Accessible).TextAttributeValue` | done |
+| `Accessible::text_attributes` | method | 410 |  | `(Accessible).TextAttributes` | done |
+| `Accessible::default_text_attributes` | method | 420 |  | `(Accessible).DefaultTextAttributes` | done |
+| `Accessible::character_extents` | method | 427 |  | `(Accessible).CharacterExtents` | done |
+| `Accessible::offset_at_point` | method | 434 |  | `(Accessible).OffsetAtPoint` | done |
+| `Accessible::n_selections` | method | 441 |  | `(Accessible).NSelections` | done |
+| `Accessible::selection` | method | 448 |  | `(Accessible).Selection` | done |
+| `Accessible::add_selection` | method | 455 |  | `(Accessible).AddSelection` | done |
+| `Accessible::remove_selection` | method | 462 |  | `(Accessible).RemoveSelection` | done |
+| `Accessible::set_selection` | method | 469 |  | `(Accessible).SetSelection` | done |
+| `Accessible::range_extents` | method | 481 |  | `(Accessible).RangeExtents` | done |
+| `Accessible::text_attribute_run` | method | 493 |  | `(Accessible).TextAttributeRun` | done |
+| `Accessible::scroll_substring_to` | method | 504 |  | `(Accessible).ScrollSubstringTo` | done |
+| `Accessible::scroll_substring_to_point` | method | 516 |  | `(Accessible).ScrollSubstringToPoint` | done |
+| `Accessible::supports_value` | method | 532 |  | `(Accessible).SupportsValue` | done |
+| `Accessible::minimum_value` | method | 539 |  | `(Accessible).MinimumValue` | done |
+| `Accessible::maximum_value` | method | 546 |  | `(Accessible).MaximumValue` | done |
+| `Accessible::minimum_increment` | method | 553 |  | `(Accessible).MinimumIncrement` | done |
+| `Accessible::current_value` | method | 560 |  | `(Accessible).CurrentValue` | done |
+| `Accessible::set_current_value` | method | 567 |  | `(Accessible).SetCurrentValue` | done |
+| `Cache` | struct | 575 |  | `Cache` | done |
+| `Cache::new` | method | 580 |  | `NewCache` | done |
+| `Cache::items` | method | 584 |  | `(Cache).Items` | done |
+| `EventData` | enum | 596 |  | `EventData` | done |
+| `Event` | struct | 605 |  | `Event` | done |
+| `Event::new` | method | 614 |  | `NewEvent` | done |
+| `do_action` | fn | 796 |  | `doAction` | dev:D-ATSPITESTHELPERS |
+| `register_interfaces` | fn | 804 |  | `registerInterfaces` | dev:D-ATSPITESTHELPERS |
+| `unregister_interfaces` | fn | 805 |  | `unregisterInterfaces` | dev:D-ATSPITESTHELPERS |
+| `emit_event` | fn | 806 |  | `emitEvent` | dev:D-ATSPITESTHELPERS |
+| `register_interfaces` | fn | 816 |  | `registerInterfaces` | dev:D-ATSPITESTHELPERS |
+| `unregister_interfaces` | fn | 817 |  | `unregisterInterfaces` | dev:D-ATSPITESTHELPERS |
+| `emit_event` | fn | 818 |  | `emitEvent` | dev:D-ATSPITESTHELPERS |
+| `with_children` | fn | 821 |  | `withChildren` | dev:D-ATSPITESTHELPERS |
+| `initial_tree` | fn | 827 |  | `initialTree` | dev:D-ATSPITESTHELPERS |
+| `build_cache` | fn | 880 |  | `buildCache` | dev:D-ATSPITESTHELPERS |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `tests::cache_events_map_to_kind_strings` | test | 843 | test | `TestSimplified_CacheEventsMapToKindStrings` | blocked:M3-a11y-atspi-adapter|
-| `tests::items_prepends_application_root` | test | 895 | test | `TestSimplified_ItemsPrependsApplicationRoot` | blocked:M3-a11y-atspi-adapter|
+| `tests::cache_events_map_to_kind_strings` | test | 843 | test | `TestSimplified_CacheEventsMapToKindStrings` | done |
+| `tests::items_prepends_application_root` | test | 895 | test | `TestSimplified_ItemsPrependsApplicationRoot` | done |
 
 ## accesskit_atspi_common-0.19.1/src/lib.rs
 
@@ -490,12 +492,12 @@ Go target: `a11y/atspi/`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `pub use accesskit_consumer::NodeId` | use | 20 |  | `NodeID` | blocked:M3-a11y-atspi-adapter |
-| `pub use action::*, callback::AdapterCallback, error::*, events::*, node::{CacheNode, NodeIdOrRoot, PlatformNode, PlatformRoot}, rect::*, util::WindowBounds` | use | 25 |  | `PlatformNode` | blocked:M3-a11y-atspi-adapter |
-| `pub use atspi_common::{CoordType, Granularity, InterfaceSet, Layer, RelationType, Role, ScrollType, State, StateSet}` | use | 21 |  | `Role` | blocked:M3-a11y-atspi-adapter |
-| `pub use adapter::{Adapter, next_adapter_id}` | use | 26 |  | `NextAdapterID` | blocked:M3-a11y-atspi-adapter |
-| `pub use context::{ActionHandlerNoMut, ActionHandlerWrapper, AppContext}` | use | 28 |  | `ActionHandlerWrapper` | blocked:M3-a11y-atspi-adapter |
-| `mod simplified` (`simplified-api` feature) | mod | 16 | feature = "simplified-api" | `simplified` | blocked:M3-a11y-atspi-adapter |
+| `pub use accesskit_consumer::NodeId` | use | 20 |  | `NodeID` | done |
+| `pub use action::*, callback::AdapterCallback, error::*, events::*, node::{CacheNode, NodeIdOrRoot, PlatformNode, PlatformRoot}, rect::*, util::WindowBounds` | use | 25 |  | `PlatformNode` | done |
+| `pub use atspi_common::{CoordType, Granularity, InterfaceSet, Layer, RelationType, Role, ScrollType, State, StateSet}` | use | 21 |  | `Role` | done |
+| `pub use adapter::{Adapter, next_adapter_id}` | use | 26 |  | `NextAdapterID` | done |
+| `pub use context::{ActionHandlerNoMut, ActionHandlerWrapper, AppContext}` | use | 28 |  | `ActionHandlerWrapper` | done |
+| `mod simplified` (`simplified-api` feature) | mod | 16 | feature = "simplified-api" | `simplified` | dev:D-ATSPISIMPLIFIED |
 ## Deviations registered here
 
 | Id | Meaning | Owner |
@@ -503,3 +505,5 @@ Go target: `a11y/atspi/`
 | `D-ATSPIRESULT` | The crate's `Result<T>` alias has no Go counterpart; functions return `(T, error)` with an `Error` value. | M3-a11y-atspi-node |
 | `D-ATSPICOMMON` | The atspi-common 0.13.0 types the crate uses (`Role`, `State`, `StateSet`, `Interface`, `InterfaceSet`, `CoordType`, `Granularity`, `Layer`, `ScrollType`, `Politeness`, `RelationType`) are ported into `atspi_common.go` with their discriminants, bit order and names; their serde / zvariant impls belong to the D-Bus layer. | M3-a11y-atspi-node |
 | `D-ATSPIWEAK` | `Weak` upgrades use `weak.Pointer`, which only fails after garbage collection, so `Context` also carries a `released` flag the adapter sets where upstream drops its `Arc<Context>`; `PlatformNode` equality is `Equal` / `Key` (adapter ID and node ID) because Go `==` would also compare the weak pointer. | M3-a11y-atspi-node |
+| `D-ATSPISIMPLIFIED` | The `simplified-api` feature module is the always-built package `a11y/atspi/simplified`; a separate package keeps its `Event` struct apart from events.rs `Event`. `Accessible` is a struct with `AccessibleNode` / `AccessibleRoot` constructors and `Equal`; `Option<Accessible>` returns are `(Accessible, bool, error)`. | M3-a11y-atspi-adapter |
+| `D-ATSPITESTHELPERS` | Helper fns and trait impls inside upstream `mod tests` live in `_test.go` files (`adapter_test.go`, `simplified/simplified_test.go`) rather than in the package, so they have no production symbol. | M3-a11y-atspi-adapter |

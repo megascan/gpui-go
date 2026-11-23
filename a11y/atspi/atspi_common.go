@@ -569,6 +569,16 @@ func (s InterfaceSet) Contains(other Interface) bool {
 	return s.bits&uint32(other) == uint32(other)
 }
 
+// Intersection returns the flags in both s and other (upstream's BitAnd).
+func (s InterfaceSet) Intersection(other InterfaceSet) InterfaceSet {
+	return InterfaceSet{bits: s.bits & other.bits}
+}
+
+// SymmetricDifference returns the flags in exactly one of s and other (upstream's BitXor).
+func (s InterfaceSet) SymmetricDifference(other InterfaceSet) InterfaceSet {
+	return InterfaceSet{bits: s.bits ^ other.bits}
+}
+
 // Insert adds the flags in other.
 func (s *InterfaceSet) Insert(other Interface) {
 	s.bits |= uint32(other)
