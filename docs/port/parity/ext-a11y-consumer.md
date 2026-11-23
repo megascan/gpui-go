@@ -6,7 +6,7 @@ Status values: `todo`, `done`, `dev:<id>`, `n/a:<id>`, `blocked:<stage>`. M3-a11
 
 Notes on the port:
 
-- `stubs.go` holds the `text.rs` items `node.rs` needs: `text_node_filter`, `Node::text_runs` and `Node::supports_text_ranges` (ported), and a panicking `writeDocumentText` standing in for `document_range().write_text(..)` in `Node::write_value`. M3-a11y-consumer-text moves them into `text.go`, replaces `writeDocumentText` with `DocumentRange().WriteText` and deletes `stubs.go`.
+- The `text.rs` items `node.rs` needs (`text_node_filter`, `Node::text_runs`, `Node::supports_text_ranges`, `document_range().write_text(..)`) live in `text.go`; the package has no `stubs.go`.
 - `hashbrown` maps and sets are Go maps; both iterate in unspecified order, so change-handler call order stays unspecified as upstream.
 - `Option<&Node>` handler arguments are `*Node` (nil for None); `Option<Node>` returns are `(Node, bool)`.
 - `ChangeHandler` methods take `*Node`; `&mut impl ChangeHandler` parameters take the interface.
@@ -23,7 +23,7 @@ Go target: `a11y/consumer/`
 | `pub use tree::Tree` | use | 11 |  | `Tree` | done |
 | `pub use node::{Node, NodeId}` | use | 14 |  | `Node` | done |
 | `pub use filters::{FilterResult, common_filter, common_filter_with_root_exception}` | use | 17 |  | `FilterResult` | done |
-| `pub use text::{Position as TextPosition, Range as TextRange, RangePropertyValue as TextRangePropertyValue, WeakRange as WeakTextRange}` | use | 22 |  | `TextPosition` | blocked:M3-a11y-consumer-text |
+| `pub use text::{Position as TextPosition, Range as TextRange, RangePropertyValue as TextRangePropertyValue, WeakRange as WeakTextRange}` | use | 22 |  | `TextPosition` | done |
 
 ## src/lib.rs: test fixtures
 
@@ -407,6 +407,266 @@ Go target: `a11y/consumer/filters.go`, tests in `filters_test.go`.
 | `clipped_children_included_below` | test | 384 |  | `TestFilters_ClippedChildrenIncludedBelow` | done |
 | `clipped_children_excluded_below` | test | 390 |  | `TestFilters_ClippedChildrenExcludedBelow` | done |
 | `graft_node` | test | 397 |  | `TestFilters_GraftNode` | done |
+
+## src/text.rs
+
+Go target: `a11y/consumer/text.go`, tests in `text_test.go`. `Position`, `Range` and `WeakRange` keep upstream's names; the crate-root aliases are Go type aliases. `RangePropertyValue::map` (on the `Option<T>` instantiation, N7) is `RangePropertyValueMap`. The macro-generated property modules become `TestText_<Property>_<Test>`; their row line is the test's line inside the macro.
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `InnerPosition` | struct | 16 |  | `innerPosition` | done |
+| `InnerPosition::upgrade` | assoc-fn | 22 |  | `upgradeInnerPosition` | done |
+| `InnerPosition::clamped_upgrade` | assoc-fn | 37 |  | `clampedUpgradeInnerPosition` | done |
+| `InnerPosition::is_run_start` | method | 55 |  | `(innerPosition).isRunStart` | done |
+| `InnerPosition::is_line_start` | method | 59 |  | `(innerPosition).isLineStart` | done |
+| `InnerPosition::is_run_end` | method | 63 |  | `(innerPosition).isRunEnd` | done |
+| `InnerPosition::is_line_end` | method | 67 |  | `(innerPosition).isLineEnd` | done |
+| `InnerPosition::is_paragraph_end` | method | 71 |  | `(innerPosition).isParagraphEnd` | done |
+| `InnerPosition::is_document_start` | method | 75 |  | `(innerPosition).isDocumentStart` | done |
+| `InnerPosition::is_document_end` | method | 79 |  | `(innerPosition).isDocumentEnd` | done |
+| `InnerPosition::biased_to_start` | method | 83 |  | `(innerPosition).biasedToStart` | done |
+| `InnerPosition::biased_to_end` | method | 95 |  | `(innerPosition).biasedToEnd` | done |
+| `InnerPosition::comparable` | method | 107 |  | `(innerPosition).comparable` | done |
+| `InnerPosition::line_start` | method | 115 |  | `(innerPosition).lineStart` | done |
+| `InnerPosition::line_end` | method | 129 |  | `(innerPosition).lineEnd` | done |
+| `InnerPosition::downgrade` | method | 143 |  | `(innerPosition).downgrade` | done |
+| `impl PartialEq for InnerPosition` | trait-impl | 152 |  | `(innerPosition).eq` | done |
+| `Position` | struct | 161 |  | `Position` | done |
+| `Position::to_raw` | method | 167 |  | `(Position).ToRaw` | done |
+| `Position::inner_node` | method | 171 |  | `(Position).InnerNode` | done |
+| `Position::is_format_start` | method | 175 |  | `(Position).IsFormatStart` | done |
+| `Position::is_word_start` | method | 188 |  | `(Position).IsWordStart` | done |
+| `Position::is_line_start` | method | 199 |  | `(Position).IsLineStart` | done |
+| `Position::is_line_end` | method | 203 |  | `(Position).IsLineEnd` | done |
+| `Position::is_paragraph_start` | method | 207 |  | `(Position).IsParagraphStart` | done |
+| `Position::is_paragraph_end` | method | 213 |  | `(Position).IsParagraphEnd` | done |
+| `Position::is_paragraph_separator` | method | 217 |  | `(Position).IsParagraphSeparator` | done |
+| `Position::is_page_start` | method | 225 |  | `(Position).IsPageStart` | done |
+| `Position::is_document_start` | method | 229 |  | `(Position).IsDocumentStart` | done |
+| `Position::is_document_end` | method | 233 |  | `(Position).IsDocumentEnd` | done |
+| `Position::to_degenerate_range` | method | 237 |  | `(Position).ToDegenerateRange` | done |
+| `Position::to_global_usv_index` | method | 241 |  | `(Position).ToGlobalUsvIndex` | done |
+| `Position::to_global_utf16_index` | method | 259 |  | `(Position).ToGlobalUTF16Index` | done |
+| `Position::to_line_index` | method | 281 |  | `(Position).ToLineIndex` | done |
+| `Position::biased_to_start` | method | 294 |  | `(Position).BiasedToStart` | done |
+| `Position::biased_to_end` | method | 301 |  | `(Position).BiasedToEnd` | done |
+| `Position::forward_to_character_start` | method | 308 |  | `(Position).ForwardToCharacterStart` | done |
+| `Position::forward_to_character_end` | method | 320 |  | `(Position).ForwardToCharacterEnd` | done |
+| `Position::backward_to_character_start` | method | 331 |  | `(Position).BackwardToCharacterStart` | done |
+| `Position::forward_to_format_start` | method | 343 |  | `(Position).ForwardToFormatStart` | done |
+| `Position::forward_to_format_end` | method | 358 |  | `(Position).ForwardToFormatEnd` | done |
+| `Position::backward_to_format_start` | method | 362 |  | `(Position).BackwardToFormatStart` | done |
+| `Position::forward_to_word_start` | method | 390 |  | `(Position).ForwardToWordStart` | done |
+| `Position::forward_to_word_end` | method | 434 |  | `(Position).ForwardToWordEnd` | done |
+| `Position::backward_to_word_start` | method | 438 |  | `(Position).BackwardToWordStart` | done |
+| `Position::forward_to_line_start` | method | 493 |  | `(Position).ForwardToLineStart` | done |
+| `Position::forward_to_line_end` | method | 500 |  | `(Position).ForwardToLineEnd` | done |
+| `Position::backward_to_line_start` | method | 508 |  | `(Position).BackwardToLineStart` | done |
+| `Position::forward_to_paragraph_start` | method | 516 |  | `(Position).ForwardToParagraphStart` | done |
+| `Position::forward_to_paragraph_end` | method | 532 |  | `(Position).ForwardToParagraphEnd` | done |
+| `Position::backward_to_paragraph_start` | method | 543 |  | `(Position).BackwardToParagraphStart` | done |
+| `Position::forward_to_page_start` | method | 554 |  | `(Position).ForwardToPageStart` | done |
+| `Position::forward_to_page_end` | method | 558 |  | `(Position).ForwardToPageEnd` | done |
+| `Position::backward_to_page_start` | method | 562 |  | `(Position).BackwardToPageStart` | done |
+| `Position::document_end` | method | 566 |  | `(Position).DocumentEnd` | done |
+| `Position::document_start` | method | 570 |  | `(Position).DocumentStart` | done |
+| `impl PartialEq for Position` | trait-impl | 575 |  | `(Position).Equal` | done |
+| `impl PartialOrd for Position` | trait-impl | 583 |  | `(Position).PartialCmp` | done |
+| `RangePropertyValue` | enum | 595 |  | `RangePropertyValue` | done |
+| `RangePropertyValue::map` | method | 601 |  | `RangePropertyValueMap` | done |
+| `Range` | struct | 613 |  | `Range` | done |
+| `Range::new` | assoc-fn | 620 |  | `newRange` | done |
+| `Range::node` | method | 627 |  | `(Range).Node` | done |
+| `Range::start` | method | 631 |  | `(Range).Start` | done |
+| `Range::end` | method | 638 |  | `(Range).End` | done |
+| `Range::is_degenerate` | method | 645 |  | `(Range).IsDegenerate` | done |
+| `Range::walk` | method | 649 |  | `(Range).walk` | done |
+| `Range::traverse_text` | method | 680 |  | `(Range).TraverseText` | done |
+| `Range::write_text` | method | 719 |  | `(Range).WriteText` | done |
+| `Range::text` | method | 727 |  | `(Range).Text` | done |
+| `Range::bounding_boxes` | method | 740 |  | `(Range).BoundingBoxes` | done |
+| `Range::fetch_property` | method | 823 |  | `fetchProperty` | done |
+| `Range::fix_start_bias` | method | 842 |  | `(Range).fixStartBias` | done |
+| `Range::set_start` | method | 848 |  | `(Range).SetStart` | done |
+| `Range::set_end` | method | 859 |  | `(Range).SetEnd` | done |
+| `Range::to_text_selection` | method | 870 |  | `(Range).ToTextSelection` | done |
+| `Range::downgrade` | method | 877 |  | `(Range).Downgrade` | done |
+| `impl PartialEq for Range` | trait-impl | 888 |  | `(Range).Equal` | done |
+| `WeakRange` | struct | 897 |  | `WeakRange` | done |
+| `derive(Clone, PartialEq) for WeakRange` | trait-impl | 896 |  | `(WeakRange).Equal` | done |
+| `WeakRange::node_id` | method | 906 |  | `(WeakRange).NodeID` | done |
+| `WeakRange::start_comparable` | method | 910 |  | `(WeakRange).StartComparable` | done |
+| `WeakRange::end_comparable` | method | 914 |  | `(WeakRange).EndComparable` | done |
+| `WeakRange::upgrade_node` | method | 918 |  | `(WeakRange).UpgradeNode` | done |
+| `WeakRange::upgrade` | method | 924 |  | `(WeakRange).Upgrade` | done |
+| `text_node_filter` | fn | 932 |  | `textNodeFilter` | done |
+| `character_index_at_point` | fn | 940 |  | `characterIndexAtPoint` | done |
+| `Node::text_direction` | method | 1200 |  | `(Node).TextDirection` | done |
+| `Node::font_family` | method | 1200 |  | `(Node).FontFamily` | done |
+| `Node::language` | method | 1200 |  | `(Node).Language` | done |
+| `Node::font_size` | method | 1200 |  | `(Node).FontSize` | done |
+| `Node::font_weight` | method | 1200 |  | `(Node).FontWeight` | done |
+| `Node::background_color` | method | 1200 |  | `(Node).BackgroundColor` | done |
+| `Node::foreground_color` | method | 1200 |  | `(Node).ForegroundColor` | done |
+| `Node::overline` | method | 1200 |  | `(Node).Overline` | done |
+| `Node::strikethrough` | method | 1200 |  | `(Node).Strikethrough` | done |
+| `Node::underline` | method | 1200 |  | `(Node).Underline` | done |
+| `Node::text_align` | method | 1200 |  | `(Node).TextAlign` | done |
+| `Node::vertical_offset` | method | 1200 |  | `(Node).VerticalOffset` | done |
+| `Position::text_direction` | method | 1200 |  | `(Position).TextDirection` | done |
+| `Position::font_family` | method | 1200 |  | `(Position).FontFamily` | done |
+| `Position::language` | method | 1200 |  | `(Position).Language` | done |
+| `Position::font_size` | method | 1200 |  | `(Position).FontSize` | done |
+| `Position::font_weight` | method | 1200 |  | `(Position).FontWeight` | done |
+| `Position::background_color` | method | 1200 |  | `(Position).BackgroundColor` | done |
+| `Position::foreground_color` | method | 1200 |  | `(Position).ForegroundColor` | done |
+| `Position::overline` | method | 1200 |  | `(Position).Overline` | done |
+| `Position::strikethrough` | method | 1200 |  | `(Position).Strikethrough` | done |
+| `Position::underline` | method | 1200 |  | `(Position).Underline` | done |
+| `Position::text_align` | method | 1200 |  | `(Position).TextAlign` | done |
+| `Position::vertical_offset` | method | 1200 |  | `(Position).VerticalOffset` | done |
+| `Range::text_direction` | method | 1200 |  | `(Range).TextDirection` | done |
+| `Range::font_family` | method | 1200 |  | `(Range).FontFamily` | done |
+| `Range::language` | method | 1200 |  | `(Range).Language` | done |
+| `Range::font_size` | method | 1200 |  | `(Range).FontSize` | done |
+| `Range::font_weight` | method | 1200 |  | `(Range).FontWeight` | done |
+| `Range::background_color` | method | 1200 |  | `(Range).BackgroundColor` | done |
+| `Range::foreground_color` | method | 1200 |  | `(Range).ForegroundColor` | done |
+| `Range::overline` | method | 1200 |  | `(Range).Overline` | done |
+| `Range::strikethrough` | method | 1200 |  | `(Range).Strikethrough` | done |
+| `Range::underline` | method | 1200 |  | `(Range).Underline` | done |
+| `Range::text_align` | method | 1200 |  | `(Range).TextAlign` | done |
+| `Range::vertical_offset` | method | 1200 |  | `(Range).VerticalOffset` | done |
+| `Node::is_italic` | method | 1361 |  | `(Node).IsItalic` | done |
+| `Position::is_italic` | method | 1361 |  | `(Position).IsItalic` | done |
+| `Range::is_italic` | method | 1361 |  | `(Range).IsItalic` | done |
+| `Node::text_attributes_differ` | method | 1366 |  | `(Node).textAttributesDiffer` | done |
+| `Node::text_runs` | method | 1381 |  | `(Node).textRuns` | done |
+| `Node::following_text_runs` | method | 1386 |  | `(Node).followingTextRuns` | done |
+| `Node::preceding_text_runs` | method | 1394 |  | `(Node).precedingTextRuns` | done |
+| `Node::supports_text_ranges` | method | 1402 |  | `(Node).SupportsTextRanges` | done |
+| `Node::document_start_inner` | method | 1408 |  | `(Node).documentStartInner` | done |
+| `Node::document_start` | method | 1416 |  | `(Node).DocumentStart` | done |
+| `Node::document_end_inner` | method | 1423 |  | `(Node).documentEndInner` | done |
+| `Node::document_end` | method | 1431 |  | `(Node).DocumentEnd` | done |
+| `Node::document_range` | method | 1438 |  | `(Node).DocumentRange` | done |
+| `Node::has_text_selection` | method | 1444 |  | `(Node).HasTextSelection` | done |
+| `Node::text_selection` | method | 1448 |  | `(Node).TextSelection` | done |
+| `Node::text_selection_anchor` | method | 1459 |  | `(Node).TextSelectionAnchor` | done |
+| `Node::text_selection_focus` | method | 1471 |  | `(Node).TextSelectionFocus` | done |
+| `Node::text_position_at_point` | method | 1485 |  | `(Node).TextPositionAtPoint` | done |
+| `Node::line_range_from_index` | method | 1548 |  | `(Node).LineRangeFromIndex` | done |
+| `Node::text_position_from_global_usv_index` | method | 1571 |  | `(Node).TextPositionFromGlobalUsvIndex` | done |
+| `Node::text_position_from_global_utf16_index` | method | 1610 |  | `(Node).TextPositionFromGlobalUTF16Index` | done |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `tests::TEST_TEXT_DECORATION_1` | fixture | 1658 |  | `testTextDecoration1` | done |
+| `tests::TEST_TEXT_DECORATION_2` | fixture | 1667 |  | `testTextDecoration2` | done |
+| `tests::TEST_TEXT_DECORATION_3` | fixture | 1676 |  | `testTextDecoration3` | done |
+| `tests::TEST_TEXT_DECORATION_4` | fixture | 1685 |  | `testTextDecoration4` | done |
+| `tests::main_multiline_tree` | fixture | 1697 |  | `mainMultilineTree` | done |
+| `tests::multiline_end_selection` | fixture | 1916 |  | `multilineEndSelection` | done |
+| `tests::multiline_past_end_selection` | fixture | 1931 |  | `multilinePastEndSelection` | done |
+| `tests::multiline_wrapped_line_end_selection` | fixture | 1946 |  | `multilineWrappedLineEndSelection` | done |
+| `tests::multiline_first_line_middle_selection` | fixture | 1961 |  | `multilineFirstLineMiddleSelection` | done |
+| `tests::multiline_second_line_middle_selection` | fixture | 1976 |  | `multilineSecondLineMiddleSelection` | done |
+| `supports_text_ranges` | test | 1991 |  | `TestText_SupportsTextRanges` | done |
+| `multiline_document_range` | test | 2009 |  | `TestText_MultilineDocumentRange` | done |
+| `multiline_document_range_to_first_format_change` | test | 2083 |  | `TestText_MultilineDocumentRangeToFirstFormatChange` | done |
+| `multiline_document_range_from_last_format_change` | test | 2113 |  | `TestText_MultilineDocumentRangeFromLastFormatChange` | done |
+| `multiline_end_degenerate_range` | test | 2155 |  | `TestText_MultilineEndDegenerateRange` | done |
+| `multiline_wrapped_line_end_range` | test | 2181 |  | `TestText_MultilineWrappedLineEndRange` | done |
+| `multiline_find_line_ends_from_middle` | test | 2243 |  | `TestText_MultilineFindLineEndsFromMiddle` | done |
+| `multiline_find_wrapped_line_ends_from_middle` | test | 2289 |  | `TestText_MultilineFindWrappedLineEndsFromMiddle` | done |
+| `multiline_find_paragraph_ends_from_middle` | test | 2321 |  | `TestText_MultilineFindParagraphEndsFromMiddle` | done |
+| `multiline_find_format_ends_from_middle` | test | 2379 |  | `TestText_MultilineFindFormatEndsFromMiddle` | done |
+| `multiline_find_word_ends_from_middle` | test | 2407 |  | `TestText_MultilineFindWordEndsFromMiddle` | done |
+| `text_position_at_point` | test | 2447 |  | `TestText_TextPositionAtPoint` | done |
+| `to_global_usv_index` | test | 2539 |  | `TestText_ToGlobalUsvIndex` | done |
+| `to_global_utf16_index` | test | 2564 |  | `TestText_ToGlobalUTF16Index` | done |
+| `to_line_index` | test | 2589 |  | `TestText_ToLineIndex` | done |
+| `line_range_from_index` | test | 2615 |  | `TestText_LineRangeFromIndex` | done |
+| `text_position_from_global_usv_index` | test | 2654 |  | `TestText_TextPositionFromGlobalUsvIndex` | done |
+| `text_position_from_global_utf16_index` | test | 2733 |  | `TestText_TextPositionFromGlobalUTF16Index` | done |
+| `multiline_selection_clamping` | test | 2812 |  | `TestText_MultilineSelectionClamping` | done |
+| `range_property_value_map` | test | 2820 |  | `TestText_RangePropertyValueMap` | done |
+| `text_direction::directly_set` | test | 1004 |  | `TestText_TextDirection_DirectlySet` | done |
+| `text_direction::set_on_parent` | test | 1033 |  | `TestText_TextDirection_SetOnParent` | done |
+| `text_direction::only_child_overrides_parent` | test | 1062 |  | `TestText_TextDirection_OnlyChildOverridesParent` | done |
+| `text_direction::unset` | test | 1093 |  | `TestText_TextDirection_Unset` | done |
+| `text_direction::mixed_some_and_none` | test | 1121 |  | `TestText_TextDirection_MixedSomeAndNone` | done |
+| `text_direction::mixed_one_child_overrides_parent` | test | 1154 |  | `TestText_TextDirection_MixedOneChildOverridesParent` | done |
+| `font_family::directly_set` | test | 1004 |  | `TestText_FontFamily_DirectlySet` | done |
+| `font_family::set_on_parent` | test | 1033 |  | `TestText_FontFamily_SetOnParent` | done |
+| `font_family::only_child_overrides_parent` | test | 1062 |  | `TestText_FontFamily_OnlyChildOverridesParent` | done |
+| `font_family::unset` | test | 1093 |  | `TestText_FontFamily_Unset` | done |
+| `font_family::mixed_some_and_none` | test | 1121 |  | `TestText_FontFamily_MixedSomeAndNone` | done |
+| `font_family::mixed_one_child_overrides_parent` | test | 1154 |  | `TestText_FontFamily_MixedOneChildOverridesParent` | done |
+| `language::directly_set` | test | 1004 |  | `TestText_Language_DirectlySet` | done |
+| `language::set_on_parent` | test | 1033 |  | `TestText_Language_SetOnParent` | done |
+| `language::only_child_overrides_parent` | test | 1062 |  | `TestText_Language_OnlyChildOverridesParent` | done |
+| `language::unset` | test | 1093 |  | `TestText_Language_Unset` | done |
+| `language::mixed_some_and_none` | test | 1121 |  | `TestText_Language_MixedSomeAndNone` | done |
+| `language::mixed_one_child_overrides_parent` | test | 1154 |  | `TestText_Language_MixedOneChildOverridesParent` | done |
+| `font_size::directly_set` | test | 1004 |  | `TestText_FontSize_DirectlySet` | done |
+| `font_size::set_on_parent` | test | 1033 |  | `TestText_FontSize_SetOnParent` | done |
+| `font_size::only_child_overrides_parent` | test | 1062 |  | `TestText_FontSize_OnlyChildOverridesParent` | done |
+| `font_size::unset` | test | 1093 |  | `TestText_FontSize_Unset` | done |
+| `font_size::mixed_some_and_none` | test | 1121 |  | `TestText_FontSize_MixedSomeAndNone` | done |
+| `font_size::mixed_one_child_overrides_parent` | test | 1154 |  | `TestText_FontSize_MixedOneChildOverridesParent` | done |
+| `font_weight::directly_set` | test | 1004 |  | `TestText_FontWeight_DirectlySet` | done |
+| `font_weight::set_on_parent` | test | 1033 |  | `TestText_FontWeight_SetOnParent` | done |
+| `font_weight::only_child_overrides_parent` | test | 1062 |  | `TestText_FontWeight_OnlyChildOverridesParent` | done |
+| `font_weight::unset` | test | 1093 |  | `TestText_FontWeight_Unset` | done |
+| `font_weight::mixed_some_and_none` | test | 1121 |  | `TestText_FontWeight_MixedSomeAndNone` | done |
+| `font_weight::mixed_one_child_overrides_parent` | test | 1154 |  | `TestText_FontWeight_MixedOneChildOverridesParent` | done |
+| `background_color::directly_set` | test | 1004 |  | `TestText_BackgroundColor_DirectlySet` | done |
+| `background_color::set_on_parent` | test | 1033 |  | `TestText_BackgroundColor_SetOnParent` | done |
+| `background_color::only_child_overrides_parent` | test | 1062 |  | `TestText_BackgroundColor_OnlyChildOverridesParent` | done |
+| `background_color::unset` | test | 1093 |  | `TestText_BackgroundColor_Unset` | done |
+| `background_color::mixed_some_and_none` | test | 1121 |  | `TestText_BackgroundColor_MixedSomeAndNone` | done |
+| `background_color::mixed_one_child_overrides_parent` | test | 1154 |  | `TestText_BackgroundColor_MixedOneChildOverridesParent` | done |
+| `foreground_color::directly_set` | test | 1004 |  | `TestText_ForegroundColor_DirectlySet` | done |
+| `foreground_color::set_on_parent` | test | 1033 |  | `TestText_ForegroundColor_SetOnParent` | done |
+| `foreground_color::only_child_overrides_parent` | test | 1062 |  | `TestText_ForegroundColor_OnlyChildOverridesParent` | done |
+| `foreground_color::unset` | test | 1093 |  | `TestText_ForegroundColor_Unset` | done |
+| `foreground_color::mixed_some_and_none` | test | 1121 |  | `TestText_ForegroundColor_MixedSomeAndNone` | done |
+| `foreground_color::mixed_one_child_overrides_parent` | test | 1154 |  | `TestText_ForegroundColor_MixedOneChildOverridesParent` | done |
+| `overline::directly_set` | test | 1004 |  | `TestText_Overline_DirectlySet` | done |
+| `overline::set_on_parent` | test | 1033 |  | `TestText_Overline_SetOnParent` | done |
+| `overline::only_child_overrides_parent` | test | 1062 |  | `TestText_Overline_OnlyChildOverridesParent` | done |
+| `overline::unset` | test | 1093 |  | `TestText_Overline_Unset` | done |
+| `overline::mixed_some_and_none` | test | 1121 |  | `TestText_Overline_MixedSomeAndNone` | done |
+| `overline::mixed_one_child_overrides_parent` | test | 1154 |  | `TestText_Overline_MixedOneChildOverridesParent` | done |
+| `strikethrough::directly_set` | test | 1004 |  | `TestText_Strikethrough_DirectlySet` | done |
+| `strikethrough::set_on_parent` | test | 1033 |  | `TestText_Strikethrough_SetOnParent` | done |
+| `strikethrough::only_child_overrides_parent` | test | 1062 |  | `TestText_Strikethrough_OnlyChildOverridesParent` | done |
+| `strikethrough::unset` | test | 1093 |  | `TestText_Strikethrough_Unset` | done |
+| `strikethrough::mixed_some_and_none` | test | 1121 |  | `TestText_Strikethrough_MixedSomeAndNone` | done |
+| `strikethrough::mixed_one_child_overrides_parent` | test | 1154 |  | `TestText_Strikethrough_MixedOneChildOverridesParent` | done |
+| `underline::directly_set` | test | 1004 |  | `TestText_Underline_DirectlySet` | done |
+| `underline::set_on_parent` | test | 1033 |  | `TestText_Underline_SetOnParent` | done |
+| `underline::only_child_overrides_parent` | test | 1062 |  | `TestText_Underline_OnlyChildOverridesParent` | done |
+| `underline::unset` | test | 1093 |  | `TestText_Underline_Unset` | done |
+| `underline::mixed_some_and_none` | test | 1121 |  | `TestText_Underline_MixedSomeAndNone` | done |
+| `underline::mixed_one_child_overrides_parent` | test | 1154 |  | `TestText_Underline_MixedOneChildOverridesParent` | done |
+| `text_align::directly_set` | test | 1004 |  | `TestText_TextAlign_DirectlySet` | done |
+| `text_align::set_on_parent` | test | 1033 |  | `TestText_TextAlign_SetOnParent` | done |
+| `text_align::only_child_overrides_parent` | test | 1062 |  | `TestText_TextAlign_OnlyChildOverridesParent` | done |
+| `text_align::unset` | test | 1093 |  | `TestText_TextAlign_Unset` | done |
+| `text_align::mixed_some_and_none` | test | 1121 |  | `TestText_TextAlign_MixedSomeAndNone` | done |
+| `text_align::mixed_one_child_overrides_parent` | test | 1154 |  | `TestText_TextAlign_MixedOneChildOverridesParent` | done |
+| `vertical_offset::directly_set` | test | 1004 |  | `TestText_VerticalOffset_DirectlySet` | done |
+| `vertical_offset::set_on_parent` | test | 1033 |  | `TestText_VerticalOffset_SetOnParent` | done |
+| `vertical_offset::only_child_overrides_parent` | test | 1062 |  | `TestText_VerticalOffset_OnlyChildOverridesParent` | done |
+| `vertical_offset::unset` | test | 1093 |  | `TestText_VerticalOffset_Unset` | done |
+| `vertical_offset::mixed_some_and_none` | test | 1121 |  | `TestText_VerticalOffset_MixedSomeAndNone` | done |
+| `vertical_offset::mixed_one_child_overrides_parent` | test | 1154 |  | `TestText_VerticalOffset_MixedOneChildOverridesParent` | done |
+| `is_italic::directly_set` | test | 1239 |  | `TestText_IsItalic_DirectlySet` | done |
+| `is_italic::set_on_parent` | test | 1268 |  | `TestText_IsItalic_SetOnParent` | done |
+| `is_italic::unset` | test | 1297 |  | `TestText_IsItalic_Unset` | done |
+| `is_italic::mixed` | test | 1325 |  | `TestText_IsItalic_Mixed` | done |
 
 ## Deviations registered here
 

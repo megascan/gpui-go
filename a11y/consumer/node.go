@@ -897,7 +897,7 @@ func (n Node) WriteValue(writer io.StringWriter) (bool, error) {
 		return true, nil
 	}
 	if n.SupportsTextRanges() && !n.IsMultiline() {
-		if err := n.writeDocumentText(writer); err != nil {
+		if err := n.DocumentRange().WriteText(writer); err != nil {
 			return false, err
 		}
 		return true, nil
