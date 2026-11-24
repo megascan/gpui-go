@@ -18,10 +18,10 @@ Go target: `platform/apple/dispatcher.go` (package `apple`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `AppleDispatcher` | struct | 20 |  | `AppleDispatcher` | todo |
-| `AppleDispatcher::new` | assoc-fn | 23 |  | `NewAppleDispatcher` | todo |
-| `AppleActivity` | struct | 84 |  | `AppleActivity` | todo |
-| `AppleActivity::begin` | assoc-fn | 92 |  | `AppleActivityBegin` | todo |
+| `AppleDispatcher` | struct | 20 |  | `AppleDispatcher` | done |
+| `AppleDispatcher::new` | assoc-fn | 23 |  | `NewAppleDispatcher` | done |
+| `AppleActivity` | struct | 84 |  | `AppleActivity` | done |
+| `AppleActivity::begin` | assoc-fn | 92 |  | `AppleActivityBegin` | done |
 
 ## gpui_apple/src/display_link.rs
 
@@ -29,11 +29,11 @@ Go target: `platform/apple/display_link.go` (package `apple`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `MetalFrameSource` | struct | 52 |  | `MetalFrameSource` | todo |
-| `MetalFrameSource::is_available` | assoc-fn | 61 |  | `MetalFrameSourceIsAvailable` | todo |
-| `MetalFrameSource::new` | assoc-fn | 67 |  | `NewMetalFrameSource` | todo |
-| `MetalFrameSource::set_paused` | method | 91 |  | `(MetalFrameSource).SetPaused` | todo |
-| `MetalFrameSource::is_paused` | method | 95 |  | `(MetalFrameSource).IsPaused` | todo |
+| `MetalFrameSource` | struct | 52 |  | `MetalFrameSource` | done |
+| `MetalFrameSource::is_available` | assoc-fn | 61 |  | `MetalFrameSourceIsAvailable` | done |
+| `MetalFrameSource::new` | assoc-fn | 67 |  | `NewMetalFrameSource` | done |
+| `MetalFrameSource::set_paused` | method | 91 |  | `(MetalFrameSource).SetPaused` | done |
+| `MetalFrameSource::is_paused` | method | 95 |  | `(MetalFrameSource).IsPaused` | done |
 
 ## gpui_apple/src/gpui_apple.rs
 
@@ -41,11 +41,11 @@ Go target: `platform/apple/gpui_apple.go` (package `apple`), tests in `gpui_appl
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `main_thread_marker` | fn | 27 |  | `MainThreadMarker` | todo |
+| `main_thread_marker` | fn | 27 |  | `MainThreadMarker` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `main_thread_marker_rejects_background_threads` | test | 39 |  | `TestGpuiApple_MainThreadMarkerRejectsBackgroundThreads` | todo |
+| `main_thread_marker_rejects_background_threads` | test | 39 |  | `TestGpuiApple_MainThreadMarkerRejectsBackgroundThreads` | done |
 
 ## gpui_apple/src/keychain.rs
 
@@ -53,19 +53,19 @@ Go target: `platform/apple/keychain.go` (package `apple`), tests in `keychain_te
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `KeychainOperation` | enum | 10 |  | `KeychainOperation` | todo |
-| `KeychainError` | enum | 18 |  | `KeychainError` | todo |
-| `write_credentials` | fn | 30 |  | `WriteCredentials` | todo |
-| `write_credentials_if_not_exists` | fn | 70 |  | `WriteCredentialsIfNotExists` | todo |
-| `read_credentials` | fn | 102 |  | `ReadCredentials` | todo |
-| `delete_credentials` | fn | 168 |  | `DeleteCredentials` | todo |
+| `KeychainOperation` | enum | 10 |  | `KeychainOperation` | done |
+| `KeychainError` | enum | 18 |  | `KeychainError` | done |
+| `write_credentials` | fn | 30 |  | `WriteCredentials` | done |
+| `write_credentials_if_not_exists` | fn | 70 |  | `WriteCredentialsIfNotExists` | done |
+| `read_credentials` | fn | 102 |  | `ReadCredentials` | done |
+| `delete_credentials` | fn | 168 |  | `DeleteCredentials` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `read_distinguishes_absence_and_cancellation_from_errors` | test | 216 |  | `TestKeychain_ReadDistinguishesAbsenceAndCancellationFromErrors` | todo |
-| `platform_error_keeps_native_operation_and_status` | test | 235 |  | `TestKeychain_PlatformErrorKeepsNativeOperationAndStatus` | todo |
-| `delete_preserves_macos_missing_item_error` | test | 249 |  | `TestKeychain_DeletePreservesMacosMissingItemError` | todo |
-| `create_reports_existing_items_without_error` | test | 272 |  | `TestKeychain_CreateReportsExistingItemsWithoutError` | todo |
+| `read_distinguishes_absence_and_cancellation_from_errors` | test | 216 |  | `TestKeychain_ReadDistinguishesAbsenceAndCancellationFromErrors` | done |
+| `platform_error_keeps_native_operation_and_status` | test | 235 |  | `TestKeychain_PlatformErrorKeepsNativeOperationAndStatus` | done |
+| `delete_preserves_macos_missing_item_error` | test | 249 |  | `TestKeychain_DeletePreservesMacosMissingItemError` | done |
+| `create_reports_existing_items_without_error` | test | 272 |  | `TestKeychain_CreateReportsExistingItemsWithoutError` | done |
 
 ## gpui_apple/src/metal_atlas.rs
 
@@ -137,15 +137,15 @@ Go target: `platform/apple/process_info.go` (package `apple`), tests in `process
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `thermal_state` | fn | 11 |  | `ThermalState` | todo |
-| `power_mode` | fn | 20 |  | `PowerMode` | todo |
-| `observe_thermal_state` | fn | 29 |  | `ObserveThermalState` | todo |
-| `observe_power_mode` | fn | 43 |  | `ObservePowerMode` | todo |
-| `ProcessInfoObserver` | struct | 54 |  | `ProcessInfoObserver` | todo |
+| `thermal_state` | fn | 11 |  | `ThermalState` | done |
+| `power_mode` | fn | 20 |  | `PowerMode` | done |
+| `observe_thermal_state` | fn | 29 |  | `ObserveThermalState` | done |
+| `observe_power_mode` | fn | 43 |  | `ObservePowerMode` | done |
+| `ProcessInfoObserver` | struct | 54 |  | `ProcessInfoObserver` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `notifications_are_deferred_and_cancelled_on_drop` | gpui::test | 129 |  | `TestProcessInfo_NotificationsAreDeferredAndCancelledOnDrop` | todo |
+| `notifications_are_deferred_and_cancelled_on_drop` | gpui::test | 129 |  | `TestProcessInfo_NotificationsAreDeferredAndCancelledOnDrop` | blocked:M0-test-contexts |
 
 ## gpui_apple/src/text_system.rs
 
