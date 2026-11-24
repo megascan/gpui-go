@@ -171,22 +171,87 @@ func (c *Clipboard) ReadPrimary() (gpui.ClipboardItem, bool) {
 	panic("gpui: unimplemented Clipboard.ReadPrimary")
 }
 
-func (p WaylandClientStatePtr) seatListener(seat *wlproto.WlSeat) wlproto.WlSeatListener {
-	panic("gpui: unimplemented WaylandClientStatePtr.seatListener")
+// IMEInput is an input method action for a window (M1-wayland-window ports it).
+type IMEInput interface{ isIMEInput() }
+
+// IMEInputInsertText inserts committed text.
+type IMEInputInsertText struct{ Text string }
+
+// IMEInputSetMarkedText sets the pre-edit text.
+type IMEInputSetMarkedText struct{ Text string }
+
+// IMEInputUnmarkText commits the pre-edit text as is.
+type IMEInputUnmarkText struct{}
+
+// IMEInputDeleteText deletes the pre-edit text.
+type IMEInputDeleteText struct{}
+
+func (IMEInputInsertText) isIMEInput()    {}
+func (IMEInputSetMarkedText) isIMEInput() {}
+func (IMEInputUnmarkText) isIMEInput()    {}
+func (IMEInputDeleteText) isIMEInput()    {}
+
+// HandleIME applies an input method action.
+func (w WaylandWindowStatePtr) HandleIME(ime IMEInput) {
+	panic("gpui: unimplemented WaylandWindowStatePtr.HandleIME")
 }
 
-func (p WaylandClientStatePtr) dataDeviceListener() wlproto.WlDataDeviceListener {
-	panic("gpui: unimplemented WaylandClientStatePtr.dataDeviceListener")
+// HandleInput dispatches a platform input event to the window.
+func (w WaylandWindowStatePtr) HandleInput(input gpui.PlatformInput) {
+	panic("gpui: unimplemented WaylandWindowStatePtr.HandleInput")
 }
 
-func (p WaylandClientStatePtr) primarySelectionDeviceListener() wlproto.ZwpPrimarySelectionDeviceV1Listener {
-	panic("gpui: unimplemented WaylandClientStatePtr.primarySelectionDeviceListener")
+// SetFocused sets whether the window has keyboard focus.
+func (w WaylandWindowStatePtr) SetFocused(focus bool) {
+	panic("gpui: unimplemented WaylandWindowStatePtr.SetFocused")
 }
 
-func (p WaylandClientStatePtr) dataSourceListener(source *wlproto.WlDataSource, kind DataSourceKind) wlproto.WlDataSourceListener {
-	panic("gpui: unimplemented WaylandClientStatePtr.dataSourceListener")
+// SetHovered sets whether the pointer is over the window.
+func (w WaylandWindowStatePtr) SetHovered(focus bool) {
+	panic("gpui: unimplemented WaylandWindowStatePtr.SetHovered")
 }
 
-func (p WaylandClientStatePtr) primarySelectionSourceListener(source *wlproto.ZwpPrimarySelectionSourceV1) wlproto.ZwpPrimarySelectionSourceV1Listener {
-	panic("gpui: unimplemented WaylandClientStatePtr.primarySelectionSourceListener")
+// HandleFractionalScaleEvent handles a wp_fractional_scale_v1 event.
+func (w WaylandWindowStatePtr) HandleFractionalScaleEvent(event WpFractionalScaleV1Event) {
+	panic("gpui: unimplemented WaylandWindowStatePtr.HandleFractionalScaleEvent")
+}
+
+// HandleToplevelDecorationEvent handles a zxdg_toplevel_decoration_v1 event.
+func (w WaylandWindowStatePtr) HandleToplevelDecorationEvent(event ZxdgToplevelDecorationV1Event) {
+	panic("gpui: unimplemented WaylandWindowStatePtr.HandleToplevelDecorationEvent")
+}
+
+// NewDataOffer wraps offer with no mime types yet.
+func NewDataOffer[T any](offer T) DataOffer[T] {
+	panic("gpui: unimplemented NewDataOffer")
+}
+
+// AddMimeType records a mime type the offer advertised.
+func (o *DataOffer[T]) AddMimeType(mimeType string) {
+	panic("gpui: unimplemented DataOffer.AddMimeType")
+}
+
+// SetOffer sets the current clipboard offer.
+func (c *Clipboard) SetOffer(dataOffer gpui.Option[DataOffer[*wlproto.WlDataOffer]]) {
+	panic("gpui: unimplemented Clipboard.SetOffer")
+}
+
+// SetPrimaryOffer sets the current primary selection offer.
+func (c *Clipboard) SetPrimaryOffer(dataOffer gpui.Option[DataOffer[*wlproto.ZwpPrimarySelectionOfferV1]]) {
+	panic("gpui: unimplemented Clipboard.SetPrimaryOffer")
+}
+
+// Send writes the clipboard contents to fd and closes it.
+func (c *Clipboard) Send(mimeType string, fd int) {
+	panic("gpui: unimplemented Clipboard.Send")
+}
+
+// SendPrimary writes the primary selection contents to fd and closes it.
+func (c *Clipboard) SendPrimary(mimeType string, fd int) {
+	panic("gpui: unimplemented Clipboard.SendPrimary")
+}
+
+// SendBytes writes bytes to fd and closes it.
+func (c *Clipboard) SendBytes(fd int, bytes []byte) {
+	panic("gpui: unimplemented Clipboard.SendBytes")
 }

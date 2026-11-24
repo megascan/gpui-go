@@ -32,6 +32,7 @@ Go target: `platform/linux/wayland/client.go` (lines 1-1967) and `client_input.g
 | `WaylandConnection` | struct | 884 |  | `WaylandConnection` | done |
 | `WaylandConnection::window_identifier` | method | 1532 |  | `(WaylandConnection).WindowIdentifier` | dev:D-WLFOREIGN |
 | `file_uri_list` | fn | 527 |  | `fileURIList` | done |
+| `linux_button_to_gpui` | fn | 2361 |  | `linuxButtonToGPUI` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
