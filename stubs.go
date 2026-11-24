@@ -193,54 +193,35 @@ type nodeCreator struct {
 	sourceLocation *SourceLocation
 }
 
-// ScrollHandle tracks the scroll state of an element (M0-div-paint ports it).
-type ScrollHandle struct {
-	state *struct{}
-}
-
-// ScrollAnchor scrolls a parent so a child becomes visible (M0-div-paint ports it).
-type ScrollAnchor struct {
-	handle ScrollHandle
-}
-
 // ImageCacheProvider creates an image cache during request layout (M0-elements-media ports it).
 type ImageCacheProvider interface {
 	Provide(window *Window, cx *App) AnyImageCache
 }
 
-// IntoAnyElement converts the Div into an AnyElement (M0-div-paint ports it).
-func (d *Div) IntoAnyElement() AnyElement {
-	panic("gpui: unimplemented Div.IntoAnyElement")
+func (a *windowA11y) setFocusable(nodeID a11y.NodeID, focusID FocusID) {
+	panic("gpui: unimplemented windowA11y.setFocusable")
 }
 
-// Stateful wraps an element that has an id; it is IntoElement only and delegates to its element (D-COND, M0-div-paint ports it).
-type Stateful[E any] struct {
-	Styled[*Stateful[E]]
-	Interactive[*Stateful[E]]
-	StatefulInteractive[*Stateful[E]]
-	Parent[*Stateful[E]]
-	Fluent[*Stateful[E]]
-	element E
+func (a *windowA11y) setFocus(nodeID a11y.NodeID) {
+	panic("gpui: unimplemented windowA11y.setFocus")
 }
 
-// Style returns the inner element's style refinement; E must implement Styler (M0-div-paint ports it).
-func (s *Stateful[E]) Style() *StyleRefinement {
-	panic("gpui: unimplemented Stateful.Style")
+func (a *windowA11y) noteFocusWithoutNode(focusID FocusID, reason string) {
+	panic("gpui: unimplemented windowA11y.noteFocusWithoutNode")
 }
 
-// Interactivity returns the inner element's interactivity; E must implement InteractiveElement (M0-div-paint ports it).
-func (s *Stateful[E]) Interactivity() *Interactivity {
-	panic("gpui: unimplemented Stateful.Interactivity")
+func (a *windowA11y) setActiveDescendant(nodeID a11y.NodeID) {
+	panic("gpui: unimplemented windowA11y.setActiveDescendant")
 }
 
-// Extend adds children to the inner element; E must implement ParentElement (M0-div-paint ports it).
-func (s *Stateful[E]) Extend(elements []AnyElement) {
-	panic("gpui: unimplemented Stateful.Extend")
+// Paint paints the line of text at origin (M0-text-elements ports it).
+func (l *WrappedLine) Paint(origin Point[Pixels], lineHeight Pixels, align TextAlign, bounds Option[Bounds[Pixels]], window *Window, cx *App) error {
+	panic("gpui: unimplemented WrappedLine.Paint")
 }
 
-// IntoAnyElement returns the inner element's AnyElement (M0-div-paint ports it).
-func (s *Stateful[E]) IntoAnyElement() AnyElement {
-	panic("gpui: unimplemented Stateful.IntoAnyElement")
+// Size returns the size of the wrapped line (M0-text-elements ports it).
+func (l *WrappedLine) Size(lineHeight Pixels) Size[Pixels] {
+	panic("gpui: unimplemented WrappedLine.Size")
 }
 
 // TimedTransformation is a transformation animated over time (M0-elements-media ports it).

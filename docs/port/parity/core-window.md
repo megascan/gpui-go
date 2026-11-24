@@ -46,7 +46,7 @@ Go target: `element.go` (package `gpui`), tests in `element_test.go`
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
 | `equal_paths_are_equal_and_hash_alike` | test | 892 |  | `TestElementGlobalElementIDTests_EqualPathsAreEqualAndHashAlike` | done |
-| `frame_cost` | crate::test ignore | 941 |  | `TestElementGlobalElementIDTests_FrameCost` | blocked:M0-div-paint |
+| `frame_cost` | crate::test ignore | 941 |  | `TestElementGlobalElementIDTests_FrameCost` | done |
 | `hash_cost` | test ignore | 973 |  | `TestElementGlobalElementIDTests_HashCost` | done |
 
 ## gpui/src/inspector.rs

@@ -78,3 +78,56 @@ func TestElementGlobalElementIDTests_HashCost(t *testing.T) {
 	t.Logf("12-deep path: hash by walking ids %.1f ns, cached %.1f ns, build (clone + hash once) %.1f ns [%d]",
 		float64(walk.Nanoseconds())/n, float64(cached.Nanoseconds())/n, float64(build.Nanoseconds())/n, acc)
 }
+
+type deepStatefulTree struct {
+	items int
+	depth int
+}
+
+func (v *deepStatefulTree) Render(_ *Window, _ *Context[deepStatefulTree]) IntoElement {
+	children := make([]IntoElement, 0, v.items)
+	for item := range v.items {
+		var element IntoElement = NewDiv().ID(ElementIDNamedInteger("leaf", uint64(item))).Size(Px(2.))
+		for level := v.depth - 1; level >= 0; level-- {
+			element = NewDiv().ID(ElementIDNamedInteger("some-container-element", uint64(level))).Child(element)
+		}
+		children = append(children, NewDiv().ID(ElementIDNamedInteger("item", uint64(item))).Child(element).Size(Px(4.)))
+	}
+	return NewDiv().Flex().FlexWrap().SizeFull().Children(children...)
+}
+
+func TestElementGlobalElementIDTests_FrameCost(t *testing.T) {
+	t.Skip("prints timings; run by hand")
+	RunTest(t, func(tc *TestRun) {
+		cx := tc.Cx()
+		for _, shape := range [][2]int{{500, 4}, {500, 12}, {2000, 12}} {
+			items, depth := shape[0], shape[1]
+			window := cx.AddWindow(func(_ *Window, _ *Context[deepStatefulTree]) *deepStatefulTree {
+				return &deepStatefulTree{items: items, depth: depth}
+			}).AnyWindowHandle
+			frame := func() time.Duration {
+				var elapsed time.Duration
+				divTestUpdateWindow(cx, window, func(window *Window, cx *App) {
+					window.Refresh()
+					started := time.Now()
+					window.Draw(cx).Clear(cx)
+					elapsed = time.Since(started)
+				})
+				return elapsed
+			}
+			for range 5 {
+				frame()
+			}
+			samples := make([]time.Duration, 0, 40)
+			for range 40 {
+				samples = append(samples, frame())
+			}
+			slices.Sort(samples)
+			median := samples[len(samples)/2]
+			stateful := items * (depth + 2)
+			t.Logf("%d items x %d deep (%d stateful elements): median frame %.2f ms, %.0f ns per stateful element",
+				items, depth, stateful, median.Seconds()*1e3, float64(median.Nanoseconds())/float64(stateful))
+			divTestReleaseRoot(cx, window)
+		}
+	})
+}
