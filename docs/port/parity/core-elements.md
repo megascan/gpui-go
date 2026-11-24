@@ -10,25 +10,25 @@ Go target: `elements_anchored.go` (package `gpui`), tests in `elements_anchored_
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `AnchoredState` | struct | 12 |  | `AnchoredState` | todo |
-| `Anchored` | struct | 18 |  | `Anchored` | todo |
-| `anchored` | fn | 39 |  | `NewAnchored` | todo |
-| `Anchored::anchor` | method | 52 |  | `(Anchored).Anchor` | todo |
-| `Anchored::position` | method | 59 |  | `(Anchored).Position` | todo |
-| `Anchored::attach` | method | 72 |  | `(Anchored).Attach` | todo |
-| `Anchored::offset` | method | 79 |  | `(Anchored).Offset` | todo |
-| `Anchored::position_mode` | method | 88 |  | `(Anchored).PositionMode` | todo |
-| `Anchored::snap_to_window` | method | 94 |  | `(Anchored).SnapToWindow` | todo |
-| `Anchored::snap_to_window_with_margin` | method | 100 |  | `(Anchored).SnapToWindowWithMargin` | todo |
-| `AnchoredFitMode` | enum | 329 |  | `AnchoredFitMode` | todo |
-| `AnchoredPositionMode` | enum | 340 |  | `AnchoredPositionMode` | todo |
+| `AnchoredState` | struct | 12 |  | `AnchoredState` | done |
+| `Anchored` | struct | 18 |  | `Anchored` | done |
+| `anchored` | fn | 39 |  | `NewAnchored` | done |
+| `Anchored::anchor` | method | 52 |  | `(Anchored).Anchor` | done |
+| `Anchored::position` | method | 59 |  | `(Anchored).Position` | done |
+| `Anchored::attach` | method | 72 |  | `(Anchored).Attach` | done |
+| `Anchored::offset` | method | 79 |  | `(Anchored).Offset` | done |
+| `Anchored::position_mode` | method | 88 |  | `(Anchored).PositionMode` | done |
+| `Anchored::snap_to_window` | method | 94 |  | `(Anchored).SnapToWindow` | done |
+| `Anchored::snap_to_window_with_margin` | method | 100 |  | `(Anchored).SnapToWindowWithMargin` | done |
+| `AnchoredFitMode` | enum | 329 |  | `AnchoredFitMode` | done |
+| `AnchoredPositionMode` | enum | 340 |  | `AnchoredPositionMode` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_anchored_position_without_scroll` | gpui::test | 416 |  | `TestAnchored_AnchoredPositionWithoutScroll` | todo |
-| `test_anchored_position_when_scrolled` | gpui::test | 435 |  | `TestAnchored_AnchoredPositionWhenScrolled` | todo |
-| `test_anchored_snaps_to_window` | gpui::test | 467 |  | `TestAnchored_AnchoredSnapsToWindow` | todo |
-| `test_anchored_attach_moves_to_the_side_with_room` | gpui::test | 513 |  | `TestAnchored_AnchoredAttachMovesToTheSideWithRoom` | todo |
+| `test_anchored_position_without_scroll` | gpui::test | 416 |  | `TestAnchored_AnchoredPositionWithoutScroll` | done |
+| `test_anchored_position_when_scrolled` | gpui::test | 435 |  | `TestAnchored_AnchoredPositionWhenScrolled` | done |
+| `test_anchored_snaps_to_window` | gpui::test | 467 |  | `TestAnchored_AnchoredSnapsToWindow` | done |
+| `test_anchored_attach_moves_to_the_side_with_room` | gpui::test | 513 |  | `TestAnchored_AnchoredAttachMovesToTheSideWithRoom` | done |
 
 ## gpui/src/elements/animation.rs
 
@@ -36,45 +36,45 @@ Go target: `elements_animation.go` (package `gpui`), tests in `elements_animatio
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Animation` | struct | 15 |  | `Animation` | todo |
-| `Animation::new` | assoc-fn | 36 |  | `NewAnimation` | todo |
-| `Animation::repeat` | method | 48 |  | `(Animation).Repeat` | todo |
-| `Animation::repeat_synced` | method | 54 |  | `(Animation).RepeatSynced` | todo |
-| `Animation::with_easing` | method | 64 |  | `(Animation).WithEasing` | todo |
-| `Animation::with_max_fps` | method | 73 |  | `(Animation).WithMaxFps` | todo |
-| `Animation::with_steps` | method | 82 |  | `(Animation).WithSteps` | todo |
-| `AnimationExt` | trait | 95 |  | `AnimationExt` | todo |
-| `AnimationExt::with_animation` | trait-method | 97 |  | `AnimationExt.WithAnimation` | todo |
-| `AnimationExt::with_animations` | trait-method | 115 |  | `AnimationExt.WithAnimations` | todo |
-| `AnimationExt::with_spring` | trait-method | 137 |  | `AnimationExt.WithSpring` | todo |
-| `AnimationElement` | struct | 174 |  | `AnimationElement` | todo |
-| `SpringAnimationElement` | struct | 182 |  | `SpringAnimationElement` | todo |
-| `SpringAnimationElement::map_element` | method | 206 |  | `(SpringAnimationElement).MapElement` | todo |
-| `AnimationElement::map_element` | method | 225 |  | `(AnimationElement).MapElement` | todo |
-| `linear` | fn | 555 |  | `Linear` | todo |
-| `quadratic` | fn | 560 |  | `Quadratic` | todo |
-| `ease_in_out` | fn | 565 |  | `EaseInOut` | todo |
-| `ease_out_quint` | fn | 575 |  | `EaseOutQuint` | todo |
-| `heartbeat` | fn | 580 |  | `Heartbeat` | todo |
-| `bounce` | fn | 589 |  | `Bounce` | todo |
-| `pulsating_between` | fn | 600 |  | `PulsatingBetween` | todo |
+| `Animation` | struct | 15 |  | `Animation` | done |
+| `Animation::new` | assoc-fn | 36 |  | `NewAnimation` | done |
+| `Animation::repeat` | method | 48 |  | `(Animation).Repeat` | done |
+| `Animation::repeat_synced` | method | 54 |  | `(Animation).RepeatSynced` | done |
+| `Animation::with_easing` | method | 64 |  | `(Animation).WithEasing` | done |
+| `Animation::with_max_fps` | method | 73 |  | `(Animation).WithMaxFps` | done |
+| `Animation::with_steps` | method | 82 |  | `(Animation).WithSteps` | done |
+| `AnimationExt` | trait | 95 |  | `WithAnimation`, `WithAnimations`, `WithSpring` | dev:D-ANIMEXT |
+| `AnimationExt::with_animation` | trait-method | 97 |  | `WithAnimation` | dev:D-ANIMEXT |
+| `AnimationExt::with_animations` | trait-method | 115 |  | `WithAnimations` | dev:D-ANIMEXT |
+| `AnimationExt::with_spring` | trait-method | 137 |  | `WithSpring` | dev:D-ANIMEXT |
+| `AnimationElement` | struct | 174 |  | `AnimationElement` | done |
+| `SpringAnimationElement` | struct | 182 |  | `SpringAnimationElement` | done |
+| `SpringAnimationElement::map_element` | method | 206 |  | `(SpringAnimationElement).MapElement` | done |
+| `AnimationElement::map_element` | method | 225 |  | `(AnimationElement).MapElement` | done |
+| `linear` | fn | 555 |  | `Linear` | done |
+| `quadratic` | fn | 560 |  | `Quadratic` | done |
+| `ease_in_out` | fn | 565 |  | `EaseInOut` | done |
+| `ease_out_quint` | fn | 575 |  | `EaseOutQuint` | done |
+| `heartbeat` | fn | 580 |  | `Heartbeat` | done |
+| `bounce` | fn | 589 |  | `Bounce` | done |
+| `pulsating_between` | fn | 600 |  | `PulsatingBetween` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_animation_parent` | test | 738 |  | `TestAnimation_AnimationParent` | todo |
-| `test_spring_animation_parent` | test | 757 |  | `TestAnimation_SpringAnimationParent` | todo |
-| `test_spring_animation_preserves_velocity_when_retargeted` | gpui::test | 771 |  | `TestAnimation_SpringAnimationPreservesVelocityWhenRetargeted` | todo |
-| `test_paused_spring_resumes_with_its_velocity` | gpui::test | 814 |  | `TestAnimation_PausedSpringResumesWithItsVelocity` | todo |
-| `test_stopped_spring_resumes_without_velocity` | gpui::test | 865 |  | `TestAnimation_StoppedSpringResumesWithoutVelocity` | todo |
-| `test_cancelled_and_completed_springs_resolve_their_endpoints` | gpui::test | 916 |  | `TestAnimation_CancelledAndCompletedSpringsResolveTheirEndpoints` | todo |
-| `test_spring_animation_respects_reduced_motion` | gpui::test | 957 |  | `TestAnimation_SpringAnimationRespectsReducedMotion` | todo |
-| `test_repeating_animation_schedules_animation_frames` | gpui::test | 976 |  | `TestAnimation_RepeatingAnimationSchedulesAnimationFrames` | todo |
-| `test_max_fps_schedules_timer_driven_frames` | gpui::test | 988 |  | `TestAnimation_MaxFpsSchedulesTimerDrivenFrames` | todo |
-| `test_synced_steps_render_once_each` | gpui::test | 1022 |  | `TestAnimation_SyncedStepsRenderOnceEach` | todo |
-| `test_steps_finish_and_repeat_on_time` | gpui::test | 1040 |  | `TestAnimation_StepsFinishAndRepeatOnTime` | todo |
-| `test_sooner_step_replaces_the_pending_one` | gpui::test | 1058 |  | `TestAnimation_SoonerStepReplacesThePendingOne` | todo |
-| `test_synced_animations_share_phase_across_elements` | gpui::test | 1080 |  | `TestAnimation_SyncedAnimationsSharePhaseAcrossElements` | todo |
-| `test_reduce_motion_renders_single_static_frame` | gpui::test | 1133 |  | `TestAnimation_ReduceMotionRendersSingleStaticFrame` | todo |
+| `test_animation_parent` | test | 738 |  | `TestAnimation_AnimationParent` | done |
+| `test_spring_animation_parent` | test | 757 |  | `TestAnimation_SpringAnimationParent` | done |
+| `test_spring_animation_preserves_velocity_when_retargeted` | gpui::test | 771 |  | `TestAnimation_SpringAnimationPreservesVelocityWhenRetargeted` | done |
+| `test_paused_spring_resumes_with_its_velocity` | gpui::test | 814 |  | `TestAnimation_PausedSpringResumesWithItsVelocity` | done |
+| `test_stopped_spring_resumes_without_velocity` | gpui::test | 865 |  | `TestAnimation_StoppedSpringResumesWithoutVelocity` | done |
+| `test_cancelled_and_completed_springs_resolve_their_endpoints` | gpui::test | 916 |  | `TestAnimation_CancelledAndCompletedSpringsResolveTheirEndpoints` | done |
+| `test_spring_animation_respects_reduced_motion` | gpui::test | 957 |  | `TestAnimation_SpringAnimationRespectsReducedMotion` | done |
+| `test_repeating_animation_schedules_animation_frames` | gpui::test | 976 |  | `TestAnimation_RepeatingAnimationSchedulesAnimationFrames` | done |
+| `test_max_fps_schedules_timer_driven_frames` | gpui::test | 988 |  | `TestAnimation_MaxFpsSchedulesTimerDrivenFrames` | done |
+| `test_synced_steps_render_once_each` | gpui::test | 1022 |  | `TestAnimation_SyncedStepsRenderOnceEach` | done |
+| `test_steps_finish_and_repeat_on_time` | gpui::test | 1040 |  | `TestAnimation_StepsFinishAndRepeatOnTime` | done |
+| `test_sooner_step_replaces_the_pending_one` | gpui::test | 1058 |  | `TestAnimation_SoonerStepReplacesThePendingOne` | done |
+| `test_synced_animations_share_phase_across_elements` | gpui::test | 1080 |  | `TestAnimation_SyncedAnimationsSharePhaseAcrossElements` | done |
+| `test_reduce_motion_renders_single_static_frame` | gpui::test | 1133 |  | `TestAnimation_ReduceMotionRendersSingleStaticFrame` | done |
 
 ## gpui/src/elements/canvas.rs
 
@@ -82,8 +82,8 @@ Go target: `elements_canvas.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `canvas` | fn | 10 |  | `NewCanvas` | todo |
-| `Canvas` | struct | 23 |  | `Canvas` | todo |
+| `canvas` | fn | 10 |  | `NewCanvas` | done |
+| `Canvas` | struct | 23 |  | `Canvas` | done |
 
 ## gpui/src/elements/container_query.rs
 
@@ -91,8 +91,8 @@ Go target: `elements_container_query.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `container_query` | fn | 33 |  | `NewContainerQuery` | todo |
-| `ContainerQuery` | struct | 52 |  | `ContainerQuery` | todo |
+| `container_query` | fn | 33 |  | `NewContainerQuery` | done |
+| `ContainerQuery` | struct | 52 |  | `ContainerQuery` | done |
 
 ## gpui/src/elements/deferred.rs
 
@@ -100,15 +100,15 @@ Go target: `elements_deferred.go` (package `gpui`), tests in `elements_deferred_
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `deferred` | fn | 7 |  | `NewDeferred` | todo |
-| `Deferred` | struct | 16 |  | `Deferred` | todo |
-| `Deferred::with_priority` | method | 25 |  | `(Deferred).WithPriority` | todo |
-| `Deferred::priority` | method | 84 |  | `(Deferred).Priority` | todo |
+| `deferred` | fn | 7 |  | `NewDeferred` | done |
+| `Deferred` | struct | 16 |  | `Deferred` | done |
+| `Deferred::with_priority` | method | 25 |  | `(Deferred).WithPriority` | done |
+| `Deferred::priority` | method | 84 |  | `(Deferred).Priority` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_cached_reuse_keeps_entity_subscriptions` | gpui::test | 152 |  | `TestDeferred_CachedReuseKeepsEntitySubscriptions` | todo |
-| `test_nested_deferred_draws_with_reused_views` | gpui::test | 261 |  | `TestDeferred_NestedDeferredDrawsWithReusedViews` | todo |
+| `test_cached_reuse_keeps_entity_subscriptions` | gpui::test | 152 |  | `TestDeferred_CachedReuseKeepsEntitySubscriptions` | done |
+| `test_nested_deferred_draws_with_reused_views` | gpui::test | 261 |  | `TestDeferred_NestedDeferredDrawsWithReusedViews` | done |
 
 ## gpui/src/elements/div.rs
 
@@ -486,10 +486,10 @@ Go target: `elements_surface.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `SurfaceSource` | enum | 13 |  | `SurfaceSource` | todo |
-| `Surface` | struct | 27 |  | `Surface` | todo |
-| `surface` | fn | 35 | macos,ios | `NewSurface` | todo |
-| `Surface::object_fit` | method | 45 |  | `(Surface).ObjectFit` | todo |
+| `SurfaceSource` | enum | 13 |  | `SurfaceSource` | dev:D-SURFACE |
+| `Surface` | struct | 27 |  | `Surface` | done |
+| `surface` | fn | 35 | macos,ios | `NewSurface` | dev:D-SURFACE |
+| `Surface::object_fit` | method | 45 |  | `(Surface).ObjectFit` | done |
 
 ## gpui/src/elements/svg.rs
 
@@ -592,35 +592,46 @@ Go target: `elements_uniform_list.go` (package `gpui`), tests in `elements_unifo
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `uniform_list` | fn | 22 |  | `NewUniformList` | todo |
-| `UniformList` | struct | 58 |  | `UniformList` | todo |
-| `UniformListFrameState` | struct | 72 |  | `UniformListFrameState` | todo |
-| `UniformListScrollHandle` | struct | 80 |  | `UniformListScrollHandle` | todo |
-| `ScrollStrategy` | enum | 84 |  | `ScrollStrategy` | todo |
-| `DeferredScrollToItem` | struct | 103 |  | `DeferredScrollToItem` | todo |
-| `UniformListScrollState` | struct | 115 |  | `UniformListScrollState` | todo |
-| `ItemSize` | struct | 126 |  | `ItemSize` | todo |
-| `UniformListScrollHandle::new` | assoc-fn | 136 |  | `NewUniformListScrollHandle` | todo |
-| `UniformListScrollHandle::scroll_to_item` | method | 150 |  | `(UniformListScrollHandle).ScrollToItem` | todo |
-| `UniformListScrollHandle::scroll_to_item_strict` | method | 163 |  | `(UniformListScrollHandle).ScrollToItemStrict` | todo |
-| `UniformListScrollHandle::scroll_to_item_with_offset` | method | 182 |  | `(UniformListScrollHandle).ScrollToItemWithOffset` | todo |
-| `UniformListScrollHandle::scroll_to_item_strict_with_offset` | method | 201 |  | `(UniformListScrollHandle).ScrollToItemStrictWithOffset` | todo |
-| `UniformListScrollHandle::y_flipped` | method | 216 |  | `(UniformListScrollHandle).YFlipped` | todo |
-| `UniformListScrollHandle::logical_scroll_top_index` | method | 222 | feat:test-support | `(UniformListScrollHandle).LogicalScrollTopIndex` | todo |
-| `UniformListScrollHandle::is_scrollable` | method | 231 |  | `(UniformListScrollHandle).IsScrollable` | todo |
-| `UniformListScrollHandle::is_scrolled_to_end` | method | 241 |  | `(UniformListScrollHandle).IsScrolledToEnd` | todo |
-| `UniformListScrollHandle::scroll_to_bottom` | method | 252 |  | `(UniformListScrollHandle).ScrollToBottom` | todo |
-| `UniformListDecoration` | trait | 575 |  | `UniformListDecoration` | todo |
-| `UniformListDecoration::compute` | trait-method | 578 |  | `UniformListDecoration.Compute` | todo |
-| `UniformList::with_width_from_item` | method | 617 |  | `(UniformList).WithWidthFromItem` | todo |
-| `UniformList::with_sizing_behavior` | method | 623 |  | `(UniformList).WithSizingBehavior` | todo |
-| `UniformList::with_horizontal_sizing_behavior` | method | 631 |  | `(UniformList).WithHorizontalSizingBehavior` | todo |
-| `UniformList::with_decoration` | method | 648 |  | `(UniformList).WithDecoration` | todo |
-| `UniformList::track_scroll` | method | 678 |  | `(UniformList).TrackScroll` | todo |
-| `UniformList::y_flipped` | method | 685 |  | `(UniformList).YFlipped` | todo |
+| `uniform_list` | fn | 22 |  | `NewUniformList` | done |
+| `UniformList` | struct | 58 |  | `UniformList` | done |
+| `UniformListFrameState` | struct | 72 |  | `UniformListFrameState` | done |
+| `UniformListScrollHandle` | struct | 80 |  | `UniformListScrollHandle` | dev:D-UNIFORMHANDLE |
+| `ScrollStrategy` | enum | 84 |  | `ScrollStrategy` | done |
+| `DeferredScrollToItem` | struct | 103 |  | `DeferredScrollToItem` | done |
+| `UniformListScrollState` | struct | 115 |  | `UniformListScrollState` | done |
+| `ItemSize` | struct | 126 |  | `ItemSize` | done |
+| `UniformListScrollHandle::new` | assoc-fn | 136 |  | `NewUniformListScrollHandle` | done |
+| `UniformListScrollHandle::scroll_to_item` | method | 150 |  | `(UniformListScrollHandle).ScrollToItem` | done |
+| `UniformListScrollHandle::scroll_to_item_strict` | method | 163 |  | `(UniformListScrollHandle).ScrollToItemStrict` | done |
+| `UniformListScrollHandle::scroll_to_item_with_offset` | method | 182 |  | `(UniformListScrollHandle).ScrollToItemWithOffset` | done |
+| `UniformListScrollHandle::scroll_to_item_strict_with_offset` | method | 201 |  | `(UniformListScrollHandle).ScrollToItemStrictWithOffset` | done |
+| `UniformListScrollHandle::y_flipped` | method | 216 |  | `(UniformListScrollHandle).YFlipped` | done |
+| `UniformListScrollHandle::logical_scroll_top_index` | method | 222 | feat:test-support | `(UniformListScrollHandle).LogicalScrollTopIndex` | done |
+| `UniformListScrollHandle::is_scrollable` | method | 231 |  | `(UniformListScrollHandle).IsScrollable` | done |
+| `UniformListScrollHandle::is_scrolled_to_end` | method | 241 |  | `(UniformListScrollHandle).IsScrolledToEnd` | done |
+| `UniformListScrollHandle::scroll_to_bottom` | method | 252 |  | `(UniformListScrollHandle).ScrollToBottom` | done |
+| `UniformListDecoration` | trait | 575 |  | `UniformListDecoration` | done |
+| `UniformListDecoration::compute` | trait-method | 578 |  | `UniformListDecoration.Compute` | done |
+| `impl UniformListDecoration for Entity<T>` | impl | 590 |  | `UniformListDecorationFromEntity` | dev:D-UNIFORMDECOR |
+| `UniformList::with_width_from_item` | method | 617 |  | `(UniformList).WithWidthFromItem` | done |
+| `UniformList::with_sizing_behavior` | method | 623 |  | `(UniformList).WithSizingBehavior` | done |
+| `UniformList::with_horizontal_sizing_behavior` | method | 631 |  | `(UniformList).WithHorizontalSizingBehavior` | done |
+| `UniformList::with_decoration` | method | 648 |  | `(UniformList).WithDecoration` | done |
+| `UniformList::track_scroll` | method | 678 |  | `(UniformList).TrackUniformListScroll` | dev:D-UNIFORMTRACK |
+| `UniformList::y_flipped` | method | 685 |  | `(UniformList).YFlipped` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_scroll_strategy_nearest` | gpui::test | 720 |  | `TestUniformList_ScrollStrategyNearest` | todo |
-| `test_item_positions_far_down_long_list` | gpui::test | 862 |  | `TestUniformList_ItemPositionsFarDownLongList` | todo |
+| `test_scroll_strategy_nearest` | gpui::test | 720 |  | `TestUniformList_ScrollStrategyNearest` | done |
+| `test_item_positions_far_down_long_list` | gpui::test | 862 |  | `TestUniformList_ItemPositionsFarDownLongList` | done |
+
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-ANIMEXT | `AnimationExt`, a blanket extension trait over every `IntoElement`, is three free generic functions `WithAnimation(e, id, animation, animator)`, `WithAnimations`, `WithSpring`; `WithSpring`'s animator takes the resolved output type `O` (inferred from the closure) | `gpui/src/elements/animation.rs:95-170` | Go cannot add methods to every element type; mirrors D-TASKEXT / D-GLOBAL |
+| D-UNIFORMTRACK | `UniformList::track_scroll` is `TrackUniformListScroll`, because `TrackScroll` is a `StatefulInteractive` mixin method and an embedder may not declare a mixin method name (paritycheck -lint) | `gpui/src/elements/uniform_list.rs:678` | mixin shadowing rule, api-contracts 3 |
+| D-UNIFORMHANDLE | `UniformListScrollHandle`'s tuple field `.0` (`Rc<RefCell<UniformListScrollState>>`) is the exported field `State *UniformListScrollState`; the zero handle has no state, so `Default` is `NewUniformListScrollHandle()` | `gpui/src/elements/uniform_list.rs:80` | Go has no tuple fields; `ScrollHandle`'s zero value is not usable either |
+| D-UNIFORMDECOR | `impl UniformListDecoration for Entity<T>` is the adapter `UniformListDecorationFromEntity[T, *T](entity)`, which borrows the handle | `gpui/src/elements/uniform_list.rs:590-614` | Go cannot implement an interface on `Entity[T]` conditionally on `T` |
+| D-SURFACE | `SurfaceSource` is a struct holding the `CVPixelBufferRef` as `uintptr`, and `NewSurface` exists on every platform; `Paint` draws only on darwin / ios and reads the buffer size through a function the Apple platform registers with `RegisterSurfaceSourceSize`, since the root package may not call CoreVideo | `gpui/src/elements/surface.rs:13-35`, `:95-119` | root import rules (DESIGN 4); `Window.PaintSurface` already takes a `uintptr` |
 
