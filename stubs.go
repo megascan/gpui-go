@@ -193,93 +193,19 @@ type nodeCreator struct {
 	sourceLocation *SourceLocation
 }
 
-// Interactivity holds the listeners and interactive style of an element (M0-div-api ports it).
-type Interactivity struct{}
-
-// InteractiveElement is implemented by elements that embed Interactive (M0-div-api ports it).
-type InteractiveElement interface {
-	Interactivity() *Interactivity
+// ScrollHandle tracks the scroll state of an element (M0-div-paint ports it).
+type ScrollHandle struct {
+	state *struct{}
 }
 
-// Interactive is the InteractiveElement mixin; bind it with BindInteractive (M0-div-api ports it).
-type Interactive[S InteractiveElement] struct {
-	self S
+// ScrollAnchor scrolls a parent so a child becomes visible (M0-div-paint ports it).
+type ScrollAnchor struct {
+	handle ScrollHandle
 }
 
-// BindInteractive binds an Interactive mixin to the element that embeds it.
-func BindInteractive[S InteractiveElement](m *Interactive[S], self S) {
-	m.self = self
-}
-
-// OnClick registers a click listener (M0-div-api ports it).
-func (i *Interactive[S]) OnClick(listener func(event *ClickEvent, window *Window, cx *App)) S {
-	panic("gpui: unimplemented Interactive.OnClick")
-}
-
-// TrackFocus tracks handle's focus state for the element (M0-div-api ports it).
-func (i *Interactive[S]) TrackFocus(handle FocusHandle) S {
-	panic("gpui: unimplemented Interactive.TrackFocus")
-}
-
-// InteractiveID carries InteractiveElement's ID method, which cannot live on Interactive (D-IDMIXIN); bind it with BindInteractiveID (M0-div-api ports it).
-type InteractiveID[S InteractiveElement] struct {
-	self S
-}
-
-// BindInteractiveID binds an InteractiveID mixin to the element that embeds it.
-func BindInteractiveID[S InteractiveElement](m *InteractiveID[S], self S) {
-	m.self = self
-}
-
-// ID assigns the element an id, making it stateful (M0-div-api ports it).
-func (i *InteractiveID[S]) ID[I ElementIDSource](id I) *Stateful[S] {
-	panic("gpui: unimplemented InteractiveID.ID")
-}
-
-// StatefulInteractiveElement is implemented by stateful interactive elements (M0-div-api ports it).
-type StatefulInteractiveElement interface {
-	InteractiveElement
-}
-
-// StatefulInteractive is the StatefulInteractiveElement mixin; bind it with BindStatefulInteractive (M0-div-api ports it).
-type StatefulInteractive[S StatefulInteractiveElement] struct {
-	self S
-}
-
-// BindStatefulInteractive binds a StatefulInteractive mixin to the element that embeds it.
-func BindStatefulInteractive[S StatefulInteractiveElement](m *StatefulInteractive[S], self S) {
-	m.self = self
-}
-
-// Div is the basic container element (M0-div-api ports it).
-type Div struct {
-	Styled[*Div]
-	Interactive[*Div]
-	InteractiveID[*Div]
-	Parent[*Div]
-	Fluent[*Div]
-	interactivity Interactivity
-	children      []AnyElement
-}
-
-// NewDiv constructs a Div (M0-div-api ports it).
-func NewDiv() *Div {
-	panic("gpui: unimplemented NewDiv")
-}
-
-// Style returns the element's style refinement (M0-div-api ports it).
-func (d *Div) Style() *StyleRefinement {
-	panic("gpui: unimplemented Div.Style")
-}
-
-// Interactivity returns the element's interactivity (M0-div-api ports it).
-func (d *Div) Interactivity() *Interactivity {
-	panic("gpui: unimplemented Div.Interactivity")
-}
-
-// Extend adds child elements (M0-div-api ports it).
-func (d *Div) Extend(elements []AnyElement) {
-	panic("gpui: unimplemented Div.Extend")
+// ImageCacheProvider creates an image cache during request layout (M0-elements-media ports it).
+type ImageCacheProvider interface {
+	Provide(window *Window, cx *App) AnyImageCache
 }
 
 // IntoAnyElement converts the Div into an AnyElement (M0-div-paint ports it).
