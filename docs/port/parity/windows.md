@@ -59,7 +59,7 @@ Go target: `platform/windows/keyboard.go` (package `windows`), tests in `keyboar
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_keyboard_mapper` | test | 323 |  | `TestKeyboard_KeyboardMapper` | todo |
+| `test_keyboard_mapper` | test | 323 |  | `TestKeyboard_KeyboardMapper` | done |
 
 ## gpui_windows/src/platform.rs
 
