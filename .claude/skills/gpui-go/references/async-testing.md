@@ -255,6 +255,8 @@ From examples/testing/main_test.go. Await a task the view returns, then drain th
 			if _, err := counter.UpdateR(cx, func(counter *Counter, cx *gpui.Context[Counter]) *gpui.Task[struct{}] { return counter.load(cx) }).Await(s); err != nil {
 				panic(err)
 			}
+			cx.RunUntilParked()
+		})
 ```
 
 ## Headless screenshot

@@ -49,8 +49,8 @@ Package `gpui` = `github.com/megascan/gpui-go`. Also used: `github.com/megascan/
 - `gpui.DefaultWindowOptions()` sets `Show`, `Focus`, `IsMovable`, `IsResizable` and `IsMinimizable` to true, plus an empty titlebar, `Kind: gpui.WindowKindNormal{}` and an opaque background. Always start from it.
 - Fields: `WindowBounds gpui.Option[gpui.WindowBounds]`, `Titlebar gpui.Option[gpui.TitlebarOptions]` (`TitlebarOptions{Title: gpui.Some[gpui.SharedString]("x")}`), `WindowMinSize`, `WindowDecorations`, `AppID`, `WindowBackground`, `DisplayID`, `Kind`.
 - Bounds: `gpui.BoundsCentered(gpui.None[gpui.DisplayID](), gpui.NewSize(gpui.Px(w), gpui.Px(h)), cx)` wrapped in `gpui.WindowBoundsWindowed(b)`. Also `gpui.WindowBoundsMaximized`, `gpui.WindowBoundsFullscreen`, `gpui.WindowBoundsCentered`.
-- `gpui.WindowHandle[V]`: `Root(cx) (gpui.Entity[V], error)` returns a new count that the caller releases. `Update(cx, func(*V, *gpui.Window, *gpui.Context[V])) error`, `Read(cx)`, `AnyWindowHandle`.
-- `*gpui.Window` is not a context. It is passed next to `cx`. Its methods include `Focus(h, cx)`, `Blur(cx)`, `FocusNext(cx)`, `FocusPrev(cx)`, `DispatchAction(a, cx)`, `SetWindowTitle(s)`, `Bounds()`, `ViewportSize()`, `ScaleFactor()`, `MousePosition()`, `Modifiers()`, `Refresh()`, `RemoveWindow()`, `ActivateWindow()`, `RequestAnimationFrame()`, `Prompt(...)` and `UseState`/`UseKeyedState` (the caller releases the result).
+- `gpui.WindowHandle[V]`: `Root(cx) (gpui.Entity[V], error)` returns a new count that the caller releases. `Update(cx, func(*V, *gpui.Window, *gpui.Context[V])) error`, `Read(cx *gpui.App) (*V, error)`, `ReadWith(cx, func(*V, *gpui.App) R) (R, error)`, `Entity(cx) (gpui.Entity[V], error)` (the caller releases it), `AnyWindowHandle`.
+- `*gpui.Window` is not a context. It is passed next to `cx`. Its methods include `Focus(h, cx)`, `Blur(cx)`, `FocusNext(cx)`, `FocusPrev(cx)`, `DispatchAction(a, cx)`, `SetWindowTitle(s)`, `Bounds()`, `ViewportSize()`, `ScaleFactor()`, `MousePosition()`, `Modifiers()`, `Refresh()`, `RemoveWindow()`, `ActivateWindow()`, `RequestAnimationFrame()`, `Prompt(...)`, `Focused(cx) (gpui.FocusHandle, bool)` (the caller releases the result) and `UseState`/`UseKeyedState` (the caller releases the result).
 
 ## Entities and contexts
 
@@ -81,7 +81,7 @@ func EntityLifecycle(cx *gpui.App) {
 | `UpdateIn(cx VisualContext, f) error` (with window) | `Upgrade() (Entity[T], bool)` (the caller releases the result) |
 | `Clone()`, `Release()` (idempotent), `Downgrade()`, `IntoAny()`, `EntityID()`, `FocusHandle(cx)` (needs `Focusable`) | Errors once the entity is released ("entity released") |
 
-`R`-suffixed methods (`UpdateR`, `ReadR`, `UpdateInR`) are the value-returning forms. The plain forms return nothing, or only `error`.
+`R`-suffixed methods (`UpdateR`, `UpdateInR`) are the value-returning forms. The plain forms return nothing, or only `error`. Entities have no `ReadR`; `ReadR` exists only on the test and bench contexts (`TestAppContext`, `VisualTestAppContext`, `TestApp`, `TestAppWindow`, `BenchAppContext`).
 
 Async contexts differ:
 - `(*AsyncApp).Update(func(*App))` returns nothing and panics if the app is gone. `UpdateR[R]` returns `R`.
@@ -171,7 +171,7 @@ func Generic(cx gpui.AppContext) gpui.Entity[Clock] {
 |---|---|---|
 | unset | strict (panics with "Exited with leaked handles") | off |
 | `strict` | strict | strict |
-| any other value, including `0` | on: tracks live handles (for `AssertReleased` and snapshots), but doesn't report collected ones | on |
+| any other non-empty value, including `0` | on: tracks live handles (for `AssertReleased` and snapshots), but doesn't report collected ones | on |
 
 - Strict mode reports entity handles, focus handles and subscriptions that were garbage-collected without `Release`/`Unsubscribe`/`Detach`. It does **not** track tasks, so a forgotten task is silent and you have to review tasks by hand.
 - `LEAK_BACKTRACE=1` adds allocation stacks.

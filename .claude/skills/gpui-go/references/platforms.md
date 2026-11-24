@@ -13,8 +13,8 @@
 ## Status
 
 - Verified on Linux only. Every Linux example builds, runs and has a checked screenshot.
-- macOS, iOS and Windows are checked only by cross `go vet` and `go test -c` (plus Wine for some Windows tests). No real-OS run has happened yet. Treat behaviour there as unverified and say so when it matters, for example `Show` handling, menus or native views.
-- Any other GOOS returns a "platform not ported" error.
+- macOS, iOS, Windows and web (GOOS=js) are checked only by cross `go vet` and `go test -c` (plus Wine for some Windows tests). No real-OS run has happened yet. Treat behaviour there as unverified and say so when it matters, for example `Show` handling, menus or native views.
+- On any other GOOS, `platform.Application()` panics with "gpui: the current platform is not ported yet". It does not return an error.
 
 ## Toolchain and module
 
@@ -58,7 +58,7 @@ func main() {
 
 - No cgo: x/sys/windows plus hand-written COM, with D3D11, DirectComposition and DirectWrite. HLSL is compiled at startup with `d3dcompiler_47`.
 - There is no headless renderer, so screenshots go through a real window.
-- `GPUI_DISABLE_DIRECT_COMPOSITION` disables DirectComposition.
+- `GPUI_DISABLE_DIRECT_COMPOSITION=1` (or `true`) disables DirectComposition. Other values are ignored.
 
 ## Web (wasm)
 

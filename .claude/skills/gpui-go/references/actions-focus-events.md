@@ -35,6 +35,7 @@ func init() {
 		Type:  reflect.TypeFor[Quit](),
 		Build: func(jsontext.Value) (gpui.Action, error) { return Quit{}, nil },
 	})
+}
 ```
 
 - Imports: `encoding/json/jsontext` and `reflect`.
@@ -134,7 +135,7 @@ func (e *Editor) FocusHandle(_ *gpui.App) gpui.FocusHandle {
 ```
 
 - Implementing `FocusHandle(cx *gpui.App) gpui.FocusHandle` makes the view `gpui.Focusable`. That enables `entity.FocusHandle(cx)`, `VisualTestContext.Focus(view)` and `cx.FocusView`. Return a `Clone()`, because the caller releases it.
-- Focusing: `h.Focus(window, cx)`, `window.Focus(h, cx)`, `window.FocusNext(cx)`/`FocusPrev(cx)`. Query with `h.IsFocused(window)`, `h.ContainsFocused(window, cx)` and `window.Focused(cx)`.
+- Focusing: `h.Focus(window, cx)`, `window.Focus(h, cx)`, `window.FocusNext(cx)`/`FocusPrev(cx)`. Query with `h.IsFocused(window)`, `h.ContainsFocused(window, cx)` and `window.Focused(cx)` (release it).
 - Tab order: `cx.FocusHandle().WithTabIndex(1).WithTabStop(true)` on the handle, or `TabIndex(n)`/`TabStop(true)`/`TabGroup()` on the element.
 - Focus the initial view in `OpenWindow`'s builder:
 
@@ -146,6 +147,8 @@ func (e *Editor) FocusHandle(_ *gpui.App) gpui.FocusHandle {
 			focus.Release()
 			return list
 		}); err != nil {
+			panic(err)
+		}
 ```
 
 ## Mouse and keyboard events

@@ -17,7 +17,7 @@ Fix: start from the defaults and change fields.
 
 ### Forgetting `Release`
 
-These all hand you a counted handle that you must release: `cx.New`, `entity.Clone()`, `cx.Entity()`, `cx.FocusHandle()`, `focusHandle.Clone()`, `entity.FocusHandle(cx)`, `WindowHandle.Root(cx)`, `weak.Upgrade()`, `window.UseState` and `window.UseKeyedState`.
+These all hand you a counted handle that you must release: `cx.New`, `entity.Clone()`, `cx.Entity()`, `cx.FocusHandle()`, `focusHandle.Clone()`, `entity.FocusHandle(cx)`, `WindowHandle.Root(cx)`, `WindowHandle.Entity(cx)`, `window.Focused(cx)`, `weak.Upgrade()`, `window.UseState` and `window.UseKeyedState`.
 
 Fix: `defer h.Release()` for short-lived handles. For handles stored in an entity, release them in the entity's `Drop(cx *gpui.App)` method. Outside tests nothing reports the miss; the GC releases the handle at some later point. In tests, strict leak detection fails the test.
 
@@ -108,7 +108,7 @@ Fix: check the weak handle's error and stop. The table in [Async work and tasks]
 |---|---|---|
 | unset | strict | off |
 | `strict` | strict | strict |
-| any other value, including `0` | on (not strict) | on |
+| any other non-empty value, including `0` | on (not strict) | on |
 
 `GPUI_LEAK_DETECTION=0` does not turn detection off. Leak reports are process-wide, so do not combine `t.Parallel()` with tests that rely on them. Tasks are never tracked.
 

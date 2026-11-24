@@ -238,11 +238,11 @@ func (Assets) List(path string) ([]gpui.SharedString, error) {
 }
 ```
 
-Register it before `Run`, as [examples/svg_example](../../examples/svg_example/main.go) does:
+Register it before `Run`, as [examples/svg_example](../../examples/svg_example/main.go) does with its own asset source:
 
 ```go
 	platform.Application().
-		WithAssets(Assets{base: examplesDir()}).
+		WithAssets(Assets{}).
 		Run(func(cx *gpui.App) {
 ```
 
@@ -295,6 +295,19 @@ The callback receives `delta` from 0 to 1 and returns the element styled for tha
 						Position(position).
 						PositionMode(gpui.AnchoredPositionModeLocal).
 						SnapToWindow().
+						Child(
+							gpui.NewDiv().
+								Py0p5().
+								Px2().
+								Bg(gpui.Black().Opacity(0.75)).
+								TextColor(gpui.Rgb(0xffffff)).
+								RoundedSm().
+								ShadowSm().
+								MinW(gpui.Px(100.0)).
+								TextSm().
+								Child(button.label),
+						),
+				))
 ```
 
 ## Custom painting

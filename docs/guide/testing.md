@@ -216,7 +216,7 @@ panic: Exited with leaked handles:
 |---|---|---|
 | unset | strict | off |
 | `strict` | strict | strict |
-| any other value, including `0` | on (not strict) | on |
+| any other non-empty value, including `0` | on (not strict) | on |
 
 - Set `LEAK_BACKTRACE=1` to record where each leaked handle was created.
 - Leak reports are process-wide. Do not use `t.Parallel()` in tests that rely on them.

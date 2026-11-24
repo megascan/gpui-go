@@ -25,7 +25,7 @@
 
 Every method returns the receiver type, so chains keep their type. `.ID(x)` returns `*gpui.Stateful[*gpui.Div]`, which adds `StatefulInteractive`: `OnClick`, `OnAuxClick`, `Active`, `OnHover`, `Tooltip`, `OnDrag`, `OverflowScroll`, `OverflowYScroll`, `TrackScroll` and `Focusable`. A helper that returns `*gpui.Div` therefore can't be followed by `OnClick` until something calls `.ID(...)`.
 
-- `ID` accepts `string`, any int kind, `gpui.ElementID`, `*gpui.FocusHandle` and a few more. For composite ids use `gpui.ElementIDNamedInteger("row", uint64(ix))`.
+- `ID` accepts the `gpui.ElementIDSource` set: `~string`, `~int`, `~int32`, `~uint`, `~uint32`, `~uint64`, `gpui.ElementID`, `*gpui.FocusHandle`, `*gpui.SourceLocation`, `[16]byte` (UUID) and `[20]byte` (opaque id). Other int kinds (`int64`, `uint8`, ...) need a conversion. For composite ids use `gpui.ElementIDNamedInteger("row", uint64(ix))`.
 - IDs must be stable between frames and unique among siblings. Scroll offsets, hover and active state, and animations are all keyed by them.
 - Tailwind scale: `P2`, `Px4`, `Gap3`, `Size8`, `W64`, `H32`, `RoundedMd`, `TextSm`, `ShadowLg`, `Border1`, `BorderB1`, ... Fractions keep the underscore (`W1_2`).
 - Layout: `Flex`, `FlexCol`, `FlexRow`, `Flex1`, `FlexGrow`, `FlexShrink0`, `FlexWrap`, `ItemsCenter`, `JustifyCenter`, `JustifyBetween`, `Grid`, `GridCols(n)`, `Relative`, `Absolute`, `Top`/`Left`/`Inset0`, `OverflowHidden`, `SizeFull`, `WFull`, `HFull`.

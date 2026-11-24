@@ -76,7 +76,7 @@ Status: not yet run on a Mac. The code is checked by cross-compiling, `go vet` a
 
 - No cgo. Win32, COM, Direct3D 11, DirectComposition and DirectWrite are called through `golang.org/x/sys/windows`.
 - HLSL shaders are compiled when the app starts, with `D3DCompile` from `d3dcompiler_47.dll`.
-- Set `GPUI_DISABLE_DIRECT_COMPOSITION` to render without DirectComposition.
+- Set `GPUI_DISABLE_DIRECT_COMPOSITION=1` (or `true`) to render without DirectComposition.
 - There is no headless renderer on Windows yet: `platform.CurrentHeadlessRenderer` returns nil.
 
 Status: not yet run on Windows. Unit tests run under Wine, where a few tests fail because Wine lacks some DirectWrite, UI Automation and WinRT functions (see [TECH_DEBT.md](../../TECH_DEBT.md#wine-test)).
@@ -97,6 +97,15 @@ Three things differ from desktop:
 - `Run` returns instead of blocking, so `main` must not exit. End it with `select {}`, as [examples/web_hello_web/main.go](../../examples/web_hello_web/main.go) does:
 
 ```go
+func main() {
+	platform.WebInit()
+	name := ""
+	if len(os.Args) > 1 {
+		name = os.Args[1]
+	}
+	switch name {
+	case "dynamic-fonts":
+		RunDynamicFonts()
 	default:
 		runHelloWeb()
 	}
@@ -107,7 +116,17 @@ Three things differ from desktop:
 - The browser has no system fonts for GPUI to use. Load font files before you render text:
 
 ```go
+//go:embed fonts/IBMPlexSans-Regular.ttf
+var IBMPlexSansRegular []byte
+
+func runHelloWeb() {
+	runApplication(func(cx *gpui.App) {
 		if err := cx.TextSystem().AddFonts([][]byte{IBMPlexSansRegular}); err != nil {
+			js.Global().Get("console").Call("error", fmt.Sprintf("failed to load application fonts: %v", err))
+			return
+		}
+	})
+}
 ```
 
 - There is one thread (limit L-WEBTHREADS). Background tasks run on the same thread as the UI, so long CPU work still blocks rendering. Split it into steps that yield.
