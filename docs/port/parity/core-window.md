@@ -10,44 +10,44 @@ Go target: `element.go` (package `gpui`), tests in `element_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Element` | trait | 52 |  | `Element` | todo |
+| `Element` | trait | 52 |  | `Element` | done |
 | `Element::id` | trait-method | 66 |  | `Element.ElementID` | dev:D-NAME |
-| `Element::source_location` | trait-method | 70 |  | `Element.SourceLocation` | todo |
-| `Element::request_layout` | trait-method | 74 |  | `Element.RequestLayout` | todo |
-| `Element::prepaint` | trait-method | 84 |  | `Element.Prepaint` | todo |
-| `Element::paint` | trait-method | 96 |  | `Element.Paint` | todo |
-| `Element::a11y_role` | trait-method | 113 |  | `Element.A11yRole` | todo |
-| `Element::write_a11y_info` | trait-method | 121 |  | `Element.WriteA11yInfo` | todo |
-| `Element::a11y_synthetic_children` | trait-method | 132 |  | `Element.ElementA11ySyntheticChildren` | dev:D-NAME |
-| `Element::into_any` | trait-method | 140 |  | `Element.IntoAny` | todo |
-| `IntoElement` | trait | 154 |  | `IntoElement` | todo |
-| `IntoElement::into_element` | trait-method | 160 |  | `IntoElement.IntoElement` | todo |
-| `IntoElement::into_any_element` | trait-method | 163 |  | `IntoElement.IntoAnyElement` | todo |
-| `Render` | trait | 172 |  | `Render` | todo |
-| `Render::render` | trait-method | 174 |  | `Render.Render` | todo |
-| `RenderOnce` | trait | 188 |  | `RenderOnce` | todo |
-| `RenderOnce::render` | trait-method | 192 |  | `RenderOnce.Render` | todo |
-| `ParentElement` | trait | 197 |  | `Parent[S] mixin + ParentElement interface` | todo |
-| `ParentElement::extend` | trait-method | 199 |  | `(Parent[S]).Extend` | todo |
-| `ParentElement::child` | trait-method | 202 |  | `(Parent[S]).Child` | todo |
-| `ParentElement::children` | trait-method | 211 |  | `(Parent[S]).Children` | todo |
-| `GlobalElementId` | struct | 228 |  | `GlobalElementID` | todo |
-| `Drawable` | struct | 324 |  | `Drawable` | todo |
-| `AnyElement` | struct | 658 |  | `AnyElement` | todo |
-| `AnyElement::downcast_mut` | method | 677 |  | `(AnyElement).DowncastMut` | todo |
-| `AnyElement::request_layout` | method | 683 |  | `(AnyElement).RequestLayout` | todo |
-| `AnyElement::prepaint` | method | 689 |  | `(AnyElement).Prepaint` | todo |
-| `AnyElement::paint` | method | 702 |  | `(AnyElement).Paint` | todo |
-| `AnyElement::layout_as_root` | method | 707 |  | `(AnyElement).LayoutAsRoot` | todo |
-| `AnyElement::prepaint_at` | method | 718 |  | `(AnyElement).PrepaintAt` | todo |
-| `AnyElement::prepaint_as_root` | method | 729 |  | `(AnyElement).PrepaintAsRoot` | todo |
-| `Empty` | struct | 795 |  | `Empty` | todo |
+| `Element::source_location` | trait-method | 70 |  | `Element.SourceLocation` | done |
+| `Element::request_layout` | trait-method | 74 |  | `Element.RequestLayout` | done |
+| `Element::prepaint` | trait-method | 84 |  | `Element.Prepaint` | done |
+| `Element::paint` | trait-method | 96 |  | `Element.Paint` | done |
+| `Element::a11y_role` | trait-method | 113 |  | `ElementA11y.A11yRole` | done |
+| `Element::write_a11y_info` | trait-method | 121 |  | `ElementA11y.WriteA11yInfo` | done |
+| `Element::a11y_synthetic_children` | trait-method | 132 |  | `ElementA11ySyntheticChildren.ElementA11ySyntheticChildren` | dev:D-NAME |
+| `Element::into_any` | trait-method | 140 |  | `NewAnyElement` | done |
+| `IntoElement` | trait | 154 |  | `IntoElement` | done |
+| `IntoElement::into_element` | trait-method | 160 |  | `IntoElement.IntoElement` | n/a:D-INTOELEMENT |
+| `IntoElement::into_any_element` | trait-method | 163 |  | `IntoElement.IntoAnyElement` | done |
+| `Render` | trait | 172 |  | `Render` | done |
+| `Render::render` | trait-method | 174 |  | `Render.Render` | done |
+| `RenderOnce` | trait | 188 |  | `RenderOnce` | done |
+| `RenderOnce::render` | trait-method | 192 |  | `RenderOnce.Render` | done |
+| `ParentElement` | trait | 197 |  | `Parent[S] mixin + ParentElement interface` | done |
+| `ParentElement::extend` | trait-method | 199 |  | `ParentElement.Extend` | done |
+| `ParentElement::child` | trait-method | 202 |  | `(Parent[S]).Child` | done |
+| `ParentElement::children` | trait-method | 211 |  | `(Parent[S]).Children` | done |
+| `GlobalElementId` | struct | 228 |  | `GlobalElementID` | done |
+| `Drawable` | struct | 324 |  | `Drawable` | done |
+| `AnyElement` | struct | 658 |  | `AnyElement` | done |
+| `AnyElement::downcast_mut` | method | 677 |  | `(AnyElement).DowncastMut` | done |
+| `AnyElement::request_layout` | method | 683 |  | `(AnyElement).RequestLayout` | done |
+| `AnyElement::prepaint` | method | 689 |  | `(AnyElement).Prepaint` | dev:D-PREPAINTFOCUS |
+| `AnyElement::paint` | method | 702 |  | `(AnyElement).Paint` | done |
+| `AnyElement::layout_as_root` | method | 707 |  | `(AnyElement).LayoutAsRoot` | done |
+| `AnyElement::prepaint_at` | method | 718 |  | `(AnyElement).PrepaintAt` | dev:D-PREPAINTFOCUS |
+| `AnyElement::prepaint_as_root` | method | 729 |  | `(AnyElement).PrepaintAsRoot` | dev:D-PREPAINTFOCUS |
+| `Empty` | struct | 795 |  | `Empty` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `equal_paths_are_equal_and_hash_alike` | test | 892 |  | `TestElementGlobalElementIDTests_EqualPathsAreEqualAndHashAlike` | todo |
-| `frame_cost` | crate::test ignore | 941 |  | `TestElementGlobalElementIDTests_FrameCost` | todo |
-| `hash_cost` | test ignore | 973 |  | `TestElementGlobalElementIDTests_HashCost` | todo |
+| `equal_paths_are_equal_and_hash_alike` | test | 892 |  | `TestElementGlobalElementIDTests_EqualPathsAreEqualAndHashAlike` | done |
+| `frame_cost` | crate::test ignore | 941 |  | `TestElementGlobalElementIDTests_FrameCost` | blocked:M0-div-paint |
+| `hash_cost` | test ignore | 973 |  | `TestElementGlobalElementIDTests_HashCost` | done |
 
 ## gpui/src/inspector.rs
 
@@ -55,16 +55,16 @@ Go target: `inspector.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `InspectorElementId` | struct | 3 |  | `InspectorElementID` | todo |
-| `InspectorElementPath` | struct | 30 | feat:inspector,debug | `InspectorElementPath` | todo |
-| `InspectorRenderer` | type | 55 | feat:inspector,debug | `InspectorRenderer` | todo |
-| `Inspector` | struct | 60 | feat:inspector,debug | `Inspector` | todo |
-| `Inspector::active_element_id` | method | 117 | feat:inspector,debug | `(Inspector).ActiveElementID` | todo |
-| `Inspector::start_picking` | method | 148 | feat:inspector,debug | `(Inspector).StartPicking` | todo |
-| `Inspector::is_picking` | method | 153 | feat:inspector,debug | `(Inspector).IsPicking` | todo |
-| `Inspector::render_inspector_states` | method | 158 | feat:inspector,debug | `(Inspector).RenderInspectorStates` | todo |
-| `FunctionReflection` | struct | 250 | feat:inspector,debug | `FunctionReflection` | todo |
-| `FunctionReflection::invoke` | method | 263 | feat:inspector,debug | `(FunctionReflection).Invoke` | todo |
+| `InspectorElementId` | struct | 3 |  | `InspectorElementID` | done |
+| `InspectorElementPath` | struct | 30 | feat:inspector,debug | `InspectorElementPath` | done |
+| `InspectorRenderer` | type | 55 | feat:inspector,debug | `InspectorRenderer` | done |
+| `Inspector` | struct | 60 | feat:inspector,debug | `Inspector` | done |
+| `Inspector::active_element_id` | method | 117 | feat:inspector,debug | `(Inspector).ActiveElementID` | done |
+| `Inspector::start_picking` | method | 148 | feat:inspector,debug | `(Inspector).StartPicking` | done |
+| `Inspector::is_picking` | method | 153 | feat:inspector,debug | `(Inspector).IsPicking` | done |
+| `Inspector::render_inspector_states` | method | 158 | feat:inspector,debug | `(Inspector).RenderInspectorStates` | dev:D-INSPECTORORDER |
+| `FunctionReflection` | struct | 250 | feat:inspector,debug | `FunctionReflection` | done |
+| `FunctionReflection::invoke` | method | 263 | feat:inspector,debug | `(FunctionReflection).Invoke` | done |
 
 ## gpui/src/view.rs
 
@@ -72,21 +72,21 @@ Go target: `view.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `AnyView` | struct | 24 |  | `AnyView` | todo |
-| `AnyView::cached` | method | 46 |  | `(AnyView).Cached` | todo |
-| `AnyView::downgrade` | method | 51 |  | `(AnyView).Downgrade` | todo |
-| `AnyView::downcast` | method | 61 |  | `(AnyView).Downcast` | todo |
-| `AnyView::entity_type` | method | 73 |  | `(AnyView).EntityType` | todo |
-| `AnyView::entity_id` | method | 78 |  | `(AnyView).EntityID` | todo |
-| `AnyWeakView` | struct | 135 |  | `AnyWeakView` | todo |
-| `AnyWeakView::upgrade` | method | 143 |  | `(AnyWeakView).Upgrade` | todo |
-| `View` | trait | 208 |  | `View` | todo |
-| `View::entity_id` | trait-method | 217 |  | `View.EntityID` | todo |
-| `View::render` | trait-method | 220 |  | `View.Render` | todo |
-| `Entity::cached` | method | 258 |  | `(Entity).Cached` | todo |
-| `ViewElement` | struct | 266 |  | `ViewElement` | todo |
-| `ViewElement::new` | assoc-fn | 279 |  | `NewViewElement` | todo |
-| `EmptyView` | struct | 470 |  | `EmptyView` | todo |
+| `AnyView` | struct | 24 |  | `AnyView` | done |
+| `AnyView::cached` | method | 46 |  | `(AnyView).Cached` | done |
+| `AnyView::downgrade` | method | 51 |  | `(AnyView).Downgrade` | done |
+| `AnyView::downcast` | method | 61 |  | `(AnyView).Downcast` | done |
+| `AnyView::entity_type` | method | 73 |  | `(AnyView).EntityType` | done |
+| `AnyView::entity_id` | method | 78 |  | `(AnyView).EntityID` | done |
+| `AnyWeakView` | struct | 135 |  | `AnyWeakView` | done |
+| `AnyWeakView::upgrade` | method | 143 |  | `(AnyWeakView).Upgrade` | done |
+| `View` | trait | 208 |  | `View` | dev:D-VIEWADAPT |
+| `View::entity_id` | trait-method | 217 |  | `View.EntityID` | done |
+| `View::render` | trait-method | 220 |  | `View.Render` | done |
+| `Entity::cached` | method | 258 |  | `(Entity).Cached` | done |
+| `ViewElement` | struct | 266 |  | `ViewElement` | dev:D-VIEWADAPT |
+| `ViewElement::new` | assoc-fn | 279 |  | `NewViewElement` | done |
+| `EmptyView` | struct | 470 |  | `EmptyView` | done |
 
 ## gpui/src/window.rs
 
@@ -512,3 +512,13 @@ Go target: `window_prompts.go` (package `gpui`)
 | `fallback_prompt_renderer` | fn | 73 |  | `NewFallbackPromptRenderer` | todo |
 | `FallbackPromptRenderer` | struct | 94 |  | `FallbackPromptRenderer` | todo |
 
+
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-PREPAINTFOCUS | `AnyElement.Prepaint`, `PrepaintAt` and `PrepaintAsRoot` return nothing; upstream returns `Option<FocusHandle>` for a focus assigned inside the subtree | `gpui/src/element.rs:689-738` | no caller in zed@6501df1 reads the result; a returned counted `FocusHandle` would have to be released by every caller (D-RAII), and ignoring it would leak a count |
+| D-INTOELEMENT | `IntoElement` has only `IntoAnyElement`; `into_element` and the associated `Element` type do not exist, and `AnyElement` does not implement `Element` (its own `RequestLayout(window, cx)` / `Paint` / `Prepaint` would clash with the trait's) | `gpui/src/element.rs:154-166`, `:741-792` | a Go interface cannot carry an associated type; every use goes through `AnyElement` |
+| D-VIEWADAPT | `Entity[T]`, `AnyView` and `RenderOnce` components are not `View` values themselves: unexported adapters (`entityView[T]`, `anyViewView`, `componentView[C]`) implement `View` for them, and `ViewElement` is a non-generic struct holding a `View` plus the type name upstream takes from `type_name::<V>()`. `IntoAnyElement`, `Cached` and `NewComponent` build it. `Entity::into_any_element` (and `AnyView`'s) moves the handle into the element, which releases it after rendering or, when the view was never rendered (a cache hit), at the window's arena clear (`Window.deferArenaDrop`) | `gpui/src/view.rs:93-120`, `:208-258`, `:266-320` | `Entity[T].EntityID() EntityID` and `AnyView.EntityID() EntityID` clash with `View.EntityID() (EntityID, bool)`, and `RenderOnce.Render` has `View.Render`'s signature |
+| D-INSPECTORORDER | `Inspector.RenderInspectorStates` renders the active element's states in the order they were first stored; upstream iterates a `TypeIdHashMap` | `gpui/src/inspector.rs:158-196` | Go map iteration is randomized per run; insertion order is the deterministic choice |
+| D-SRCLOC | `SourceLocation.Column` is 0: Go's runtime reports file and line only. `CallerSourceLocation(skip)` replaces `#[track_caller]` + `Location::caller()` and interns one value per call site | `gpui/src/element.rs:70`, `gpui/src/view.rs:297` | `runtime.Frame` has no column |

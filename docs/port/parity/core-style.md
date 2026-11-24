@@ -524,21 +524,21 @@ Go target: `taffy.go` (package `gpui`), tests in `taffy_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `TaffyLayoutEngine` | struct | 31 |  | `TaffyLayoutEngine` | todo |
-| `TaffyLayoutEngine::new` | assoc-fn | 43 |  | `NewTaffyLayoutEngine` | todo |
-| `TaffyLayoutEngine::clear` | method | 55 |  | `(TaffyLayoutEngine).Clear` | todo |
-| `TaffyLayoutEngine::request_layout` | method | 62 |  | `(TaffyLayoutEngine).RequestLayout` | todo |
-| `TaffyLayoutEngine::request_measured_layout` | method | 85 |  | `(TaffyLayoutEngine).RequestMeasuredLayout` | todo |
-| `TaffyLayoutEngine::stretch_auto_size_to_fill` | method | 115 |  | `(TaffyLayoutEngine).StretchAutoSizeToFill` | todo |
-| `TaffyLayoutEngine::compute_layout` | method | 187 |  | `(TaffyLayoutEngine).ComputeLayout` | todo |
-| `TaffyLayoutEngine::layout_bounds` | method | 356 |  | `(TaffyLayoutEngine).LayoutBounds` | todo |
-| `LayoutId` | struct | 396 |  | `LayoutID` | todo |
-| `AvailableSpace` | enum | 689 |  | `AvailableSpace` | todo |
-| `AvailableSpace::min_size` | assoc-fn | 713 |  | `AvailableSpaceMinSize` | todo |
+| `TaffyLayoutEngine` | struct | 31 |  | `TaffyLayoutEngine` | done |
+| `TaffyLayoutEngine::new` | assoc-fn | 43 |  | `NewTaffyLayoutEngine` | done |
+| `TaffyLayoutEngine::clear` | method | 55 |  | `(TaffyLayoutEngine).Clear` | done |
+| `TaffyLayoutEngine::request_layout` | method | 62 |  | `(TaffyLayoutEngine).RequestLayout` | done |
+| `TaffyLayoutEngine::request_measured_layout` | method | 85 |  | `(TaffyLayoutEngine).RequestMeasuredLayout` | done |
+| `TaffyLayoutEngine::stretch_auto_size_to_fill` | method | 115 |  | `(TaffyLayoutEngine).StretchAutoSizeToFill` | done |
+| `TaffyLayoutEngine::compute_layout` | method | 187 |  | `(TaffyLayoutEngine).ComputeLayout` | done |
+| `TaffyLayoutEngine::layout_bounds` | method | 356 |  | `(TaffyLayoutEngine).LayoutBounds` | done |
+| `LayoutId` | struct | 396 |  | `LayoutID` | done |
+| `AvailableSpace` | enum | 689 |  | `AvailableSpace` | done |
+| `AvailableSpace::min_size` | assoc-fn | 713 |  | `AvailableSpaceMinSize` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `border_widths_to_taffy_use_stroke_snapping` | test | 761 |  | `TestTaffy_BorderWidthsToTaffyUseStrokeSnapping` | todo |
+| `border_widths_to_taffy_use_stroke_snapping` | test | 761 |  | `TestTaffy_BorderWidthsToTaffyUseStrokeSnapping` | done |
 
 ## Deviations registered here
 

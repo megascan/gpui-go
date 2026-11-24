@@ -4,7 +4,9 @@ import (
 	"encoding/json/jsontext"
 	"image"
 	"reflect"
+	"strconv"
 	"sync"
+	"sync/atomic"
 	"time"
 	"weak"
 
@@ -40,36 +42,6 @@ const (
 // NativeViewID identifies a native view within its window (M0-window-a11y ports it).
 type NativeViewID uint64
 
-// IntoAnyElement renders the entity as a view; *T must implement Render[T] (M0-element ports it).
-func (e Entity[T]) IntoAnyElement() AnyElement {
-	panic("gpui: unimplemented Entity.IntoAnyElement")
-}
-
-// AnyView is a type-erased handle to an entity that implements Render (M0-element ports it).
-type AnyView struct {
-	entity AnyEntity
-}
-
-func anyViewDowncast[V any](view AnyView) (Entity[V], bool) {
-	panic("gpui: unimplemented anyViewDowncast")
-}
-
-// View is an entity or component that can render itself (M0-element ports it).
-type View interface {
-	EntityID() (EntityID, bool)
-	Render(window *Window, cx *App) IntoElement
-}
-
-// Render is implemented by entity states that can be drawn as views (M0-element ports it).
-type Render[T any] interface {
-	Render(window *Window, cx *Context[T]) IntoElement
-}
-
-// RenderOnce is implemented by components that render once into an element tree (M0-element ports it).
-type RenderOnce interface {
-	Render(window *Window, cx *App) IntoElement
-}
-
 // WindowID is the identifier of a window (M0-window-core ports it).
 type WindowID uint64
 
@@ -98,6 +70,11 @@ type Window struct {
 	needsPresent       *bool
 	refreshing         bool
 	renderedFrame      *frame
+	nextFrame          *frame
+	elementIDStack     elementIDStack
+	dirtyViews         map[EntityID]struct{}
+	windowProfiler     WindowProfiler
+	a11y               windowA11y
 
 	displayObservers      singleSubscriberSet[anyObserver]
 	focusListeners        singleSubscriberSet[anyWindowFocusListener]
@@ -367,22 +344,95 @@ type ElementIDSource interface {
 	~string | ~int | ~uint64 | ElementID
 }
 
-// GlobalElementID is the path of element ids from the window root (M0-element ports it).
-type GlobalElementID struct {
-	path []ElementID
+const (
+	elementIDView uint8 = iota
+	elementIDInteger
+	elementIDName
+	elementIDUUID
+	elementIDFocusHandle
+	elementIDNamedInteger
+	elementIDPath
+	elementIDCodeLocation
+	elementIDNamedChild
+	elementIDOpaqueID
+)
+
+// NewElementID builds an ElementID from a name (Name), an integer (Integer) or an ElementID (M0-window-core ports it).
+// The placeholder body covers these sources.
+func NewElementID[I ElementIDSource](id I) ElementID {
+	switch v := any(id).(type) {
+	case ElementID:
+		return v
+	}
+	value := reflect.ValueOf(id)
+	switch value.Kind() {
+	case reflect.String:
+		return ElementIDName(SharedString(value.String()))
+	case reflect.Int:
+		return ElementID{kind: elementIDInteger, num: uint64(value.Int())}
+	default:
+		return ElementID{kind: elementIDInteger, num: value.Uint()}
+	}
 }
 
-// InspectorElementID identifies an element in the inspector (M0-element ports it).
-type InspectorElementID struct{}
+// ElementIDView is the id of a view element (M0-window-core ports it). The placeholder body is final.
+func ElementIDView(id EntityID) ElementID {
+	return ElementID{kind: elementIDView, num: uint64(id)}
+}
 
-// SourceLocation is a source position recorded when an element is constructed (M0-element ports it).
-type SourceLocation struct {
-	// File is the source file name.
-	File string
-	// Line is the 1-based line number.
-	Line uint32
-	// Column is the 1-based column number.
-	Column uint32
+// ElementIDName is a string based id (M0-window-core ports it). The placeholder body is final.
+func ElementIDName(name SharedString) ElementID {
+	return ElementID{kind: elementIDName, name: name}
+}
+
+// ElementIDNamedInteger is a combination of a name and an integer (M0-window-core ports it). The placeholder body is final.
+func ElementIDNamedInteger(name SharedString, integer uint64) ElementID {
+	return ElementID{kind: elementIDNamedInteger, name: name, num: integer}
+}
+
+// Hash feeds the id to h as upstream's derived Hash does (M0-window-core ports it).
+// The placeholder body covers Integer, Name and NamedInteger.
+func (id ElementID) Hash(h *FxHasher) {
+	h.WriteUsize(uint64(id.kind))
+	switch id.kind {
+	case elementIDInteger:
+		h.WriteU64(id.num)
+	case elementIDName:
+		h.WriteString(string(id.name))
+	case elementIDNamedInteger:
+		h.WriteString(string(id.name))
+		h.WriteU64(id.num)
+	default:
+		panic("gpui: unimplemented ElementID.Hash")
+	}
+}
+
+// String formats the id like upstream's Display impl (M0-window-core ports it).
+// The placeholder body covers Integer, Name and NamedInteger.
+func (id ElementID) String() string {
+	switch id.kind {
+	case elementIDInteger:
+		return strconv.FormatUint(id.num, 10)
+	case elementIDName:
+		return string(id.name)
+	case elementIDNamedInteger:
+		return string(id.name) + "-" + strconv.FormatUint(id.num, 10)
+	}
+	panic("gpui: unimplemented ElementID.String")
+}
+
+// GoString formats the id like upstream's Debug impl (M0-window-core ports it).
+// The placeholder body covers Integer, Name and NamedInteger.
+func (id ElementID) GoString() string {
+	switch id.kind {
+	case elementIDInteger:
+		return "Integer(" + strconv.FormatUint(id.num, 10) + ")"
+	case elementIDName:
+		return "Name(" + strconv.Quote(string(id.name)) + ")"
+	case elementIDNamedInteger:
+		return "NamedInteger(" + strconv.Quote(string(id.name)) + ", " + strconv.FormatUint(id.num, 10) + ")"
+	}
+	panic("gpui: unimplemented ElementID.GoString")
 }
 
 // Hitbox is a region that receives mouse events (M0-window-core ports it).
@@ -405,77 +455,61 @@ type DispatchEventResult struct {
 // A11ySubtreeBuilder adds synthetic accessibility nodes below an element (M0-window-a11y ports it).
 type A11ySubtreeBuilder struct {
 	parentID a11y.NodeID
+	nodes    *a11yNodeBuilder
+	creator  nodeCreator
 }
 
-// Element is implemented by types that participate in laying out and painting the contents of a window (M0-element ports it).
-type Element[RL, PP any] interface {
-	ElementID() (ElementID, bool)
-	SourceLocation() *SourceLocation
-	RequestLayout(id *GlobalElementID, inspectorID *InspectorElementID, window *Window, cx *App) (LayoutID, RL)
-	Prepaint(id *GlobalElementID, inspectorID *InspectorElementID, bounds Bounds[Pixels], requestLayout *RL, window *Window, cx *App) PP
-	Paint(id *GlobalElementID, inspectorID *InspectorElementID, bounds Bounds[Pixels], requestLayout *RL, prepaint *PP, window *Window, cx *App)
+func newA11ySubtreeBuilder(parentID a11y.NodeID, nodes *a11yNodeBuilder) A11ySubtreeBuilder {
+	panic("gpui: unimplemented newA11ySubtreeBuilder")
 }
 
-// ElementA11y is the optional accessibility hook of an Element (M0-element ports it).
-type ElementA11y interface {
-	A11yRole() (a11y.Role, bool)
-	WriteA11yInfo(node *a11y.Node)
+func (b A11ySubtreeBuilder) withCreator(creator nodeCreator) A11ySubtreeBuilder {
+	panic("gpui: unimplemented A11ySubtreeBuilder.withCreator")
 }
 
-// ElementA11ySyntheticChildren is the optional hook that adds synthetic accessibility children (M0-element ports it).
-type ElementA11ySyntheticChildren[PP any] interface {
-	ElementA11ySyntheticChildren(prepaint *PP, builder *A11ySubtreeBuilder)
+type windowA11y struct {
+	activeThisFrame bool
+	nodes           a11yNodeBuilder
+	nodeBounds      map[a11y.NodeID]Bounds[Pixels]
+	viewTypeNames   map[EntityID]string
 }
 
-// IntoElement is implemented by any type that can be converted into an element (M0-element ports it).
-type IntoElement interface {
-	IntoAnyElement() AnyElement
+func newWindowA11y(activeFlag *atomic.Bool, forceDisabled bool, windowTitle Option[SharedString]) windowA11y {
+	return windowA11y{
+		nodeBounds:    make(map[a11y.NodeID]Bounds[Pixels]),
+		viewTypeNames: make(map[EntityID]string),
+	}
 }
 
-// AnyElement is a type-erased element (M0-element ports it).
-type AnyElement struct {
-	element any
+func (a *windowA11y) isActive() bool {
+	return a.activeThisFrame
 }
 
-// NewAnyElement wraps a typed element (M0-element ports it).
-func NewAnyElement[RL, PP any](element Element[RL, PP]) AnyElement {
-	panic("gpui: unimplemented NewAnyElement")
+type a11yNodeBuilder struct{}
+
+func (b *a11yNodeBuilder) push(id a11y.NodeID, node a11y.Node) bool {
+	panic("gpui: unimplemented a11yNodeBuilder.push")
 }
 
-// IntoAnyElement returns the element itself.
-func (e AnyElement) IntoAnyElement() AnyElement {
-	return e
+func (b *a11yNodeBuilder) pop() {
+	panic("gpui: unimplemented a11yNodeBuilder.pop")
 }
 
-// RequestLayout requests layout for the element (M0-element ports it).
-func (e *AnyElement) RequestLayout(window *Window, cx *App) LayoutID {
-	panic("gpui: unimplemented AnyElement.RequestLayout")
+func (b *a11yNodeBuilder) recordNodeInfo(id a11y.NodeID, info nodeDebugInfo) {
+	panic("gpui: unimplemented a11yNodeBuilder.recordNodeInfo")
 }
 
-// LayoutAsRoot lays the element out as the root of a layout tree (M0-element ports it).
-func (e *AnyElement) LayoutAsRoot(availableSpace SizeOf[AvailableSpace], window *Window, cx *App) Size[Pixels] {
-	panic("gpui: unimplemented AnyElement.LayoutAsRoot")
+type nodeDebugInfo struct {
+	synthetic      bool
+	view           Option[string]
+	elementID      Option[string]
+	sourceLocation *SourceLocation
 }
 
-// PrepaintAt prepaints the element at the given origin (M0-element ports it).
-func (e *AnyElement) PrepaintAt(origin Point[Pixels], window *Window, cx *App) {
-	panic("gpui: unimplemented AnyElement.PrepaintAt")
-}
-
-// Paint paints the element (M0-element ports it).
-func (e *AnyElement) Paint(window *Window, cx *App) {
-	panic("gpui: unimplemented AnyElement.Paint")
-}
-
-// LayoutID identifies a node in the layout tree (M0-element ports it).
-type LayoutID struct {
-	node uint64
-}
-
-// AvailableSpace is the space available to an element during layout (M0-element ports it).
-type AvailableSpace struct {
-	kind     uint8
-	definite Pixels
+type nodeCreator struct {
+	view           Option[string]
+	elementID      Option[string]
+	sourceLocation *SourceLocation
 }
 
 // Interactivity holds the listeners and interactive style of an element (M0-div-api ports it).
@@ -529,36 +563,6 @@ type StatefulInteractive[S StatefulInteractiveElement] struct {
 // BindStatefulInteractive binds a StatefulInteractive mixin to the element that embeds it.
 func BindStatefulInteractive[S StatefulInteractiveElement](m *StatefulInteractive[S], self S) {
 	m.self = self
-}
-
-// ParentElement is implemented by elements that embed Parent (M0-element ports it).
-type ParentElement interface {
-	Extend(elements []AnyElement)
-}
-
-// Parent is the ParentElement mixin; bind it with BindParent (M0-element ports it).
-type Parent[S ParentElement] struct {
-	self S
-}
-
-// BindParent binds a Parent mixin to the element that embeds it.
-func BindParent[S ParentElement](m *Parent[S], self S) {
-	m.self = self
-}
-
-// Child adds a child element (M0-element ports it).
-func (p *Parent[S]) Child(child IntoElement) S {
-	panic("gpui: unimplemented Parent.Child")
-}
-
-// Children adds child elements (M0-element ports it).
-func (p *Parent[S]) Children(children ...IntoElement) S {
-	panic("gpui: unimplemented Parent.Children")
-}
-
-// ChildText adds a text child (M0-element ports it).
-func (p *Parent[S]) ChildText(text string) S {
-	panic("gpui: unimplemented Parent.ChildText")
 }
 
 // Div is the basic container element (M0-div-api ports it).
@@ -692,14 +696,6 @@ func (s SharedString) IntoAnyElement() AnyElement {
 // Appearance returns the window's appearance (M0-window-paint ports it).
 func (w *Window) Appearance() WindowAppearance {
 	panic("gpui: unimplemented Window.Appearance")
-}
-
-// Empty is an element that renders nothing (M0-element ports it).
-type Empty struct{}
-
-// IntoAnyElement converts the element into an AnyElement (M0-element ports it).
-func (Empty) IntoAnyElement() AnyElement {
-	panic("gpui: unimplemented Empty.IntoAnyElement")
 }
 
 // HangDetector detects hangs from the foreground journal (M3-profiler-hang ports it).
@@ -853,10 +849,6 @@ type PromptHandle struct{}
 // RenderablePromptHandle is a prompt rendered as a view (M0-window-dispatch ports it).
 type RenderablePromptHandle struct{}
 
-func (r *inspectorElementRegistry) register[T any, R IntoElement](factory func(window *Window, cx *App) func(id InspectorElementID, state *T, window *Window, cx *App) R) {
-	panic("gpui: unimplemented inspectorElementRegistry.register")
-}
-
 // NewHangDetector creates a detector over the foreground journal (M3-profiler-hang ports it).
 func NewHangDetector(journal ForegroundJournal, threshold time.Duration, frameBudget time.Duration) *HangDetector {
 	panic("gpui: unimplemented NewHangDetector")
@@ -896,22 +888,6 @@ type promptBuilderDefault struct{}
 
 func (promptBuilderDefault) isPromptBuilder() {}
 
-// Inspector manages inspector state (M0-element ports it).
-type Inspector struct{}
-
-// InspectorRenderer renders the inspector UI; it is set on the App (M0-element ports it).
-type InspectorRenderer func(inspector *Inspector, window *Window, cx *Context[Inspector]) AnyElement
-
-type inspectorElementRegistry struct{}
-
-func defaultInspectorElementRegistry() inspectorElementRegistry {
-	return inspectorElementRegistry{}
-}
-
-func anyViewFromEntity[V any](entity Entity[V]) AnyView {
-	panic("gpui: unimplemented anyViewFromEntity")
-}
-
 // ForegroundJournal is the foreground work journal of the app's thread (M3-profiler-journal ports it).
 type ForegroundJournal struct{}
 
@@ -928,7 +904,9 @@ type promptBuilderCustom struct {
 func (promptBuilderCustom) isPromptBuilder() {}
 
 type frame struct {
-	debugBounds map[string]Bounds[Pixels]
+	focus        Option[FocusID]
+	dispatchTree *dispatchTree
+	debugBounds  map[string]Bounds[Pixels]
 }
 
 type drawPhase uint8
@@ -940,29 +918,114 @@ const (
 	drawPhaseFocus
 )
 
+type elementIDStack struct {
+	ids    []ElementID
+	hashes []uint64
+}
+
+func (s *elementIDStack) push(id ElementID) {
+	panic("gpui: unimplemented elementIDStack.push")
+}
+
+func (s *elementIDStack) pop() (ElementID, bool) {
+	panic("gpui: unimplemented elementIDStack.pop")
+}
+
+func (s *elementIDStack) globalID() GlobalElementID {
+	panic("gpui: unimplemented elementIDStack.globalID")
+}
+
+type prepaintStateIndex struct {
+	hitboxesIndex int
+}
+
+type paintIndex struct {
+	sceneIndex int
+}
+
+func (w *Window) deferArenaDrop(f func()) {
+	panic("gpui: unimplemented Window.deferArenaDrop")
+}
+
+// ScaleFactor returns the window's scale factor (M0-window-paint ports it).
+func (w *Window) ScaleFactor() float32 {
+	panic("gpui: unimplemented Window.ScaleFactor")
+}
+
+// TextStyle returns the current text style (M0-window-paint ports it).
+func (w *Window) TextStyle() TextStyle {
+	panic("gpui: unimplemented Window.TextStyle")
+}
+
+// WithID calls f with elementID pushed on the element id stack (M0-window-paint ports it).
+func (w *Window) WithID[R any](elementID ElementID, f func(window *Window) R) R {
+	panic("gpui: unimplemented Window.WithID")
+}
+
+func (w *Window) prepaintIndex() prepaintStateIndex {
+	panic("gpui: unimplemented Window.prepaintIndex")
+}
+
+func (w *Window) reusePrepaint(start, end prepaintStateIndex) {
+	panic("gpui: unimplemented Window.reusePrepaint")
+}
+
+func (w *Window) paintIndex() paintIndex {
+	panic("gpui: unimplemented Window.paintIndex")
+}
+
+func (w *Window) reusePaint(start, end paintIndex) {
+	panic("gpui: unimplemented Window.reusePaint")
+}
+
+func (w *Window) elementOpacity() float32 {
+	panic("gpui: unimplemented Window.elementOpacity")
+}
+
+// ContentMask returns the current content mask (M0-window-paint ports it).
+func (w *Window) ContentMask() ContentMask[Pixels] {
+	panic("gpui: unimplemented Window.ContentMask")
+}
+
+// ComputeLayout computes the layout of layoutID within availableSpace (M0-window-dispatch ports it).
+func (w *Window) ComputeLayout(layoutID LayoutID, availableSpace SizeOf[AvailableSpace], cx *App) {
+	panic("gpui: unimplemented Window.ComputeLayout")
+}
+
+// LayoutBounds returns the bounds computed for layoutID relative to the window (M0-window-dispatch ports it).
+func (w *Window) LayoutBounds(layoutID LayoutID) Bounds[Pixels] {
+	panic("gpui: unimplemented Window.LayoutBounds")
+}
+
+// SetViewID sets the view id of the current element (M0-window-dispatch ports it).
+func (w *Window) SetViewID(viewID EntityID) {
+	panic("gpui: unimplemented Window.SetViewID")
+}
+
+// CurrentView returns the id of the view being rendered (M0-window-dispatch ports it).
+func (w *Window) CurrentView() EntityID {
+	panic("gpui: unimplemented Window.CurrentView")
+}
+
+func (w *Window) withRenderedView[R any](id EntityID, f func(window *Window) R) R {
+	panic("gpui: unimplemented Window.withRenderedView")
+}
+
+// IsInspectorPicking reports whether the window's inspector is picking (M0-window-dispatch ports it).
+func (w *Window) IsInspectorPicking(cx *App) bool {
+	panic("gpui: unimplemented Window.IsInspectorPicking")
+}
+
+func (w *Window) inspectorEnabled() bool {
+	panic("gpui: unimplemented Window.inspectorEnabled")
+}
+
+func (w *Window) buildInspectorElementID(path InspectorElementPath) InspectorElementID {
+	panic("gpui: unimplemented Window.buildInspectorElementID")
+}
+
 func (w windowInvalidator) setPhase(phase drawPhase) {
 	panic("gpui: unimplemented windowInvalidator.setPhase")
-}
-
-// Drawable is a helper for laying out, prepainting and painting an element (M0-element ports it).
-type Drawable[RL, PP any] struct {
-	Element Element[RL, PP]
-}
-
-func newDrawable[RL, PP any](element Element[RL, PP]) *Drawable[RL, PP] {
-	panic("gpui: unimplemented newDrawable")
-}
-
-func (d *Drawable[RL, PP]) layoutAsRoot(availableSpace SizeOf[AvailableSpace], window *Window, cx *App) Size[Pixels] {
-	panic("gpui: unimplemented Drawable.layoutAsRoot")
-}
-
-func (d *Drawable[RL, PP]) prepaint(window *Window, cx *App) {
-	panic("gpui: unimplemented Drawable.prepaint")
-}
-
-func (d *Drawable[RL, PP]) paint(window *Window, cx *App) (RL, PP) {
-	panic("gpui: unimplemented Drawable.paint")
 }
 
 // WithAbsoluteElementOffset runs f with the element offset set to an absolute value (M0-window-paint ports it).
