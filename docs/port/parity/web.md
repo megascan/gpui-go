@@ -30,8 +30,8 @@ Go target: `platform/web/dispatcher.go` (package `web`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `WebDispatcher` | struct | 149 |  | `WebDispatcher` | todo |
-| `WebDispatcher::new` | assoc-fn | 159 |  | `NewWebDispatcher` | todo |
+| `WebDispatcher` | struct | 149 |  | `WebDispatcher` | dev:L-WEBTHREADS |
+| `WebDispatcher::new` | assoc-fn | 159 |  | `NewWebDispatcher` | done |
 
 ## gpui_web/src/display.rs
 
@@ -39,8 +39,8 @@ Go target: `platform/web/display.go` (package `web`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `WebDisplay` | struct | 5 |  | `WebDisplay` | todo |
-| `WebDisplay::new` | assoc-fn | 19 |  | `NewWebDisplay` | todo |
+| `WebDisplay` | struct | 5 |  | `WebDisplay` | done |
+| `WebDisplay::new` | assoc-fn | 19 |  | `NewWebDisplay` | done |
 
 ## gpui_web/src/events.rs
 
@@ -71,11 +71,11 @@ Go target: `platform/web/http_client.go` (package `web`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `FetchHttpClient` | struct | 19 |  | `FetchHTTPClient` | todo |
-| `FetchCredentials` | enum | 27 |  | `FetchCredentials` | todo |
-| `FetchHttpClient::new` | assoc-fn | 39 |  | `NewFetchHTTPClient` | todo |
-| `FetchHttpClient::with_user_agent` | assoc-fn | 48 |  | `FetchHTTPClientWithUserAgent` | todo |
-| `FetchHttpClient::with_credentials` | method | 61 |  | `(FetchHTTPClient).WithCredentials` | todo |
+| `FetchHttpClient` | struct | 19 |  | `FetchHTTPClient` | dev:WEB-REDIRECT |
+| `FetchCredentials` | enum | 27 |  | `FetchCredentials` | done |
+| `FetchHttpClient::new` | assoc-fn | 39 |  | `NewFetchHTTPClient` | done |
+| `FetchHttpClient::with_user_agent` | assoc-fn | 48 |  | `FetchHTTPClientWithUserAgent` | done |
+| `FetchHttpClient::with_credentials` | method | 61 |  | `(FetchHTTPClient).WithCredentials` | done |
 
 ## gpui_web/src/keyboard.rs
 
@@ -83,7 +83,7 @@ Go target: `platform/web/keyboard.go` (package `web`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `WebKeyboardLayout` | struct | 3 |  | `WebKeyboardLayout` | todo |
+| `WebKeyboardLayout` | struct | 3 |  | `WebKeyboardLayout` | done |
 
 ## gpui_web/src/logging.rs
 
@@ -91,7 +91,7 @@ Go target: `platform/web/logging.go` (package `web`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `init_logging` | fn | 34 |  | `InitLogging` | todo |
+| `init_logging` | fn | 34 |  | `InitLogging` | done |
 
 ## gpui_web/src/platform.rs
 
@@ -99,13 +99,13 @@ Go target: `platform/web/platform.go` (package `web`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `WebPlatform` | struct | 32 |  | `WebPlatform` | todo |
-| `WebWindowError` | enum | 97 |  | `WebWindowError` | todo |
-| `WebPlatform::new` | assoc-fn | 147 |  | `NewWebPlatform` | todo |
-| `WebPlatform::new_with_backend` | assoc-fn | 151 |  | `NewWebPlatformWithBackend` | todo |
-| `WebPlatform::new_with_backend_and_font_fallback` | assoc-fn | 166 |  | `NewWebPlatformWithBackendAndFontFallback` | todo |
-| `WebPlatform::fetch_http_client` | method | 217 |  | `(WebPlatform).FetchHTTPClient` | todo |
-| `WebPlatform::fetch_http_client_with_user_agent` | method | 222 |  | `(WebPlatform).FetchHTTPClientWithUserAgent` | todo |
+| `WebPlatform` | struct | 32 |  | `WebPlatform` | done |
+| `WebWindowError` | enum | 97 |  | `WebWindowError` | done |
+| `WebPlatform::new` | assoc-fn | 147 |  | `NewWebPlatform` | done |
+| `WebPlatform::new_with_backend` | assoc-fn | 151 |  | `NewWebPlatformWithBackend` | done |
+| `WebPlatform::new_with_backend_and_font_fallback` | assoc-fn | 166 |  | `NewWebPlatformWithBackendAndFontFallback` | done |
+| `WebPlatform::fetch_http_client` | method | 217 |  | `(WebPlatform).FetchHTTPClient` | done |
+| `WebPlatform::fetch_http_client_with_user_agent` | method | 222 |  | `(WebPlatform).FetchHTTPClientWithUserAgent` | done |
 
 ## gpui_web/src/run_replacements.rs
 
@@ -129,5 +129,19 @@ Go target: `platform/web/window.go` (package `web`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `WebWindow` | struct | 93 |  | `WebWindow` | todo |
+| `WebWindow` | struct | 93 |  | `WebWindow` | dev:WEB-CANVASID |
 
+
+## Notes (M4-web-platform)
+
+- dispatcher.rs: only the single-threaded path exists; `MainThreadMailbox`, the waker loop, background workers and `allow_threads` are absent (L-WEBTHREADS). `IsMainThread` is always true.
+- viewport.rs and gpui_web.rs have no public items; ported into viewport.go and gpui_web.go (gpui_web.go also holds the syscall/js helpers: exception recovery, self-releasing once funcs, promise await through scheduler.Oneshot).
+- events.rs, ime_mirror.rs, text_system.rs and canvas_fallback.rs symbols used here are package-local stubs in stubs.go until M4-web-input / M4-web-text; `EventListenerHandle` is implemented there already.
+- Auto backend: `wgpu::util::is_browser_webgpu_supported` is ported locally (navigator.gpu + requestAdapter non-null).
+
+## Deviations registered here
+
+| Id | Item | Difference |
+|---|---|---|
+| WEB-CANVASID | `WebWindow::prepare_canvas`, `HasWindowHandle` | The canvas gets a unique `id` (`gpui-canvas-N`) because gpui.RawWindowHandle names a web canvas by id (render/wgpu surface recovery looks it up). |
+| WEB-REDIRECT | `FetchHttpClient::send` | gpui.HTTPClient (D-HTTP) takes a net/http request with no `RedirectPolicy` extension, so fetch always uses the browser default (follow). Request bodies are read synchronously inside the send task; response bodies must be read from a goroutine, not a task or browser callback. |
