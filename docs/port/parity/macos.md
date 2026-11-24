@@ -195,11 +195,11 @@ Go target: `platform/macos/window.go` (package `macos`), tests in `window_test.g
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `UserTabbingPreference` | enum | 97 |  | `UserTabbingPreference` | todo |
+| `UserTabbingPreference` | enum | 97 |  | `UserTabbingPreference` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `display_id_for_screen_handles_missing_metadata` | test | 4298 |  | `TestWindow_DisplayIDForScreenHandlesMissingMetadata` | todo |
+| `display_id_for_screen_handles_missing_metadata` | test | 4298 |  | `TestWindow_DisplayIDForScreenHandlesMissingMetadata` | blocked:M4-macos-window-objc |
 
 ## gpui_macos/src/window_appearance.rs
 
