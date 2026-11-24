@@ -132,6 +132,93 @@ Go target: `platform/web/window.go` (package `web`)
 | `WebWindow` | struct | 93 |  | `WebWindow` | dev:WEB-CANVASID |
 
 
+## gpui_web/examples/hello_web/main.rs
+
+Go target: `examples/web_hello_web/main.go` (package `main`, `js && wasm`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `is_prime` | fn | 14 |  | `IsPrime` | done |
+| `count_primes_in_range` | fn | 34 |  | `CountPrimesInRange` | done |
+| `NUM_CHUNKS` | const | 48 |  | `NumChunks` | done |
+| `Preset` | enum | 51 |  | `Preset` | done |
+| `Preset::TenMillion` | variant | 52 |  | `PresetTenMillion` | done |
+| `Preset::FiftyMillion` | variant | 53 |  | `PresetFiftyMillion` | done |
+| `Preset::HundredMillion` | variant | 54 |  | `PresetHundredMillion` | done |
+| `Preset::label` | method | 58 |  | `(Preset).Label` | done |
+| `Preset::value` | method | 66 |  | `(Preset).Value` | done |
+| `ChunkResult` | struct | 81 |  | `ChunkResult` | done |
+| `Run` | struct | 85 |  | `Run` | done |
+| `HelloWeb` | struct | 93 |  | `HelloWeb` | done |
+| `HelloWeb::new` | assoc-fn | 101 |  | `NewHelloWeb` | done |
+| `HelloWeb::start_search` | method | 110 |  | `(HelloWeb).StartSearch` | done |
+| `format_number` | fn | 171 |  | `FormatNumber` | done |
+| `BG_BASE` | const | 187 |  | `BgBase` | done |
+| `BG_SURFACE` | const | 188 |  | `BgSurface` | done |
+| `BG_OVERLAY` | const | 189 |  | `BgOverlay` | done |
+| `TEXT_PRIMARY` | const | 190 |  | `TextPrimary` | done |
+| `TEXT_SECONDARY` | const | 191 |  | `TextSecondary` | done |
+| `TEXT_DIM` | const | 192 |  | `TextDim` | done |
+| `ACCENT_YELLOW` | const | 193 |  | `AccentYellow` | done |
+| `ACCENT_GREEN` | const | 194 |  | `AccentGreen` | done |
+| `ACCENT_BLUE` | const | 195 |  | `AccentBlue` | done |
+| `ACCENT_MAUVE` | const | 196 |  | `AccentMauve` | done |
+| `HelloWeb::render` (`Render` impl) | method | 199 |  | `(HelloWeb).Render` | done |
+| `requested_backend` | fn | 411 |  | `RequestedBackend` | done |
+| `APPLICATION` | static | 433 |  | `application` | dev:WEB-EXAMPLE-DISPATCH |
+| `main` | fn | 436 |  | `main` | dev:WEB-EXAMPLE-DISPATCH |
+
+## gpui_web/examples/hello_web/dynamic_fonts.rs
+
+Go target: `examples/web_hello_web/dynamic_fonts.go` (package `main`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `FONT_URL` | const | 12 |  | `FontURL` | done |
+| `SAMPLE` | const | 13 |  | `Sample` | done |
+| `DynamicFonts` | struct | 15 |  | `DynamicFonts` | done |
+| `DynamicFonts::new` | assoc-fn | 22 |  | `NewDynamicFonts` | done |
+| `DynamicFonts::load_font` | method | 41 |  | `(DynamicFonts).LoadFont` | done |
+| `DynamicFonts::render` (`Render` impl) | method | 80 |  | `(DynamicFonts).Render` | done |
+| `main` | fn | 106 |  | `RunDynamicFonts` | dev:WEB-EXAMPLE-DISPATCH |
+
+## gpui_web/examples/hello_web/font_fallback_test.rs
+
+Go target: `examples/web_hello_web/font_fallback_testing.go` (package `main`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Reports` | struct | 11 |  | `Reports` | done |
+| `MissingGlyphSink::report` for `Reports` | method | 14 |  | `(Reports).Report` | done |
+| `test_missing_glyph_notifications` | wasm_bindgen fn | 20 |  | `testMissingGlyphNotifications` | dev:WEB-EXAMPLE-FIXTURE |
+| `main` | fn | 8 |  | `registerFontFallbackTest` | dev:WEB-EXAMPLE-DISPATCH |
+
+## gpui_web/examples/hello_web/http_client_test.rs
+
+Go target: `examples/web_hello_web/http_client_testing.go` (package `main`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `test_worker_fetch` | wasm_bindgen async fn | 16 |  | `registerHTTPClientTest` | dev:WEB-EXAMPLE-FIXTURE |
+| `main` | fn | 13 |  | `registerHTTPClientTest` | dev:WEB-EXAMPLE-DISPATCH |
+
+## gpui_web/examples/hello_web/queue_test.rs
+
+Go target: `examples/web_hello_web/queue_testing.go` (package `main`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `QueueStress` | struct | 14 |  | `QueueStress` | done |
+| `QueueStress::new` | assoc-fn | 28 |  | `NewQueueStress` | done |
+| `QueueStress::ready` | method | 62 |  | `(QueueStress).Ready` | done |
+| `QueueStress::send_batch` | method | 66 |  | `(QueueStress).SendBatch` | done |
+| `QueueStress::drain` | method | 76 |  | `(QueueStress).Drain` | done |
+| `QueueStress::stop` | method | 90 |  | `(QueueStress).Stop` | done |
+| `QueueStress::stopped` | method | 102 |  | `(QueueStress).Stopped` | done |
+| `priority` | fn | 107 |  | `Priority` | done |
+| `forbidden_main_thread_wait` | wasm_bindgen fn | 117 |  | `-` | n/a:L-WEBTHREADS |
+| `main` | fn | 10 |  | `registerQueueTest` | dev:WEB-EXAMPLE-DISPATCH |
+
 ## Notes (M4-web-platform)
 
 - dispatcher.rs: only the single-threaded path exists; `MainThreadMailbox`, the waker loop, background workers and `allow_threads` are absent (L-WEBTHREADS). `IsMainThread` is always true.
@@ -153,9 +240,21 @@ Go target: `platform/web/window.go` (package `web`)
 - `SmallVec`/`retain_mut`/`drain` in run_replacements become in-place compaction and reslicing, so the allocation-reuse tests check the same backing arrays.
 - platform/platform_js.go now returns the web platform; `web_init`'s console_error_panic_hook has no Go equivalent to install (Go wasm panics already print to the console), so WebInit only calls InitLogging.
 
+## Notes (M4-web-example)
+
+- One wasm binary serves the example's five upstream bins. The loader (gallery.js, the drivers) sets `go.argv` to the bin's module name and `main` dispatches on `os.Args[1]`; the default is the prime sieve. Each bin's `fn main` therefore has a dispatch row (WEB-EXAMPLE-DISPATCH).
+- The three `*_test.rs` fixtures are wasm_bindgen exports, not `#[test]`s: they are registered on `globalThis.gpuiWebTests` by their `register*` functions, so the drivers call them from JS.
+- Response bodies in dynamic_fonts are read on a goroutine and handed back through `scheduler.Oneshot`, not inside a task (WEB-REDIRECT).
+- queue_test's workers are goroutines on the single Go wasm thread (L-WEBTHREADS). The queue contention driver runs in node (`test_queue.mjs`, 524288 items, 8 workers: PASS). The browser-only checks run in the owner-check drivers.
+- Fonts: `fonts/IBMPlexSans-Regular.ttf` and `fonts/Lilex-Regular.ttf` are copies of `text/gotext/testdata/fonts` (go:embed cannot reach outside the package); the upstream `assets/fonts` tree is not in `_ref`.
+- The Rust gallery's other links (hello-world, text, text-layout, text-wrapper, input) are built by their own example packages as `<module>.wasm`; this package builds `gpui-web-examples.wasm` for `hello-web` and `dynamic-fonts`.
+- Build: `GOOS=js GOARCH=wasm go build -o <dir>/gpui-web-examples.wasm ./examples/web_hello_web`, and copy `$(go env GOROOT)/lib/wasm/wasm_exec.js` next to `index.html` when serving.
+
 ## Deviations registered here
 
 | Id | Item | Difference |
 |---|---|---|
 | WEB-CANVASID | `WebWindow::prepare_canvas`, `HasWindowHandle` | The canvas gets a unique `id` (`gpui-canvas-N`) because gpui.RawWindowHandle names a web canvas by id (render/wgpu surface recovery looks it up). |
 | WEB-REDIRECT | `FetchHttpClient::send` | gpui.HTTPClient (D-HTTP) takes a net/http request with no `RedirectPolicy` extension, so fetch always uses the browser default (follow). Request bodies are read synchronously inside the send task; response bodies must be read from a goroutine, not a task or browser callback. |
+| WEB-EXAMPLE-DISPATCH | each bin's `fn main` | One wasm binary serves the five bins; `main` dispatches on `os.Args[1]` (set by gallery.js and the drivers) to the bin's run or register function. The dispatch rows name the function each bin's `main` maps to. |
+| WEB-EXAMPLE-FIXTURE | `test_missing_glyph_notifications`, `test_worker_fetch` | Exported to JS as members of `globalThis.gpuiWebTests`, not Go test names; the Go symbols are the helpers that implement them. |
