@@ -46,112 +46,112 @@ Go target: `profiler.go` (package `gpui`), tests in `profiler_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `get_all_timings` | fn | 36 | feat:profiler | `GetAllTimings` | todo |
-| `get_current_thread_timings` | fn | 42 | feat:profiler | `GetCurrentThreadTimings` | todo |
-| `take_all_stats` | fn | 48 | feat:profiler | `TakeAllStats` | todo |
-| `get_all_timings` | fn | 54 | feat:profiler | `GetAllTimings` | todo |
-| `get_current_thread_timings` | fn | 59 | feat:profiler | `GetCurrentThreadTimings` | todo |
-| `take_all_stats` | fn | 70 | feat:profiler | `TakeAllStats` | todo |
-| `YieldTime` | struct | 76 |  | `YieldTime` | todo |
-| `TaskTiming` | struct | 80 |  | `TaskTiming` | todo |
-| `ActiveTiming` | struct | 100 |  | `ActiveTiming` | todo |
-| `TaskTiming::placeholder` | assoc-fn | 108 |  | `TaskTimingPlaceholder` | todo |
-| `TaskTiming::poll_duration` | method | 119 |  | `(TaskTiming).PollDuration` | todo |
-| `ThreadTaskTimings` | struct | 131 |  | `ThreadTaskTimings` | todo |
-| `ThreadTaskTimings::collect` | assoc-fn | 141 |  | `ThreadTaskTimingsCollect` | todo |
-| `ThreadTaskStatistics` | struct | 182 |  | `ThreadTaskStatistics` | todo |
-| `ThreadTaskStatistics::collect_and_reset` | assoc-fn | 189 |  | `ThreadTaskStatisticsCollectAndReset` | todo |
-| `SerializedLocation` | struct | 230 |  | `SerializedLocation` | todo |
-| `SerializedTaskTiming` | struct | 251 |  | `SerializedTaskTiming` | todo |
-| `SerializedTaskTiming::convert` | assoc-fn | 266 |  | `SerializedTaskTimingConvert` | todo |
-| `SerializedTaskTiming::from` | assoc-fn | 284 |  | `SerializedTaskTimingFrom` | todo |
-| `SerializedThreadTaskTimings` | struct | 297 |  | `SerializedThreadTaskTimings` | todo |
-| `SerializedThreadTaskTimings::convert` | assoc-fn | 312 |  | `SerializedThreadTaskTimingsConvert` | todo |
-| `ThreadTimingsDelta` | struct | 329 |  | `ThreadTimingsDelta` | todo |
-| `ProfilingCollector` | struct | 341 |  | `ProfilingCollector` | todo |
-| `ProfilingCollector::new` | assoc-fn | 347 |  | `NewProfilingCollector` | todo |
-| `ProfilingCollector::startup_time` | method | 354 |  | `(ProfilingCollector).StartupTime` | todo |
-| `ProfilingCollector::collect_unseen` | method | 358 |  | `(ProfilingCollector).CollectUnseen` | todo |
-| `ProfilingCollector::reset` | method | 401 |  | `(ProfilingCollector).Reset` | todo |
-| `GuardedTaskTimings` | type | 416 |  | `GuardedTaskTimings` | todo |
-| `GlobalThreadTimings` | struct | 419 |  | `GlobalThreadTimings` | todo |
-| `TaskStatistics` | struct | 426 |  | `TaskStatistics` | todo |
-| `GLOBAL_THREAD_TIMINGS` | static | 515 |  | `GlobalThreadTimings` | todo |
-| `ThreadTimings` | struct | 558 |  | `ThreadTimings` | todo |
-| `ThreadTimings::new` | assoc-fn | 568 |  | `NewThreadTimings` | todo |
-| `ThreadTimings::update_running_task` | method | 580 | feat:profiler | `(ThreadTimings).UpdateRunningTask` | todo |
-| `ThreadTimings::update_running_task` | method | 593 | feat:profiler | `(ThreadTimings).UpdateRunningTask` | todo |
-| `ThreadTimings::save_task_timing` | method | 596 | feat:profiler | `(ThreadTimings).SaveTaskTiming` | todo |
-| `ThreadTimings::save_task_timing` | method | 626 | feat:profiler | `(ThreadTimings).SaveTaskTiming` | todo |
-| `ThreadTimings::get_thread_task_timings` | method | 630 |  | `(ThreadTimings).GetThreadTaskTimings` | todo |
-| `update_running_task` | fn | 671 |  | `UpdateRunningTask` | todo |
-| `save_task_timing` | fn | 680 |  | `SaveTaskTiming` | todo |
-| `get_current_thread_task_timings` | fn | 694 |  | `GetCurrentThreadTaskTimings` | todo |
-| `set_trace_enabled` | fn | 709 |  | `SetTraceEnabled` | todo |
-| `trace_enabled` | fn | 766 |  | `TraceEnabled` | todo |
-| `FrameTiming` | struct | 789 | feat:profiler | `FrameTiming` | todo |
-| `DrawPhases` | struct | 814 | feat:profiler | `DrawPhases` | todo |
-| `ViewPhase` | enum | 827 | feat:profiler | `ViewPhase` | todo |
-| `ViewPhase::as_str` | method | 840 | feat:profiler | `(ViewPhase).AsStr` | todo |
-| `VIEW_TIMING_FLOOR` | const | 853 | feat:profiler | `ViewTimingFloor` | todo |
-| `ViewTiming` | struct | 859 | feat:profiler | `ViewTiming` | todo |
-| `FRAME_BUDGET_FLOOR` | const | 878 | feat:profiler | `FrameBudgetFloor` | todo |
-| `UNKNOWN_REFRESH_FRAME_BUDGET` | const | 884 | feat:profiler | `UnknownRefreshFrameBudget` | todo |
-| `FrameTiming::work_start` | method | 891 | feat:profiler | `(FrameTiming).WorkStart` | todo |
-| `FrameTiming::work` | method | 905 | feat:profiler | `(FrameTiming).Work` | todo |
-| `FrameTiming::is_late` | method | 911 | feat:profiler | `(FrameTiming).IsLate` | todo |
-| `FrameTiming::budget` | method | 918 | feat:profiler | `(FrameTiming).Budget` | todo |
-| `FrameTiming::missed_refreshes` | method | 927 | feat:profiler | `(FrameTiming).MissedRefreshes` | todo |
-| `FrameTiming::draw_duration` | method | 935 | feat:profiler | `(FrameTiming).DrawDuration` | todo |
-| `FrameTiming::dirty_to_draw_duration` | method | 941 | feat:profiler | `(FrameTiming).DirtyToDrawDuration` | todo |
-| `PresentTiming` | struct | 950 | feat:profiler | `PresentTiming` | todo |
-| `PresentTiming::present_duration` | method | 965 | feat:profiler | `(PresentTiming).PresentDuration` | todo |
-| `FrameEvent` | enum | 973 | feat:profiler | `FrameEvent` | todo |
-| `FrameDurationSnapshot` | struct | 984 | feat:profiler | `FrameDurationSnapshot` | todo |
-| `FRAME_DURATION_BUCKETS_MS` | const | 1001 | feat:profiler | `FrameDurationBucketsMs` | todo |
-| `FRAME_WORK_BUCKETS_PERCENT` | const | 1010 | feat:profiler | `FrameWorkBucketsPercent` | todo |
-| `histogram_bucket_counts` | fn | 1016 | feat:profiler | `HistogramBucketCounts` | todo |
-| `RefreshIntervalFrames` | struct | 1043 | feat:profiler | `RefreshIntervalFrames` | todo |
-| `RefreshIntervalFrames::since` | method | 1091 | feat:profiler | `(RefreshIntervalFrames).Since` | todo |
-| `InputLatencySnapshot` | struct | 1165 | feat:profiler | `InputLatencySnapshot` | todo |
-| `WindowProfiler` | struct | 1192 | feat:profiler | `WindowProfiler` | todo |
-| `WindowProfiler::new` | assoc-fn | 1222 | feat:profiler | `NewWindowProfiler` | todo |
-| `WindowProfiler::begin_input` | method | 1262 | feat:profiler | `(WindowProfiler).BeginInput` | todo |
-| `WindowProfiler::end_input` | method | 1271 | feat:profiler | `(WindowProfiler).EndInput` | todo |
-| `WindowProfiler::begin_action_handler` | method | 1312 | feat:profiler | `(WindowProfiler).BeginActionHandler` | todo |
-| `WindowProfiler::end_action_handler` | method | 1319 | feat:profiler | `(WindowProfiler).EndActionHandler` | todo |
-| `WindowProfiler::record_frame_signal` | method | 1341 | feat:profiler | `(WindowProfiler).RecordFrameSignal` | todo |
-| `WindowProfiler::set_refresh_interval` | method | 1347 | feat:profiler | `(WindowProfiler).SetRefreshInterval` | todo |
-| `WindowProfiler::begin_draw` | method | 1352 | feat:profiler | `(WindowProfiler).BeginDraw` | todo |
-| `WindowProfiler::record_draw_phases` | method | 1361 | feat:profiler | `(WindowProfiler).RecordDrawPhases` | todo |
-| `WindowProfiler::begin_view` | method | 1367 | feat:profiler | `(WindowProfiler).BeginView` | todo |
-| `WindowProfiler::end_view` | method | 1374 | feat:profiler | `(WindowProfiler).EndView` | todo |
-| `WindowProfiler::end_draw` | method | 1394 | feat:profiler | `(WindowProfiler).EndDraw` | todo |
-| `WindowProfiler::record_present` | method | 1430 | feat:profiler | `(WindowProfiler).RecordPresent` | todo |
-| `WindowProfiler::input_latency_snapshot` | method | 1446 | feat:profiler | `(WindowProfiler).InputLatencySnapshot` | todo |
-| `WindowProfiler::frame_duration_snapshot` | method | 1455 | feat:profiler | `(WindowProfiler).FrameDurationSnapshot` | todo |
-| `record_frame_event` | fn | 1599 | feat:profiler | `RecordFrameEvent` | todo |
-| `FrameTimingCollector` | struct | 1616 | feat:profiler | `FrameTimingCollector` | todo |
-| `FrameTimingCollector::new` | assoc-fn | 1630 | feat:profiler | `NewFrameTimingCollector` | todo |
-| `FrameTimingCollector::collect_unseen` | method | 1639 | feat:profiler | `(FrameTimingCollector).CollectUnseen` | todo |
+| `get_all_timings` | fn | 36 | feat:profiler | `GetAllTimings` | done |
+| `get_current_thread_timings` | fn | 42 | feat:profiler | `GetCurrentThreadTimings` | dev:D-PROFTHREAD |
+| `take_all_stats` | fn | 48 | feat:profiler | `TakeAllStats` | done |
+| `get_all_timings` | fn | 54 | feat:profiler | `GetAllTimings` | done |
+| `get_current_thread_timings` | fn | 59 | feat:profiler | `GetCurrentThreadTimings` | dev:D-PROFTHREAD |
+| `take_all_stats` | fn | 70 | feat:profiler | `TakeAllStats` | done |
+| `YieldTime` | struct | 76 |  | `YieldTime` | done |
+| `TaskTiming` | struct | 80 |  | `TaskTiming` | done |
+| `ActiveTiming` | struct | 100 |  | `ActiveTiming` | done |
+| `TaskTiming::placeholder` | assoc-fn | 108 |  | `TaskTimingPlaceholder` | done |
+| `TaskTiming::poll_duration` | method | 119 |  | `(TaskTiming).PollDuration` | done |
+| `ThreadTaskTimings` | struct | 131 |  | `ThreadTaskTimings` | done |
+| `ThreadTaskTimings::collect` | assoc-fn | 141 |  | `ThreadTaskTimingsCollect` | done |
+| `ThreadTaskStatistics` | struct | 182 |  | `ThreadTaskStatistics` | done |
+| `ThreadTaskStatistics::collect_and_reset` | assoc-fn | 189 |  | `ThreadTaskStatisticsCollectAndReset` | done |
+| `SerializedLocation` | struct | 230 |  | `SerializedLocation` | done |
+| `SerializedTaskTiming` | struct | 251 |  | `SerializedTaskTiming` | done |
+| `SerializedTaskTiming::convert` | assoc-fn | 266 |  | `SerializedTaskTimingConvert` | done |
+| `SerializedTaskTiming::from` | assoc-fn | 284 |  | `SerializedTaskTimingFrom` | done |
+| `SerializedThreadTaskTimings` | struct | 297 |  | `SerializedThreadTaskTimings` | done |
+| `SerializedThreadTaskTimings::convert` | assoc-fn | 312 |  | `SerializedThreadTaskTimingsConvert` | done |
+| `ThreadTimingsDelta` | struct | 329 |  | `ThreadTimingsDelta` | done |
+| `ProfilingCollector` | struct | 341 |  | `ProfilingCollector` | done |
+| `ProfilingCollector::new` | assoc-fn | 347 |  | `NewProfilingCollector` | done |
+| `ProfilingCollector::startup_time` | method | 354 |  | `(ProfilingCollector).StartupTime` | done |
+| `ProfilingCollector::collect_unseen` | method | 358 |  | `(ProfilingCollector).CollectUnseen` | done |
+| `ProfilingCollector::reset` | method | 401 |  | `(ProfilingCollector).Reset` | done |
+| `GuardedTaskTimings` | type | 416 |  | `GuardedTaskTimings` | done |
+| `GlobalThreadTimings` | struct | 419 |  | `GlobalThreadTimings` | done |
+| `TaskStatistics` | struct | 426 |  | `TaskStatistics` | done |
+| `GLOBAL_THREAD_TIMINGS` | static | 515 |  | `globalThreadTimings` | dev:D-NAME |
+| `ThreadTimings` | struct | 558 |  | `ThreadTimings` | done |
+| `ThreadTimings::new` | assoc-fn | 568 |  | `NewThreadTimings` | done |
+| `ThreadTimings::update_running_task` | method | 580 | feat:profiler | `(ThreadTimings).UpdateRunningTask` | done |
+| `ThreadTimings::update_running_task` | method | 593 | feat:profiler | `(ThreadTimings).UpdateRunningTask` | done |
+| `ThreadTimings::save_task_timing` | method | 596 | feat:profiler | `(ThreadTimings).SaveTaskTiming` | done |
+| `ThreadTimings::save_task_timing` | method | 626 | feat:profiler | `(ThreadTimings).SaveTaskTiming` | done |
+| `ThreadTimings::get_thread_task_timings` | method | 630 |  | `(ThreadTimings).GetThreadTaskTimings` | done |
+| `update_running_task` | fn | 671 |  | `UpdateRunningTask` | dev:D-PROFTHREAD |
+| `save_task_timing` | fn | 680 |  | `SaveTaskTiming` | dev:D-PROFTHREAD |
+| `get_current_thread_task_timings` | fn | 694 |  | `GetCurrentThreadTaskTimings` | dev:D-PROFTHREAD |
+| `set_trace_enabled` | fn | 709 |  | `SetTraceEnabled` | done |
+| `trace_enabled` | fn | 766 |  | `TraceEnabled` | done |
+| `FrameTiming` | struct | 789 | feat:profiler | `FrameTiming` | done |
+| `DrawPhases` | struct | 814 | feat:profiler | `DrawPhases` | done |
+| `ViewPhase` | enum | 827 | feat:profiler | `ViewPhase` | done |
+| `ViewPhase::as_str` | method | 840 | feat:profiler | `(ViewPhase).AsStr` | done |
+| `VIEW_TIMING_FLOOR` | const | 853 | feat:profiler | `ViewTimingFloor` | done |
+| `ViewTiming` | struct | 859 | feat:profiler | `ViewTiming` | done |
+| `FRAME_BUDGET_FLOOR` | const | 878 | feat:profiler | `FrameBudgetFloor` | done |
+| `UNKNOWN_REFRESH_FRAME_BUDGET` | const | 884 | feat:profiler | `UnknownRefreshFrameBudget` | done |
+| `FrameTiming::work_start` | method | 891 | feat:profiler | `(FrameTiming).WorkStart` | done |
+| `FrameTiming::work` | method | 905 | feat:profiler | `(FrameTiming).Work` | done |
+| `FrameTiming::is_late` | method | 911 | feat:profiler | `(FrameTiming).IsLate` | done |
+| `FrameTiming::budget` | method | 918 | feat:profiler | `(FrameTiming).Budget` | done |
+| `FrameTiming::missed_refreshes` | method | 927 | feat:profiler | `(FrameTiming).MissedRefreshes` | done |
+| `FrameTiming::draw_duration` | method | 935 | feat:profiler | `(FrameTiming).DrawDuration` | done |
+| `FrameTiming::dirty_to_draw_duration` | method | 941 | feat:profiler | `(FrameTiming).DirtyToDrawDuration` | done |
+| `PresentTiming` | struct | 950 | feat:profiler | `PresentTiming` | done |
+| `PresentTiming::present_duration` | method | 965 | feat:profiler | `(PresentTiming).PresentDuration` | done |
+| `FrameEvent` | enum | 973 | feat:profiler | `FrameEvent` | done |
+| `FrameDurationSnapshot` | struct | 984 | feat:profiler | `FrameDurationSnapshot` | done |
+| `FRAME_DURATION_BUCKETS_MS` | const | 1001 | feat:profiler | `FrameDurationBucketsMs` | done |
+| `FRAME_WORK_BUCKETS_PERCENT` | const | 1010 | feat:profiler | `FrameWorkBucketsPercent` | done |
+| `histogram_bucket_counts` | fn | 1016 | feat:profiler | `HistogramBucketCounts` | done |
+| `RefreshIntervalFrames` | struct | 1043 | feat:profiler | `RefreshIntervalFrames` | done |
+| `RefreshIntervalFrames::since` | method | 1091 | feat:profiler | `(RefreshIntervalFrames).Since` | done |
+| `InputLatencySnapshot` | struct | 1165 | feat:profiler | `InputLatencySnapshot` | done |
+| `WindowProfiler` | struct | 1192 | feat:profiler | `WindowProfiler` | done |
+| `WindowProfiler::new` | assoc-fn | 1222 | feat:profiler | `NewWindowProfiler` | done |
+| `WindowProfiler::begin_input` | method | 1262 | feat:profiler | `(WindowProfiler).BeginInput` | done |
+| `WindowProfiler::end_input` | method | 1271 | feat:profiler | `(WindowProfiler).EndInput` | done |
+| `WindowProfiler::begin_action_handler` | method | 1312 | feat:profiler | `(WindowProfiler).BeginActionHandler` | done |
+| `WindowProfiler::end_action_handler` | method | 1319 | feat:profiler | `(WindowProfiler).EndActionHandler` | done |
+| `WindowProfiler::record_frame_signal` | method | 1341 | feat:profiler | `(WindowProfiler).RecordFrameSignal` | done |
+| `WindowProfiler::set_refresh_interval` | method | 1347 | feat:profiler | `(WindowProfiler).SetRefreshInterval` | done |
+| `WindowProfiler::begin_draw` | method | 1352 | feat:profiler | `(WindowProfiler).BeginDraw` | done |
+| `WindowProfiler::record_draw_phases` | method | 1361 | feat:profiler | `(WindowProfiler).RecordDrawPhases` | done |
+| `WindowProfiler::begin_view` | method | 1367 | feat:profiler | `(WindowProfiler).BeginView` | done |
+| `WindowProfiler::end_view` | method | 1374 | feat:profiler | `(WindowProfiler).EndView` | done |
+| `WindowProfiler::end_draw` | method | 1394 | feat:profiler | `(WindowProfiler).EndDraw` | done |
+| `WindowProfiler::record_present` | method | 1430 | feat:profiler | `(WindowProfiler).RecordPresent` | done |
+| `WindowProfiler::input_latency_snapshot` | method | 1446 | feat:profiler | `(WindowProfiler).InputLatencySnapshot` | done |
+| `WindowProfiler::frame_duration_snapshot` | method | 1455 | feat:profiler | `(WindowProfiler).FrameDurationSnapshot` | done |
+| `record_frame_event` | fn | 1599 | feat:profiler | `RecordFrameEvent` | done |
+| `FrameTimingCollector` | struct | 1616 | feat:profiler | `FrameTimingCollector` | done |
+| `FrameTimingCollector::new` | assoc-fn | 1630 | feat:profiler | `NewFrameTimingCollector` | done |
+| `FrameTimingCollector::collect_unseen` | method | 1639 | feat:profiler | `(FrameTimingCollector).CollectUnseen` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `interruptions_drop_latency_samples_but_hiding_keeps_draw_work` | test | 1661 | feat:profiler | `TestProfiler_InterruptionsDropLatencySamplesButHidingKeepsDrawWork` | todo |
-| `frame_work_starts_at_the_later_of_signal_and_invalidation` | test | 1698 | feat:profiler | `TestProfiler_FrameWorkStartsAtTheLaterOfSignalAndInvalidation` | todo |
-| `frames_are_split_by_refresh_interval_and_classified` | test | 1731 | feat:profiler | `TestProfiler_FramesAreSplitByRefreshIntervalAndClassified` | todo |
-| `records_draw_events_only_while_tracing` | test | 1886 | feat:profiler | `TestProfiler_RecordsDrawEventsOnlyWhileTracing` | todo |
-| `records_present_events_for_newly_drawn_frames` | test | 1922 | feat:profiler | `TestProfiler_RecordsPresentEventsForNewlyDrawnFrames` | todo |
-| `disabling_tracing_clears_frame_events` | test | 1970 | feat:profiler | `TestProfiler_DisablingTracingClearsFrameEvents` | todo |
-| `records_intervals_only_between_animation_frames` | test | 2000 | feat:profiler | `TestProfiler_RecordsIntervalsOnlyBetweenAnimationFrames` | todo |
-| `missed_frames_stretch_the_recorded_interval` | test | 2020 | feat:profiler | `TestProfiler_MissedFramesStretchTheRecordedInterval` | todo |
-| `ignores_re_presents_of_unchanged_frames` | test | 2034 | feat:profiler | `TestProfiler_IgnoresRePresentsOfUnchangedFrames` | todo |
-| `skips_intervals_for_inactive_windows` | test | 2051 | feat:profiler | `TestProfiler_SkipsIntervalsForInactiveWindows` | todo |
-| `records_dirty_to_present_durations` | test | 2068 | feat:profiler | `TestProfiler_RecordsDirtyToPresentDurations` | todo |
-| `records_every_draw_duration` | test | 2085 | feat:profiler | `TestProfiler_RecordsEveryDrawDuration` | todo |
-| `records_input_latency_at_the_frame_presentation_timestamp` | test | 2098 | feat:profiler | `TestProfiler_RecordsInputLatencyAtTheFramePresentationTimestamp` | todo |
-| `excludes_input_that_arrives_during_a_draw` | test | 2123 | feat:profiler | `TestProfiler_ExcludesInputThatArrivesDuringADraw` | todo |
-| `overlapping_trace_scopes_keep_tracing_enabled` | test | 2139 | feat:profiler | `TestProfiler_OverlappingTraceScopesKeepTracingEnabled` | todo |
+| `interruptions_drop_latency_samples_but_hiding_keeps_draw_work` | test | 1661 | feat:profiler | `TestProfiler_InterruptionsDropLatencySamplesButHidingKeepsDrawWork` | blocked:M3-profiler-journal |
+| `frame_work_starts_at_the_later_of_signal_and_invalidation` | test | 1698 | feat:profiler | `TestProfiler_FrameWorkStartsAtTheLaterOfSignalAndInvalidation` | done |
+| `frames_are_split_by_refresh_interval_and_classified` | test | 1731 | feat:profiler | `TestProfiler_FramesAreSplitByRefreshIntervalAndClassified` | done |
+| `records_draw_events_only_while_tracing` | test | 1886 | feat:profiler | `TestProfiler_RecordsDrawEventsOnlyWhileTracing` | done |
+| `records_present_events_for_newly_drawn_frames` | test | 1922 | feat:profiler | `TestProfiler_RecordsPresentEventsForNewlyDrawnFrames` | done |
+| `disabling_tracing_clears_frame_events` | test | 1970 | feat:profiler | `TestProfiler_DisablingTracingClearsFrameEvents` | done |
+| `records_intervals_only_between_animation_frames` | test | 2000 | feat:profiler | `TestProfiler_RecordsIntervalsOnlyBetweenAnimationFrames` | done |
+| `missed_frames_stretch_the_recorded_interval` | test | 2020 | feat:profiler | `TestProfiler_MissedFramesStretchTheRecordedInterval` | done |
+| `ignores_re_presents_of_unchanged_frames` | test | 2034 | feat:profiler | `TestProfiler_IgnoresRePresentsOfUnchangedFrames` | done |
+| `skips_intervals_for_inactive_windows` | test | 2051 | feat:profiler | `TestProfiler_SkipsIntervalsForInactiveWindows` | done |
+| `records_dirty_to_present_durations` | test | 2068 | feat:profiler | `TestProfiler_RecordsDirtyToPresentDurations` | done |
+| `records_every_draw_duration` | test | 2085 | feat:profiler | `TestProfiler_RecordsEveryDrawDuration` | done |
+| `records_input_latency_at_the_frame_presentation_timestamp` | test | 2098 | feat:profiler | `TestProfiler_RecordsInputLatencyAtTheFramePresentationTimestamp` | done |
+| `excludes_input_that_arrives_during_a_draw` | test | 2123 | feat:profiler | `TestProfiler_ExcludesInputThatArrivesDuringADraw` | done |
+| `overlapping_trace_scopes_keep_tracing_enabled` | test | 2139 | feat:profiler | `TestProfiler_OverlappingTraceScopesKeepTracingEnabled` | done |
 
 ## gpui/src/randomized_element_tree.rs
 
@@ -273,19 +273,19 @@ Go target: `profiler_actions.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `ActionStatistics` | struct | 11 |  | `ActionStatistics` | todo |
-| `ActionStatistics::take` | method | 67 |  | `(ActionStatistics).Take` | todo |
-| `ActionStatistics::is_empty` | method | 73 |  | `(ActionStatistics).IsEmpty` | todo |
-| `ActionStatistics::update_running_action` | method | 78 | feat:profiler | `(ActionStatistics).UpdateRunningAction` | todo |
-| `ActionStatistics::update_running_action` | method | 82 | feat:profiler | `(ActionStatistics).UpdateRunningAction` | todo |
-| `ActionStatistics::save_action_timing` | method | 85 | feat:profiler | `(ActionStatistics).SaveActionTiming` | todo |
-| `ActionStatistics::save_action_timing` | method | 131 | feat:profiler | `(ActionStatistics).SaveActionTiming` | todo |
-| `ActionStatistics::longest_runtimes` | method | 133 |  | `(ActionStatistics).LongestRuntimes` | todo |
-| `ActionTiming` | struct | 150 |  | `ActionTiming` | todo |
-| `ActionTiming::duration` | method | 166 |  | `(ActionTiming).Duration` | todo |
-| `ActionTiming::runtime` | method | 173 |  | `(ActionTiming).Runtime` | todo |
-| `take_action_stats` | fn | 205 | feat:profiler | `TakeActionStats` | todo |
-| `take_action_stats` | fn | 211 | feat:profiler | `TakeActionStats` | todo |
+| `ActionStatistics` | struct | 11 |  | `ActionStatistics` | done |
+| `ActionStatistics::take` | method | 67 |  | `(ActionStatistics).Take` | done |
+| `ActionStatistics::is_empty` | method | 73 |  | `(ActionStatistics).IsEmpty` | done |
+| `ActionStatistics::update_running_action` | method | 78 | feat:profiler | `(ActionStatistics).UpdateRunningAction` | done |
+| `ActionStatistics::update_running_action` | method | 82 | feat:profiler | `(ActionStatistics).UpdateRunningAction` | done |
+| `ActionStatistics::save_action_timing` | method | 85 | feat:profiler | `(ActionStatistics).SaveActionTiming` | done |
+| `ActionStatistics::save_action_timing` | method | 131 | feat:profiler | `(ActionStatistics).SaveActionTiming` | done |
+| `ActionStatistics::longest_runtimes` | method | 133 |  | `(ActionStatistics).LongestRuntimes` | done |
+| `ActionTiming` | struct | 150 |  | `ActionTiming` | done |
+| `ActionTiming::duration` | method | 166 |  | `(ActionTiming).Duration` | done |
+| `ActionTiming::runtime` | method | 173 |  | `(ActionTiming).Runtime` | done |
+| `take_action_stats` | fn | 205 | feat:profiler | `TakeActionStats` | done |
+| `take_action_stats` | fn | 211 | feat:profiler | `TakeActionStats` | done |
 
 ## gpui/src/profiler/hang.rs
 
@@ -410,8 +410,13 @@ Go target: `profiler_hang_monitor.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `HangMonitorConfig` | struct | 12 |  | `HangMonitorConfig` | todo |
-| `HangMonitorError` | enum | 25 |  | `HangMonitorError` | todo |
-| `HangMonitorPollReason` | enum | 36 |  | `HangMonitorPollReason` | todo |
-| `HangMonitorPoll` | struct | 45 |  | `HangMonitorPoll` | todo |
+| `HangMonitorConfig` | struct | 12 |  | `HangMonitorConfig` | done |
+| `HangMonitorError` | enum | 25 |  | `HangMonitorError` | done |
+| `HangMonitorPollReason` | enum | 36 |  | `HangMonitorPollReason` | done |
+| `HangMonitorPoll` | struct | 45 |  | `HangMonitorPoll` | done |
 
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-PROFTHREAD | The thread-local `THREAD_TIMINGS` becomes a registry keyed by an explicit `ThreadID` (allocated with `NewThreadID`); `UpdateRunningTask`, `SaveTaskTiming`, `GetCurrentThreadTaskTimings` and `GetCurrentThreadTimings` take the dispatcher's `ThreadID` as first parameter, and `ReleaseThreadTimings` is the thread-exit drop | `gpui/src/profiler.rs:42`, `:59`, `:540-556`, `:671-697` | Go has no thread-local storage and goroutines have no stable identity; the dispatcher owns its thread identity |

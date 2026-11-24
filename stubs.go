@@ -218,8 +218,6 @@ func (b GpuiBorrow[T]) Release() {
 	panic("gpui: unimplemented GpuiBorrow.Release")
 }
 
-const profilerFeatureEnabled = false
-
 // DefaultWindowSize is the default size of a new window (M0-window-core ports it).
 var DefaultWindowSize = NewSize(Px(1536.), Px(1095.))
 
@@ -1291,3 +1289,64 @@ type TouchDragEvent struct{}
 
 // BackGestureEvent is a back-navigation gesture recognized by the platform (M0-gestures-spring ports it).
 type BackGestureEvent struct{}
+
+func (cx *App) actionRegistry() *actionRegistry {
+	panic("gpui: unimplemented App.actionRegistry")
+}
+
+// HangDetector detects hangs from the foreground journal (M3-profiler-hang ports it).
+type HangDetector struct{}
+
+// TakeActiveTime returns the time the user was active since the previous call (M3-profiler-hang ports it).
+func (d *HangDetector) TakeActiveTime(now scheduler.Instant, maxGap time.Duration) time.Duration {
+	panic("gpui: unimplemented HangDetector.TakeActiveTime")
+}
+
+// FirstPresentAt returns when the first frame was presented (M3-profiler-hang ports it).
+func (d *HangDetector) FirstPresentAt() (scheduler.Instant, bool) {
+	panic("gpui: unimplemented HangDetector.FirstPresentAt")
+}
+
+// Poll returns the incidents sealed since the previous poll (M3-profiler-hang ports it).
+func (d *HangDetector) Poll() []HangIncident {
+	panic("gpui: unimplemented HangDetector.Poll")
+}
+
+// HangIncident is a detected hang (M3-profiler-hang ports it).
+type HangIncident struct{}
+
+// InputTiming is one input dispatch (M3-profiler-journal ports it).
+type InputTiming struct {
+	Kind               string
+	Start              scheduler.Instant
+	End                scheduler.Instant
+	CausedInvalidation bool
+}
+
+func beginForegroundTurn() {}
+
+func endForegroundTurn() {}
+
+func recordTaskPoll(timing TaskTiming) {}
+
+func recordFramePending(windowID WindowID, dirtyAt scheduler.Instant) {}
+
+func recordWindowClosed(windowID WindowID) {}
+
+func powerInterruptedSince(start scheduler.Instant) bool {
+	return false
+}
+
+func frameSampleIsValid(id WindowID, start scheduler.Instant) bool {
+	return true
+}
+
+func recordInput(timing InputTiming) {}
+
+func recordAction(timing ActionTiming) {}
+
+func recordView(timing ViewTiming) {}
+
+func recordDraw(timing FrameTiming) {}
+
+func recordPresent(timing PresentTiming, frame Option[FrameTiming]) {}
