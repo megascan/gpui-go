@@ -187,8 +187,109 @@ Go target: `text/gotext/scale.go`
 | `Scaler::scale_outline_impl` | method | 555 |  | `(swashScaler).scaleOutline` | dev:L-GLYPH |
 | `Render` | struct | 776 |  | `swashRender` | done |
 | `Render::render_into` (Source::Outline) | method | 846 |  | `(swashRender).renderInto` | done |
-| `Render::render_into` (Source::ColorOutline, ColorBitmap, Bitmap) | method | 885 |  | `(swashRender).renderInto` | blocked:M2-gotext-color |
+| `Render::render_into` (Source::ColorOutline, ColorBitmap, Bitmap) | method | 885 |  | `(swashRender).renderInto` | done |
 | `Render::render` | method | 985 |  | `(swashRender).render` | done |
+| `Render::new` / `default_color` | assoc-fn | 789 |  | `newSwashRender` | done |
+| `Scaler::scale_color_outline_impl` | method | 592 |  | `(swashScaler).scaleColorOutlineImpl` | done |
+| `Scaler::has_color_outlines` | method | 518 |  | `(swashScaler).hasColorOutlines` | done |
+| `Scaler::has_bitmaps` | method | 518 |  | `(swashScaler).hasBitmaps` | done |
+| `Scaler::has_color_bitmaps` | method | 518 |  | `(swashScaler).hasColorBitmaps` | done |
+| `Scaler::scale_bitmap_into` | method | 620 |  | `(swashScaler).scaleBitmapInto` | done |
+| `Scaler::scale_color_bitmap_into` | method | 620 |  | `(swashScaler).scaleColorBitmapInto` | done |
+| `Scaler::scale_bitmap_impl` | method | 665 |  | `(swashScaler).scaleBitmapImpl` | done |
+| `StrikeWith` | enum | 1 |  | `swashStrikeWith` | done |
+
+## swash-0.2.10/src/scale/outline.rs (layer subset)
+
+Go target: `text/gotext/scale.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Outline::len` | method | 30 |  | `(swashOutline).len` | done |
+| `Outline::get` | method | 30 |  | `(swashOutline).get` | done |
+| `Outline::path` | method | 30 |  | `(swashOutline).path` | done |
+| `Outline::bounds` | method | 30 |  | `(swashOutline).bounds` | done |
+| `Outline::clear` | method | 30 |  | `(swashOutline).clear` | done |
+| `Outline::begin_layer` | method | 269 |  | `(swashOutline).beginLayer` | done |
+| `Outline::maybe_close` | method | 269 |  | `(swashOutline).maybeClose` | done |
+| `Outline::finish` | method | 269 |  | `(swashOutline).finish` | done |
+| `Layer` | struct | 118 |  | `swashOutlineLayer` | done |
+
+## swash-0.2.10/src/scale/image.rs
+
+Go target: `text/gotext/scale.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Image::clear` | method | 46 |  | `(swashImage).clear` | done |
+
+## swash-0.2.10/src/scale/color.rs
+
+Go target: `text/gotext/scale_color.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `ColorProxy` | struct | 11 |  | `swashColorProxy` | done |
+| `ColorProxy::from_font` | assoc-fn | 11 |  | `newSwashColorProxy` | done |
+| `ColorProxy::layers` | method | 24 |  | `(swashColorProxy).layers` | done |
+| `ColorProxy::palette` | method | 57 |  | `(swashColorProxy).palette` | done |
+| `Layers` | struct | 66 |  | `swashLayers` | done |
+| `Layers::get` | method | 66 |  | `(swashLayers).get` | done |
+| `Layer` | struct | 92 |  | `swashLayer` | done |
+
+## swash-0.2.10/src/palette.rs (render subset)
+
+Go target: `text/gotext/palette.go`. Palette names and usability flags are not used by rendering.
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `ColorPalettes::new` | method | 20 |  | `newSwashColorPalettes` | done |
+| `get` | method | 20 |  | `(swashColorPalettes).get` | done |
+| `ColorPalette::get` | method | 140 |  | `(swashColorPalette).get` | done |
+
+## swash-0.2.10/src/strike.rs
+
+Go target: `text/gotext/strike.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `BitmapStrikesProxy` (from_font, has_alpha, has_color, materialize_*) | struct | 13 |  | `swashBitmapStrikesProxy` | done |
+| `BitmapStrikes` (get, find_by_nearest_ppem, find_by_exact_ppem, find_by_largest_ppem) | struct | 106 |  | `swashBitmapStrikes` | done |
+| `BitmapStrike` (ppem, contains, get) | struct | 228 |  | `swashBitmapStrike` | done |
+| `BitmapFormat` | enum | 278 |  | `swashBitmapFormat` | done |
+| `Bitmap` (new, decoded_size, scaled_size, decode) | struct | 308 |  | `swashBitmap` | done |
+| `Location` | struct | 470 |  | `swashLocation` | done |
+| `get_coverage` | fn | 488 |  | `getCoverage` | done |
+| `get_location` | fn | 515 |  | `getLocation` | done |
+| `get_data` | fn | 643 |  | `getData` | done |
+| `sbix_range` | fn | 735 |  | `sbixRange` | done |
+| `get_metrics` | fn | 806 |  | `getMetrics` | done |
+
+## swash-0.2.10/src/scale/bitmap/mod.rs
+
+Go target: `text/gotext/scale_bitmap.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `blit` | fn | 18 |  | `swashBlit` | done |
+| `Filter` | enum | 84 |  | `swashFilter` | done |
+| `resize` | fn | 94 |  | `swashResize` | done |
+| `resample` | fn | 199 |  | `swashResample` | done |
+| `sample_dir` | fn | 291 |  | `swashSampleDir` | done |
+| `sinc` | fn | 350 |  | `swashSinc` | done |
+| `lanczos3` | fn | 359 |  | `swashLanczos3` | done |
+| `bilinear` | fn | 367 |  | `swashBilinear` | done |
+| `bicubic` | fn | 376 |  | `swashBicubic` | done |
+| `mitchell` | fn | 393 |  | `swashMitchell` | done |
+| `nearest` | fn | 404 |  | `swashNearest` | done |
+| `gaussian` | fn | 408 |  | `swashGaussian` | done |
+| `decode_png` | fn | 12 |  | `decodePng` | dev:D-SWASH-PNG |
+
+## swash-0.2.10/src/scale/bitmap/png.rs
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| PNG decoder | module | 1 |  | `decodePng` (image/png) | dev:D-SWASH-PNG |
 
 ## Deviations registered here
 
@@ -196,3 +297,4 @@ Go target: `text/gotext/scale.go`
 |---|---|---|---|
 | D-GOTEXT-CTOR | `CosmicTextSystem::new` / `new_without_system_fonts` are `NewTextSystem` / `NewTextSystemWithoutSystemFonts` (the type keeps upstream's name); cosmic-text, fontdb, swash metrics and skrifa line metrics are re-expressed on go-text/typesetting in `fontdb.go`, `font.go`, `shape.go` and `fallback_*.go` | `gpui_wgpu/src/cosmic_text_system.rs:131`, `:147` | Constructor names fixed by STAGES.md M2-gotext-layout; cosmic-text has no Go port |
 | D-ZENO-FILL | Only zeno's fill path is ported (no stroker, segment iterator, SVG parser or AdaptiveStorage); `Style` is reduced to `Fill`, and the unscratched render path uses `HeapStorage` | `zeno-0.3.3/src/style.rs`, `segment.rs`, `raster.rs:605` | STAGES.md M2-gotext-raster scopes the port to glyph fills; AdaptiveStorage yields identical cells |
+| D-SWASH-PNG | CBDT / sbix PNG strikes are decoded with Go's image/png into straight RGBA instead of swash's own inflate + PNG decoder | `swash-0.2.10/src/scale/bitmap/png.rs` | STAGES.md M2-gotext-color prescribes image/png; output format (8-bit RGBA, unpremultiplied) is the same |

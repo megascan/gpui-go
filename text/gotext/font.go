@@ -16,6 +16,8 @@ type cosmicFont struct {
 	metrics skrifaMetrics
 	swash   swashMetrics
 	glyphs  swashGlyphMetrics
+	color   swashColorProxy
+	bitmaps swashBitmapStrikesProxy
 }
 
 func newCosmicFont(db *fontDatabase, id faceID) (*cosmicFont, bool) {
@@ -33,6 +35,8 @@ func newCosmicFont(db *fontDatabase, id faceID) (*cosmicFont, bool) {
 		metrics: newSkrifaMetrics(tables),
 		swash:   newSwashMetrics(tables),
 		glyphs:  newSwashGlyphMetrics(tables),
+		color:   newSwashColorProxy(tables),
+		bitmaps: newSwashBitmapStrikesProxy(tables),
 	}, true
 }
 
@@ -45,7 +49,8 @@ func (f *cosmicFont) charmap(ch rune) uint16 {
 }
 
 type rawTables struct {
-	head, hhea, os2, post, hmtx, vhea, vmtx, maxp []byte
+	head, hhea, os2, post, hmtx, vhea, vmtx, maxp  []byte
+	colr, cpal, eblc, ebdt, cblc, cbdt, sbix, name []byte
 }
 
 func readRawTables(loader *ot.Loader) rawTables {
@@ -65,6 +70,14 @@ func readRawTables(loader *ot.Loader) rawTables {
 		vhea: get(tagVhea),
 		vmtx: get(tagVmtx),
 		maxp: get(tagMaxp),
+		colr: get(tagCOLR),
+		cpal: get(tagCPAL),
+		eblc: get(tagEBLC),
+		ebdt: get(tagEBDT),
+		cblc: get(tagCBLC),
+		cbdt: get(tagCBDT),
+		sbix: get(tagSbix),
+		name: get(tagName),
 	}
 }
 

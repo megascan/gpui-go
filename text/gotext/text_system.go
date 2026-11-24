@@ -874,14 +874,21 @@ func (s *cosmicTextSystemState) renderGlyphImage(params gpui.RenderGlyphParams) 
 		float32(params.SubpixelVariant.X)/float32(gpui.SubpixelVariantsX)/params.ScaleFactor,
 		float32(params.SubpixelVariant.Y)/float32(gpui.SubpixelVariantsY)/params.ScaleFactor,
 	)
-	scaler := s.swashScaleContext.builder(loaded.font.face, pixelSize*params.ScaleFactor)
-	var sources []swashSource
+	scaler := s.swashScaleContext.builder(loaded.font, pixelSize*params.ScaleFactor)
+	var sources []swashSourceEntry
 	if params.IsEmoji {
-		sources = []swashSource{swashSourceColorOutline, swashSourceColorBitmap, swashSourceOutline}
+		sources = []swashSourceEntry{
+			{source: swashSourceColorOutline, paletteIndex: 0},
+			{source: swashSourceColorBitmap, strike: swashStrikeWithBestFit},
+			{source: swashSourceOutline},
+		}
 	} else {
-		sources = []swashSource{swashSourceBitmap, swashSourceOutline}
+		sources = []swashSourceEntry{
+			{source: swashSourceBitmap, strike: swashStrikeWithExactSize},
+			{source: swashSourceOutline},
+		}
 	}
-	renderer := swashRender{sources: sources}
+	renderer := newSwashRender(sources)
 	if params.SubpixelRendering {
 		renderer.format = zeno.FormatSubpixelBGRA()
 	} else {
