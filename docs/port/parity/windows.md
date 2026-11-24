@@ -10,8 +10,8 @@ Go target: `-` (package `-`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `compile_shaders` | fn | 23 | windows,debug | `CompileShaders` | todo |
-| `find_latest_windows_sdk_binary` | fn | 62 | windows,debug | `FindLatestWindowsSdkBinary` | todo |
+| `compile_shaders` | fn | 23 | windows,debug | `buildShaderBlob` | dev:D-WINSHADERRT |
+| `find_latest_windows_sdk_binary` | fn | 62 | windows,debug | `-` | n/a:D-WINSHADERRT |
 
 ## gpui_windows/src/dialog.rs
 
@@ -43,7 +43,7 @@ Go target: `platform/windows/directx_atlas.go` (package `windows`), tests in `di
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_remove_deallocates_tile_space_for_reuse` | test | 393 |  | `TestDirectxAtlas_RemoveDeallocatesTileSpaceForReuse` | todo |
+| `test_remove_deallocates_tile_space_for_reuse` | test | 393 |  | `TestDirectxAtlas_RemoveDeallocatesTileSpaceForReuse` | done |
 
 ## gpui_windows/src/directx_renderer.rs
 
@@ -108,3 +108,4 @@ Go target: `platform/windows/window.go` (package `windows`), tests in `window_te
 | D-WINDISPFAIL | When `TrySubmitThreadpoolCallback` or `CreateThreadpoolTimer` fails, the runnable is taken back out of the handle table and run on a goroutine (`time.AfterFunc` for the timer); a failed wake `PostMessageW` resets `WakePosted` to false | `gpui_windows/src/dispatcher.rs:54-90`, `:118-132` | upstream leaks the runnable (it cannot drop a scheduled runnable) and leaves `wake_posted` set, so the task never runs and the main queue stops being woken |
 | D-WINLASTERR | `WindowsDisplayPrimaryMonitor` reads the last error captured by the `MonitorFromPoint` call itself (`win32.MonitorFromPointLastError`) | `gpui_windows/src/display.rs:85-92` | Go runtime code between the call and `GetLastError` can overwrite the thread's last error |
 | D-WINSTRNUL | `com.NewHSTRING` / `NewBSTR` encode with `utf16.Encode` and `HSTRING.String` / `BSTRToString` decode the full counted length with `utf16.Decode`, so embedded NULs round-trip | windows-rs `HSTRING::from`, `BSTR::from` | as windows-rs, which never truncates or rejects interior NULs |
+| D-WINSHADERRT | build.rs's fxc step is replaced by compiling the embedded, byte-identical shaders.hlsl with `D3DCompile` (d3dcompiler_47) on first use (`NewRawShaderBytes`, platform/windows/directx_shaders.go, the `shader_resources` module of directx_renderer.rs), with the build.rs entry points and vs_4_1/ps_4_1 targets; flags are `D3DCOMPILE_OPTIMIZATION_LEVEL3` (fxc `/O3`), or upstream's debug flags under `gpuiutil.DebugAssertions`; the include is served by a Go `ID3DInclude` instead of fxc's file-system include; no SDK lookup | `gpui_windows/build.rs:23-201`, `gpui_windows/src/directx_renderer.rs:1722-1880` | Go has no build scripts; DESIGN 8.4 |
