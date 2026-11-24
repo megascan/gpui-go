@@ -228,9 +228,9 @@ Go target: `app.go` (package `gpui`), tests in `app_test.go`
 | `App::set_active_drag_cursor_style` | method | 3223 |  | `(App).SetActiveDragCursorStyle` | done |
 | `App::set_prompt_builder` | method | 3239 |  | `(App).SetPromptBuilder` | done |
 | `App::reset_prompt_builder` | method | 3256 |  | `(App).ResetPromptBuilder` | done |
-| `App::remove_asset` | method | 3261 |  | `(App).RemoveAsset` | blocked:M0-app-contexts |
-| `App::has_asset` | method | 3269 | feat:test-support | `(App).HasAsset` | blocked:M0-app-contexts |
-| `App::fetch_asset` | method | 3278 |  | `(App).FetchAsset` | blocked:M0-app-contexts |
+| `App::remove_asset` | method | 3261 |  | `(App).RemoveAsset` | done |
+| `App::has_asset` | method | 3269 | feat:test-support | `(App).HasAsset` | done |
+| `App::fetch_asset` | method | 3278 |  | `(App).FetchAsset` | done |
 | `App::focus_handle` | method | 3298 |  | `(App).FocusHandle` | done |
 | `App::notify` | method | 3303 |  | `(App).Notify` | done |
 | `App::get_name` | method | 3341 | feat:test-support,debug | `(App).GetName` | done |
@@ -260,19 +260,19 @@ Go target: `asset_cache.go` (package `gpui`), tests in `asset_cache_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Resource` | enum | 71 |  | `Resource` | todo |
-| `Asset` | trait | 99 |  | `Asset` | todo |
-| `Asset::load` | trait-method | 107 |  | `Asset.Load` | todo |
-| `AssetLogger` | enum | 114 |  | `AssetLogger` | todo |
-| `hash` | fn | 139 |  | `Hash` | todo |
+| `Resource` | enum | 71 |  | `Resource` | done |
+| `Asset` | trait | 99 |  | `Asset` | done |
+| `Asset::load` | trait-method | 107 |  | `Asset.Load` | done |
+| `AssetLogger` | enum | 114 |  | `AssetLogger` | done |
+| `hash` | fn | 139 |  | `Hash` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `cached_load_caches_success_and_error` | gpui::test | 160 |  | `TestAssetCache_CachedLoadCachesSuccessAndError` | todo |
-| `completed_load_without_subscribers_is_cached_and_deduplicated` | gpui::test | 178 |  | `TestAssetCache_CompletedLoadWithoutSubscribersIsCachedAndDeduplicated` | todo |
-| `load_completion_notifies_each_observing_entity_once` | gpui::test | 201 |  | `TestAssetCache_LoadCompletionNotifiesEachObservingEntityOnce` | todo |
-| `removing_pending_asset_cancels_it_and_replacement_ignores_stale_completion` | gpui::test | 241 |  | `TestAssetCache_RemovingPendingAssetCancelsItAndReplacementIgnoresStaleCompletion` | todo |
-| `eviction_after_worker_completion_does_not_publish_into_replacement` | gpui::test | 271 |  | `TestAssetCache_EvictionAfterWorkerCompletionDoesNotPublishIntoReplacement` | todo |
+| `cached_load_caches_success_and_error` | gpui::test | 160 |  | `TestAssetCache_CachedLoadCachesSuccessAndError` | blocked:M0-test-contexts |
+| `completed_load_without_subscribers_is_cached_and_deduplicated` | gpui::test | 178 |  | `TestAssetCache_CompletedLoadWithoutSubscribersIsCachedAndDeduplicated` | blocked:M0-test-contexts |
+| `load_completion_notifies_each_observing_entity_once` | gpui::test | 201 |  | `TestAssetCache_LoadCompletionNotifiesEachObservingEntityOnce` | blocked:M0-test-contexts |
+| `removing_pending_asset_cancels_it_and_replacement_ignores_stale_completion` | gpui::test | 241 |  | `TestAssetCache_RemovingPendingAssetCancelsItAndReplacementIgnoresStaleCompletion` | blocked:M0-test-contexts |
+| `eviction_after_worker_completion_does_not_publish_into_replacement` | gpui::test | 271 |  | `TestAssetCache_EvictionAfterWorkerCompletionDoesNotPublishIntoReplacement` | blocked:M0-test-contexts |
 
 ## gpui/src/assets.rs
 
@@ -455,12 +455,12 @@ Go target: `testing.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `seed_strategy` | fn | 43 |  | `SeedStrategy` | todo |
-| `apply_seed_to_proptest_config` | fn | 57 |  | `ApplySeedToProptestConfig` | todo |
-| `run_test_once` | fn | 74 |  | `RunTestOnce` | todo |
-| `run_test` | fn | 95 |  | `RunTest` | todo |
-| `Observation` | struct | 145 |  | `Observation` | todo |
-| `observe` | fn | 162 |  | `Observe` | todo |
+| `seed_strategy` | fn | 43 |  | `SeedStrategy` | done |
+| `apply_seed_to_proptest_config` | fn | 57 |  | `PropertyTestRNGSeed` | dev:D-PROPTEST |
+| `run_test_once` | fn | 74 |  | `RunTestOnce` | done |
+| `run_test` | fn | 95 |  | `RunTest` | done |
+| `Observation` | struct | 145 |  | `Observation` | done |
+| `observe` | fn | 162 |  | `Observe` | done |
 
 ## gpui/src/app/async_context.rs
 
@@ -468,30 +468,30 @@ Go target: `app_async_context.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `AsyncApp` | struct | 22 |  | `AsyncApp` | todo |
-| `AsyncApp::refresh` | method | 150 |  | `(AsyncApp).Refresh` | todo |
-| `AsyncApp::background_executor` | method | 159 |  | `(AsyncApp).BackgroundExecutor` | todo |
-| `AsyncApp::is_test` | method | 165 |  | `(AsyncApp).IsTest` | todo |
-| `AsyncApp::foreground_executor` | method | 170 |  | `(AsyncApp).ForegroundExecutor` | todo |
-| `AsyncApp::update` | method | 176 |  | `(AsyncApp).Update` | todo |
-| `AsyncApp::subscribe` | method | 184 |  | `(AsyncApp).Subscribe` | todo |
-| `AsyncApp::open_window` | method | 199 |  | `(AsyncApp).OpenWindow` | todo |
-| `AsyncApp::spawn` | method | 218 |  | `(AsyncApp).Spawn` | todo |
-| `AsyncApp::has_global` | method | 229 |  | `(AsyncApp).HasGlobal` | todo |
-| `AsyncApp::read_global` | method | 239 |  | `(AsyncApp).ReadGlobal` | todo |
-| `AsyncApp::try_read_global` | method | 248 |  | `(AsyncApp).TryReadGlobal` | todo |
-| `AsyncApp::read_default_global` | method | 259 |  | `(AsyncApp).ReadDefaultGlobal` | todo |
-| `AsyncApp::update_global` | method | 273 |  | `(AsyncApp).UpdateGlobal` | todo |
-| `AsyncApp::on_drop` | assoc-fn | 280 |  | `AsyncAppOnDrop` | todo |
-| `AsyncWindowContext` | struct | 296 |  | `AsyncWindowContext` | todo |
-| `AsyncWindowContext::window_handle` | method | 309 |  | `(AsyncWindowContext).WindowHandle` | todo |
-| `AsyncWindowContext::update` | method | 316 |  | `(AsyncWindowContext).Update` | todo |
-| `AsyncWindowContext::update_root` | method | 324 |  | `(AsyncWindowContext).UpdateRoot` | todo |
-| `AsyncWindowContext::on_next_frame` | method | 332 |  | `(AsyncWindowContext).OnNextFrame` | todo |
-| `AsyncWindowContext::read_global` | method | 339 |  | `(AsyncWindowContext).ReadGlobal` | todo |
-| `AsyncWindowContext::update_global` | method | 349 |  | `(AsyncWindowContext).UpdateGlobal` | todo |
-| `AsyncWindowContext::spawn` | method | 365 |  | `(AsyncWindowContext).Spawn` | todo |
-| `AsyncWindowContext::prompt` | method | 378 |  | `(AsyncWindowContext).Prompt` | todo |
+| `AsyncApp` | struct | 22 |  | `AsyncApp` | done |
+| `AsyncApp::refresh` | method | 150 |  | `(AsyncApp).Refresh` | done |
+| `AsyncApp::background_executor` | method | 159 |  | `(AsyncApp).BackgroundExecutor` | done |
+| `AsyncApp::is_test` | method | 165 |  | `(AsyncApp).IsTest` | done |
+| `AsyncApp::foreground_executor` | method | 170 |  | `(AsyncApp).ForegroundExecutor` | done |
+| `AsyncApp::update` | method | 176 |  | `(AsyncApp).Update` | done |
+| `AsyncApp::subscribe` | method | 184 |  | `(AsyncApp).Subscribe` | done |
+| `AsyncApp::open_window` | method | 199 |  | `(AsyncApp).OpenWindow` | done |
+| `AsyncApp::spawn` | method | 218 |  | `(AsyncApp).Spawn` | done |
+| `AsyncApp::has_global` | method | 229 |  | `(AsyncApp).HasGlobal` | done |
+| `AsyncApp::read_global` | method | 239 |  | `(AsyncApp).ReadGlobal` | done |
+| `AsyncApp::try_read_global` | method | 248 |  | `(AsyncApp).TryReadGlobal` | done |
+| `AsyncApp::read_default_global` | method | 259 |  | `(AsyncApp).ReadDefaultGlobal` | done |
+| `AsyncApp::update_global` | method | 273 |  | `(AsyncApp).UpdateGlobal` | done |
+| `AsyncApp::on_drop` | assoc-fn | 280 |  | `AsyncAppOnDrop` | done |
+| `AsyncWindowContext` | struct | 296 |  | `AsyncWindowContext` | done |
+| `AsyncWindowContext::window_handle` | method | 309 |  | `(AsyncWindowContext).WindowHandle` | done |
+| `AsyncWindowContext::update` | method | 316 |  | `(AsyncWindowContext).Update` | done |
+| `AsyncWindowContext::update_root` | method | 324 |  | `(AsyncWindowContext).UpdateRoot` | done |
+| `AsyncWindowContext::on_next_frame` | method | 332 |  | `(AsyncWindowContext).OnNextFrame` | done |
+| `AsyncWindowContext::read_global` | method | 339 |  | `(AsyncWindowContext).ReadGlobal` | done |
+| `AsyncWindowContext::update_global` | method | 349 |  | `(AsyncWindowContext).UpdateGlobal` | done |
+| `AsyncWindowContext::spawn` | method | 365 |  | `(AsyncWindowContext).Spawn` | done |
+| `AsyncWindowContext::prompt` | method | 378 |  | `(AsyncWindowContext).Prompt` | done |
 
 ## gpui/src/app/context.rs
 
@@ -499,50 +499,50 @@ Go target: `app_context.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Context` | struct | 20 |  | `Context` | todo |
-| `Context::entity_id` | method | 45 |  | `(Context).EntityID` | todo |
-| `Context::entity` | method | 50 |  | `(Context).Entity` | todo |
-| `Context::weak_entity` | method | 57 |  | `(Context).WeakEntity` | todo |
-| `Context::observe` | method | 63 |  | `(Context).Observe` | todo |
-| `Context::observe_self` | method | 79 |  | `(Context).ObserveSelf` | todo |
-| `Context::subscribe` | method | 93 |  | `(Context).Subscribe` | todo |
-| `Context::subscribe_self` | method | 111 |  | `(Context).SubscribeSelf` | todo |
-| `Context::on_release` | method | 126 |  | `(Context).OnRelease` | todo |
-| `Context::observe_release` | method | 140 |  | `(Context).ObserveRelease` | todo |
-| `Context::observe_global` | method | 163 |  | `(Context).ObserveGlobal` | todo |
-| `Context::on_app_restart` | method | 180 |  | `(Context).OnAppRestart` | todo |
-| `Context::on_app_quit` | method | 195 |  | `(Context).OnAppQuit` | todo |
-| `Context::notify` | method | 216 |  | `(Context).Notify` | todo |
-| `Context::spawn` | method | 225 |  | `(Context).Spawn` | todo |
-| `Context::listener` | method | 241 |  | `(Context).Listener` | todo |
-| `Context::processor` | method | 255 |  | `(Context).Processor` | todo |
-| `Context::on_drop` | method | 266 |  | `(Context).OnDrop` | todo |
-| `Context::focus_view` | method | 278 |  | `(Context).FocusView` | todo |
-| `Context::on_next_frame` | method | 283 |  | `(Context).OnNextFrame` | todo |
-| `Context::defer_in` | method | 296 |  | `(Context).DeferIn` | todo |
-| `Context::observe_in` | method | 312 |  | `(Context).ObserveIn` | todo |
-| `Context::subscribe_in` | method | 336 |  | `(Context).SubscribeIn` | todo |
-| `Context::on_release_in` | method | 365 |  | `(Context).OnReleaseIn` | todo |
-| `Context::observe_release_in` | method | 375 |  | `(Context).ObserveReleaseIn` | todo |
-| `Context::observe_window_bounds` | method | 397 |  | `(Context).ObserveWindowBounds` | todo |
-| `Context::observe_window_activation` | method | 410 |  | `(Context).ObserveWindowActivation` | todo |
-| `Context::observe_window_visibility` | method | 426 |  | `(Context).ObserveWindowVisibility` | todo |
-| `Context::observe_window_appearance` | method | 441 |  | `(Context).ObserveWindowAppearance` | todo |
-| `Context::observe_window_display` | method | 458 |  | `(Context).ObserveWindowDisplay` | todo |
-| `Context::observe_button_layout_changed` | method | 471 |  | `(Context).ObserveButtonLayoutChanged` | todo |
-| `Context::observe_keystrokes` | method | 486 |  | `(Context).ObserveKeystrokes` | todo |
-| `Context::observe_pending_input` | method | 503 |  | `(Context).ObservePendingInput` | todo |
-| `Context::on_focus` | method | 519 |  | `(Context).OnFocus` | todo |
-| `Context::on_focus_in` | method | 545 |  | `(Context).OnFocusIn` | todo |
-| `Context::on_blur` | method | 568 |  | `(Context).OnBlur` | todo |
-| `Context::on_focus_lost` | method | 595 |  | `(Context).OnFocusLost` | todo |
-| `Context::on_focus_out` | method | 614 |  | `(Context).OnFocusOut` | todo |
-| `Context::spawn_in` | method | 649 |  | `(Context).SpawnIn` | todo |
-| `Context::spawn_in_with_priority` | method | 664 |  | `(Context).SpawnInWithPriority` | todo |
-| `Context::observe_global_in` | method | 679 |  | `(Context).ObserveGlobalIn` | todo |
-| `Context::on_action` | method | 709 |  | `(Context).OnAction` | todo |
-| `Context::focus_self` | method | 726 |  | `(Context).FocusSelf` | todo |
-| `Context::emit` | method | 739 |  | `(Context).Emit` | todo |
+| `Context` | struct | 20 |  | `Context` | done |
+| `Context::entity_id` | method | 45 |  | `(Context).EntityID` | done |
+| `Context::entity` | method | 50 |  | `(Context).Entity` | done |
+| `Context::weak_entity` | method | 57 |  | `(Context).WeakEntity` | done |
+| `Context::observe` | method | 63 |  | `(Context).Observe` | done |
+| `Context::observe_self` | method | 79 |  | `(Context).ObserveSelf` | done |
+| `Context::subscribe` | method | 93 |  | `(Context).Subscribe` | done |
+| `Context::subscribe_self` | method | 111 |  | `(Context).SubscribeSelf` | done |
+| `Context::on_release` | method | 126 |  | `(Context).OnRelease` | done |
+| `Context::observe_release` | method | 140 |  | `(Context).ObserveRelease` | done |
+| `Context::observe_global` | method | 163 |  | `(Context).ObserveGlobal` | done |
+| `Context::on_app_restart` | method | 180 |  | `(Context).OnAppRestart` | done |
+| `Context::on_app_quit` | method | 195 |  | `(Context).OnAppQuit` | done |
+| `Context::notify` | method | 216 |  | `(Context).Notify` | done |
+| `Context::spawn` | method | 225 |  | `(Context).Spawn` | done |
+| `Context::listener` | method | 241 |  | `(Context).Listener` | done |
+| `Context::processor` | method | 255 |  | `(Context).Processor` | done |
+| `Context::on_drop` | method | 266 |  | `(Context).OnDrop` | done |
+| `Context::focus_view` | method | 278 |  | `(Context).FocusView` | done |
+| `Context::on_next_frame` | method | 283 |  | `(Context).OnNextFrame` | done |
+| `Context::defer_in` | method | 296 |  | `(Context).DeferIn` | done |
+| `Context::observe_in` | method | 312 |  | `(Context).ObserveIn` | done |
+| `Context::subscribe_in` | method | 336 |  | `(Context).SubscribeIn` | done |
+| `Context::on_release_in` | method | 365 |  | `(Context).OnReleaseIn` | done |
+| `Context::observe_release_in` | method | 375 |  | `(Context).ObserveReleaseIn` | done |
+| `Context::observe_window_bounds` | method | 397 |  | `(Context).ObserveWindowBounds` | done |
+| `Context::observe_window_activation` | method | 410 |  | `(Context).ObserveWindowActivation` | done |
+| `Context::observe_window_visibility` | method | 426 |  | `(Context).ObserveWindowVisibility` | done |
+| `Context::observe_window_appearance` | method | 441 |  | `(Context).ObserveWindowAppearance` | done |
+| `Context::observe_window_display` | method | 458 |  | `(Context).ObserveWindowDisplay` | done |
+| `Context::observe_button_layout_changed` | method | 471 |  | `(Context).ObserveButtonLayoutChanged` | done |
+| `Context::observe_keystrokes` | method | 486 |  | `(Context).ObserveKeystrokes` | done |
+| `Context::observe_pending_input` | method | 503 |  | `(Context).ObservePendingInput` | done |
+| `Context::on_focus` | method | 519 |  | `(Context).OnFocus` | done |
+| `Context::on_focus_in` | method | 545 |  | `(Context).OnFocusIn` | done |
+| `Context::on_blur` | method | 568 |  | `(Context).OnBlur` | done |
+| `Context::on_focus_lost` | method | 595 |  | `(Context).OnFocusLost` | done |
+| `Context::on_focus_out` | method | 614 |  | `(Context).OnFocusOut` | done |
+| `Context::spawn_in` | method | 649 |  | `(Context).SpawnIn` | done |
+| `Context::spawn_in_with_priority` | method | 664 |  | `(Context).SpawnInWithPriority` | done |
+| `Context::observe_global_in` | method | 679 |  | `(Context).ObserveGlobalIn` | done |
+| `Context::on_action` | method | 709 |  | `(Context).OnAction` | done |
+| `Context::focus_self` | method | 726 |  | `(Context).FocusSelf` | done |
+| `Context::emit` | method | 739 |  | `(Context).Emit` | done |
 
 ## gpui/src/app/entity_map.rs
 

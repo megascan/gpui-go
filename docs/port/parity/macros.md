@@ -14,8 +14,8 @@ Go target: `internal/cmd/(index)` (package `-`)
 | `register_action` | proc-macro | 28 |  | `see DESIGN §9 (register_action)` | dev:D-MACRO |
 | `IntoElement` | proc-macro-derive | 35 |  | `see DESIGN §9 (IntoElement)` | todo |
 | `Render` | proc-macro-derive | 41 |  | `see DESIGN §9 (Render)` | todo |
-| `AppContext` | proc-macro-derive | 59 |  | `see DESIGN §9 (AppContext)` | todo |
-| `VisualContext` | proc-macro-derive | 92 |  | `see DESIGN §9 (VisualContext)` | todo |
+| `AppContext` | proc-macro-derive | 59 |  | `see DESIGN §9 (AppContext)` | dev:D-MACRO |
+| `VisualContext` | proc-macro-derive | 92 |  | `see DESIGN §9 (VisualContext)` | dev:D-MACRO |
 | `style_helpers` | proc-macro | 99 |  | `see DESIGN §9 (style_helpers)` | todo |
 | `visibility_style_methods` | proc-macro | 105 |  | `see DESIGN §9 (visibility_style_methods)` | todo |
 | `margin_style_methods` | proc-macro | 111 |  | `see DESIGN §9 (margin_style_methods)` | todo |
@@ -25,9 +25,9 @@ Go target: `internal/cmd/(index)` (package `-`)
 | `cursor_style_methods` | proc-macro | 135 |  | `see DESIGN §9 (cursor_style_methods)` | todo |
 | `border_style_methods` | proc-macro | 141 |  | `see DESIGN §9 (border_style_methods)` | todo |
 | `box_shadow_style_methods` | proc-macro | 147 |  | `see DESIGN §9 (box_shadow_style_methods)` | todo |
-| `test` | proc-macro-attribute | 189 |  | `see DESIGN §9 (test)` | todo |
+| `test` | proc-macro-attribute | 189 |  | `see DESIGN §9 (test)` | dev:D-MACRO |
 | `bench` | proc-macro-attribute | 222 |  | `see DESIGN §9 (bench)` | todo |
-| `property_test` | proc-macro-attribute | 295 |  | `see DESIGN §9 (property_test)` | todo |
+| `property_test` | proc-macro-attribute | 295 |  | `see DESIGN §9 (property_test)` | dev:D-MACRO |
 | `derive_inspector_reflection` | proc-macro-attribute | 317 | feat:inspector,debug | `see DESIGN §9 (derive_inspector_reflection)` | todo |
 
 ## gpui_macros/tests/derive_context.rs

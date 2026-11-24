@@ -2,10 +2,8 @@ package gpui
 
 import (
 	"encoding/json/jsontext"
-	"math/rand/v2"
 	"reflect"
 	"sync"
-	"testing"
 	"time"
 	"weak"
 
@@ -64,123 +62,6 @@ func (e Entity[T]) IntoAnyElement() AnyElement {
 	panic("gpui: unimplemented Entity.IntoAnyElement")
 }
 
-// Context is the context of an entity update: the App plus the entity being updated (M0-app-contexts ports it).
-type Context[T any] struct {
-	*App
-	entityState WeakEntity[T]
-}
-
-func newContext[T any](app *App, entity WeakEntity[T]) *Context[T] {
-	panic("gpui: unimplemented newContext")
-}
-
-// Notify tells observers of this entity that it changed (M0-app-contexts ports it).
-func (cx *Context[T]) Notify() {
-	panic("gpui: unimplemented Context.Notify")
-}
-
-// Observe arranges for f to be called whenever the observed entity notifies (M0-app-contexts ports it).
-func (cx *Context[T]) Observe[W any](entity Entity[W], onNotify func(this *T, entity Entity[W], cx *Context[T])) Subscription {
-	panic("gpui: unimplemented Context.Observe")
-}
-
-// Subscribe arranges for f to be called whenever the entity emits an event of type E (M0-app-contexts ports it).
-func (cx *Context[T]) Subscribe[T2, E any](entity Entity[T2], onEvent func(this *T, entity Entity[T2], event *E, cx *Context[T])) Subscription {
-	panic("gpui: unimplemented Context.Subscribe")
-}
-
-// Emit emits an event of type E to the entity's subscribers (M0-app-contexts ports it).
-func (cx *Context[T]) Emit[E any](event E) {
-	panic("gpui: unimplemented Context.Emit")
-}
-
-// Spawn spawns the future returned by f with a weak handle to this entity (M0-app-contexts ports it).
-func (cx *Context[T]) Spawn[R any](f func(this WeakEntity[T], cx *AsyncApp) (R, error)) *Task[R] {
-	panic("gpui: unimplemented Context.Spawn")
-}
-
-// Listener converts a listener on this entity into a window event listener (M0-app-contexts ports it).
-func (cx *Context[T]) Listener[E any](listener func(this *T, event *E, window *Window, cx *Context[T])) func(event *E, window *Window, cx *App) {
-	panic("gpui: unimplemented Context.Listener")
-}
-
-// AsyncApp is an App handle that can be held across await points (M0-app-contexts ports it).
-type AsyncApp struct {
-	*scheduler.Scope
-	app                weak.Pointer[AppCell]
-	bgExecutor         BackgroundExecutor
-	foregroundExecutor ForegroundExecutor
-}
-
-// Update runs f with the App, parking the task until the main thread runs it (M0-app-contexts ports it).
-func (cx *AsyncApp) Update(f func(cx *App)) {
-	panic("gpui: unimplemented AsyncApp.Update")
-}
-
-// UpdateR runs f with the App and returns its result (M0-app-contexts ports it).
-func (cx *AsyncApp) UpdateR[R any](f func(cx *App) R) R {
-	panic("gpui: unimplemented AsyncApp.UpdateR")
-}
-
-// New creates a new entity (M0-app-contexts ports it).
-func (cx *AsyncApp) New[T any](buildEntity func(cx *Context[T]) *T) Entity[T] {
-	panic("gpui: unimplemented AsyncApp.New")
-}
-
-// ReadGlobal reads a global (M0-app-contexts ports it).
-func (cx *AsyncApp) ReadGlobal[G, R any](read func(global *G, cx *App) R) R {
-	panic("gpui: unimplemented AsyncApp.ReadGlobal")
-}
-
-// BackgroundSpawn spawns a future on a background thread (M0-app-contexts ports it).
-func (cx *AsyncApp) BackgroundSpawn[R any](future func(s *scheduler.Scope) (R, error)) *Task[R] {
-	panic("gpui: unimplemented AsyncApp.BackgroundSpawn")
-}
-
-func (cx *AsyncApp) newEntity(entityType reflect.Type, build func(slot AnyEntity, cx *App) any) AnyEntity {
-	panic("gpui: unimplemented AsyncApp.newEntity")
-}
-
-func (cx *AsyncApp) reserveEntity(entityType reflect.Type) AnyEntity {
-	panic("gpui: unimplemented AsyncApp.reserveEntity")
-}
-
-func (cx *AsyncApp) insertEntity(slot AnyEntity, build func(cx *App) any) AnyEntity {
-	panic("gpui: unimplemented AsyncApp.insertEntity")
-}
-
-func (cx *AsyncApp) updateEntity(handle AnyEntity, update func(state any, cx *App)) {
-	panic("gpui: unimplemented AsyncApp.updateEntity")
-}
-
-func (cx *AsyncApp) asMut(handle AnyEntity) *App {
-	panic("gpui: unimplemented AsyncApp.asMut")
-}
-
-func (cx *AsyncApp) readEntity(handle AnyEntity, read func(state any, cx *App)) {
-	panic("gpui: unimplemented AsyncApp.readEntity")
-}
-
-func (cx *AsyncApp) updateWindow(window AnyWindowHandle, update func(root AnyView, window *Window, cx *App)) error {
-	panic("gpui: unimplemented AsyncApp.updateWindow")
-}
-
-func (cx *AsyncApp) withWindow(entityID EntityID, f func(window *Window, cx *App)) bool {
-	panic("gpui: unimplemented AsyncApp.withWindow")
-}
-
-func (cx *AsyncApp) readWindow(window AnyWindowHandle, read func(root AnyView, cx *App)) error {
-	panic("gpui: unimplemented AsyncApp.readWindow")
-}
-
-func (cx *AsyncApp) backgroundExecutor() BackgroundExecutor {
-	panic("gpui: unimplemented AsyncApp.backgroundExecutor")
-}
-
-func (cx *AsyncApp) readGlobal(globalType reflect.Type, read func(global any, cx *App)) {
-	panic("gpui: unimplemented AsyncApp.readGlobal")
-}
-
 // AnyView is a type-erased handle to an entity that implements Render (M0-element ports it).
 type AnyView struct {
 	entity AnyEntity
@@ -233,6 +114,78 @@ type Window struct {
 	nextFrameCallbacks *[]FrameCallback
 	needsPresent       *bool
 	refreshing         bool
+
+	displayObservers      singleSubscriberSet[anyObserver]
+	focusListeners        singleSubscriberSet[anyWindowFocusListener]
+	focusLostListeners    singleSubscriberSet[anyObserver]
+	boundsObservers       singleSubscriberSet[anyObserver]
+	appearanceObservers   singleSubscriberSet[anyObserver]
+	buttonLayoutObservers singleSubscriberSet[anyObserver]
+	visibilityObservers   singleSubscriberSet[func(visibility WindowVisibility, window *Window, cx *App) bool]
+	activationObservers   singleSubscriberSet[anyObserver]
+	pendingInputObservers singleSubscriberSet[anyObserver]
+}
+
+type anyObserver func(window *Window, cx *App) bool
+
+type anyWindowFocusListener func(event *windowFocusEvent, window *Window, cx *App) bool
+
+type windowFocusEvent struct {
+	previousFocusPath []FocusID
+	currentFocusPath  []FocusID
+}
+
+func (e *windowFocusEvent) isFocusIn(focusID FocusID) bool {
+	panic("gpui: unimplemented windowFocusEvent.isFocusIn")
+}
+
+func (e *windowFocusEvent) isFocusOut(focusID FocusID) bool {
+	panic("gpui: unimplemented windowFocusEvent.isFocusOut")
+}
+
+// FocusOutEvent is provided when subscribing for Context.OnFocusOut events (M0-window-core ports it).
+type FocusOutEvent struct {
+	// Blurred is a weak focus handle representing what was blurred.
+	Blurred WeakFocusHandle
+}
+
+// WeakFocusHandle is a weak reference to a focus handle (M0-window-core ports it).
+type WeakFocusHandle struct {
+	id      FocusID
+	handles weak.Pointer[focusMap]
+}
+
+func newWeakFocusHandle(id FocusID, handles *focusMap) WeakFocusHandle {
+	panic("gpui: unimplemented newWeakFocusHandle")
+}
+
+func (w *Window) newFocusListener(value anyWindowFocusListener) (Subscription, func()) {
+	panic("gpui: unimplemented Window.newFocusListener")
+}
+
+// Focus moves focus to the given handle (M0-window-core ports it).
+func (w *Window) Focus(handle FocusHandle, cx *App) {
+	panic("gpui: unimplemented Window.Focus")
+}
+
+// OnAction registers an action listener for the next frame (M0-window-dispatch ports it).
+func (w *Window) OnAction(actionType reflect.Type, listener func(action any, phase DispatchPhase, window *Window, cx *App)) {
+	panic("gpui: unimplemented Window.OnAction")
+}
+
+// Spawn spawns f on the main thread with an AsyncWindowContext for this window (M0-window-core ports it).
+func (w *Window) Spawn[R any](cx *App, f func(cx *AsyncWindowContext) (R, error)) *Task[R] {
+	panic("gpui: unimplemented Window.Spawn")
+}
+
+// SpawnWithPriority spawns f on the main thread with the given priority (M0-window-core ports it).
+func (w *Window) SpawnWithPriority[R any](priority Priority, cx *App, f func(cx *AsyncWindowContext) (R, error)) *Task[R] {
+	panic("gpui: unimplemented Window.SpawnWithPriority")
+}
+
+// Prompt presents a platform dialog and returns the index of the clicked button (M0-window-core ports it).
+func (w *Window) Prompt(level PromptLevel, message string, detail Option[string], answers []PromptButton, cx *App) *scheduler.OneshotReceiver[int] {
+	panic("gpui: unimplemented Window.Prompt")
 }
 
 // HasPendingKeystrokes reports whether a multi-stroke binding is pending (M0-window-dispatch ports it).
@@ -242,28 +195,6 @@ func (w *Window) HasPendingKeystrokes() bool {
 
 // FocusID identifies a focusable element of a window (M0-window-core ports it).
 type FocusID uint64
-
-// AsyncWindowContext is a window handle that can be held across await points (M0-app-contexts ports it).
-type AsyncWindowContext struct{}
-
-// Update runs f with the window and App; it fails when the window is gone (M0-app-contexts ports it).
-func (cx *AsyncWindowContext) Update(f func(window *Window, cx *App)) error {
-	panic("gpui: unimplemented AsyncWindowContext.Update")
-}
-
-// UpdateR runs f with the window and App and returns its result (M0-app-contexts ports it).
-func (cx *AsyncWindowContext) UpdateR[R any](f func(window *Window, cx *App) R) (R, error) {
-	panic("gpui: unimplemented AsyncWindowContext.UpdateR")
-}
-
-func (cx *AsyncApp) upgradeApp() (*AppCell, bool) {
-	panic("gpui: unimplemented AsyncApp.upgradeApp")
-}
-
-// Hash is a quick, non-cryptographic hash used to identify data (M0-app-contexts ports it).
-func Hash[T any](data T) uint64 {
-	panic("gpui: unimplemented Hash")
-}
 
 // SvgRenderer renders SVGs into images (M0-elements-media ports it).
 type SvgRenderer struct {
@@ -388,6 +319,7 @@ const (
 
 // FocusHandle is a ref-counted handle to a focusable element (M0-window-core ports it).
 type FocusHandle struct {
+	id FocusID
 	// TabIndex is the element's position in the tab order.
 	TabIndex int
 	// TabStop reports whether the element is reachable with tab navigation.
@@ -793,68 +725,27 @@ type StrikethroughStyle struct {
 	Color Option[Hsla]
 }
 
-// TestOption configures RunTest (M0-app-contexts ports it).
-type TestOption struct {
-	apply func(*testConfig)
-}
-
-type testConfig struct{}
-
-// Seed runs the test with one seed (M0-app-contexts ports it).
-func Seed(seed uint64) TestOption {
-	panic("gpui: unimplemented Seed")
-}
-
-// Seeds runs the test once per seed (M0-app-contexts ports it).
-func Seeds(seeds ...uint64) TestOption {
-	panic("gpui: unimplemented Seeds")
-}
-
-// Iterations runs the test with seeds 0..n-1 (M0-app-contexts ports it).
-func Iterations(n uint64) TestOption {
-	panic("gpui: unimplemented Iterations")
-}
-
-// Retries reruns a failing test up to n times (M0-app-contexts ports it).
-func Retries(n int) TestOption {
-	panic("gpui: unimplemented Retries")
-}
-
-// OnFailure calls f when the test fails (M0-app-contexts ports it).
-func OnFailure(f func()) TestOption {
-	panic("gpui: unimplemented OnFailure")
-}
-
-// RunTest runs fn as a gpui test, once per seed (M0-app-contexts ports it).
-func RunTest(t *testing.T, fn func(tc *TestRun), opts ...TestOption) {
-	panic("gpui: unimplemented RunTest")
-}
-
-// TestRun is one seeded run of a gpui test (M0-app-contexts ports it).
-type TestRun struct{}
-
-// Cx returns the run's first TestAppContext (M0-app-contexts ports it).
-func (tc *TestRun) Cx() *TestAppContext {
-	panic("gpui: unimplemented TestRun.Cx")
-}
-
-// NewContext returns another TestAppContext on the same scheduler (M0-app-contexts ports it).
-func (tc *TestRun) NewContext() *TestAppContext {
-	panic("gpui: unimplemented TestRun.NewContext")
-}
-
-// Rand returns the run's seeded random number generator (M0-app-contexts ports it).
-func (tc *TestRun) Rand() *rand.Rand {
-	panic("gpui: unimplemented TestRun.Rand")
-}
-
-// BackgroundExecutor returns the run's background executor (M0-app-contexts ports it).
-func (tc *TestRun) BackgroundExecutor() BackgroundExecutor {
-	panic("gpui: unimplemented TestRun.BackgroundExecutor")
-}
-
 // TestAppContext is a test context with a TestPlatform (M0-test-contexts ports it).
 type TestAppContext struct{}
+
+// TestAppContextBuild creates a new TestAppContext on the dispatcher (M0-test-contexts ports it).
+func TestAppContextBuild(dispatcher *TestDispatcher, fnName Option[string]) *TestAppContext {
+	panic("gpui: unimplemented TestAppContextBuild")
+}
+
+// Update runs f with the App and flushes its effects (M0-test-contexts ports it).
+func (cx *TestAppContext) Update(f func(cx *App)) {
+	panic("gpui: unimplemented TestAppContext.Update")
+}
+
+// RunUntilParked runs the scheduler until no task can make progress (M0-test-contexts ports it).
+func (cx *TestAppContext) RunUntilParked() {
+	panic("gpui: unimplemented TestAppContext.RunUntilParked")
+}
+
+func (cx *TestAppContext) drop() {
+	panic("gpui: unimplemented TestAppContext.drop")
+}
 
 // IntoAnyElement converts the string into a text element (M0-text-elements ports it).
 func (s SharedString) IntoAnyElement() AnyElement {
