@@ -273,17 +273,23 @@ func (s *swashScaler) scaleBitmapImpl(glyphID uint16, color bool, strike swashSt
 	if bitmap.ppem == 0 {
 		return false
 	}
-	_, _, bufsize := bitmap.scaledSize(size)
+	scaledW, scaledH, bufsize, ok := bitmap.scaledSize(size)
+	if !ok {
+		return false
+	}
+	decodedSize, ok := bitmap.format.checkedBufferSize(bitmap.width, bitmap.height)
+	if !ok {
+		return false
+	}
 	image.data = resizeBytes(image.data, bufsize)
 	s.cx.scratch0 = s.cx.scratch0[:0]
 	s.cx.scratch1 = s.cx.scratch1[:0]
 	w, h := bitmap.width, bitmap.height
 	scale := size / float32(bitmap.ppem)
 	if size != 0 && scale != 1 {
-		s.cx.scratch0 = resizeBytes(s.cx.scratch0, bitmap.format.bufferSize(w, h))
-		w = uint32(float32(w) * scale)
-		h = uint32(float32(h) * scale)
-		image.data = resizeBytes(image.data, bitmap.format.bufferSize(w, h))
+		s.cx.scratch0 = resizeBytes(s.cx.scratch0, decodedSize)
+		w, h = scaledW, scaledH
+		image.data = resizeBytes(image.data, bufsize)
 		if !bitmap.decode(s.cx.scratch0) {
 			return false
 		}
@@ -297,7 +303,7 @@ func (s *swashScaler) scaleBitmapImpl(glyphID uint16, color bool, strike swashSt
 			Height: h,
 		}
 	} else {
-		image.data = resizeBytes(image.data, bitmap.format.bufferSize(w, h))
+		image.data = resizeBytes(image.data, decodedSize)
 		if !bitmap.decode(image.data) {
 			return false
 		}
@@ -343,16 +349,23 @@ func (r *swashRender) renderInto(scaler *swashScaler, glyphID uint16, image *swa
 				continue
 			}
 			path := scaler.cx.outline.path()
-			placement := zeno.MaskWithScratch(path, scaler.cx.rcx).
+			mask := zeno.MaskWithScratch(path, scaler.cx.rcx).
 				Format(r.format).
 				Origin(zeno.OriginBottomLeft).
 				Style(zeno.FillNonZero).
 				Offset(r.offset).
-				RenderOffset(r.offset).
-				Inspect(func(f zeno.Format, w, h uint32) {
-					image.data = resizeBytes(image.data, f.BufferSize(w, h))
-				}).
-				RenderInto(image.data, 0)
+				RenderOffset(r.offset)
+			fits := false
+			mask.Inspect(func(f zeno.Format, w, h uint32) {
+				var n int
+				if n, fits = maskBufferSize(f, w, h); fits {
+					image.data = resizeBytes(image.data, n)
+				}
+			})
+			if !fits {
+				continue
+			}
+			placement := mask.RenderInto(image.data, 0)
 			image.placement = placement
 			if r.format.IsAlpha() {
 				image.content = swashContentMask
@@ -375,9 +388,13 @@ func (r *swashRender) renderInto(scaler *swashScaler, glyphID uint16, image *swa
 			totalBounds := outline.bounds()
 			baseX := int32(math.Floor(float64(totalBounds.Min.X + r.offset.X)))
 			baseY := int32(math.Ceil(float64(totalBounds.Min.Y + r.offset.Y)))
-			baseW := uint32(math.Ceil(float64(totalBounds.Width())))
-			baseH := uint32(math.Ceil(float64(totalBounds.Height())))
-			image.data = resizeBytes(image.data, int(baseW*baseH*4))
+			baseW, okW := glyphDim(math.Ceil(float64(totalBounds.Width())))
+			baseH, okH := glyphDim(math.Ceil(float64(totalBounds.Height())))
+			baseSize, okSize := glyphImageBytes(baseW, baseH, 4)
+			if !okW || !okH || !okSize {
+				continue
+			}
+			image.data = resizeBytes(image.data, baseSize)
 			image.placement.Left = baseX
 			image.placement.Top = int32(baseH) + baseY
 			image.placement.Width = baseW
@@ -390,15 +407,23 @@ func (r *swashRender) renderInto(scaler *swashScaler, glyphID uint16, image *swa
 					break
 				}
 				cx.scratch0 = cx.scratch0[:0]
-				placement := zeno.MaskWithScratch(layer.path(), cx.rcx).
+				mask := zeno.MaskWithScratch(layer.path(), cx.rcx).
 					Origin(zeno.OriginBottomLeft).
 					Style(zeno.FillNonZero).
 					Offset(r.offset).
-					RenderOffset(r.offset).
-					Inspect(func(f zeno.Format, w, h uint32) {
-						cx.scratch0 = resizeBytes(cx.scratch0, f.BufferSize(w, h))
-					}).
-					RenderInto(cx.scratch0, 0)
+					RenderOffset(r.offset)
+				fits := false
+				mask.Inspect(func(f zeno.Format, w, h uint32) {
+					var n int
+					if n, fits = maskBufferSize(f, w, h); fits {
+						cx.scratch0 = resizeBytes(cx.scratch0, n)
+					}
+				})
+				if !fits {
+					ok = false
+					break
+				}
+				placement := mask.RenderInto(cx.scratch0, 0)
 				color := r.foreground
 				if layer.hasColorIndex && hasPalette {
 					color = palette.get(layer.colorIndex)
@@ -430,6 +455,14 @@ func (r *swashRender) renderInto(scaler *swashScaler, glyphID uint16, image *swa
 		}
 	}
 	return false
+}
+
+func maskBufferSize(f zeno.Format, width, height uint32) (int, bool) {
+	n := f.BufferSize(width, height)
+	if width > maxGlyphImageDim || height > maxGlyphImageDim || n > maxGlyphImageBytes {
+		return 0, false
+	}
+	return n, true
 }
 
 func (r *swashRender) render(scaler *swashScaler, glyphID uint16) (swashImage, bool) {

@@ -5,9 +5,10 @@ import (
 	"encoding/json/jsontext"
 	"fmt"
 	"log/slog"
+	"math"
 	"strconv"
 	"strings"
-	"sync"
+	"unique"
 
 	"github.com/megascan/gpui-go/jsonschema"
 )
@@ -19,28 +20,24 @@ type FontFeature struct {
 }
 
 // FontFeatures are the OpenType features configured for a font. Equal lists share one
-// interned backing list, so FontFeatures is comparable by content; the zero value is the
-// shared empty list.
+// interned key, so FontFeatures is comparable by content; the zero value is the shared empty
+// list. Interned keys are released once no FontFeatures refers to them.
 type FontFeatures struct {
-	list *[]FontFeature
+	key unique.Handle[string]
 }
-
-var fontFeaturesIntern sync.Map
 
 // NewFontFeatures creates font features from a list of tags and values.
 func NewFontFeatures(features []FontFeature) FontFeatures {
 	if len(features) == 0 {
 		return FontFeatures{}
 	}
-	var key strings.Builder
+	var key []byte
 	for _, feature := range features {
-		key.Write(binary.AppendUvarint(nil, uint64(len(feature.Tag))))
-		key.WriteString(feature.Tag)
-		key.Write(binary.LittleEndian.AppendUint32(nil, feature.Value))
+		key = binary.AppendUvarint(key, uint64(len(feature.Tag)))
+		key = append(key, feature.Tag...)
+		key = binary.LittleEndian.AppendUint32(key, feature.Value)
 	}
-	list := append([]FontFeature(nil), features...)
-	actual, _ := fontFeaturesIntern.LoadOrStore(key.String(), &list)
-	return FontFeatures{list: actual.(*[]FontFeature)}
+	return FontFeatures{key: unique.Make(string(key))}
 }
 
 // DefaultFontFeatures returns the shared empty feature list.
@@ -55,10 +52,20 @@ func FontFeaturesDisableLigatures() FontFeatures {
 
 // TagValueList returns the configured tags and values; only enabled or disabled features are returned.
 func (f FontFeatures) TagValueList() []FontFeature {
-	if f.list == nil {
-		return []FontFeature{}
+	features := []FontFeature{}
+	if f.key == (unique.Handle[string]{}) {
+		return features
 	}
-	return *f.list
+	key := f.key.Value()
+	for key != "" {
+		length, n := binary.Uvarint([]byte(key[:min(len(key), binary.MaxVarintLen64)]))
+		key = key[n:]
+		tag := key[:length]
+		key = key[length:]
+		features = append(features, FontFeature{Tag: tag, Value: binary.LittleEndian.Uint32([]byte(key[:4]))})
+		key = key[4:]
+	}
+	return features
 }
 
 // IsCaltEnabled reports whether the `calt` feature is enabled; ok is false if it is not present.
@@ -158,6 +165,9 @@ func (f *FontFeatures) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 			continue
 		}
 		value, err := strconv.ParseUint(number, 10, 64)
+		if err == nil && value > math.MaxUint32 {
+			err = strconv.ErrRange
+		}
 		if err != nil {
 			slog.Error(fmt.Sprintf("Incorrect font feature value %s for feature tag %s", number, key))
 			continue

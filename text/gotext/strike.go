@@ -72,7 +72,19 @@ type swashBitmapStrikes struct {
 
 func newSwashBitmapStrikes(data, bitmapData []byte, upem uint16, isSbix, isApple bool) swashBitmapStrikes {
 	n, _ := u32At(data, 4)
-	return swashBitmapStrikes{data: data, bitmapData: bitmapData, upem: upem, isSbix: isSbix, isApple: isApple, len: int(n)}
+	stride := 48
+	if isSbix {
+		stride = 4
+	}
+	limit := 0
+	if len(data) > 8 {
+		limit = (len(data) - 8) / stride
+	}
+	count := limit
+	if uint64(n) < uint64(limit) {
+		count = int(n)
+	}
+	return swashBitmapStrikes{data: data, bitmapData: bitmapData, upem: upem, isSbix: isSbix, isApple: isApple, len: count}
 }
 
 func (s swashBitmapStrikes) get(index int) (swashBitmapStrike, bool) {
@@ -209,7 +221,12 @@ func (f swashBitmapFormat) channels() uint32 {
 }
 
 func (f swashBitmapFormat) bufferSize(width, height uint32) int {
-	return int(width * height * f.channels())
+	n, _ := glyphImageBytes(width, height, f.channels())
+	return n
+}
+
+func (f swashBitmapFormat) checkedBufferSize(width, height uint32) (int, bool) {
+	return glyphImageBytes(width, height, f.channels())
 }
 
 type swashBitmap struct {
@@ -258,6 +275,9 @@ func newSwashBitmap(data *swashBitmapData, upem uint16, isApple bool) (swashBitm
 		width, height = uint32(data.width), uint32(data.height)
 		left, top = int32(data.metrics.x), int32(data.metrics.y)
 	}
+	if _, ok := format.checkedBufferSize(width, height); !ok {
+		return swashBitmap{}, false
+	}
 	return swashBitmap{format: format, ppem: data.ppem, width: width, height: height, left: left, top: top, data: data.data}, true
 }
 
@@ -265,23 +285,31 @@ func (b *swashBitmap) decodedSize() int {
 	return b.format.bufferSize(b.width, b.height)
 }
 
-func (b *swashBitmap) scaledSize(size float32) (uint32, uint32, int) {
+func (b *swashBitmap) scaledSize(size float32) (uint32, uint32, int, bool) {
 	w, h := b.width, b.height
 	if size != 0 {
 		scale := size / float32(b.ppem)
-		w = uint32(float32(w) * scale)
-		h = uint32(float32(h) * scale)
+		var okW, okH bool
+		w, okW = scaleGlyphDim(w, scale)
+		h, okH = scaleGlyphDim(h, scale)
+		if !okW || !okH {
+			return 0, 0, 0, false
+		}
 	}
-	return w, h, b.format.bufferSize(w, h)
+	n, ok := b.format.checkedBufferSize(w, h)
+	return w, h, n, ok
 }
 
 func (b *swashBitmap) decode(target []byte) bool {
-	size := b.decodedSize()
-	if len(target) < size {
+	size, ok := b.format.checkedBufferSize(b.width, b.height)
+	if !ok || len(target) < size {
 		return false
 	}
 	w, h := int(b.width), int(b.height)
-	src, dst := b.data, target
+	src, dst := b.data, target[:size]
+	packedFits := func(bits int) bool {
+		return len(src) >= (w*h*bits+7)/8
+	}
 	unpackRows := func(bits int, rowLen int) bool {
 		di := 0
 		for start := 0; start < len(src) && di < w*h; start += rowLen {
@@ -315,6 +343,12 @@ func (b *swashBitmap) decode(target []byte) bool {
 	switch b.format.kind {
 	case swashBitmapFormatPacked:
 		switch b.format.bits {
+		case 1, 2, 4:
+			if !packedFits(int(b.format.bits)) {
+				return false
+			}
+		}
+		switch b.format.bits {
 		case 1:
 			for x := 0; x < w*h; x++ {
 				dst[x] = (src[x>>3] >> (^x & 7) & 1) * 255
@@ -329,7 +363,7 @@ func (b *swashBitmap) decode(target []byte) bool {
 			}
 		case 8, 32:
 			if len(src) != len(dst) {
-				panic("source slice length does not match destination slice length")
+				return false
 			}
 			copy(dst, src)
 		default:
@@ -343,7 +377,7 @@ func (b *swashBitmap) decode(target []byte) bool {
 			}
 		case 8, 32:
 			if len(src) != len(dst) {
-				panic("source slice length does not match destination slice length")
+				return false
 			}
 			copy(dst, src)
 		default:
@@ -351,11 +385,11 @@ func (b *swashBitmap) decode(target []byte) bool {
 		}
 	case swashBitmapFormatColor:
 		if len(src) != len(dst) {
-			panic("source slice length does not match destination slice length")
+			return false
 		}
 		copy(dst, src)
 	case swashBitmapFormatPng:
-		if _, _, ok := decodePng(src, target); !ok {
+		if _, _, ok := decodePng(src, dst); !ok {
 			return false
 		}
 	}
@@ -363,13 +397,21 @@ func (b *swashBitmap) decode(target []byte) bool {
 }
 
 func decodePng(data []byte, target []byte) (uint32, uint32, bool) {
+	cfg, err := png.DecodeConfig(bytes.NewReader(data))
+	if err != nil || cfg.Width < 0 || cfg.Height < 0 || uint64(cfg.Width) > math.MaxUint32 || uint64(cfg.Height) > math.MaxUint32 {
+		return 0, 0, false
+	}
+	need, ok := glyphImageBytes(uint32(cfg.Width), uint32(cfg.Height), 4)
+	if !ok || len(target) < need {
+		return 0, 0, false
+	}
 	img, err := png.Decode(bytes.NewReader(data))
 	if err != nil {
 		return 0, 0, false
 	}
 	r := img.Bounds()
 	w, h := r.Dx(), r.Dy()
-	if len(target) < w*h*4 {
+	if w != cfg.Width || h != cfg.Height {
 		return 0, 0, false
 	}
 	dst := &image.NRGBA{Pix: target[:w*h*4], Stride: w * 4, Rect: image.Rect(0, 0, w, h)}
@@ -559,7 +601,7 @@ func getLocation(d []byte, strikeBase int, isSbix bool, glyphID uint16) (swashLo
 				case glyphID < id:
 					h = i
 				case glyphID > id:
-					l = i + i
+					l = i + 1
 				default:
 					offset1, ok1 := u16At(d, rec+2)
 					offset2, ok2 := u16At(d, rec+6)

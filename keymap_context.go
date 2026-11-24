@@ -91,22 +91,24 @@ func KeyContextParse(source string) (KeyContext, error) {
 }
 
 func keyContextParseExpr(source string, context *KeyContext) error {
-	if source == "" {
-		return nil
+	for source != "" {
+		before := source
+		key := takeIdentifierChars(source)
+		source = skipWhitespace(source[len(key):])
+		if suffix, ok := strings.CutPrefix(source, "="); ok {
+			source = skipWhitespace(suffix)
+			value := takeIdentifierChars(source)
+			source = skipWhitespace(source[len(value):])
+			context.Set(SharedString(key), SharedString(value))
+		} else {
+			context.Add(SharedString(key))
+		}
+		if source == before {
+			next, _ := utf8.DecodeRuneInString(source)
+			return fmt.Errorf("unexpected character '%q'", next)
+		}
 	}
-
-	key := takeIdentifierChars(source)
-	source = skipWhitespace(source[len(key):])
-	if suffix, ok := strings.CutPrefix(source, "="); ok {
-		source = skipWhitespace(suffix)
-		value := takeIdentifierChars(source)
-		source = skipWhitespace(source[len(value):])
-		context.Set(SharedString(key), SharedString(value))
-	} else {
-		context.Add(SharedString(key))
-	}
-
-	return keyContextParseExpr(source, context)
+	return nil
 }
 
 func takeIdentifierChars(source string) string {
@@ -569,7 +571,7 @@ func writeJoined(b *strings.Builder, p KeyBindingContextPredicate, separator str
 // (`StatusBar > mode == visible`).
 func KeyBindingContextPredicateParse(source string) (KeyBindingContextPredicate, error) {
 	source = skipWhitespace(source)
-	predicate, rest, err := predicateParseExpr(source, 0)
+	predicate, rest, err := predicateParseExpr(source, 0, 0)
 	if err != nil {
 		return nil, err
 	}
@@ -595,8 +597,15 @@ var predicateOperators = [...]predicateOperator{
 	{"!=", precedenceEq, predicateNewNeq},
 }
 
-func predicateParseExpr(source string, minPrecedence uint32) (KeyBindingContextPredicate, string, error) {
-	predicate, rest, err := predicateParsePrimary(source)
+const maxPredicateDepth = 128
+
+var errPredicateTooDeep = fmt.Errorf("context predicate nests deeper than %d levels", maxPredicateDepth)
+
+func predicateParseExpr(source string, minPrecedence uint32, depth int) (KeyBindingContextPredicate, string, error) {
+	if depth > maxPredicateDepth {
+		return nil, "", errPredicateTooDeep
+	}
+	predicate, rest, err := predicateParsePrimary(source, depth)
 	if err != nil {
 		return nil, "", err
 	}
@@ -607,7 +616,7 @@ parse:
 		for _, op := range predicateOperators {
 			if strings.HasPrefix(source, op.operator) && op.precedence >= minPrecedence {
 				source = skipWhitespace(source[len(op.operator):])
-				right, rest, err := predicateParseExpr(source, op.precedence+1)
+				right, rest, err := predicateParseExpr(source, op.precedence+1, depth+1)
 				if err != nil {
 					return nil, "", err
 				}
@@ -625,7 +634,7 @@ parse:
 	return predicate, source, nil
 }
 
-func predicateParsePrimary(source string) (KeyBindingContextPredicate, string, error) {
+func predicateParsePrimary(source string, depth int) (KeyBindingContextPredicate, string, error) {
 	next, _ := utf8.DecodeRuneInString(source)
 	if source == "" {
 		return nil, "", errors.New("unexpected end")
@@ -633,7 +642,7 @@ func predicateParsePrimary(source string) (KeyBindingContextPredicate, string, e
 	switch {
 	case next == '(':
 		source = skipWhitespace(source[1:])
-		predicate, rest, err := predicateParseExpr(source, 0)
+		predicate, rest, err := predicateParseExpr(source, 0, depth+1)
 		if err != nil {
 			return nil, "", err
 		}
@@ -644,7 +653,7 @@ func predicateParsePrimary(source string) (KeyBindingContextPredicate, string, e
 		return predicate, skipWhitespace(stripped), nil
 	case next == '!':
 		source := skipWhitespace(source[1:])
-		predicate, source, err := predicateParseExpr(source, precedenceNot)
+		predicate, source, err := predicateParseExpr(source, precedenceNot, depth+1)
 		if err != nil {
 			return nil, "", err
 		}

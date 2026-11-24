@@ -673,8 +673,12 @@ func fileChooserRequest(bus func() (*godbus.Conn, error), method, parentWindow, 
 	if handle != "" {
 		path = handle
 	}
+	owner, err := dbus.NameOwner(conn, portalService)
+	if err != nil {
+		return gpui.None[[]string](), err
+	}
 	for signal := range signals {
-		if signal.Path != path || signal.Name != portalRequestInterface+".Response" || len(signal.Body) < 2 {
+		if signal.Sender != owner || signal.Path != path || signal.Name != portalRequestInterface+".Response" || len(signal.Body) < 2 {
 			continue
 		}
 		if response, _ := signal.Body[0].(uint32); response != 0 {
@@ -718,7 +722,11 @@ func (p *linuxPlatform) RevealPath(path string) {
 func (p *linuxPlatform) OpenWithSystem(path string) {
 	environment, hasEnvironment := p.connection.graphicalEnvironment()
 	p.BackgroundExecutor().Spawn(func(s *scheduler.Scope) (struct{}, error) {
-		command := exec.Command("xdg-open", path)
+		target := path
+		if strings.HasPrefix(target, "-") {
+			target = "./" + target
+		}
+		command := exec.Command("xdg-open", target)
 		if hasEnvironment {
 			environment.ApplyTo(command)
 		}

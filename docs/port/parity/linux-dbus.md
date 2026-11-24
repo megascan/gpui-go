@@ -35,3 +35,9 @@ Go target: `platform/linux/internal/dbus/xdg_desktop_portal.go` (package `dbus`)
 |---|---|---|---|---|---|
 | `text_scale_factor_is_clamped_to_a_usable_range` | test | 238 |  | `TestXdgDesktopPortal_TextScaleFactorIsClampedToAUsableRange` | done |
 
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-SEC-DBUSSENDER | Signals that complete a request are accepted only from the unique name that owns the service: notification `ActionInvoked` from the owner of `org.freedesktop.Notifications`, Secret Service prompt `Completed` from the owner of `org.freedesktop.secrets`, and FileChooser `Response` from the owner of `org.freedesktop.portal.Desktop` (resolved with `NameOwner`), so a same-bus peer cannot forge them (SEC-020, 021, 022) | `gpui_linux/src/linux/system_notifications.rs`, `gpui_linux/src/linux/platform.rs` (keyring, file chooser via ashpd) | Signal match rules alone accept a signal from any peer on the session bus |
+| D-SEC-SECRETPLAIN | When the Secret Service refuses the `dh-ietf1024-sha256-aes128-cbc-pkcs7` session, credential calls fail with `ErrPlainSessionRefused` instead of falling back to a `plain` session that would send the password unencrypted on the bus (SEC-023) | `gpui_linux/src/linux/platform.rs` (keyring, oo7 plain fallback) | A same-user bus monitor reads plain-session secrets |

@@ -93,6 +93,7 @@ const (
 	shortTimeoutDur = 10 * time.Millisecond
 	maxIncrReadDur  = 30 * time.Second
 	maxIncrReadLen  = 512 << 20
+	maxIncrPrealloc = 1 << 20
 )
 
 type incrTransfer struct {
@@ -528,15 +529,18 @@ func (in *clipboardInner) handleReadSelectionNotify(reader xContext, targetForma
 		slog.Debug("Receiving INCR segments")
 		*usingIncr = true
 		if reply.ValueLen == 4 {
-			minDataLen := uint32(0)
-			if reply.Format == 32 && len(reply.Value) >= 4 {
-				minDataLen = binary.LittleEndian.Uint32(reply.Value)
-			}
-			*incrData = slices.Grow(*incrData, int(minDataLen))
+			*incrData = slices.Grow(*incrData, incrPreallocLen(reply.Format, reply.Value))
 		}
 		return readSelNotifyResultIncrStarted, clipboardData{}, nil
 	}
 	return readSelNotifyResultGotData, clipboardData{bytes: reply.Value, format: reply.Type}, nil
+}
+
+func incrPreallocLen(format uint8, value []byte) int {
+	if format != 32 || len(value) < 4 {
+		return 0
+	}
+	return int(min(binary.LittleEndian.Uint32(value), maxIncrPrealloc))
 }
 
 func (in *clipboardInner) handleReadPropertyNotify(reader xContext, targetFormat xproto.Atom, usingIncr bool, incrData *[]byte, timeoutEnd *time.Time, event xproto.PropertyNotifyEvent) (bool, error) {
@@ -892,9 +896,8 @@ func (c *Clipboard) GetAny(kind ClipboardKind) (gpui.ClipboardItem, error) {
 
 	for _, e := range imageEntries {
 		if result.format == e.atom {
-			bytes := result.bytes
-			id := gpui.Hash(bytes)
-			return gpui.NewClipboardItemImage(&gpui.Image{ID: id, Format: e.format, Bytes: bytes}), nil
+			img := gpui.ImageFromBytes(e.format, result.bytes)
+			return gpui.NewClipboardItemImage(&img), nil
 		}
 	}
 

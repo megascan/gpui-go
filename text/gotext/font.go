@@ -20,7 +20,12 @@ type cosmicFont struct {
 	bitmaps swashBitmapStrikesProxy
 }
 
-func newCosmicFont(db *fontDatabase, id faceID) (*cosmicFont, bool) {
+func newCosmicFont(db *fontDatabase, id faceID) (f *cosmicFont, ok bool) {
+	defer func() {
+		if r := recover(); r != nil {
+			f, ok = nil, false
+		}
+	}()
 	parsed, loader, err := db.loadFont(id)
 	if err != nil {
 		return nil, false
@@ -40,7 +45,12 @@ func newCosmicFont(db *fontDatabase, id faceID) (*cosmicFont, bool) {
 	}, true
 }
 
-func (f *cosmicFont) charmap(ch rune) uint16 {
+func (f *cosmicFont) charmap(ch rune) (glyph uint16) {
+	defer func() {
+		if r := recover(); r != nil {
+			glyph = 0
+		}
+	}()
 	gid, ok := f.font.Cmap.Lookup(ch)
 	if !ok || gid > 0xFFFF {
 		return 0

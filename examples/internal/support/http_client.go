@@ -14,6 +14,8 @@ import (
 
 const requestTimeout = 60 * time.Second
 
+const maxResponseBodyBytes = 256 << 20
+
 // HTTPClient is a gpui.HTTPClient over net/http, the examples' stand-in for reqwest_client.
 type HTTPClient struct {
 	client    *http.Client
@@ -41,7 +43,7 @@ func (c *HTTPClient) Send(req *http.Request) *gpui.Task[*http.Response] {
 		response, err := c.client.Do(req)
 		if err == nil {
 			var body []byte
-			body, err = io.ReadAll(response.Body)
+			body, err = readBoundedBody(response.Body)
 			_ = response.Body.Close()
 			response.Body = io.NopCloser(bytes.NewReader(body))
 		}
@@ -57,6 +59,17 @@ func (c *HTTPClient) Send(req *http.Request) *gpui.Task[*http.Response] {
 		}
 		return result.response, nil
 	})
+}
+
+func readBoundedBody(r io.Reader) ([]byte, error) {
+	body, err := io.ReadAll(io.LimitReader(r, maxResponseBodyBytes+1))
+	if err != nil {
+		return nil, err
+	}
+	if len(body) > maxResponseBodyBytes {
+		return nil, fmt.Errorf("response body exceeds %d bytes", maxResponseBodyBytes)
+	}
+	return body, nil
 }
 
 // UserAgent returns the user agent the client sends.

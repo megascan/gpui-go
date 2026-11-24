@@ -1036,7 +1036,7 @@ type App struct {
 	restartObservers           singleSubscriberSet[handler]
 	windowClosedObservers      singleSubscriberSet[windowClosedHandler]
 	globalsByType              map[reflect.Type]any
-	loadingAssets              map[loadingAssetKey]any
+	loadingAssets              *assetCache
 	assetSource                AssetSource
 	svgRenderer                SvgRenderer
 	httpClient                 HTTPClient
@@ -1110,7 +1110,7 @@ func newApp(platform Platform, assetSource AssetSource, httpClient HTTPClient) *
 		foregroundJournal:          foregroundJournal,
 		hangMonitor:                nil,
 		svgRenderer:                NewSvgRenderer(assetSource),
-		loadingAssets:              map[loadingAssetKey]any{},
+		loadingAssets:              newAssetCache(),
 		assetSource:                assetSource,
 		httpClient:                 httpClient,
 		globalsByType:              map[reflect.Type]any{},

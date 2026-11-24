@@ -37,6 +37,10 @@ const (
 // ErrPromptDismissed is returned when the user dismisses a Secret Service prompt.
 var ErrPromptDismissed = errors.New("the prompt was dismissed")
 
+// ErrPlainSessionRefused is returned when the Secret Service offers no encrypted session; secrets
+// are never sent over a plain session.
+var ErrPlainSessionRefused = errors.New("secret service refused the " + algorithmEncrypted + " session; refusing to fall back to a plain session")
+
 var dhPrime = new(big.Int).SetBytes([]byte{
 	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xC9, 0x0F, 0xDA, 0xA2, 0x21, 0x68,
 	0xC2, 0x34, 0xC4, 0xC6, 0x62, 0x8B, 0x80, 0xDC, 0x1C, 0xD1, 0x29, 0x02, 0x4E, 0x08,
@@ -68,12 +72,10 @@ func openKeyring(conn *godbus.Conn) (*keyring, error) {
 	k := &keyring{conn: conn}
 	if err := k.openEncrypted(); err != nil {
 		var methodErr godbus.Error
-		if !errors.As(err, &methodErr) {
-			return nil, err
+		if errors.As(err, &methodErr) {
+			return nil, fmt.Errorf("%w: %w", ErrPlainSessionRefused, err)
 		}
-		if err := k.openPlain(); err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
 	collection, err := k.defaultCollection()
 	if err != nil {
@@ -88,11 +90,6 @@ func (k *keyring) service() godbus.BusObject { return k.conn.Object(secretsServi
 
 func (k *keyring) object(path godbus.ObjectPath) godbus.BusObject {
 	return k.conn.Object(secretsService, path)
-}
-
-func (k *keyring) openPlain() error {
-	var output godbus.Variant
-	return k.service().Call(secretServiceInterface+".OpenSession", 0, algorithmPlain, godbus.MakeVariant("")).Store(&output, &k.session)
 }
 
 func (k *keyring) openEncrypted() error {
@@ -176,8 +173,12 @@ func (k *keyring) prompt(path godbus.ObjectPath) (godbus.Variant, error) {
 	if err := k.object(path).Call(secretPromptIface+".Prompt", 0, "").Err; err != nil {
 		return godbus.Variant{}, err
 	}
+	owner, err := NameOwner(k.conn, secretsService)
+	if err != nil {
+		return godbus.Variant{}, err
+	}
 	for sig := range signals {
-		if sig.Path != path || sig.Name != secretPromptIface+".Completed" || len(sig.Body) < 2 {
+		if sig.Sender != owner || sig.Path != path || sig.Name != secretPromptIface+".Completed" || len(sig.Body) < 2 {
 			continue
 		}
 		if dismissed, _ := sig.Body[0].(bool); dismissed {
@@ -256,7 +257,7 @@ func (k *keyring) deleteItem(item godbus.ObjectPath) error {
 
 func (k *keyring) encode(secret []byte) (secretValue, error) {
 	if k.aesKey == nil {
-		return secretValue{Session: k.session, Parameters: []byte{}, Value: secret, ContentType: blobContentType}, nil
+		return secretValue{}, ErrPlainSessionRefused
 	}
 	iv := make([]byte, aes.BlockSize)
 	if _, err := rand.Read(iv); err != nil {

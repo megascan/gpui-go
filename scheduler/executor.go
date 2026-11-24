@@ -1,6 +1,9 @@
 package scheduler
 
 import (
+	"fmt"
+	"os"
+	"runtime/debug"
 	"sync"
 	"time"
 )
@@ -168,7 +171,27 @@ func (e BackgroundExecutor) SpawnWithPriority[T any](priority Priority, body fun
 
 // SpawnWithPriorityAt is SpawnWithPriority with an explicit spawn location.
 func (e BackgroundExecutor) SpawnWithPriorityAt[T any](location Location, priority Priority, body func(s *Scope) (T, error)) *Task[T] {
-	return spawnTask(newRunnableMeta(location), body, e.scheduleWithPriority(priority))
+	return spawnTask(newRunnableMeta(location), recoverBackgroundPanic(body), e.scheduleWithPriority(priority))
+}
+
+func recoverBackgroundPanic[T any](body func(s *Scope) (T, error)) func(s *Scope) (T, error) {
+	return func(s *Scope) (v T, err error) {
+		defer func() {
+			r := recover()
+			if r == nil {
+				return
+			}
+			if IsCancelUnwind(r) {
+				panic(r)
+			}
+			stack := debug.Stack()
+			fmt.Fprintf(os.Stderr, "background task panicked: %v\n%s", r, stack)
+			var zero T
+			v = zero
+			err = &PanicError{Value: r, Stack: stack}
+		}()
+		return body(s)
+	}
 }
 
 // SpawnRealtime runs body on a dedicated realtime thread for audio processing.
@@ -633,4 +656,16 @@ func (s *rendezvousSender[T]) deliver(task *Task[T]) {
 		r.mu.Unlock()
 		panic("a rendezvous task was delivered twice")
 	}
+}
+
+// PanicError is the error a background task resolves to when its body panics: Value is the
+// recovered value and Stack the panicking goroutine's stack.
+type PanicError struct {
+	Value any
+	Stack []byte
+}
+
+// Error returns the panic value's message.
+func (e *PanicError) Error() string {
+	return fmt.Sprintf("scheduler: background task panicked: %v", e.Value)
 }

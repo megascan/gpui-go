@@ -1,5 +1,7 @@
 package zeno
 
+import "math"
+
 // Format is the output image format for rendering.
 type Format struct {
 	kind   formatKind
@@ -41,9 +43,14 @@ func (f Format) bytesPerPixel() uint32 {
 	return 4
 }
 
-// BufferSize returns the buffer size needed for an image of the given size.
+// BufferSize returns the buffer size needed for an image of the given size, saturating at math.MaxInt.
 func (f Format) BufferSize(width, height uint32) int {
-	return int(width * height * f.bytesPerPixel())
+	n := uint64(width) * uint64(height)
+	bpp := uint64(f.bytesPerPixel())
+	if n > uint64(math.MaxInt)/bpp {
+		return math.MaxInt
+	}
+	return int(n * bpp)
 }
 
 // Mask is a builder for configuring and rendering a mask.
@@ -129,7 +136,7 @@ func (m *Mask) Inspect(f func(format Format, width, height uint32)) *Mask {
 func (m *Mask) RenderInto(buffer []byte, pitch int) Placement {
 	offset, placement := m.placement()
 	if pitch == 0 {
-		pitch = int(placement.Width * m.format.bytesPerPixel())
+		pitch = int(placement.Width) * int(m.format.bytesPerPixel())
 	}
 	render(m, offset, placement, buffer, pitch)
 	return placement
@@ -139,7 +146,7 @@ func (m *Mask) RenderInto(buffer []byte, pitch int) Placement {
 func (m *Mask) Render() ([]byte, Placement) {
 	offset, placement := m.placement()
 	buf := make([]byte, m.format.BufferSize(placement.Width, placement.Height))
-	pitch := int(placement.Width * m.format.bytesPerPixel())
+	pitch := int(placement.Width) * int(m.format.bytesPerPixel())
 	render(m, offset, placement, buf, pitch)
 	return buf, placement
 }

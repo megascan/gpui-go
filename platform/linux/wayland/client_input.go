@@ -116,9 +116,11 @@ func (p WaylandClientStatePtr) keyboardListener() wlproto.WlKeyboardListener {
 			keymap, err := xkb.NewKeymapFromFd(xkbContext, fd, int(size), xkb.KeymapFormatTextV1, xkb.KeymapCompileNoFlags)
 			if err != nil {
 				slog.Error(err.Error())
+				return
 			}
 			if keymap == nil {
-				panic("Failed to create keymap")
+				slog.Error("Failed to create keymap")
+				return
 			}
 			if state.keymapState != nil {
 				state.keymapState.Close()

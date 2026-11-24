@@ -120,9 +120,8 @@ func (p *Pasteboard) readImage(format gpui.ImageFormat) (gpui.ClipboardItem, boo
 	if !ok {
 		return gpui.ClipboardItem{}, false
 	}
-	id := gpui.Hash(bytes)
 	return gpui.ClipboardItem{Entries: []gpui.ClipboardEntry{
-		gpui.ClipboardEntryImage{Image: gpui.Image{Format: format, Bytes: bytes, ID: id}},
+		gpui.ClipboardEntryImage{Image: gpui.ImageFromBytes(format, bytes)},
 	}}, true
 }
 

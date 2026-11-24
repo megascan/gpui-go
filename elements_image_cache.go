@@ -191,7 +191,7 @@ type ImageCacheProvider interface {
 
 // RetainAllImageCache is an implementation of ImageCache that retains every image it loads.
 type RetainAllImageCache struct {
-	items map[uint64]*ImageCacheItem
+	items map[Resource]*ImageCacheItem
 }
 
 // String formats the cache like its Rust Debug output.
@@ -202,11 +202,11 @@ func (c *RetainAllImageCache) String() string {
 // NewRetainAllImageCache creates a new image cache.
 func NewRetainAllImageCache(cx *App) Entity[RetainAllImageCache] {
 	e := cx.New(func(*Context[RetainAllImageCache]) *RetainAllImageCache {
-		return &RetainAllImageCache{items: map[uint64]*ImageCacheItem{}}
+		return &RetainAllImageCache{items: map[Resource]*ImageCacheItem{}}
 	})
 	cx.ObserveRelease(e, func(imageCache *RetainAllImageCache, cx *App) {
 		items := imageCache.items
-		imageCache.items = map[uint64]*ImageCacheItem{}
+		imageCache.items = map[Resource]*ImageCacheItem{}
 		for _, item := range items {
 			if image, ok, err := item.Get(); ok && err == nil {
 				cx.DropImage(image, nil)
@@ -219,12 +219,10 @@ func NewRetainAllImageCache(cx *App) Entity[RetainAllImageCache] {
 
 // Load loads an image from the given source. It returns false if the image is loading.
 func (c *RetainAllImageCache) Load(source Resource, window *Window, cx *App) (*RenderImage, bool, error) {
-	hash := Hash(source)
-
-	item, ok := c.items[hash]
+	item, ok := c.items[source]
 	if !ok {
 		item = NewImageCacheItem(source, cx)
-		c.items[hash] = item
+		c.items[source] = item
 	}
 	return item.UseImage(window)
 }
@@ -232,7 +230,7 @@ func (c *RetainAllImageCache) Load(source Resource, window *Window, cx *App) (*R
 // Clear clears the image cache.
 func (c *RetainAllImageCache) Clear(window *Window, cx *App) {
 	items := c.items
-	c.items = map[uint64]*ImageCacheItem{}
+	c.items = map[Resource]*ImageCacheItem{}
 	for _, item := range items {
 		if image, ok, err := item.Get(); ok && err == nil {
 			cx.DropImage(image, window)
@@ -243,12 +241,11 @@ func (c *RetainAllImageCache) Clear(window *Window, cx *App) {
 
 // Remove removes the image of the given source from the cache.
 func (c *RetainAllImageCache) Remove(source Resource, window *Window, cx *App) {
-	hash := Hash(source)
-	item, ok := c.items[hash]
+	item, ok := c.items[source]
 	if !ok {
 		return
 	}
-	delete(c.items, hash)
+	delete(c.items, source)
 	if image, ok, err := item.Get(); ok && err == nil {
 		cx.DropImage(image, window)
 	}

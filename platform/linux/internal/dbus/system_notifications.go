@@ -86,8 +86,13 @@ func (s *SystemNotificationState) showAndWait(appName, summary, body string, act
 		slog.Warn("failed to show system notification: " + err.Error())
 		return
 	}
+	owner, err := NameOwner(s.conn, notificationsService)
+	if err != nil {
+		slog.Warn("failed to resolve the notification server: " + err.Error())
+		return
+	}
 	for sig := range signals {
-		if sig.Path != notificationsPath || len(sig.Body) < 2 {
+		if sig.Sender != owner || sig.Path != notificationsPath || len(sig.Body) < 2 {
 			continue
 		}
 		if sigID, ok := sig.Body[0].(uint32); !ok || sigID != id {

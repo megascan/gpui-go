@@ -178,6 +178,13 @@ func NewKeymapFromFd(ctx *Context, fd int, size int, format KeymapFormat, flags 
 	if size <= 0 {
 		return nil, fmt.Errorf("xkb: map keymap fd: %w", unix.EINVAL)
 	}
+	var st unix.Stat_t
+	if err := unix.Fstat(fd, &st); err != nil {
+		return nil, fmt.Errorf("xkb: stat keymap fd: %w", err)
+	}
+	if st.Size < int64(size) {
+		return nil, fmt.Errorf("xkb: keymap fd holds %d bytes, declared %d: %w", st.Size, size, unix.EINVAL)
+	}
 	data, err := unix.Mmap(fd, 0, size, unix.PROT_READ, unix.MAP_PRIVATE)
 	if err != nil {
 		return nil, fmt.Errorf("xkb: map keymap fd: %w", err)

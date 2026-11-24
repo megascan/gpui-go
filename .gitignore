@@ -9,3 +9,5 @@
 /metalhdr
 /stylegen
 /wlgen
+internal/securityharness/**/logs/
+internal/securityharness/**/evidence/
