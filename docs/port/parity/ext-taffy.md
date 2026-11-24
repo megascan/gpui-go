@@ -268,19 +268,29 @@ Go target: `internal/taffy/compute_grid_types_cell_occupancy.go` (package `taffy
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `paint_merges_touching_same_state_intervals` | test | 410 |  | `TestComputeGridTypesCellOccupancy_PaintMergesTouchingSameStateIntervals` | todo |
-| `paint_does_not_merge_different_states` | test | 419 |  | `TestComputeGridTypesCellOccupancy_PaintDoesNotMergeDifferentStates` | todo |
-| `paint_overwrites_overlapped_cells` | test | 427 |  | `TestComputeGridTypesCellOccupancy_PaintOverwritesOverlappedCells` | todo |
-| `paint_overwrites_multiple_intervals` | test | 442 |  | `TestComputeGridTypesCellOccupancy_PaintOverwritesMultipleIntervals` | todo |
-| `collision_extent_finds_extremal_occupied_cell` | test | 455 |  | `TestComputeGridTypesCellOccupancy_CollisionExtentFindsExtremalOccupiedCell` | todo |
-| `state_at_distinguishes_occupied_intervals_and_gaps` | test | 467 |  | `TestComputeGridTypesCellOccupancy_StateAtDistinguishesOccupiedIntervalsAndGaps` | todo |
-| `definitely_placed_overwrite_hides_auto_placed_cells` | test | 481 |  | `TestComputeGridTypesCellOccupancy_DefinitelyPlacedOverwriteHidesAutoPlacedCells` | todo |
-| `negative_expansion_preserves_occupancy` | test | 501 |  | `TestComputeGridTypesCellOccupancy_NegativeExpansionPreservesOccupancy` | todo |
-| `auto_placed_item_only_advances_cursor_in_first_secondary_track` | test | 526 |  | `TestComputeGridTypesCellOccupancy_AutoPlacedItemOnlyAdvancesCursorInFirstSecondaryTrack` | todo |
-| `cursors_survive_interval_merging_and_grid_expansion` | test | 543 |  | `TestComputeGridTypesCellOccupancy_CursorsSurviveIntervalMergingAndGridExpansion` | todo |
-| `alternating_spans_merge_occupancy_and_skip_the_occupied_prefix` | test | 567 |  | `TestComputeGridTypesCellOccupancy_AlternatingSpansMergeOccupancyAndSkipTheOccupiedPrefix` | todo |
-| `collision_jump_returns_next_search_position` | test | 585 |  | `TestComputeGridTypesCellOccupancy_CollisionJumpReturnsNextSearchPosition` | todo |
-| `occupied_track_jump_skips_non_empty_tracks` | test | 598 |  | `TestComputeGridTypesCellOccupancy_OccupiedTrackJumpSkipsNonEmptyTracks` | todo |
+| `track_intervals::paint_merges_touching_same_state_intervals` | test | 410 |  | `TestComputeGridTypesCellOccupancy_TrackIntervals_PaintMergesTouchingSameStateIntervals` | done |
+| `track_intervals::paint_does_not_merge_different_states` | test | 419 |  | `TestComputeGridTypesCellOccupancy_TrackIntervals_PaintDoesNotMergeDifferentStates` | done |
+| `track_intervals::paint_overwrites_overlapped_cells` | test | 427 |  | `TestComputeGridTypesCellOccupancy_TrackIntervals_PaintOverwritesOverlappedCells` | done |
+| `track_intervals::paint_overwrites_multiple_intervals` | test | 442 |  | `TestComputeGridTypesCellOccupancy_TrackIntervals_PaintOverwritesMultipleIntervals` | done |
+| `track_intervals::collision_extent_finds_extremal_occupied_cell` | test | 455 |  | `TestComputeGridTypesCellOccupancy_TrackIntervals_CollisionExtentFindsExtremalOccupiedCell` | done |
+| `track_intervals::state_at_distinguishes_occupied_intervals_and_gaps` | test | 467 |  | `TestComputeGridTypesCellOccupancy_TrackIntervals_StateAtDistinguishesOccupiedIntervalsAndGaps` | done |
+| `track_intervals::definitely_placed_overwrite_hides_auto_placed_cells` | test | 481 |  | `TestComputeGridTypesCellOccupancy_TrackIntervals_DefinitelyPlacedOverwriteHidesAutoPlacedCells` | done |
+| `cell_occupancy_matrix::negative_expansion_preserves_occupancy` | test | 501 |  | `TestComputeGridTypesCellOccupancy_CellOccupancyMatrix_NegativeExpansionPreservesOccupancy` | done |
+| `cell_occupancy_matrix::auto_placed_item_only_advances_cursor_in_first_secondary_track` | test | 526 |  | `TestComputeGridTypesCellOccupancy_CellOccupancyMatrix_AutoPlacedItemOnlyAdvancesCursorInFirstSecondaryTrack` | done |
+| `cell_occupancy_matrix::cursors_survive_interval_merging_and_grid_expansion` | test | 543 |  | `TestComputeGridTypesCellOccupancy_CellOccupancyMatrix_CursorsSurviveIntervalMergingAndGridExpansion` | done |
+| `cell_occupancy_matrix::alternating_spans_merge_occupancy_and_skip_the_occupied_prefix` | test | 567 |  | `TestComputeGridTypesCellOccupancy_CellOccupancyMatrix_AlternatingSpansMergeOccupancyAndSkipTheOccupiedPrefix` | done |
+| `cell_occupancy_matrix::collision_jump_returns_next_search_position` | test | 585 |  | `TestComputeGridTypesCellOccupancy_CellOccupancyMatrix_CollisionJumpReturnsNextSearchPosition` | done |
+| `cell_occupancy_matrix::occupied_track_jump_skips_non_empty_tracks` | test | 598 |  | `TestComputeGridTypesCellOccupancy_CellOccupancyMatrix_OccupiedTrackJumpSkipsNonEmptyTracks` | done |
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `CellOccupancyState` (crate-private) | enum | 13 |  | `cellOccupancyState` | done |
+| `OccupiedInterval` (private) | struct | 26 |  | `occupiedInterval` | done |
+| `TrackIntervals` (private) | struct | 44 |  | `trackIntervals` | done |
+| `CellOccupancyMatrix` (crate-private) | struct | 140 |  | `cellOccupancyMatrix` | done |
+| `impl Debug for CellOccupancyMatrix` | trait-impl | 152 |  | `(cellOccupancyMatrix).String` | done |
+| `TrackIntervals::intervals` (`SmallVec<[_; 2]>`) | struct | 46 |  | `trackIntervals.intervals` | dev:D-TAFFY-SMALLVEC |
+| `CellOccupancyMatrix::line_area_is_unoccupied` (cfg(test)) | method | 294 |  | `(cellOccupancyMatrix).lineAreaIsUnoccupied` | done |
 
 ## src/compute/grid/types/coordinates.rs
 
@@ -288,10 +298,21 @@ Go target: `internal/taffy/compute_grid_types_coordinates.go` (package `taffy`),
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `GridLine` | struct | 32 |  | `GridLine` | todo |
-| `GridLine::as_i16` | method | 42 |  | `(GridLine).AsI16` | todo |
-| `OriginZeroLine` | struct | 68 |  | `OriginZeroLine` | todo |
-| `GridCoordinate` | trait | 182 |  | `GridCoordinate` | todo |
+| `GridLine` | struct | 32 |  | `GridLine` | done |
+| `GridLine::as_i16` | method | 42 |  | `(GridLine).AsI16` | done |
+| `OriginZeroLine` | struct | 68 |  | `OriginZeroLine` | done |
+| `GridCoordinate` | trait | 182 |  | `GridCoordinate` | done |
+| `impl From<i16> for GridLine` | trait-impl | 34 |  | `GridLineFromI16` | done |
+| `impl Add<OriginZeroLine> for OriginZeroLine` | trait-impl | 71 |  | `(OriginZeroLine).Add` | done |
+| `impl Sub<OriginZeroLine> for OriginZeroLine` | trait-impl | 77 |  | `(OriginZeroLine).Sub` | done |
+| `impl Add<u16> for OriginZeroLine` | trait-impl | 85 |  | `(OriginZeroLine).AddU16` | done |
+| `impl AddAssign<u16> for OriginZeroLine` | trait-impl | 91 |  | `(OriginZeroLine).AddAssignU16` | done |
+| `impl Sub<u16> for OriginZeroLine` | trait-impl | 96 |  | `(OriginZeroLine).SubU16` | done |
+| `impl GridCoordinate for GridLine` / `OriginZeroLine` (union members) | trait-impl | 183 |  | `GridCoordinate` | done |
+| `MAX_GRID_TRACKS` | const | 12 |  | `maxGridTracks` | done |
+| `MIN_OZ_LINE` | const | 15 |  | `minOzLine` | done |
+| `MAX_OZ_LINE` | const | 18 |  | `maxOzLine` | done |
+| `Line<OriginZeroLine>::span` | method | 176 |  | `lineOriginZeroLineSpan` | done |
 
 ## src/compute/grid/types/grid_item.rs
 
@@ -299,17 +320,35 @@ Go target: `internal/taffy/compute_grid_types_grid_item.go` (package `taffy`), t
 
 No public items or tests.
 
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `KnownDimensionsCacheEntry` (crate-private) | struct | 16 |  | `knownDimensionsCacheEntry` | done |
+| `GridItem` (crate-private) | struct | 25 |  | `gridItem` | done |
+| `GridItem::new_with_style_and_order` | assoc-fn | 113 |  | `newGridItemWithStyleAndOrder` | done |
+| `GridItem::track_range_excluding_lines` (returns `(start, end int)` for `Range<usize>`) | method | 202 |  | `(gridItem).trackRangeExcludingLines` | done |
+
 ## src/compute/grid/types/grid_track.rs
 
 Go target: `internal/taffy/compute_grid_types_grid_track.go` (package `taffy`), tests in `compute_grid_types_grid_track_test.go`
 
 No public items or tests.
 
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `GridTrackKind` (crate-private) | enum | 9 |  | `gridTrackKind` | done |
+| `GridTrack` (crate-private) | struct | 21 |  | `gridTrack` | done |
+| `GridTrack::fit_content_limit` (method; collides with the field) | method | 149 |  | `(gridTrack).getFitContentLimit` | done |
+
 ## src/compute/grid/types/grid_track_counts.rs
 
 Go target: `internal/taffy/compute_grid_types_grid_track_counts.go` (package `taffy`), tests in `compute_grid_types_grid_track_counts_test.go`
 
 No public items or tests.
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `TrackCounts` (crate-private) | struct | 41 |  | `trackCounts` | done |
+| `Range<i16>` used by the conversions | struct | 87 |  | `rangeI16` | done |
 
 ## src/compute/grid/types/mod.rs
 
@@ -323,24 +362,39 @@ Go target: `internal/taffy/compute_grid_types_named.go` (package `taffy`), tests
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `GridLineNames` | struct | 664 |  | `GridLineNames` | todo |
-| `GridLineNames::is_empty` | method | 710 |  | `(GridLineNames).IsEmpty` | todo |
-| `GridLineNames::line_count` | method | 715 |  | `(GridLineNames).LineCount` | todo |
-| `GridLineNames::line` | method | 721 |  | `(GridLineNames).Line` | todo |
-| `GridLineNames::iter` | method | 729 |  | `(GridLineNames).Iter` | todo |
-| `GridLineNamesIter` | struct | 752 |  | `GridLineNamesIter` | todo |
+| `GridLineNames` | struct | 664 |  | `GridLineNames` | done |
+| `GridLineNames::is_empty` | method | 710 |  | `(GridLineNames).IsEmpty` | done |
+| `GridLineNames::line_count` | method | 715 |  | `(GridLineNames).LineCount` | done |
+| `GridLineNames::line` | method | 721 |  | `(GridLineNames).Line` | done |
+| `GridLineNames::iter` | method | 729 |  | `(GridLineNames).Iter` | done |
+| `GridLineNamesIter` | struct | 752 |  | `GridLineNamesIter` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `extreme_missing_named_line_indices_do_not_overflow` | test | 817 |  | `TestComputeGridTypesNamed_ExtremeMissingNamedLineIndicesDoNotOverflow` | todo |
-| `large_named_span_does_not_wrap_negative` | test | 831 |  | `TestComputeGridTypesNamed_LargeNamedSpanDoesNotWrapNegative` | todo |
-| `area_lines_saturate_when_converted_to_grid_lines` | test | 844 |  | `TestComputeGridTypesNamed_AreaLinesSaturateWhenConvertedToGridLines` | todo |
-| `bare_ident_resolves_to_area_edge` | test | 913 |  | `TestComputeGridTypesNamed_BareIdentResolvesToAreaEdge` | todo |
-| `bare_ident_resolves_to_edge_of_implicitly_named_area` | test | 924 |  | `TestComputeGridTypesNamed_BareIdentResolvesToEdgeOfImplicitlyNamedArea` | todo |
-| `area_edges_are_lines_named_with_start_and_end_suffixes` | test | 931 |  | `TestComputeGridTypesNamed_AreaEdgesAreLinesNamedWithStartAndEndSuffixes` | todo |
-| `area_edges_are_merged_with_explicitly_named_lines` | test | 942 |  | `TestComputeGridTypesNamed_AreaEdgesAreMergedWithExplicitlyNamedLines` | todo |
-| `area_edges_are_only_matched_by_bare_idents` | test | 966 |  | `TestComputeGridTypesNamed_AreaEdgesAreOnlyMatchedByBareIdents` | todo |
-| `area_edge_is_the_first_line_with_the_edge_name` | test | 980 |  | `TestComputeGridTypesNamed_AreaEdgeIsTheFirstLineWithTheEdgeName` | todo |
+| `extreme_missing_named_line_indices_do_not_overflow` | test | 817 |  | `TestComputeGridTypesNamed_ExtremeMissingNamedLineIndicesDoNotOverflow` | done |
+| `large_named_span_does_not_wrap_negative` | test | 831 |  | `TestComputeGridTypesNamed_LargeNamedSpanDoesNotWrapNegative` | done |
+| `area_lines_saturate_when_converted_to_grid_lines` | test | 844 |  | `TestComputeGridTypesNamed_AreaLinesSaturateWhenConvertedToGridLines` | done |
+| `bare_ident_resolves_to_area_edge` | test | 913 |  | `TestComputeGridTypesNamed_BareIdentResolvesToAreaEdge` | done |
+| `bare_ident_resolves_to_edge_of_implicitly_named_area` | test | 924 |  | `TestComputeGridTypesNamed_BareIdentResolvesToEdgeOfImplicitlyNamedArea` | done |
+| `area_edges_are_lines_named_with_start_and_end_suffixes` | test | 931 |  | `TestComputeGridTypesNamed_AreaEdgesAreLinesNamedWithStartAndEndSuffixes` | done |
+| `area_edges_are_merged_with_explicitly_named_lines` | test | 942 |  | `TestComputeGridTypesNamed_AreaEdgesAreMergedWithExplicitlyNamedLines` | done |
+| `area_edges_are_only_matched_by_bare_idents` | test | 966 |  | `TestComputeGridTypesNamed_AreaEdgesAreOnlyMatchedByBareIdents` | done |
+| `area_edge_is_the_first_line_with_the_edge_name` | test | 980 |  | `TestComputeGridTypesNamed_AreaEdgeIsTheFirstLineWithTheEdgeName` | done |
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `StrHasher<T>` and its Ord/Eq/Hash/Borrow impls | struct | 17 |  | maps keyed by `S` | n/a:D-TAFFY-SYS |
+| `AreaLines` (crate-private) | struct | 59 |  | `areaLines` | done |
+| `GridAreasMap` (values are `*areaLines`) | type | 97 |  | `gridAreasMap` | done |
+| `NamedLineResolverAxis` (private) | struct | 111 |  | `namedLineResolverAxis` | done |
+| `NamedLineResolver` (crate-private) | struct | 124 |  | `namedLineResolver` | done |
+| `NamedLineResolver::area_column_count` (collides with the field) | method | 602 |  | `(namedLineResolver).getAreaColumnCount` | done |
+| `NamedLineResolver::area_row_count` (collides with the field) | method | 607 |  | `(namedLineResolver).getAreaRowCount` | done |
+| `impl Debug for NamedLineResolver` | trait-impl | 622 |  | `(namedLineResolver).String` | done |
+| `impl PartialEq for GridLineNames` (derived) | trait-impl | 663 |  | `(GridLineNames).Equal` | done |
+| `impl IntoIterator for &GridLineNames` | trait-impl | 741 |  | `(GridLineNames).All` | done |
+| `impl Iterator for GridLineNamesIter` | trait-impl | 763 |  | `(GridLineNamesIter).Next` | done |
+| `impl ExactSizeIterator for GridLineNamesIter` (size_hint) | trait-impl | 787 |  | `(GridLineNamesIter).Len` | done |
 
 ## src/compute/grid/util/mod.rs
 
@@ -353,6 +407,8 @@ No public items or tests.
 Go target: `internal/taffy/compute_grid_util_test_helpers.go` (package `taffy`), tests in `compute_grid_util_test_helpers_test.go`
 
 No public items or tests.
+
+`#[cfg(test)]` module: ported into `compute_grid_util_test_helpers_test.go` (`gridItems`, `resolveNamedLines`, the `CreateParentTestNode` / `CreateChildTestNode` / `CreateExpectedPlacement` tuple impls as `parentTestNode.intoGrid`, `childTestNode.intoGridChild`, `expectedPlacement.intoOz`). No Go file `compute_grid_util_test_helpers.go` exists.
 
 ## src/compute/leaf.rs
 
@@ -1806,6 +1862,7 @@ Fixture counts per category (6504 files in tag v0.15.0). `flex-wrap: balance` fi
 | D-TAFFY-ALIGNFIELDS | `AlignItems` / `AlignContent` keep their `keyword` / `safety` fields unexported because the `keyword()` method would collide with an exported field; read them with `Keyword()` / `Safety()`, build with `NewAlignItems` / `NewAlignContent` or the `AlignItems<Name>` vars. Upstream's associated consts are package vars (Go has no struct consts). | `src/style/alignment.rs:155-460` | `internal/taffy/style_alignment.go` |
 | D-TAFFY-SIZES | `style_sizes` checks only sizes that Go lays out like Rust; `Option<AlignItems>` (Go 3 bytes, no niche), the string-dependent grid types and `Style` sizes differ and are not asserted. | `src/style/mod.rs:1742-1815` | `internal/taffy/style_mod_test.go` |
 | D-TAFFY-GRIDLISTS | The associated iterator types of `GridContainerStyle` and `GenericRepetition` are slices: template track lists are `[]GenericGridTemplateComponent[S, GenericRepetition[S]]` (the repetition is the interface, so `R` is not a trait parameter), auto track lists `[]TrackSizingFunction`, line names `TemplateLineNames[S]` (alias of `[][]S`), areas `[]GridTemplateArea[S]`. `StyleRef.GridTemplateRows` / `GridTemplateColumns` allocate the component-ref slice per call where upstream maps lazily. | `src/style/grid.rs:81-270`, `src/style/mod.rs:1386-1480` | `internal/taffy/style_grid.go`, `style_mod.go` |
+| D-TAFFY-SMALLVEC | `SmallVec<[T; N]>` is a Go slice: there is no inline capacity, so `spilled()` is checked as `len <= N` (`alternating_spans_merge_occupancy_and_skip_the_occupied_prefix`). | `src/compute/grid/types/cell_occupancy.rs:46,568` | `internal/taffy/compute_grid_types_cell_occupancy.go` |
 | D-TAFFY-HELPERS | `style_helpers`: `line` is `NewLine` (Go cannot have a function and the type `Line` with one name). Go cannot add methods to `float32` or `gpuiutil.Option`, so the `f32` / `Option` impls are runtime cases inside the Point / Line / Size / Rect helpers (`PointZero[float32]`, `SizeLength[Option[float32]]`) and are not usable with the top-level generic helpers; `Option<T>` is covered for `T = f32` only. `repeat`'s `TryInto<RepetitionCount>` input is the union of `uint16`, `string` and `RepetitionCount`. | `src/style_helpers.rs` | `internal/taffy/style_helpers.go` |
 | D-TAFFY-TREETRAITS | Tree traits are Go interfaces with the conventions of D-TAFFY-TRAITS: associated style types are the style interfaces (`CoreStyle`, `OofItemStyle[S]`, ...), `CustomIdent` is the type parameter `S` of `LayoutContainingBlock` / `LayoutGridContainer` (`LayoutPartialTree` is not generic because `CoreStyle` is not), `ChildIter` is `iter.Seq[NodeID]`, `*const ()` is `unsafe.Pointer`, `BlockContext<'_>` is `*BlockContext`, and default bodies live in `<Trait>Defaults` structs or, when they call another trait method, in `<Trait>Default<Method>` functions. The marker trait `TraverseTree` has the marker method `TraverseTree()`. `get_detailed_layout_info` returns the value, not a reference. `print_tree` is `PrintTreeStdout`, because the trait `PrintTree` takes the name. `LayoutPartialTreeExt` methods are unexported free functions taking the tree. | `src/tree/traits.rs`, `src/util/print.rs` | `internal/taffy/tree_traits.go`, `util_print.go` |
 | D-TAFFY-CLONE | `OofCandidates` holds its lazily allocated list behind a pointer (nil is upstream's `None`, a non-nil pointer to an empty slice is `Some(empty)`), so Go value copies of `OofCandidates`, `LayoutOutput` and `Cache` share it; ported code calls `Clone()` where upstream clones (`Cache::get` does) and `Equal` where upstream compares. The debug-build `MODE_CHANGE_EVICTIONS` thread-local is one process-wide atomic counter, counted while `gpuiutil.DebugAssertions` is set. | `src/tree/layout.rs:355-574`, `src/tree/cache.rs:180-360` | `internal/taffy/tree_layout.go`, `tree_cache.go` |
