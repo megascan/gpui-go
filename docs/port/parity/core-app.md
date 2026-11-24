@@ -139,120 +139,120 @@ Go target: `app.go` (package `gpui`), tests in `app_test.go`
 | `App::set_text_rendering_mode` | method | 1986 |  | `(App).SetTextRenderingMode` | done |
 | `App::text_rendering_mode` | method | 1991 |  | `(App).TextRenderingMode` | done |
 | `App::power_mode` | method | 1997 |  | `(App).PowerMode` | done |
-| `App::write_to_clipboard` | method | 2002 |  | `(App).WriteToClipboard` | todo |
-| `App::read_from_primary` | method | 2009 | linux,freebsd | `(App).ReadFromPrimary` | todo |
-| `App::write_to_primary` | method | 2016 | linux,freebsd | `(App).WriteToPrimary` | todo |
-| `App::read_from_find_pasteboard` | method | 2026 | macos | `(App).ReadFromFindPasteboard` | todo |
-| `App::write_to_find_pasteboard` | method | 2036 | macos | `(App).WriteToFindPasteboard` | todo |
-| `App::write_credentials` | method | 2041 |  | `(App).WriteCredentials` | todo |
-| `App::write_credentials_if_not_exists` | method | 2058 | macos | `(App).WriteCredentialsIfNotExists` | todo |
-| `App::read_credentials` | method | 2069 |  | `(App).ReadCredentials` | todo |
-| `App::delete_credentials` | method | 2074 |  | `(App).DeleteCredentials` | todo |
-| `App::open_url` | method | 2079 |  | `(App).OpenURL` | todo |
-| `App::register_url_scheme` | method | 2089 |  | `(App).RegisterURLScheme` | todo |
-| `App::set_app_identity` | method | 2099 |  | `(App).SetAppIdentity` | todo |
-| `App::show_system_notification` | method | 2109 |  | `(App).ShowSystemNotification` | todo |
-| `App::dismiss_system_notification` | method | 2120 |  | `(App).DismissSystemNotification` | todo |
-| `App::on_system_notification_response` | method | 2127 |  | `(App).OnSystemNotificationResponse` | todo |
-| `App::app_path` | method | 2143 |  | `(App).AppPath` | todo |
-| `App::compositor_name` | method | 2150 |  | `(App).CompositorName` | todo |
-| `App::platform_info` | method | 2155 |  | `(App).PlatformInfo` | todo |
-| `App::path_for_auxiliary_executable` | method | 2160 |  | `(App).PathForAuxiliaryExecutable` | todo |
-| `App::prompt_for_paths` | method | 2169 |  | `(App).PromptForPaths` | todo |
-| `App::prompt_for_new_path` | method | 2182 |  | `(App).PromptForNewPath` | todo |
-| `App::reveal_path` | method | 2191 |  | `(App).RevealPath` | todo |
-| `App::open_with_system` | method | 2196 |  | `(App).OpenWithSystem` | todo |
-| `App::should_auto_hide_scrollbars` | method | 2201 |  | `(App).ShouldAutoHideScrollbars` | todo |
-| `App::restart` | method | 2206 |  | `(App).Restart` | todo |
-| `App::set_restart_path` | method | 2217 |  | `(App).SetRestartPath` | todo |
-| `App::http_client` | method | 2222 |  | `(App).HTTPClient` | todo |
-| `App::set_http_client` | method | 2227 |  | `(App).SetHTTPClient` | todo |
-| `App::set_quit_mode` | method | 2233 |  | `(App).SetQuitMode` | todo |
-| `App::set_activation_policy` | method | 2245 |  | `(App).SetActivationPolicy` | todo |
-| `App::svg_renderer` | method | 2250 |  | `(App).SvgRenderer` | todo |
-| `App::with_window` | method | 2473 |  | `(App).WithWindow` | todo |
+| `App::write_to_clipboard` | method | 2002 |  | `(App).WriteToClipboard` | done |
+| `App::read_from_primary` | method | 2009 | linux,freebsd | `(App).ReadFromPrimary` | done |
+| `App::write_to_primary` | method | 2016 | linux,freebsd | `(App).WriteToPrimary` | done |
+| `App::read_from_find_pasteboard` | method | 2026 | macos | `(App).ReadFromFindPasteboard` | done |
+| `App::write_to_find_pasteboard` | method | 2036 | macos | `(App).WriteToFindPasteboard` | done |
+| `App::write_credentials` | method | 2041 |  | `(App).WriteCredentials` | done |
+| `App::write_credentials_if_not_exists` | method | 2058 | macos | `(App).WriteCredentialsIfNotExists` | done |
+| `App::read_credentials` | method | 2069 |  | `(App).ReadCredentials` | done |
+| `App::delete_credentials` | method | 2074 |  | `(App).DeleteCredentials` | done |
+| `App::open_url` | method | 2079 |  | `(App).OpenURL` | done |
+| `App::register_url_scheme` | method | 2089 |  | `(App).RegisterURLScheme` | done |
+| `App::set_app_identity` | method | 2099 |  | `(App).SetAppIdentity` | done |
+| `App::show_system_notification` | method | 2109 |  | `(App).ShowSystemNotification` | done |
+| `App::dismiss_system_notification` | method | 2120 |  | `(App).DismissSystemNotification` | done |
+| `App::on_system_notification_response` | method | 2127 |  | `(App).OnSystemNotificationResponse` | done |
+| `App::app_path` | method | 2143 |  | `(App).AppPath` | done |
+| `App::compositor_name` | method | 2150 |  | `(App).CompositorName` | done |
+| `App::platform_info` | method | 2155 |  | `(App).PlatformInfo` | done |
+| `App::path_for_auxiliary_executable` | method | 2160 |  | `(App).PathForAuxiliaryExecutable` | done |
+| `App::prompt_for_paths` | method | 2169 |  | `(App).PromptForPaths` | done |
+| `App::prompt_for_new_path` | method | 2182 |  | `(App).PromptForNewPath` | done |
+| `App::reveal_path` | method | 2191 |  | `(App).RevealPath` | done |
+| `App::open_with_system` | method | 2196 |  | `(App).OpenWithSystem` | done |
+| `App::should_auto_hide_scrollbars` | method | 2201 |  | `(App).ShouldAutoHideScrollbars` | done |
+| `App::restart` | method | 2206 |  | `(App).Restart` | done |
+| `App::set_restart_path` | method | 2217 |  | `(App).SetRestartPath` | done |
+| `App::http_client` | method | 2222 |  | `(App).HTTPClient` | done |
+| `App::set_http_client` | method | 2227 |  | `(App).SetHTTPClient` | done |
+| `App::set_quit_mode` | method | 2233 |  | `(App).SetQuitMode` | done |
+| `App::set_activation_policy` | method | 2245 |  | `(App).SetActivationPolicy` | done |
+| `App::svg_renderer` | method | 2250 |  | `(App).SvgRenderer` | done |
+| `App::with_window` | method | 2473 |  | `(App).WithWindow` | done |
 | `App::to_async` | method | 2509 |  | `(App).ToAsync` | done |
-| `App::background_executor` | method | 2518 |  | `(App).BackgroundExecutor` | todo |
-| `App::is_test` | method | 2524 |  | `(App).IsTest` | todo |
+| `App::background_executor` | method | 2518 |  | `(App).BackgroundExecutor` | done |
+| `App::is_test` | method | 2524 |  | `(App).IsTest` | done |
 | `App::foreground_executor` | method | 2529 |  | `(App).ForegroundExecutor` | done |
-| `App::foreground_journal` | method | 2539 | feat:profiler | `(App).ForegroundJournal` | todo |
-| `App::start_hang_monitor` | method | 2560 | wasm,feat:profiler | `(App).StartHangMonitor` | todo |
-| `App::spawn` | method | 2586 |  | `(App).Spawn` | todo |
-| `App::spawn_with_priority` | method | 2600 |  | `(App).SpawnWithPriority` | todo |
-| `App::defer` | method | 2617 |  | `(App).Defer` | todo |
-| `App::asset_source` | method | 2624 |  | `(App).AssetSource` | todo |
-| `App::text_system` | method | 2629 |  | `(App).TextSystem` | todo |
-| `App::on_missing_glyphs` | method | 2643 |  | `(App).OnMissingGlyphs` | todo |
-| `App::has_global` | method | 2670 |  | `(App).HasGlobal` | todo |
-| `App::global` | method | 2676 |  | `(App).Global` | todo |
-| `App::try_global` | method | 2684 |  | `(App).TryGlobal` | todo |
-| `App::global_mut` | method | 2692 |  | `(App).GlobalMut` | todo |
-| `App::default_global` | method | 2703 |  | `(App).DefaultGlobal` | todo |
-| `App::set_global` | method | 2714 |  | `(App).SetGlobal` | todo |
-| `App::clear_globals` | method | 2722 | feat:test-support | `(App).ClearGlobals` | todo |
-| `App::remove_global` | method | 2727 |  | `(App).RemoveGlobal` | todo |
-| `App::observe_global` | method | 2739 |  | `(App).ObserveGlobal` | todo |
-| `App::observe_new` | method | 2783 |  | `(App).ObserveNew` | todo |
-| `App::observe_release` | method | 2804 |  | `(App).ObserveRelease` | todo |
-| `App::observe_release_in` | method | 2823 |  | `(App).ObserveReleaseIn` | todo |
-| `App::observe_keystrokes` | method | 2842 |  | `(App).ObserveKeystrokes` | todo |
-| `App::intercept_keystrokes` | method | 2857 |  | `(App).InterceptKeystrokes` | todo |
-| `App::bind_keys` | method | 2869 |  | `(App).BindKeys` | todo |
-| `App::clear_key_bindings` | method | 2875 |  | `(App).ClearKeyBindings` | todo |
-| `App::key_bindings` | method | 2881 |  | `(App).KeyBindings` | todo |
-| `App::on_action` | method | 2888 |  | `(App).OnAction` | todo |
-| `App::stop_propagation` | method | 2908 |  | `(App).StopPropagation` | todo |
-| `App::propagate` | method | 2916 |  | `(App).Propagate` | todo |
-| `App::build_action` | method | 2921 |  | `(App).BuildAction` | todo |
-| `App::all_action_names` | method | 2931 |  | `(App).AllActionNames` | todo |
-| `App::all_bindings_for_input` | method | 2938 |  | `(App).AllBindingsForInput` | todo |
-| `App::action_schemas` | method | 2943 |  | `(App).ActionSchemas` | todo |
-| `App::action_schema_by_name` | method | 2954 |  | `(App).ActionSchemaByName` | todo |
-| `App::deprecated_actions_to_preferred_actions` | method | 2963 |  | `(App).DeprecatedActionsToPreferredActions` | todo |
-| `App::action_deprecation_messages` | method | 2968 |  | `(App).ActionDeprecationMessages` | todo |
-| `App::action_documentation` | method | 2973 |  | `(App).ActionDocumentation` | todo |
-| `App::on_app_quit` | method | 2979 |  | `(App).OnAppQuit` | todo |
-| `App::on_app_restart` | method | 2995 |  | `(App).OnAppRestart` | todo |
-| `App::on_window_closed` | method | 3004 |  | `(App).OnWindowClosed` | todo |
-| `App::is_action_available` | method | 3023 |  | `(App).IsActionAvailable` | todo |
-| `App::set_menus` | method | 3039 |  | `(App).SetMenus` | todo |
-| `App::get_menus` | method | 3045 |  | `(App).GetMenus` | todo |
-| `App::set_dock_menu` | method | 3050 |  | `(App).SetDockMenu` | todo |
-| `App::perform_dock_menu_action` | method | 3055 |  | `(App).PerformDockMenuAction` | todo |
-| `App::add_recent_document` | method | 3063 |  | `(App).AddRecentDocument` | todo |
-| `App::update_jump_list` | method | 3069 |  | `(App).UpdateJumpList` | todo |
-| `App::dispatch_action` | method | 3079 |  | `(App).DispatchAction` | todo |
-| `App::has_active_drag` | method | 3139 |  | `(App).HasActiveDrag` | todo |
-| `App::active_drag_cursor_style` | method | 3144 |  | `(App).ActiveDragCursorStyle` | todo |
-| `App::stop_active_drag` | method | 3149 |  | `(App).StopActiveDrag` | todo |
-| `App::set_active_drag_cursor_style` | method | 3223 |  | `(App).SetActiveDragCursorStyle` | todo |
-| `App::set_prompt_builder` | method | 3239 |  | `(App).SetPromptBuilder` | todo |
-| `App::reset_prompt_builder` | method | 3256 |  | `(App).ResetPromptBuilder` | todo |
-| `App::remove_asset` | method | 3261 |  | `(App).RemoveAsset` | todo |
-| `App::has_asset` | method | 3269 | feat:test-support | `(App).HasAsset` | todo |
-| `App::fetch_asset` | method | 3278 |  | `(App).FetchAsset` | todo |
-| `App::focus_handle` | method | 3298 |  | `(App).FocusHandle` | todo |
-| `App::notify` | method | 3303 |  | `(App).Notify` | todo |
-| `App::get_name` | method | 3341 | feat:test-support,debug | `(App).GetName` | todo |
-| `App::can_select_mixed_files_and_dirs` | method | 3346 |  | `(App).CanSelectMixedFilesAndDirs` | todo |
-| `App::drop_image` | method | 3354 |  | `(App).DropImage` | todo |
-| `App::set_inspector_renderer` | method | 3368 | feat:inspector,debug | `(App).SetInspectorRenderer` | todo |
-| `App::register_inspector_element` | method | 3374 | feat:inspector,debug | `(App).RegisterInspectorElement` | todo |
-| `App::init_colors` | method | 3386 |  | `(App).InitColors` | todo |
-| `AnyDrag` | struct | 3676 |  | `AnyDrag` | todo |
-| `ExternalDragPayloadSource` | type | 3697 |  | `ExternalDragPayloadSource` | todo |
-| `AnyTooltip` | struct | 3703 |  | `AnyTooltip` | todo |
-| `InputPreference` | enum | 3718 |  | `InputPreference` | todo |
-| `KeystrokeEvent` | struct | 3727 |  | `KeystrokeEvent` | todo |
-| `GpuiBorrow` | struct | 3773 |  | `GpuiBorrow` | todo |
+| `App::foreground_journal` | method | 2539 | feat:profiler | `(App).ForegroundJournal` | done |
+| `App::start_hang_monitor` | method | 2560 | wasm,feat:profiler | `(App).StartHangMonitor` | done |
+| `App::spawn` | method | 2586 |  | `(App).Spawn` | done |
+| `App::spawn_with_priority` | method | 2600 |  | `(App).SpawnWithPriority` | done |
+| `App::defer` | method | 2617 |  | `(App).Defer` | done |
+| `App::asset_source` | method | 2624 |  | `(App).AssetSource` | done |
+| `App::text_system` | method | 2629 |  | `(App).TextSystem` | done |
+| `App::on_missing_glyphs` | method | 2643 |  | `(App).OnMissingGlyphs` | done |
+| `App::has_global` | method | 2670 |  | `(App).HasGlobal` | done |
+| `App::global` | method | 2676 |  | `(App).Global` | done |
+| `App::try_global` | method | 2684 |  | `(App).TryGlobal` | done |
+| `App::global_mut` | method | 2692 |  | `(App).GlobalMut` | done |
+| `App::default_global` | method | 2703 |  | `(App).DefaultGlobal` | done |
+| `App::set_global` | method | 2714 |  | `(App).SetGlobal` | done |
+| `App::clear_globals` | method | 2722 | feat:test-support | `(App).ClearGlobals` | done |
+| `App::remove_global` | method | 2727 |  | `(App).RemoveGlobal` | done |
+| `App::observe_global` | method | 2739 |  | `(App).ObserveGlobal` | done |
+| `App::observe_new` | method | 2783 |  | `(App).ObserveNew` | done |
+| `App::observe_release` | method | 2804 |  | `(App).ObserveRelease` | done |
+| `App::observe_release_in` | method | 2823 |  | `(App).ObserveReleaseIn` | done |
+| `App::observe_keystrokes` | method | 2842 |  | `(App).ObserveKeystrokes` | done |
+| `App::intercept_keystrokes` | method | 2857 |  | `(App).InterceptKeystrokes` | done |
+| `App::bind_keys` | method | 2869 |  | `(App).BindKeys` | done |
+| `App::clear_key_bindings` | method | 2875 |  | `(App).ClearKeyBindings` | done |
+| `App::key_bindings` | method | 2881 |  | `(App).KeyBindings` | done |
+| `App::on_action` | method | 2888 |  | `(App).OnAction` | done |
+| `App::stop_propagation` | method | 2908 |  | `(App).StopPropagation` | done |
+| `App::propagate` | method | 2916 |  | `(App).Propagate` | done |
+| `App::build_action` | method | 2921 |  | `(App).BuildAction` | done |
+| `App::all_action_names` | method | 2931 |  | `(App).AllActionNames` | done |
+| `App::all_bindings_for_input` | method | 2938 |  | `(App).AllBindingsForInput` | done |
+| `App::action_schemas` | method | 2943 |  | `(App).ActionSchemas` | done |
+| `App::action_schema_by_name` | method | 2954 |  | `(App).ActionSchemaByName` | done |
+| `App::deprecated_actions_to_preferred_actions` | method | 2963 |  | `(App).DeprecatedActionsToPreferredActions` | done |
+| `App::action_deprecation_messages` | method | 2968 |  | `(App).ActionDeprecationMessages` | done |
+| `App::action_documentation` | method | 2973 |  | `(App).ActionDocumentation` | done |
+| `App::on_app_quit` | method | 2979 |  | `(App).OnAppQuit` | done |
+| `App::on_app_restart` | method | 2995 |  | `(App).OnAppRestart` | done |
+| `App::on_window_closed` | method | 3004 |  | `(App).OnWindowClosed` | done |
+| `App::is_action_available` | method | 3023 |  | `(App).IsActionAvailable` | done |
+| `App::set_menus` | method | 3039 |  | `(App).SetMenus` | done |
+| `App::get_menus` | method | 3045 |  | `(App).GetMenus` | done |
+| `App::set_dock_menu` | method | 3050 |  | `(App).SetDockMenu` | done |
+| `App::perform_dock_menu_action` | method | 3055 |  | `(App).PerformDockMenuAction` | done |
+| `App::add_recent_document` | method | 3063 |  | `(App).AddRecentDocument` | done |
+| `App::update_jump_list` | method | 3069 |  | `(App).UpdateJumpList` | done |
+| `App::dispatch_action` | method | 3079 |  | `(App).DispatchAction` | done |
+| `App::has_active_drag` | method | 3139 |  | `(App).HasActiveDrag` | done |
+| `App::active_drag_cursor_style` | method | 3144 |  | `(App).ActiveDragCursorStyle` | done |
+| `App::stop_active_drag` | method | 3149 |  | `(App).StopActiveDrag` | done |
+| `App::set_active_drag_cursor_style` | method | 3223 |  | `(App).SetActiveDragCursorStyle` | done |
+| `App::set_prompt_builder` | method | 3239 |  | `(App).SetPromptBuilder` | done |
+| `App::reset_prompt_builder` | method | 3256 |  | `(App).ResetPromptBuilder` | done |
+| `App::remove_asset` | method | 3261 |  | `(App).RemoveAsset` | blocked:M0-app-contexts |
+| `App::has_asset` | method | 3269 | feat:test-support | `(App).HasAsset` | blocked:M0-app-contexts |
+| `App::fetch_asset` | method | 3278 |  | `(App).FetchAsset` | blocked:M0-app-contexts |
+| `App::focus_handle` | method | 3298 |  | `(App).FocusHandle` | done |
+| `App::notify` | method | 3303 |  | `(App).Notify` | done |
+| `App::get_name` | method | 3341 | feat:test-support,debug | `(App).GetName` | done |
+| `App::can_select_mixed_files_and_dirs` | method | 3346 |  | `(App).CanSelectMixedFilesAndDirs` | done |
+| `App::drop_image` | method | 3354 |  | `(App).DropImage` | done |
+| `App::set_inspector_renderer` | method | 3368 | feat:inspector,debug | `(App).SetInspectorRenderer` | done |
+| `App::register_inspector_element` | method | 3374 | feat:inspector,debug | `(App).RegisterInspectorElement` | done |
+| `App::init_colors` | method | 3386 |  | `(App).InitColors` | done |
+| `AnyDrag` | struct | 3676 |  | `AnyDrag` | done |
+| `ExternalDragPayloadSource` | type | 3697 |  | `ExternalDragPayloadSource` | done |
+| `AnyTooltip` | struct | 3703 |  | `AnyTooltip` | done |
+| `InputPreference` | enum | 3718 |  | `InputPreference` | done |
+| `KeystrokeEvent` | struct | 3727 |  | `KeystrokeEvent` | done |
+| `GpuiBorrow` | struct | 3773 |  | `GpuiBorrow` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `app_borrow_diagnostics` | gpui::test | 3842 |  | `TestApp_AppBorrowDiagnostics` | todo |
-| `async_app_refresh_flushes_refresh_effect` | gpui::test | 3900 |  | `TestApp_AsyncAppRefreshFlushesRefreshEffect` | todo |
-| `missing_glyph_callbacks_follow_subscription_lifetime` | gpui::test | 3917 |  | `TestApp_MissingGlyphCallbacksFollowSubscriptionLifetime` | todo |
-| `test_gpui_borrow` | test | 3976 |  | `TestApp_GpuiBorrow` | todo |
-| `test_restart_preserves_path_and_arguments` | gpui::test | 4007 |  | `TestApp_RestartPreservesPathAndArguments` | todo |
+| `app_borrow_diagnostics` | gpui::test | 3842 |  | `TestApp_AppBorrowDiagnostics` | done |
+| `async_app_refresh_flushes_refresh_effect` | gpui::test | 3900 |  | `TestApp_AsyncAppRefreshFlushesRefreshEffect` | blocked:M0-test-contexts |
+| `missing_glyph_callbacks_follow_subscription_lifetime` | gpui::test | 3917 |  | `TestApp_MissingGlyphCallbacksFollowSubscriptionLifetime` | blocked:M0-test-contexts |
+| `test_gpui_borrow` | test | 3976 |  | `TestApp_GpuiBorrow` | blocked:M0-test-contexts |
+| `test_restart_preserves_path_and_arguments` | gpui::test | 4007 |  | `TestApp_RestartPreservesPathAndArguments` | blocked:M0-test-contexts |
 
 ## gpui/src/asset_cache.rs
 

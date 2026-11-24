@@ -4,6 +4,7 @@ import (
 	"encoding/json/jsontext"
 	"math/rand/v2"
 	"reflect"
+	"sync"
 	"testing"
 	"time"
 	"weak"
@@ -11,146 +12,6 @@ import (
 	"github.com/megascan/gpui-go/a11y"
 	"github.com/megascan/gpui-go/scheduler"
 )
-
-// New builds an entity that is owned by the application (M0-app-contexts ports it).
-func (cx *App) New[T any](buildEntity func(cx *Context[T]) *T) Entity[T] {
-	panic("gpui: unimplemented App.New")
-}
-
-// ReserveEntity reserves a slot for an entity to be inserted later (M0-app-contexts ports it).
-func (cx *App) ReserveEntity[T any]() Reservation[T] {
-	panic("gpui: unimplemented App.ReserveEntity")
-}
-
-// InsertEntity inserts an entity into a reserved slot (M0-app-contexts ports it).
-func (cx *App) InsertEntity[T any](reservation Reservation[T], buildEntity func(cx *Context[T]) *T) Entity[T] {
-	panic("gpui: unimplemented App.InsertEntity")
-}
-
-// AsMut leases an entity for mutable access (M0-app-contexts ports it).
-func (cx *App) AsMut[T any](handle Entity[T]) GpuiBorrow[T] {
-	panic("gpui: unimplemented App.AsMut")
-}
-
-// ReadWindow reads a window off of the application context (M0-app-contexts ports it).
-func (cx *App) ReadWindow[V, R any](window WindowHandle[V], read func(root Entity[V], cx *App) R) (R, error) {
-	panic("gpui: unimplemented App.ReadWindow")
-}
-
-// WithWindow runs f against the entity's current window (M0-app-effects ports it).
-func (cx *App) WithWindow[R any](entityID EntityID, f func(window *Window, cx *App) R) (R, bool) {
-	panic("gpui: unimplemented App.WithWindow")
-}
-
-// BackgroundSpawn spawns a future on a background thread (M0-app-contexts ports it).
-func (cx *App) BackgroundSpawn[R any](future func(s *scheduler.Scope) (R, error)) *Task[R] {
-	panic("gpui: unimplemented App.BackgroundSpawn")
-}
-
-// ReadGlobal reads a global from this app context (M0-app-contexts ports it).
-func (cx *App) ReadGlobal[G, R any](callback func(global *G, cx *App) R) R {
-	panic("gpui: unimplemented App.ReadGlobal")
-}
-
-// SetGlobal sets the value of the global of the given type (M0-app-effects ports it).
-func (cx *App) SetGlobal[G any](global G) {
-	panic("gpui: unimplemented App.SetGlobal")
-}
-
-// DefaultGlobal returns the global of the given type, inserting its zero value if missing (M0-app-effects ports it).
-func (cx *App) DefaultGlobal[G any]() *G {
-	panic("gpui: unimplemented App.DefaultGlobal")
-}
-
-// Spawn spawns the future returned by f on the foreground executor (M0-app-effects ports it).
-func (cx *App) Spawn[R any](f func(cx *AsyncApp) (R, error)) *Task[R] {
-	panic("gpui: unimplemented App.Spawn")
-}
-
-// Defer schedules f to run at the end of the current effect cycle (M0-app-effects ports it).
-func (cx *App) Defer(f func(cx *App)) {
-	panic("gpui: unimplemented App.Defer")
-}
-
-func (cx *App) leaseGlobal[G any]() *globalLease[G] {
-	panic("gpui: unimplemented App.leaseGlobal")
-}
-
-func (cx *App) endGlobalLease[G any](lease *globalLease[G]) {
-	panic("gpui: unimplemented App.endGlobalLease")
-}
-
-func (cx *App) newEntity(entityType reflect.Type, build func(slot AnyEntity, cx *App) any) AnyEntity {
-	panic("gpui: unimplemented App.newEntity")
-}
-
-func (cx *App) reserveEntity(entityType reflect.Type) AnyEntity {
-	panic("gpui: unimplemented App.reserveEntity")
-}
-
-func (cx *App) insertEntity(slot AnyEntity, build func(cx *App) any) AnyEntity {
-	panic("gpui: unimplemented App.insertEntity")
-}
-
-func (cx *App) updateEntity(handle AnyEntity, update func(state any, cx *App)) {
-	panic("gpui: unimplemented App.updateEntity")
-}
-
-func (cx *App) asMut(handle AnyEntity) *App {
-	panic("gpui: unimplemented App.asMut")
-}
-
-func (cx *App) readEntity(handle AnyEntity, read func(state any, cx *App)) {
-	panic("gpui: unimplemented App.readEntity")
-}
-
-func (cx *App) updateWindow(window AnyWindowHandle, update func(root AnyView, window *Window, cx *App)) error {
-	panic("gpui: unimplemented App.updateWindow")
-}
-
-func (cx *App) withWindow(entityID EntityID, f func(window *Window, cx *App)) bool {
-	panic("gpui: unimplemented App.withWindow")
-}
-
-func (cx *App) readWindow(window AnyWindowHandle, read func(root AnyView, cx *App)) error {
-	panic("gpui: unimplemented App.readWindow")
-}
-
-func (cx *App) backgroundExecutor() BackgroundExecutor {
-	panic("gpui: unimplemented App.backgroundExecutor")
-}
-
-func (cx *App) readGlobal(globalType reflect.Type, read func(global any, cx *App)) {
-	panic("gpui: unimplemented App.readGlobal")
-}
-
-type globalLease[G any] struct {
-	global any
-}
-
-func (l *globalLease[G]) get() *G {
-	panic("gpui: unimplemented globalLease.get")
-}
-
-// GpuiBorrow is a mutable lease of an entity obtained with AsMut (M0-app-effects ports it).
-type GpuiBorrow[T any] struct {
-	inner Entity[T]
-	app   *App
-}
-
-func newGpuiBorrow[T any](inner Entity[T], app *App) GpuiBorrow[T] {
-	panic("gpui: unimplemented newGpuiBorrow")
-}
-
-// Get returns the leased entity state (M0-app-effects ports it).
-func (b GpuiBorrow[T]) Get() *T {
-	panic("gpui: unimplemented GpuiBorrow.Get")
-}
-
-// Release notifies the entity, ends the lease and finishes the update, as its Drop does upstream (M0-app-effects ports it).
-func (b GpuiBorrow[T]) Release() {
-	panic("gpui: unimplemented GpuiBorrow.Release")
-}
 
 // DefaultWindowSize is the default size of a new window (M0-window-core ports it).
 var DefaultWindowSize = NewSize(Px(1536.), Px(1095.))
@@ -361,11 +222,17 @@ type WindowHandle[V any] struct {
 
 // Window is a GPUI window (M0-window-core ports it).
 type Window struct {
-	handle           AnyWindowHandle
-	displayID        Option[DisplayID]
-	lastWindowBounds WindowBounds
-	root             Option[AnyView]
-	focus            Option[FocusID]
+	handle             AnyWindowHandle
+	displayID          Option[DisplayID]
+	lastWindowBounds   WindowBounds
+	root               Option[AnyView]
+	focus              Option[FocusID]
+	invalidator        windowInvalidator
+	removed            bool
+	platformWindow     PlatformWindow
+	nextFrameCallbacks *[]FrameCallback
+	needsPresent       *bool
+	refreshing         bool
 }
 
 // HasPendingKeystrokes reports whether a multi-stroke binding is pending (M0-window-dispatch ports it).
@@ -387,20 +254,6 @@ func (cx *AsyncWindowContext) Update(f func(window *Window, cx *App)) error {
 // UpdateR runs f with the window and App and returns its result (M0-app-contexts ports it).
 func (cx *AsyncWindowContext) UpdateR[R any](f func(window *Window, cx *App) R) (R, error) {
 	panic("gpui: unimplemented AsyncWindowContext.UpdateR")
-}
-
-func (cx *App) clearPendingKeystrokes() {
-	panic("gpui: unimplemented App.clearPendingKeystrokes")
-}
-
-// IsActionAvailable reports whether an action has a handler in the focused context (M0-app-effects ports it).
-func (cx *App) IsActionAvailable(action Action) bool {
-	panic("gpui: unimplemented App.IsActionAvailable")
-}
-
-// DispatchAction dispatches an action to the focused window or the app (M0-app-effects ports it).
-func (cx *App) DispatchAction(action Action) {
-	panic("gpui: unimplemented App.DispatchAction")
 }
 
 func (cx *AsyncApp) upgradeApp() (*AppCell, bool) {
@@ -1008,16 +861,6 @@ func (s SharedString) IntoAnyElement() AnyElement {
 	panic("gpui: unimplemented SharedString.IntoAnyElement")
 }
 
-// PlatformInfo returns information about the host platform (M0-app-effects ports it).
-func (cx *App) PlatformInfo() PlatformInfo {
-	panic("gpui: unimplemented App.PlatformInfo")
-}
-
-// Global returns the global of type G; it panics if none has been set (M0-app-effects ports it).
-func (cx *App) Global[G any]() *G {
-	panic("gpui: unimplemented App.Global")
-}
-
 // Appearance returns the window's appearance (M0-window-paint ports it).
 func (w *Window) Appearance() WindowAppearance {
 	panic("gpui: unimplemented Window.Appearance")
@@ -1097,40 +940,6 @@ func recordDraw(timing FrameTiming) {}
 
 func recordPresent(timing PresentTiming, frame Option[FrameTiming]) {}
 
-// PathForAuxiliaryExecutable returns the path of the executable with the given name in the application bundle (M0-app-effects ports it).
-func (cx *App) PathForAuxiliaryExecutable(name string) (string, error) {
-	panic("gpui: unimplemented App.PathForAuxiliaryExecutable")
-}
-
-// GlobalMut returns the global of type G for mutation and notifies its observers (M0-app-effects ports it).
-func (cx *App) GlobalMut[G any]() *G {
-	panic("gpui: unimplemented App.GlobalMut")
-}
-
-func (cx *App) flushEffects() {
-	panic("gpui: unimplemented App.flushEffects")
-}
-
-type effect interface {
-	isEffect()
-}
-
-type effectRefreshWindows struct{}
-
-func (effectRefreshWindows) isEffect() {}
-
-// AnyDrag is the type-erased state of an active drag (M0-app-effects ports it).
-type AnyDrag struct{}
-
-// KeystrokeEvent is a keystroke and the action it resolved to (M0-app-effects ports it).
-type KeystrokeEvent struct{}
-
-// HTTPClient is the HTTP client used by the application (D-HTTP, M0-app-effects ports it).
-type HTTPClient interface{}
-
-// NullHTTPClient is an HTTPClient that fails every request (M0-app-effects ports it).
-type NullHTTPClient struct{}
-
 func newWindow(handle AnyWindowHandle, options WindowOptions, cx *App) (*Window, error) {
 	panic("gpui: unimplemented newWindow")
 }
@@ -1162,7 +971,98 @@ func (a ArenaClearNeeded) Clear(cx *App) {
 
 type windowInvalidator struct{}
 
-type focusMap struct{}
+func (w windowInvalidator) invalidateView(entity EntityID, cx *App) bool {
+	panic("gpui: unimplemented windowInvalidator.invalidateView")
+}
+
+func (w windowInvalidator) isDirty() bool {
+	panic("gpui: unimplemented windowInvalidator.isDirty")
+}
+
+func (w windowInvalidator) setDirty(dirty bool) {
+	panic("gpui: unimplemented windowInvalidator.setDirty")
+}
+
+type focusMap struct {
+	mu             sync.RWMutex
+	droppedHandles []FocusID
+}
+
+func (m *focusMap) removeHandle(id FocusID) {
+	panic("gpui: unimplemented focusMap.removeHandle")
+}
+
+func newFocusHandle(handles *focusMap) FocusHandle {
+	panic("gpui: unimplemented newFocusHandle")
+}
+
+// FrameCallback is a callback run before the next frame of a window (M0-window-core ports it).
+type FrameCallback func(window *Window, cx *App)
+
+// WindowHandle returns a handle to the window (M0-window-core ports it).
+func (w *Window) WindowHandle() AnyWindowHandle {
+	panic("gpui: unimplemented Window.WindowHandle")
+}
+
+// Blur removes focus from the window's focused element (M0-window-paint ports it).
+func (w *Window) Blur(cx *App) {
+	panic("gpui: unimplemented Window.Blur")
+}
+
+// DispatchAction dispatches an action to the focused element of the window (M0-window-paint ports it).
+func (w *Window) DispatchAction(action Action, cx *App) {
+	panic("gpui: unimplemented Window.DispatchAction")
+}
+
+// IsActionAvailable reports whether the action has a handler in the window's focus path (M0-window-paint ports it).
+func (w *Window) IsActionAvailable(action Action, cx *App) bool {
+	panic("gpui: unimplemented Window.IsActionAvailable")
+}
+
+// DropImage removes an image from the window's sprite atlas (M0-window-paint ports it).
+func (w *Window) DropImage(data *RenderImage) error {
+	panic("gpui: unimplemented Window.DropImage")
+}
+
+func (w *Window) clearPendingKeystrokes(cx *App) {
+	panic("gpui: unimplemented Window.clearPendingKeystrokes")
+}
+
+// KeyBinding is a keybinding and its associated metadata (M0-keymap ports it).
+type KeyBinding struct{}
+
+// KeyContext is a set of identifiers and key-value pairs that keymap contexts match against (M0-keymap ports it).
+type KeyContext struct{}
+
+// AddBindings adds bindings to the keymap (M0-keymap ports it).
+func (k *Keymap) AddBindings(bindings []KeyBinding) {
+	panic("gpui: unimplemented Keymap.AddBindings")
+}
+
+// Clear removes every binding from the keymap (M0-keymap ports it).
+func (k *Keymap) Clear() {
+	panic("gpui: unimplemented Keymap.Clear")
+}
+
+// AllBindingsForInput returns the bindings that match input, ignoring context (M0-keymap ports it).
+func (k *Keymap) AllBindingsForInput(input []Keystroke) []KeyBinding {
+	panic("gpui: unimplemented Keymap.AllBindingsForInput")
+}
+
+// PromptHandle is a handle to a prompt that the prompt renderer resolves (M0-window-dispatch ports it).
+type PromptHandle struct{}
+
+// RenderablePromptHandle is a prompt rendered as a view (M0-window-dispatch ports it).
+type RenderablePromptHandle struct{}
+
+func (r *inspectorElementRegistry) register[T any, R IntoElement](factory func(window *Window, cx *App) func(id InspectorElementID, state *T, window *Window, cx *App) R) {
+	panic("gpui: unimplemented inspectorElementRegistry.register")
+}
+
+// NewHangDetector creates a detector over the foreground journal (M3-profiler-hang ports it).
+func NewHangDetector(journal ForegroundJournal, threshold time.Duration, frameBudget time.Duration) *HangDetector {
+	panic("gpui: unimplemented NewHangDetector")
+}
 
 func defaultFocusMap() *focusMap {
 	return &focusMap{}
@@ -1227,3 +1127,9 @@ func installForegroundJournal() ForegroundJournal {
 }
 
 func observePower(cx *App) {}
+
+type promptBuilderCustom struct {
+	renderer func(level PromptLevel, message string, detail Option[string], actions []PromptButton, handle PromptHandle, window *Window, cx *App) RenderablePromptHandle
+}
+
+func (promptBuilderCustom) isPromptBuilder() {}

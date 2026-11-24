@@ -9,6 +9,8 @@ import (
 	"log/slog"
 	"maps"
 	"math"
+	"net/http"
+	"net/url"
 	"os"
 	"reflect"
 	"runtime"
@@ -19,6 +21,7 @@ import (
 
 	"github.com/megascan/gpui-go/collections"
 	"github.com/megascan/gpui-go/gpuiutil"
+	"github.com/megascan/gpui-go/internal/jsonschema"
 	"github.com/megascan/gpui-go/scheduler"
 )
 
@@ -2033,4 +2036,1497 @@ func (cx *App) ForegroundExecutor() ForegroundExecutor {
 
 func (cx *App) actionRegistry() *actionRegistry {
 	return cx.actions
+}
+
+// WriteToClipboard writes data to the platform clipboard.
+func (cx *App) WriteToClipboard(item ClipboardItem) {
+	cx.platform.WriteToClipboard(item)
+}
+
+// ReadFromPrimary reads data from the primary selection buffer. Only available on Linux.
+func (cx *App) ReadFromPrimary() (ClipboardItem, bool) {
+	return cx.platform.ReadFromPrimary()
+}
+
+// WriteToPrimary writes data to the primary selection buffer. Only available on Linux.
+func (cx *App) WriteToPrimary(item ClipboardItem) {
+	cx.platform.WriteToPrimary(item)
+}
+
+// ReadFromFindPasteboard reads data from macOS's "Find" pasteboard, used to share the current
+// search string between apps.
+func (cx *App) ReadFromFindPasteboard() (ClipboardItem, bool) {
+	return cx.platform.ReadFromFindPasteboard()
+}
+
+// WriteToFindPasteboard writes data to macOS's "Find" pasteboard, used to share the current
+// search string between apps.
+func (cx *App) WriteToFindPasteboard(item ClipboardItem) {
+	cx.platform.WriteToFindPasteboard(item)
+}
+
+// WriteCredentials writes credentials to the platform keychain.
+func (cx *App) WriteCredentials(url string, username string, password []byte) *Task[struct{}] {
+	return cx.platform.WriteCredentials(url, username, password)
+}
+
+// WriteCredentialsIfNotExists atomically writes credentials unless an item with this URL and
+// username exists. The task yields true if written, or false if the existing item was left
+// unchanged; it fails if Keychain access fails or the platform lacks support.
+func (cx *App) WriteCredentialsIfNotExists(url string, username string, password []byte) *Task[bool] {
+	return cx.platform.WriteCredentialsIfNotExists(url, username, password)
+}
+
+// ReadCredentials reads credentials from the platform keychain.
+func (cx *App) ReadCredentials(url string) *Task[Option[Credentials]] {
+	return cx.platform.ReadCredentials(url)
+}
+
+// DeleteCredentials deletes credentials from the platform keychain.
+func (cx *App) DeleteCredentials(url string) *Task[struct{}] {
+	return cx.platform.DeleteCredentials(url)
+}
+
+// OpenURL directs the platform's default browser to open the given URL.
+func (cx *App) OpenURL(url string) {
+	cx.platform.OpenURL(url)
+}
+
+// RegisterURLScheme registers the given URL scheme (e.g. `zed` for `zed://` urls) to be opened
+// by the current app.
+func (cx *App) RegisterURLScheme(scheme string) *Task[struct{}] {
+	return cx.platform.RegisterURLScheme(scheme)
+}
+
+// SetAppIdentity sets the application's process-wide identity and user-visible name. Call it
+// once, early in startup, before opening windows or posting notifications.
+func (cx *App) SetAppIdentity(identifier string, name string) {
+	cx.platform.SetAppIdentity(identifier, name)
+}
+
+// ShowSystemNotification posts a notification to the operating system's notification center.
+// A notification whose tag matches an earlier one replaces it where the platform supports it.
+func (cx *App) ShowSystemNotification(notification SystemNotification) {
+	cx.platform.ShowSystemNotification(notification)
+}
+
+// DismissSystemNotification removes the delivered or pending notification with this tag,
+// best-effort. Dropping the task does not cancel dismissal.
+func (cx *App) DismissSystemNotification(tag string) *Task[struct{}] {
+	return cx.platform.DismissSystemNotification(tag)
+}
+
+// OnSystemNotificationResponse registers the handler invoked when the user activates a system
+// notification. Subsequent registrations replace the handler.
+func (cx *App) OnSystemNotificationResponse(callback func(response SystemNotificationResponse, cx *App)) {
+	this := cx.this
+	cx.platform.OnSystemNotificationResponse(func(response SystemNotificationResponse) {
+		if app := this.Value(); app != nil {
+			borrow := app.BorrowMut()
+			defer borrow.Release()
+			callback(response, borrow.App)
+		}
+	})
+}
+
+// AppPath returns the full pathname of the current app bundle, or an error if the app is not
+// being run from a bundle.
+func (cx *App) AppPath() (string, error) {
+	return cx.platform.AppPath()
+}
+
+// CompositorName returns the name of the compositor in use on Linux, and an empty string on
+// other platforms.
+func (cx *App) CompositorName() string {
+	return cx.platform.CompositorName()
+}
+
+// PlatformInfo returns the host OS and application target reported by the backend.
+func (cx *App) PlatformInfo() PlatformInfo {
+	return cx.platform.PlatformInfo()
+}
+
+// PathForAuxiliaryExecutable returns the path of the executable with the specified name in the
+// application bundle.
+func (cx *App) PathForAuxiliaryExecutable(name string) (string, error) {
+	return cx.platform.PathForAuxiliaryExecutable(name)
+}
+
+// PromptForPaths displays a platform modal for selecting paths. The selection, or None when
+// cancelled, is relayed through the returned receiver.
+func (cx *App) PromptForPaths(options PathPromptOptions) *scheduler.OneshotReceiver[scheduler.Result[Option[[]string]]] {
+	return cx.platform.PromptForPaths(options)
+}
+
+// PromptForNewPath displays a platform modal for selecting a new path where a file can be
+// saved, starting in directory.
+func (cx *App) PromptForNewPath(directory string, suggestedName Option[string]) *scheduler.OneshotReceiver[scheduler.Result[Option[string]]] {
+	return cx.platform.PromptForNewPath(directory, suggestedName)
+}
+
+// RevealPath reveals the specified path at the platform level, such as in Finder on macOS.
+func (cx *App) RevealPath(path string) {
+	cx.platform.RevealPath(path)
+}
+
+// OpenWithSystem opens the specified path with the system's default application.
+func (cx *App) OpenWithSystem(path string) {
+	cx.platform.OpenWithSystem(path)
+}
+
+// ShouldAutoHideScrollbars reports whether the user has configured scrollbars to auto-hide at
+// the platform level.
+func (cx *App) ShouldAutoHideScrollbars() bool {
+	return cx.platform.ShouldAutoHideScrollbars()
+}
+
+// Restart restarts the application.
+func (cx *App) Restart() {
+	cx.restartObservers.retain(func(observer *handler) bool { return (*observer)(cx) })
+	arguments := cx.restartArguments
+	cx.restartArguments = nil
+	cx.platform.Restart(cx.restartPath.Take(), arguments)
+}
+
+// SetRestartPath sets the path to use when restarting the application.
+func (cx *App) SetRestartPath(path string) {
+	cx.restartPath = Some(path)
+}
+
+// HTTPClient returns the HTTP client for the application.
+func (cx *App) HTTPClient() HTTPClient {
+	return cx.httpClient
+}
+
+// SetHTTPClient sets the HTTP client for the application.
+func (cx *App) SetHTTPClient(newClient HTTPClient) {
+	cx.httpClient = newClient
+}
+
+// SetQuitMode configures when the application should automatically quit. By default,
+// QuitModeDefault is used.
+func (cx *App) SetQuitMode(mode QuitMode) {
+	cx.quitMode = mode
+}
+
+// SetActivationPolicy sets whether the application participates in the system's foreground UI.
+// It only has an effect on macOS.
+func (cx *App) SetActivationPolicy(policy ActivationPolicy) {
+	cx.platform.SetActivationPolicy(policy)
+}
+
+// SvgRenderer returns the SVG renderer used by the application.
+func (cx *App) SvgRenderer() SvgRenderer {
+	return cx.svgRenderer
+}
+
+func (cx *App) pushEffect(e effect) {
+	switch e := e.(type) {
+	case effectNotify:
+		if _, ok := cx.pendingNotifications[e.emitter]; ok {
+			return
+		}
+		cx.pendingNotifications[e.emitter] = struct{}{}
+	case effectNotifyGlobalObservers:
+		if _, ok := cx.pendingGlobalNotifications[e.globalType]; ok {
+			return
+		}
+		cx.pendingGlobalNotifications[e.globalType] = struct{}{}
+	}
+	cx.pendingEffects = append(cx.pendingEffects, e)
+}
+
+func (cx *App) popEffect() (effect, bool) {
+	if len(cx.pendingEffects) == 0 {
+		return nil, false
+	}
+	e := cx.pendingEffects[0]
+	cx.pendingEffects[0] = nil
+	cx.pendingEffects = cx.pendingEffects[1:]
+	return e, true
+}
+
+func (cx *App) flushEffects() {
+	for {
+		cx.releaseDroppedEntities()
+		cx.releaseDroppedFocusHandles()
+		if e, ok := cx.popEffect(); ok {
+			switch e := e.(type) {
+			case effectNotify:
+				cx.applyNotifyEffect(e.emitter)
+			case effectEmit:
+				cx.applyEmitEffect(e.emitter, e.eventType, e.event)
+			case effectRefreshWindows:
+				cx.applyRefreshEffect()
+			case effectNotifyGlobalObservers:
+				cx.applyNotifyGlobalObserversEffect(e.globalType)
+			case effectDefer:
+				cx.applyDeferEffect(e.callback)
+			case effectEntityCreated:
+				cx.applyEntityCreatedEffect(e.entity, e.tid, e.window)
+			}
+		} else {
+			if cx.mode.test {
+				var dirty []AnyWindowHandle
+				for _, window := range cx.windows.all() {
+					if window != nil && window.invalidator.isDirty() {
+						dirty = append(dirty, window.handle)
+					}
+				}
+				for _, window := range dirty {
+					_, err := cx.updateWindowID(window.id, func(_ AnyView, window *Window, cx *App) struct{} {
+						window.Draw(cx).Clear(cx)
+						return struct{}{}
+					})
+					if err != nil {
+						panic(fmt.Sprintf("called `Result::unwrap()` on an `Err` value: %v", err))
+					}
+				}
+			}
+
+			if len(cx.pendingEffects) == 0 {
+				for _, window := range cx.windows.all() {
+					if window == nil {
+						continue
+					}
+					if window.invalidator.isDirty() || *window.needsPresent || len(*window.nextFrameCallbacks) != 0 {
+						window.platformWindow.ScheduleFrame()
+					}
+				}
+				break
+			}
+		}
+	}
+}
+
+type entityDropper interface {
+	Drop(cx *App)
+}
+
+func (cx *App) releaseDroppedEntities() {
+	for {
+		dropped := cx.entities.takeDropped()
+		if len(dropped) == 0 {
+			break
+		}
+
+		for _, d := range dropped {
+			cx.observers.remove(d.entityID)
+			cx.eventListeners.remove(d.entityID)
+			delete(cx.windowInvalidatorsByEntity, d.entityID)
+			delete(cx.currentWindowByEntity, d.entityID)
+			for releaseCallback := range cx.releaseListeners.remove(d.entityID) {
+				releaseCallback(d.entity, cx)
+			}
+			if dropper, ok := d.entity.(entityDropper); ok {
+				dropper.Drop(cx)
+			}
+		}
+	}
+}
+
+func (cx *App) releaseDroppedFocusHandles() {
+	focusHandles := cx.focusHandles
+	focusHandles.mu.Lock()
+	if len(focusHandles.droppedHandles) == 0 {
+		focusHandles.mu.Unlock()
+		return
+	}
+
+	var windows []AnyWindowHandle
+	for _, window := range cx.windows.all() {
+		if window == nil {
+			continue
+		}
+		focus, ok := window.focus.Get()
+		if ok && slices.Contains(focusHandles.droppedHandles, focus) {
+			windows = append(windows, window.handle)
+		}
+	}
+	for _, handleID := range focusHandles.droppedHandles {
+		focusHandles.removeHandle(handleID)
+	}
+	focusHandles.droppedHandles = focusHandles.droppedHandles[:0]
+	focusHandles.mu.Unlock()
+
+	for _, windowHandle := range windows {
+		_ = windowHandle.Update(cx, func(_ AnyView, window *Window, cx *App) { window.Blur(cx) })
+	}
+}
+
+func (cx *App) applyNotifyEffect(emitter EntityID) {
+	delete(cx.pendingNotifications, emitter)
+	cx.observers.retain(emitter, func(h *handler) bool { return (*h)(cx) })
+}
+
+func (cx *App) applyEmitEffect(emitter EntityID, eventType reflect.Type, event any) {
+	cx.eventListeners.retain(emitter, func(l *eventListener) bool {
+		if l.eventType == eventType {
+			return l.listener(event, cx)
+		}
+		return true
+	})
+}
+
+func (cx *App) applyRefreshEffect() {
+	for _, window := range cx.windows.all() {
+		if window != nil {
+			window.refreshing = true
+			window.invalidator.setDirty(true)
+		}
+	}
+}
+
+func (cx *App) applyNotifyGlobalObserversEffect(typeID reflect.Type) {
+	delete(cx.pendingGlobalNotifications, typeID)
+	cx.globalObservers.retain(typeID, func(observer *handler) bool { return (*observer)(cx) })
+}
+
+func (cx *App) applyDeferEffect(callback func(cx *App)) {
+	callback(cx)
+}
+
+func (cx *App) applyEntityCreatedEffect(entity AnyEntity, tid reflect.Type, window Option[WindowID]) {
+	defer entity.Release()
+	if id, ok := window.Get(); ok {
+		cx.currentWindowByEntity[entity.EntityID()] = id
+	}
+
+	cx.newEntityObservers.retain(tid, func(observer *newEntityListener) bool {
+		if id, ok := window.Get(); ok {
+			entity := entity.Clone()
+			_, err := cx.updateWindowID(id, func(_ AnyView, window *Window, cx *App) struct{} {
+				(*observer)(entity, window, cx)
+				return struct{}{}
+			})
+			if err != nil {
+				entity.Release()
+				panic(fmt.Sprintf("All windows should be off the stack when flushing effects: %v", err))
+			}
+		} else {
+			(*observer)(entity.Clone(), nil, cx)
+		}
+		return true
+	})
+}
+
+// WithWindow runs f against the entity's current window: the most recently rendered window
+// that referenced the entity, or its creation window if it has yet to be rendered. It reports
+// false if the entity has no current window, that window has been closed, or it is already on
+// the update stack.
+func (cx *App) WithWindow[R any](entityID EntityID, f func(window *Window, cx *App) R) (R, bool) {
+	windowID, ok := cx.currentWindowByEntity[entityID]
+	if !ok {
+		var zero R
+		return zero, false
+	}
+	result, err := cx.updateWindowID(windowID, func(_ AnyView, window *Window, cx *App) R { return f(window, cx) })
+	return result, err == nil
+}
+
+func (cx *App) ensureWindow(entityID EntityID, window WindowID) {
+	if _, ok := cx.currentWindowByEntity[entityID]; !ok {
+		cx.currentWindowByEntity[entityID] = window
+	}
+}
+
+func (cx *App) updateWindowID[T any](id WindowID, update func(root AnyView, window *Window, cx *App) T) (T, error) {
+	var result T
+	found := false
+	cx.updateWindowErased(id, func(root AnyView, window *Window, cx *App, ok bool) {
+		if ok {
+			result = update(root, window, cx)
+			found = true
+		} else {
+			var zero T
+			result = zero
+			found = false
+		}
+	})
+	if !found {
+		return result, errors.New("window not found")
+	}
+	return result, nil
+}
+
+// BackgroundExecutor returns the executor used to spawn futures on background threads.
+func (cx *App) BackgroundExecutor() BackgroundExecutor {
+	return cx.bgExecutor
+}
+
+// IsTest reports whether this app runs on the deterministic test scheduler.
+func (cx *App) IsTest() bool {
+	return cx.bgExecutor.IsTest()
+}
+
+// ForegroundJournal returns the foreground work journal for this app's foreground thread.
+// Apps constructed on the same thread share the stream.
+func (cx *App) ForegroundJournal() ForegroundJournal {
+	return cx.foregroundJournal
+}
+
+// StartHangMonitor starts detecting foreground hangs on a dedicated goroutine, passing each
+// poll's incidents to onPoll. It fails if the monitor was already started or can't be spawned.
+func (cx *App) StartHangMonitor(config HangMonitorConfig, onPoll func(poll HangMonitorPoll)) error {
+	if cx.hangMonitor != nil {
+		if gpuiutil.DebugAssertions {
+			panic("the hang monitor was started twice")
+		}
+		return HangMonitorErrorAlreadyStarted{}
+	}
+	detector := NewHangDetector(cx.ForegroundJournal(), config.Threshold, config.FrameBudget)
+	monitor, err := spawnHangMonitor(detector, config.Interval, onPoll)
+	if err != nil {
+		return &HangMonitorErrorSpawn{Err: err}
+	}
+	cx.hangMonitor = monitor
+	return nil
+}
+
+// Spawn spawns the future returned by f on the main thread. f is invoked with an AsyncApp,
+// which allows the application state to be accessed across await points.
+func (cx *App) Spawn[R any](f func(cx *AsyncApp) (R, error)) *Task[R] {
+	acx := cx.prepareSpawn()
+	return cx.foregroundExecutor.Spawn(func(s *scheduler.Scope) (R, error) {
+		acx.Scope = s
+		return f(acx)
+	})
+}
+
+// SpawnWithPriority spawns the future returned by f on the main thread with the given
+// priority.
+func (cx *App) SpawnWithPriority[R any](priority Priority, f func(cx *AsyncApp) (R, error)) *Task[R] {
+	if cx.quitting {
+		gpuiutil.DebugPanic("Can't spawn on main thread after on_app_quit")
+	}
+	acx := cx.ToAsync()
+	return cx.foregroundExecutor.SpawnWithPriority(priority, func(s *scheduler.Scope) (R, error) {
+		acx.Scope = s
+		return f(acx)
+	})
+}
+
+// Defer schedules f to be run at the end of the current effect cycle, allowing entities that
+// are currently on the stack to be returned to the app.
+func (cx *App) Defer(f func(cx *App)) {
+	cx.pushEffect(effectDefer{callback: f})
+}
+
+// AssetSource returns the application's asset source, provided when constructing the App.
+func (cx *App) AssetSource() AssetSource {
+	return cx.assetSource
+}
+
+// TextSystem returns the text system.
+func (cx *App) TextSystem() *TextSystem {
+	return cx.textSystem
+}
+
+// OnMissingGlyphs invokes callback with grapheme clusters that exhausted font fallback.
+// Registering a callback replaces the previous one and enables missing-glyph detection; the
+// callback runs on the foreground executor. Unsubscribing disables detection until another
+// callback is registered.
+func (cx *App) OnMissingGlyphs(callback func(missingGlyphs []MissingGlyph, cx *App)) Subscription {
+	registration := cx.missingGlyphCallback.replace(callback)
+
+	if receiver := cx.textSystem.takeMissingGlyphReceiver(); receiver != nil {
+		callback := cx.missingGlyphCallback
+		cx.Spawn(func(acx *AsyncApp) (struct{}, error) {
+			defer receiver.Close()
+			for {
+				missingGlyphs, err := receiver.Recv(acx)
+				if err != nil {
+					break
+				}
+				acx.Update(func(cx *App) { callback.invoke(missingGlyphs, cx) })
+			}
+			return struct{}{}, nil
+		}).Detach()
+	}
+	cx.textSystem.enableMissingGlyphReporting()
+
+	slot := cx.missingGlyphCallback
+	textSystem := cx.textSystem
+	return NewSubscription(func() {
+		if slot.remove(registration) {
+			textSystem.disableMissingGlyphReporting()
+		}
+	})
+}
+
+// HasGlobal reports whether a global of the given type has been assigned.
+func (cx *App) HasGlobal[G any]() bool {
+	_, ok := cx.globalsByType[reflect.TypeFor[G]()]
+	return ok
+}
+
+// Global returns the global of the given type. It panics if a global for that type has not
+// been assigned.
+func (cx *App) Global[G any]() *G {
+	global, ok := cx.globalsByType[reflect.TypeFor[G]()]
+	if !ok {
+		panic(fmt.Sprintf("no state of type %s exists", reflect.TypeFor[G]()))
+	}
+	return global.(*G)
+}
+
+// TryGlobal returns the global of the given type if a value has been assigned.
+func (cx *App) TryGlobal[G any]() (*G, bool) {
+	global, ok := cx.globalsByType[reflect.TypeFor[G]()]
+	if !ok {
+		return nil, false
+	}
+	return global.(*G), true
+}
+
+// GlobalMut returns the global of the given type for mutation and notifies its observers. It
+// panics if a global for that type has not been assigned.
+func (cx *App) GlobalMut[G any]() *G {
+	globalType := reflect.TypeFor[G]()
+	cx.pushEffect(effectNotifyGlobalObservers{globalType: globalType})
+	global, ok := cx.globalsByType[globalType]
+	if !ok {
+		panic(fmt.Sprintf("no state of type %s exists", globalType))
+	}
+	return global.(*G)
+}
+
+// DefaultGlobal returns the global of the given type for mutation, assigning its zero value if
+// a global of this type has not yet been assigned.
+func (cx *App) DefaultGlobal[G any]() *G {
+	globalType := reflect.TypeFor[G]()
+	cx.pushEffect(effectNotifyGlobalObservers{globalType: globalType})
+	global, ok := cx.globalsByType[globalType]
+	if !ok {
+		global = new(G)
+		cx.globalsByType[globalType] = global
+	}
+	return global.(*G)
+}
+
+// SetGlobal sets the value of the global of the given type.
+func (cx *App) SetGlobal[G any](global G) {
+	globalType := reflect.TypeFor[G]()
+	cx.pushEffect(effectNotifyGlobalObservers{globalType: globalType})
+	cx.globalsByType[globalType] = &global
+}
+
+// ClearGlobals clears all stored globals. It does not notify global observers.
+func (cx *App) ClearGlobals() {
+	clear(cx.globalsByType)
+}
+
+// RemoveGlobal removes the global of the given type from the app context and returns it.
+func (cx *App) RemoveGlobal[G any]() G {
+	globalType := reflect.TypeFor[G]()
+	cx.pushEffect(effectNotifyGlobalObservers{globalType: globalType})
+	global, ok := cx.globalsByType[globalType]
+	if !ok {
+		panic(fmt.Sprintf("no global added for %s", globalType))
+	}
+	delete(cx.globalsByType, globalType)
+	return *global.(*G)
+}
+
+// ObserveGlobal registers a callback to be invoked when a global of the given type is updated.
+func (cx *App) ObserveGlobal[G any](f func(cx *App)) Subscription {
+	subscription, activate := cx.globalObservers.insertPending(reflect.TypeFor[G](), func(cx *App) bool {
+		f(cx)
+		return true
+	})
+	cx.Defer(func(*App) { activate() })
+	return subscription
+}
+
+func (cx *App) leaseGlobal[G any]() *globalLease[G] {
+	globalType := reflect.TypeFor[G]()
+	global, ok := cx.globalsByType[globalType]
+	if !ok {
+		panic(fmt.Sprintf("called `Result::unwrap()` on an `Err` value: no global registered of type %s", globalType))
+	}
+	delete(cx.globalsByType, globalType)
+	return &globalLease[G]{global: global}
+}
+
+func (cx *App) endGlobalLease[G any](lease *globalLease[G]) {
+	globalType := reflect.TypeFor[G]()
+	cx.pushEffect(effectNotifyGlobalObservers{globalType: globalType})
+	cx.globalsByType[globalType] = lease.global
+}
+
+func (cx *App) newEntityObserver(key reflect.Type, value newEntityListener) Subscription {
+	return cx.newEntityObservers.insert(key, value)
+}
+
+// ObserveNew arranges for onNew to be invoked whenever an entity of type T is created. window
+// is nil when the entity was created outside a window.
+func (cx *App) ObserveNew[T any](onNew func(state *T, window *Window, cx *Context[T])) Subscription {
+	return cx.newEntityObserver(reflect.TypeFor[T](), func(anyEntity AnyEntity, window *Window, cx *App) {
+		defer anyEntity.Release()
+		entity, ok := anyEntity.Downcast[T]()
+		if !ok {
+			panic("called `Result::unwrap()` on an `Err` value")
+		}
+		entity.Update(cx, func(state *T, cx *Context[T]) {
+			onNew(state, window, cx)
+		})
+	})
+}
+
+// ObserveRelease observes the release of an entity. The callback is invoked after the entity
+// has no more strong references but before it has been dropped.
+func (cx *App) ObserveRelease[T any](handle Entity[T], onRelease func(state *T, cx *App)) Subscription {
+	return cx.releaseListeners.insert(handle.EntityID(), func(entity any, cx *App) {
+		state, ok := entity.(*T)
+		if !ok {
+			panic("invalid entity type")
+		}
+		onRelease(state, cx)
+	})
+}
+
+// ObserveReleaseIn observes the release of an entity, invoking onRelease with the given
+// window. The callback is invoked after the entity has no more strong references but before it
+// has been dropped.
+func (cx *App) ObserveReleaseIn[T any](handle Entity[T], window *Window, onRelease func(state *T, window *Window, cx *App)) Subscription {
+	windowHandle := window.handle
+	return cx.ObserveRelease(handle, func(entity *T, cx *App) {
+		_ = windowHandle.Update(cx, func(_ AnyView, window *Window, cx *App) { onRelease(entity, window, cx) })
+	})
+}
+
+// ObserveKeystrokes registers a callback to be invoked after a keystroke is resolved in any
+// window, including the action that handled it, if any.
+func (cx *App) ObserveKeystrokes(f func(event *KeystrokeEvent, window *Window, cx *App)) Subscription {
+	return cx.keystrokeObservers.insert(func(event *KeystrokeEvent, window *Window, cx *App) bool {
+		f(event, window, cx)
+		return true
+	})
+}
+
+// InterceptKeystrokes registers a callback to be invoked when a keystroke is received by the
+// application in any window, before all other action and event mechanisms have resolved.
+func (cx *App) InterceptKeystrokes(f func(event *KeystrokeEvent, window *Window, cx *App)) Subscription {
+	return cx.keystrokeInterceptors.insert(func(event *KeystrokeEvent, window *Window, cx *App) bool {
+		f(event, window, cx)
+		return true
+	})
+}
+
+// BindKeys registers key bindings.
+func (cx *App) BindKeys(bindings []KeyBinding) {
+	cx.keymap.AddBindings(bindings)
+	cx.pendingEffects = append(cx.pendingEffects, effectRefreshWindows{})
+}
+
+// ClearKeyBindings clears all key bindings in the app.
+func (cx *App) ClearKeyBindings() {
+	cx.keymap.Clear()
+	cx.pendingEffects = append(cx.pendingEffects, effectRefreshWindows{})
+}
+
+// KeyBindings returns the app's keymap.
+func (cx *App) KeyBindings() *Keymap {
+	return cx.keymap
+}
+
+// OnAction registers a global handler for actions of type A invoked via the keyboard. These
+// handlers run at the end of the bubble phase for actions.
+func (cx *App) OnAction[A Action](listener func(action A, cx *App)) *App {
+	actionType := reflect.TypeFor[A]()
+	cx.globalActionListeners[actionType] = append(cx.globalActionListeners[actionType], func(action any, phase DispatchPhase, cx *App) {
+		if phase == DispatchPhaseBubble {
+			listener(action.(A), cx)
+		}
+	})
+	return cx
+}
+
+// StopPropagation stops dispatching the current event to handlers with a lower z-index (mouse)
+// or higher in the tree (keyboard).
+func (cx *App) StopPropagation() {
+	cx.propagateEvent = false
+}
+
+// Propagate lets the current action continue to handlers higher in the element tree.
+func (cx *App) Propagate() {
+	cx.propagateEvent = true
+}
+
+// BuildAction builds an action from some arbitrary data, typically a keymap entry.
+func (cx *App) BuildAction(name string, data Option[jsontext.Value]) (Action, error) {
+	return cx.actions.buildAction(name, data)
+}
+
+// AllActionNames returns the names of all registered actions.
+func (cx *App) AllActionNames() []string {
+	return cx.actions.allActionNames()
+}
+
+// AllBindingsForInput returns key bindings that match the given input, without checking
+// context, in the order they were added.
+func (cx *App) AllBindingsForInput(input []Keystroke) []KeyBinding {
+	return cx.keymap.AllBindingsForInput(input)
+}
+
+// ActionSchema is a registered action's name and its JSON schema; Schema is nil for actions
+// without one.
+type ActionSchema struct {
+	Name   string
+	Schema *jsonschema.Schema
+}
+
+// ActionSchemas returns all non-internal registered actions with their schemas.
+func (cx *App) ActionSchemas() []ActionSchema {
+	schemas := cx.actions.actionSchemas()
+	out := make([]ActionSchema, 0, len(schemas))
+	for _, s := range schemas {
+		out = append(out, ActionSchema{Name: s.name, Schema: s.schema})
+	}
+	return out
+}
+
+// ActionSchemaByName returns the schema of the named action. It reports false if the action
+// is not found; the schema is nil if the action has none.
+func (cx *App) ActionSchemaByName(name string) (*jsonschema.Schema, bool) {
+	return cx.actions.actionSchemaByName(name)
+}
+
+// DeprecatedActionsToPreferredActions returns a map from a deprecated action name to the
+// canonical name.
+func (cx *App) DeprecatedActionsToPreferredActions() map[string]string {
+	return cx.actions.deprecatedAliasesMap()
+}
+
+// ActionDeprecationMessages returns a map from an action name to its deprecation message.
+func (cx *App) ActionDeprecationMessages() map[string]string {
+	return cx.actions.deprecationMessagesMap()
+}
+
+// ActionDocumentation returns a map from an action name to its documentation.
+func (cx *App) ActionDocumentation() map[string]string {
+	return cx.actions.documentationMap()
+}
+
+// OnAppQuit registers a callback to be invoked when the application is about to quit. It is
+// not possible to cancel the quit event at this point.
+func (cx *App) OnAppQuit(onQuit func(cx *App) scheduler.Future[struct{}]) Subscription {
+	return cx.quitObservers.insert(func(cx *App) scheduler.Future[struct{}] {
+		return onQuit(cx)
+	})
+}
+
+// OnAppRestart registers a callback to be invoked when the application is about to restart,
+// before any OnAppQuit callbacks.
+func (cx *App) OnAppRestart(onRestart func(cx *App)) Subscription {
+	return cx.restartObservers.insert(func(cx *App) bool {
+		onRestart(cx)
+		return true
+	})
+}
+
+// OnWindowClosed registers a callback to be invoked when a window is closed. The window is no
+// longer accessible at the point this callback is invoked.
+func (cx *App) OnWindowClosed(onClosed func(cx *App, id WindowID)) Subscription {
+	return cx.windowClosedObservers.insert(onClosed)
+}
+
+func (cx *App) clearPendingKeystrokes() {
+	for _, window := range cx.Windows() {
+		_ = window.Update(cx, func(_ AnyView, window *Window, cx *App) {
+			window.clearPendingKeystrokes(cx)
+		})
+	}
+}
+
+// IsActionAvailable reports whether the given action is bound in the current context, as
+// defined by the app's current focus, the bindings in the element tree, and any global action
+// listeners.
+func (cx *App) IsActionAvailable(action Action) bool {
+	actionAvailable := false
+	if window, ok := cx.ActiveWindow(); ok {
+		windowActionAvailable, err := AppContextUpdateWindow(cx, window, func(_ AnyView, window *Window, cx *App) bool {
+			return window.IsActionAvailable(action, cx)
+		})
+		if err == nil {
+			actionAvailable = windowActionAvailable
+		}
+	}
+
+	if actionAvailable {
+		return true
+	}
+	_, ok := cx.globalActionListeners[reflect.TypeOf(action)]
+	return ok
+}
+
+// SetMenus sets the menu bar for this application, replacing any existing menu bar.
+func (cx *App) SetMenus(menus []Menu) {
+	cx.platform.SetMenus(menus, cx.keymap)
+}
+
+// GetMenus returns the menu bar for this application.
+func (cx *App) GetMenus() ([]OwnedMenu, bool) {
+	return cx.platform.GetMenus()
+}
+
+// SetDockMenu sets the right click menu for the app icon in the dock.
+func (cx *App) SetDockMenu(menus []MenuItem) {
+	cx.platform.SetDockMenu(menus, cx.keymap)
+}
+
+// PerformDockMenuAction performs the action associated with the given dock menu item, only
+// used on Windows for now.
+func (cx *App) PerformDockMenuAction(action int) {
+	cx.platform.PerformDockMenuAction(action)
+}
+
+// AddRecentDocument adds the given path to the bottom of the list of recent paths for the
+// application, moving it there if it is already in the list.
+func (cx *App) AddRecentDocument(path string) {
+	cx.platform.AddRecentDocument(path)
+}
+
+// UpdateJumpList updates the jump list with the updated list of recent paths for the
+// application, only used on Windows for now. It also sets the dock menu on Windows.
+func (cx *App) UpdateJumpList(menus []MenuItem, entries [][]string) *Task[[][]string] {
+	return cx.platform.UpdateJumpList(menus, entries)
+}
+
+// DispatchAction dispatches an action to the currently active window or global action
+// handler.
+func (cx *App) DispatchAction(action Action) {
+	if activeWindow, ok := cx.ActiveWindow(); ok {
+		gpuiutil.LogErr(activeWindow.Update(cx, func(_ AnyView, window *Window, cx *App) {
+			window.DispatchAction(action.BoxedClone(), cx)
+		}))
+	} else {
+		cx.dispatchGlobalAction(action)
+	}
+}
+
+func (cx *App) dispatchGlobalAction(action Action) {
+	cx.propagateEvent = true
+	actionType := reflect.TypeOf(action)
+
+	if globalListeners, ok := cx.globalActionListeners[actionType]; ok {
+		delete(cx.globalActionListeners, actionType)
+		for _, listener := range globalListeners {
+			listener(action, DispatchPhaseCapture, cx)
+			if !cx.propagateEvent {
+				break
+			}
+		}
+
+		globalListeners = append(globalListeners, cx.globalActionListeners[actionType]...)
+		delete(cx.globalActionListeners, actionType)
+		cx.globalActionListeners[actionType] = globalListeners
+	}
+
+	if cx.propagateEvent {
+		if globalListeners, ok := cx.globalActionListeners[actionType]; ok {
+			delete(cx.globalActionListeners, actionType)
+			for i := len(globalListeners) - 1; i >= 0; i-- {
+				globalListeners[i](action, DispatchPhaseBubble, cx)
+				if !cx.propagateEvent {
+					break
+				}
+			}
+
+			globalListeners = append(globalListeners, cx.globalActionListeners[actionType]...)
+			delete(cx.globalActionListeners, actionType)
+			cx.globalActionListeners[actionType] = globalListeners
+		}
+	}
+}
+
+// HasActiveDrag reports whether something is currently being dragged.
+func (cx *App) HasActiveDrag() bool {
+	return cx.activeDrag.IsSome()
+}
+
+// ActiveDragCursorStyle returns the cursor style of the currently active drag operation.
+func (cx *App) ActiveDragCursorStyle() (CursorStyle, bool) {
+	if drag := cx.activeDrag.AsMut(); drag != nil {
+		return drag.CursorStyle.Get()
+	}
+	var zero CursorStyle
+	return zero, false
+}
+
+// StopActiveDrag stops the active drag and clears any related effects.
+func (cx *App) StopActiveDrag(window *Window) bool {
+	if cx.activeDrag.IsSome() {
+		cx.activeDrag = None[AnyDrag]()
+		if drag, ok := cx.platformOwnedDrag.Get(); ok && drag.sourceWindow == window.WindowHandle().WindowID() {
+			if _, restored := drag.state.(platformOwnedDragStateRestoredInSourceWindow); restored {
+				cx.platformOwnedDrag = None[platformOwnedDrag]()
+			}
+		}
+		window.Refresh()
+		return true
+	}
+	return false
+}
+
+func (cx *App) handActiveDragToPlatform(sourceWindow WindowID) bool {
+	drag, ok := cx.activeDrag.Take().Get()
+	if !ok {
+		return false
+	}
+	cx.platformOwnedDrag = Some(platformOwnedDrag{
+		sourceWindow: sourceWindow,
+		state:        platformOwnedDragStateSuspended{drag: drag},
+	})
+	return true
+}
+
+func (cx *App) restorePlatformDrag(sourceWindow WindowID) bool {
+	platformDrag := cx.platformOwnedDrag.AsMut()
+	if platformDrag == nil || platformDrag.sourceWindow != sourceWindow {
+		return false
+	}
+	state := platformDrag.state
+	platformDrag.state = platformOwnedDragStateRestoredInSourceWindow{}
+	suspended, ok := state.(platformOwnedDragStateSuspended)
+	if !ok {
+		return false
+	}
+	cx.activeDrag = Some(suspended.drag)
+	return true
+}
+
+func (cx *App) handRestoredDragToPlatform(sourceWindow WindowID) bool {
+	platformDrag := cx.platformOwnedDrag.AsMut()
+	if platformDrag == nil || platformDrag.sourceWindow != sourceWindow {
+		return false
+	}
+	if _, restored := platformDrag.state.(platformOwnedDragStateRestoredInSourceWindow); !restored {
+		return false
+	}
+	drag, ok := cx.activeDrag.Take().Get()
+	if !ok {
+		return false
+	}
+	platformDrag.state = platformOwnedDragStateSuspended{drag: drag}
+	return true
+}
+
+func (cx *App) endPlatformDrag(sourceWindow WindowID) bool {
+	drag, ok := cx.platformOwnedDrag.Get()
+	if !ok || drag.sourceWindow != sourceWindow {
+		return false
+	}
+	cx.platformOwnedDrag = None[platformOwnedDrag]()
+	cx.activeDrag = None[AnyDrag]()
+	return true
+}
+
+// SetActiveDragCursorStyle sets the cursor style for the currently active drag operation.
+func (cx *App) SetActiveDragCursorStyle(cursorStyle CursorStyle, window *Window) bool {
+	if drag := cx.activeDrag.AsMut(); drag != nil {
+		drag.CursorStyle = Some(cursorStyle)
+		window.Refresh()
+		return true
+	}
+	return false
+}
+
+// SetPromptBuilder sets the prompt renderer for GPUI, replacing the default or platform
+// specific prompts with this custom implementation.
+func (cx *App) SetPromptBuilder(renderer func(level PromptLevel, message string, detail Option[string], actions []PromptButton, handle PromptHandle, window *Window, cx *App) RenderablePromptHandle) {
+	cx.promptBuilder = Some[promptBuilder](promptBuilderCustom{renderer: renderer})
+}
+
+// ResetPromptBuilder resets the prompt builder to the default implementation.
+func (cx *App) ResetPromptBuilder() {
+	cx.promptBuilder = Some[promptBuilder](promptBuilderDefault{})
+}
+
+// FocusHandle obtains a new FocusHandle, which allows you to track and manipulate the keyboard
+// focus for elements rendered within a window.
+func (cx *App) FocusHandle() FocusHandle {
+	return newFocusHandle(cx.focusHandles)
+}
+
+// Notify tells GPUI that an entity has changed and observers of it should be notified.
+func (cx *App) Notify(entityID EntityID) {
+	windowInvalidators := cx.windowInvalidatorsByEntity[entityID]
+	if windowInvalidators == nil {
+		windowInvalidators = map[WindowID]windowInvalidator{}
+	}
+	cx.windowInvalidatorsByEntity[entityID] = map[WindowID]windowInvalidator{}
+
+	windowIDs := slices.Sorted(maps.Keys(windowInvalidators))
+	var liveInvalidators []windowInvalidator
+	for _, windowID := range windowIDs {
+		set, ok := cx.trackedEntities[windowID]
+		if !ok {
+			continue
+		}
+		if _, ok := set[entityID]; ok {
+			liveInvalidators = append(liveInvalidators, windowInvalidators[windowID])
+		}
+	}
+
+	if len(liveInvalidators) == 0 {
+		if _, ok := cx.pendingNotifications[entityID]; !ok {
+			cx.pendingNotifications[entityID] = struct{}{}
+			cx.pendingEffects = append(cx.pendingEffects, effectNotify{emitter: entityID})
+		}
+	} else {
+		for _, invalidator := range liveInvalidators {
+			invalidator.invalidateView(entityID, cx)
+		}
+	}
+
+	cx.windowInvalidatorsByEntity[entityID] = windowInvalidators
+}
+
+// GetName returns the name for this App.
+func (cx *App) GetName() (string, bool) {
+	return cx.name.Get()
+}
+
+// CanSelectMixedFilesAndDirs reports whether the platform file picker supports selecting a mix
+// of files and directories.
+func (cx *App) CanSelectMixedFilesAndDirs() bool {
+	return cx.platform.CanSelectMixedFilesAndDirs()
+}
+
+// DropImage removes an image from the sprite atlas on all windows. Pass the window being
+// updated as currentWindow, since it is not in the App's window map during the update; nil
+// otherwise.
+func (cx *App) DropImage(image *RenderImage, currentWindow *Window) {
+	for _, window := range cx.windows.all() {
+		if window != nil {
+			_ = window.DropImage(image)
+		}
+	}
+
+	if currentWindow != nil {
+		_ = currentWindow.DropImage(image)
+	}
+}
+
+// SetInspectorRenderer sets the renderer for the inspector.
+func (cx *App) SetInspectorRenderer(f InspectorRenderer) {
+	cx.inspectorRenderer = Some(f)
+}
+
+// RegisterInspectorElement registers a renderer specific to an inspector state of type T.
+func (cx *App) RegisterInspectorElement[T any, R IntoElement](factory func(window *Window, cx *App) func(id InspectorElementID, state *T, window *Window, cx *App) R) {
+	cx.inspectorElementRegistry.register(factory)
+}
+
+// InitColors initializes gpui's default colors for the application, accessible through
+// DefaultColors.
+func (cx *App) InitColors() {
+	colors := ColorsLight()
+	cx.SetGlobal(GlobalColors{Colors: &colors})
+}
+
+func (cx *App) updateWindowErased(windowID WindowID, update func(root AnyView, window *Window, cx *App, ok bool)) {
+	cx.update(func(cx *App) {
+		window, ok := cx.windows.get(windowID)
+		if !ok || window == nil {
+			update(AnyView{}, nil, nil, false)
+			return
+		}
+		cx.windows.set(windowID, nil)
+
+		rootView := window.root.Unwrap()
+
+		cx.windowUpdateStack = append(cx.windowUpdateStack, windowUpdateEntry{
+			windowID:  window.handle.id,
+			bounds:    window.lastWindowBounds,
+			displayID: window.displayID,
+		})
+		update(rootView, window, cx, true)
+		if !updateWindowTrail(windowID, window, cx) {
+			update(AnyView{}, nil, nil, false)
+		}
+	})
+}
+
+func updateWindowTrail(windowID WindowID, window *Window, cx *App) bool {
+	cx.windowUpdateStack = cx.windowUpdateStack[:len(cx.windowUpdateStack)-1]
+
+	if window.removed {
+		cx.endPlatformDrag(windowID)
+		delete(cx.windowHandles, windowID)
+		cx.windows.remove(windowID)
+		if tracked, ok := cx.trackedEntities[windowID]; ok {
+			delete(cx.trackedEntities, windowID)
+			for entityID := range tracked {
+				if windows, ok := cx.windowInvalidatorsByEntity[entityID]; ok {
+					delete(windows, windowID)
+				}
+				if current, ok := cx.currentWindowByEntity[entityID]; ok && current == windowID {
+					delete(cx.currentWindowByEntity, entityID)
+				}
+			}
+		}
+
+		cx.windowClosedObservers.retain(func(callback *windowClosedHandler) bool {
+			(*callback)(cx, windowID)
+			return true
+		})
+
+		var quitOnEmpty bool
+		switch cx.quitMode {
+		case QuitModeExplicit:
+			quitOnEmpty = false
+		case QuitModeLastWindowClosed:
+			quitOnEmpty = true
+		default:
+			quitOnEmpty = runtime.GOOS != "darwin"
+		}
+
+		if quitOnEmpty && cx.windows.isEmpty() {
+			cx.Quit()
+		}
+	} else if !cx.windows.set(windowID, window) {
+		return false
+	}
+	return true
+}
+
+func (cx *App) updateEntityErased(handle AnyEntity, entityType string, update func(state any, cx *App)) {
+	cx.update(func(cx *App) {
+		lease := cx.entities.leaseErased(handle, entityType)
+		update(lease.entity, cx)
+		cx.entities.endLeaseErased(handle.EntityID(), lease)
+	})
+}
+
+func (cx *App) prepareSpawn() *AsyncApp {
+	if cx.quitting {
+		gpuiutil.DebugPanic("Can't spawn on main thread after on_app_quit")
+	}
+	return cx.ToAsync()
+}
+
+func (cx *App) newEntity(entityType reflect.Type, build func(slot AnyEntity, cx *App) any) AnyEntity {
+	return cx.updateR(func(cx *App) AnyEntity {
+		slot := cx.entities.reserveErased(entityType)
+		handle := slot.Clone()
+		entity := build(slot, cx)
+
+		window := None[WindowID]()
+		if n := len(cx.windowUpdateStack); n > 0 {
+			window = Some(cx.windowUpdateStack[n-1].windowID)
+		}
+		cx.pushEffect(effectEntityCreated{entity: handle, tid: entityType, window: window})
+
+		return cx.entities.insertErased(slot, entity)
+	})
+}
+
+func (cx *App) reserveEntity(entityType reflect.Type) AnyEntity {
+	return cx.entities.reserveErased(entityType)
+}
+
+func (cx *App) insertEntity(slot AnyEntity, build func(cx *App) any) AnyEntity {
+	return cx.updateR(func(cx *App) AnyEntity {
+		entity := build(cx)
+		return cx.entities.insertErased(slot, entity)
+	})
+}
+
+func (cx *App) updateEntity(handle AnyEntity, update func(state any, cx *App)) {
+	cx.updateEntityErased(handle, handle.EntityType().String(), update)
+}
+
+func (cx *App) asMut(handle AnyEntity) *App {
+	return cx
+}
+
+func (cx *App) readEntity(handle AnyEntity, read func(state any, cx *App)) {
+	entity := cx.entities.readErased(handle)
+	read(entity, cx)
+}
+
+func (cx *App) updateWindow(window AnyWindowHandle, update func(root AnyView, window *Window, cx *App)) error {
+	_, err := cx.updateWindowID(window.id, func(root AnyView, window *Window, cx *App) struct{} {
+		update(root, window, cx)
+		return struct{}{}
+	})
+	return err
+}
+
+func (cx *App) withWindow(entityID EntityID, f func(window *Window, cx *App)) bool {
+	_, ok := cx.WithWindow(entityID, func(window *Window, cx *App) struct{} {
+		f(window, cx)
+		return struct{}{}
+	})
+	return ok
+}
+
+func (cx *App) readWindow(handle AnyWindowHandle, read func(root AnyView, cx *App)) error {
+	window, ok := cx.windows.get(handle.id)
+	if !ok {
+		return errors.New("window not found")
+	}
+	if window == nil {
+		panic("attempted to read a window that is already on the stack")
+	}
+
+	rootView := window.root.Unwrap()
+	read(rootView, cx)
+	return nil
+}
+
+func (cx *App) backgroundExecutor() BackgroundExecutor {
+	return cx.bgExecutor
+}
+
+func (cx *App) readGlobal(globalType reflect.Type, read func(global any, cx *App)) {
+	global, ok := cx.globalsByType[globalType]
+	if !ok {
+		panic(fmt.Sprintf("no state of type %s exists", globalType))
+	}
+	read(global, cx)
+}
+
+// New builds an entity that is owned by the application. buildEntity is invoked with a
+// Context and returns the entity's state.
+func (cx *App) New[T any](buildEntity func(cx *Context[T]) *T) Entity[T] {
+	return AppContextNew(cx, buildEntity)
+}
+
+// ReserveEntity reserves a slot for an entity to be inserted later with InsertEntity.
+func (cx *App) ReserveEntity[T any]() Reservation[T] {
+	return AppContextReserveEntity[T](cx)
+}
+
+// InsertEntity inserts an entity into a slot obtained from ReserveEntity.
+func (cx *App) InsertEntity[T any](reservation Reservation[T], buildEntity func(cx *Context[T]) *T) Entity[T] {
+	return AppContextInsertEntity(cx, reservation, buildEntity)
+}
+
+// AsMut leases an entity for mutable access; Release on the returned GpuiBorrow notifies the
+// entity and ends the lease.
+func (cx *App) AsMut[T any](handle Entity[T]) GpuiBorrow[T] {
+	return AppContextAsMut(cx, handle)
+}
+
+// ReadWindow reads the root view of a window off of the application context.
+func (cx *App) ReadWindow[V, R any](window WindowHandle[V], read func(root Entity[V], cx *App) R) (R, error) {
+	return AppContextReadWindow(cx, window, read)
+}
+
+// BackgroundSpawn spawns a future on a background thread.
+func (cx *App) BackgroundSpawn[R any](future func(s *scheduler.Scope) (R, error)) *Task[R] {
+	return AppContextBackgroundSpawn(cx, future)
+}
+
+// ReadGlobal reads the global of type G. It panics if no such global has been assigned.
+func (cx *App) ReadGlobal[G, R any](callback func(global *G, cx *App) R) R {
+	return AppContextReadGlobal(cx, callback)
+}
+
+type effect interface {
+	isEffect()
+	String() string
+}
+
+type effectNotify struct {
+	emitter EntityID
+}
+
+type effectEmit struct {
+	emitter   EntityID
+	eventType reflect.Type
+	event     any
+}
+
+type effectRefreshWindows struct{}
+
+type effectNotifyGlobalObservers struct {
+	globalType reflect.Type
+}
+
+type effectDefer struct {
+	callback func(cx *App)
+}
+
+type effectEntityCreated struct {
+	entity AnyEntity
+	tid    reflect.Type
+	window Option[WindowID]
+}
+
+func (effectNotify) isEffect()                {}
+func (effectEmit) isEffect()                  {}
+func (effectRefreshWindows) isEffect()        {}
+func (effectNotifyGlobalObservers) isEffect() {}
+func (effectDefer) isEffect()                 {}
+func (effectEntityCreated) isEffect()         {}
+
+func (e effectNotify) String() string {
+	return fmt.Sprintf("Notify(%s)", e.emitter)
+}
+
+func (e effectEmit) String() string {
+	return fmt.Sprintf("Emit(%s)", e.emitter.debugString())
+}
+
+func (effectRefreshWindows) String() string {
+	return "RefreshWindows"
+}
+
+func (e effectNotifyGlobalObservers) String() string {
+	return fmt.Sprintf("NotifyGlobalObservers(%v)", e.globalType)
+}
+
+func (effectDefer) String() string {
+	return "Defer(..)"
+}
+
+func (e effectEntityCreated) String() string {
+	return fmt.Sprintf("EntityCreated(AnyEntity { entity_id: %s, entity_type: %v })", e.entity.EntityID().debugString(), e.entity.EntityType())
+}
+
+type globalLease[G any] struct {
+	global any
+}
+
+func (l *globalLease[G]) get() *G {
+	return l.global.(*G)
+}
+
+// AnyDrag contains state associated with an active drag operation, started by dragging an
+// element within the window or by dragging into the app from the underlying platform.
+type AnyDrag struct {
+	// View is the view used to render this drag.
+	View AnyView
+	// Value is the value of the dragged item, to be dropped.
+	Value any
+	// CursorOffset is used to render the dragged item in the same place on the original element
+	// that the drag was initiated.
+	CursorOffset Point[Pixels]
+	// CursorStyle is the cursor style to use while dragging.
+	CursorStyle Option[CursorStyle]
+	// ExternalPayloadSource resolves the payload to offer the platform if the drag leaves the
+	// window. It is invoked at most once per drag gesture, at promotion time.
+	ExternalPayloadSource Option[ExternalDragPayloadSource]
+}
+
+// ExternalDragPayloadSource lazily resolves the payload handed to the platform when an internal
+// drag is promoted to a native drag session.
+type ExternalDragPayloadSource func(window *Window, cx *App) (ExternalDragPayload, bool)
+
+// AnyTooltip contains state associated with a tooltip. You'll only need it if you're
+// implementing tooltip behavior on a custom element.
+type AnyTooltip struct {
+	// View is the view used to display the tooltip.
+	View AnyView
+	// MousePosition is the absolute position of the mouse when the tooltip was deployed.
+	MousePosition Point[Pixels]
+	// CheckVisibleAndUpdate checks, given the bounds of the tooltip, whether it should still be
+	// visible and updates its state accordingly.
+	CheckVisibleAndUpdate func(bounds Bounds[Pixels], window *Window, cx *App) bool
+}
+
+// InputPreference is whether a keystroke should prefer character input or key bindings.
+type InputPreference uint8
+
+const (
+	// InputPreferenceCharacterInput prefers typing text over triggering key bindings.
+	InputPreferenceCharacterInput InputPreference = iota
+	// InputPreferenceKeyBindings dispatches key bindings normally, if any match.
+	InputPreferenceKeyBindings
+)
+
+// String returns the variant name.
+func (p InputPreference) String() string {
+	switch p {
+	case InputPreferenceCharacterInput:
+		return "CharacterInput"
+	case InputPreferenceKeyBindings:
+		return "KeyBindings"
+	}
+	return fmt.Sprintf("InputPreference(%d)", uint8(p))
+}
+
+// KeystrokeEvent is a keystroke event, and potentially the associated action.
+type KeystrokeEvent struct {
+	// Keystroke is the keystroke that occurred.
+	Keystroke Keystroke
+	// InputPreference is whether this keystroke should prefer character input or key bindings.
+	InputPreference InputPreference
+	// Action is the action that was resolved for the keystroke, if any.
+	Action Option[Action]
+	// ContextStack is the context stack at the time.
+	ContextStack []KeyContext
+}
+
+// HTTPClient is the HTTP client used by the application (D-HTTP: upstream's http_client
+// crate over net/http).
+type HTTPClient interface {
+	// Send sends the request; the task yields the response.
+	Send(req *http.Request) *Task[*http.Response]
+	// UserAgent returns the user agent the client sends, if any.
+	UserAgent() (string, bool)
+	// Proxy returns the proxy the client uses, if any.
+	Proxy() (*url.URL, bool)
+}
+
+// NullHTTPClient is an HTTPClient that fails every request.
+type NullHTTPClient struct{}
+
+// Send fails with "No HttpClient available".
+func (NullHTTPClient) Send(req *http.Request) *Task[*http.Response] {
+	return scheduler.ReadyTaskErr[*http.Response](errors.New("No HttpClient available"))
+}
+
+// UserAgent returns false.
+func (NullHTTPClient) UserAgent() (string, bool) {
+	return "", false
+}
+
+// Proxy returns false.
+func (NullHTTPClient) Proxy() (*url.URL, bool) {
+	return nil, false
+}
+
+// GpuiBorrow is a mutable reference to an entity owned by GPUI, obtained with AsMut. Release
+// notifies the entity, ends the lease and finishes the update, as its Drop does upstream.
+type GpuiBorrow[T any] struct {
+	state *gpuiBorrowState[T]
+}
+
+type gpuiBorrowState[T any] struct {
+	inner Option[lease[T]]
+	app   *App
+}
+
+func newGpuiBorrow[T any](inner Entity[T], app *App) GpuiBorrow[T] {
+	app.startUpdate()
+	l := app.entities.lease(inner)
+	return GpuiBorrow[T]{state: &gpuiBorrowState[T]{inner: Some(l), app: app}}
+}
+
+// Get returns the leased entity state. It panics after Release.
+func (b GpuiBorrow[T]) Get() *T {
+	if b.state == nil {
+		panic("called `Option::unwrap()` on a `None` value")
+	}
+	return b.state.inner.Unwrap().get()
+}
+
+// Release notifies the entity's observers, ends the lease and finishes the update. It is
+// idempotent.
+func (b GpuiBorrow[T]) Release() {
+	if b.state == nil {
+		return
+	}
+	l, ok := b.state.inner.Take().Get()
+	if !ok {
+		return
+	}
+	b.state.app.Notify(l.id)
+	b.state.app.entities.endLease(l)
+	b.state.app.finishUpdate()
 }
