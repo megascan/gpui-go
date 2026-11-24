@@ -10,39 +10,63 @@ Go target: `platform/linux/wayland/client.go` (lines 1-1967) and `client_input.g
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Globals` | struct | 243 |  | `Globals` | todo |
-| `InProgressOutput` | struct | 325 |  | `InProgressOutput` | todo |
-| `Output` | struct | 352 |  | `Output` | todo |
-| `ClickState` | struct | 539 |  | `ClickState` | todo |
-| `WaylandClientStatePtr` | struct | 577 |  | `WaylandClientStatePtr` | todo |
-| `WaylandClientStatePtr::get_client` | method | 580 |  | `(WaylandClientStatePtr).GetClient` | todo |
-| `WaylandClientStatePtr::try_get_client` | method | 603 |  | `(WaylandClientStatePtr).TryGetClient` | todo |
-| `WaylandClientStatePtr::sole_output` | method | 608 |  | `(WaylandClientStatePtr).SoleOutput` | todo |
-| `WaylandClientStatePtr::dispatch_scheduled_frames` | method | 619 |  | `(WaylandClientStatePtr).DispatchScheduledFrames` | todo |
-| `WaylandClientStatePtr::schedule_frame_retry` | method | 639 |  | `(WaylandClientStatePtr).ScheduleFrameRetry` | todo |
-| `WaylandClientStatePtr::get_serial` | method | 661 |  | `(WaylandClientStatePtr).GetSerial` | todo |
-| `WaylandClientStatePtr::activation_context` | method | 665 |  | `(WaylandClientStatePtr).ActivationContext` | todo |
-| `WaylandClientStatePtr::start_external_drag` | method | 673 |  | `(WaylandClientStatePtr).StartExternalDrag` | todo |
-| `WaylandClientStatePtr::enable_ime` | method | 713 |  | `(WaylandClientStatePtr).EnableIME` | todo |
-| `WaylandClientStatePtr::disable_ime` | method | 739 |  | `(WaylandClientStatePtr).DisableIME` | todo |
-| `WaylandClientStatePtr::ime_enabled` | method | 750 |  | `(WaylandClientStatePtr).IMEEnabled` | todo |
-| `WaylandClientStatePtr::update_ime_position` | method | 755 |  | `(WaylandClientStatePtr).UpdateIMEPosition` | todo |
-| `WaylandClientStatePtr::handle_keyboard_layout_change` | method | 767 |  | `(WaylandClientStatePtr).HandleKeyboardLayoutChange` | todo |
-| `WaylandClientStatePtr::drop_window` | method | 805 |  | `(WaylandClientStatePtr).DropWindow` | todo |
-| `WaylandConnection` | struct | 884 |  | `WaylandConnection` | todo |
+| `Globals` | struct | 243 |  | `Globals` | done |
+| `InProgressOutput` | struct | 325 |  | `InProgressOutput` | done |
+| `Output` | struct | 352 |  | `Output` | done |
+| `ClickState` | struct | 539 |  | `ClickState` | done |
+| `WaylandClientStatePtr` | struct | 577 |  | `WaylandClientStatePtr` | done |
+| `WaylandClientStatePtr::get_client` | method | 580 |  | `(WaylandClientStatePtr).GetClient` | done |
+| `WaylandClientStatePtr::try_get_client` | method | 603 |  | `(WaylandClientStatePtr).TryGetClient` | done |
+| `WaylandClientStatePtr::sole_output` | method | 608 |  | `(WaylandClientStatePtr).SoleOutput` | done |
+| `WaylandClientStatePtr::dispatch_scheduled_frames` | method | 619 |  | `(WaylandClientStatePtr).DispatchScheduledFrames` | done |
+| `WaylandClientStatePtr::schedule_frame_retry` | method | 639 |  | `(WaylandClientStatePtr).ScheduleFrameRetry` | done |
+| `WaylandClientStatePtr::get_serial` | method | 661 |  | `(WaylandClientStatePtr).GetSerial` | done |
+| `WaylandClientStatePtr::activation_context` | method | 665 |  | `(WaylandClientStatePtr).ActivationContext` | done |
+| `WaylandClientStatePtr::start_external_drag` | method | 673 |  | `(WaylandClientStatePtr).StartExternalDrag` | done |
+| `WaylandClientStatePtr::enable_ime` | method | 713 |  | `(WaylandClientStatePtr).EnableIME` | done |
+| `WaylandClientStatePtr::disable_ime` | method | 739 |  | `(WaylandClientStatePtr).DisableIME` | done |
+| `WaylandClientStatePtr::ime_enabled` | method | 750 |  | `(WaylandClientStatePtr).IMEEnabled` | done |
+| `WaylandClientStatePtr::update_ime_position` | method | 755 |  | `(WaylandClientStatePtr).UpdateIMEPosition` | done |
+| `WaylandClientStatePtr::handle_keyboard_layout_change` | method | 767 |  | `(WaylandClientStatePtr).HandleKeyboardLayoutChange` | done |
+| `WaylandClientStatePtr::drop_window` | method | 805 |  | `(WaylandClientStatePtr).DropWindow` | done |
+| `WaylandConnection` | struct | 884 |  | `WaylandConnection` | done |
+| `WaylandConnection::window_identifier` | method | 1532 |  | `(WaylandConnection).WindowIdentifier` | dev:D-WLFOREIGN |
+| `file_uri_list` | fn | 527 |  | `fileURIList` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `rejects_required_globals_below_supported_versions` | test | 3207 |  | `TestClient_RejectsRequiredGlobalsBelowSupportedVersions` | todo |
-| `leave_discards_pending_drag_uri_read` | test | 3275 |  | `TestClient_LeaveDiscardsPendingDragURIRead` | todo |
-| `drop_then_leave_discards_pending_drag_uri_read` | test | 3294 |  | `TestClient_DropThenLeaveDiscardsPendingDragURIRead` | todo |
-| `stale_completion_preserves_newer_drag_destination` | test | 3316 |  | `TestClient_StaleCompletionPreservesNewerDragDestination` | todo |
-| `builds_terminated_uri_list_for_each_dragged_path` | test | 3360 |  | `TestClient_BuildsTerminatedURIListForEachDraggedPath` | todo |
-| `skips_paths_that_have_no_file_url` | test | 3373 |  | `TestClient_SkipsPathsThatHaveNoFileURL` | todo |
-| `builds_empty_uri_list_without_convertible_paths` | test | 3383 |  | `TestClient_BuildsEmptyURIListWithoutConvertiblePaths` | todo |
-| `caches_cursor_rectangle_committed_after_done` | test | 3395 |  | `TestClient_CachesCursorRectangleCommittedAfterDone` | todo |
-| `skips_unchanged_cursor_rectangle_after_done` | test | 3415 |  | `TestClient_SkipsUnchangedCursorRectangleAfterDone` | todo |
-| `skips_cursor_rectangles_with_unchanged_protocol_coordinates` | test | 3433 |  | `TestClient_SkipsCursorRectanglesWithUnchangedProtocolCoordinates` | todo |
+| `rejects_required_globals_below_supported_versions` | test | 3207 |  | `TestClient_RejectsRequiredGlobalsBelowSupportedVersions` | done |
+| `leave_discards_pending_drag_uri_read` | test | 3275 |  | `TestClient_LeaveDiscardsPendingDragURIRead` | done |
+| `drop_then_leave_discards_pending_drag_uri_read` | test | 3294 |  | `TestClient_DropThenLeaveDiscardsPendingDragURIRead` | done |
+| `stale_completion_preserves_newer_drag_destination` | test | 3316 |  | `TestClient_StaleCompletionPreservesNewerDragDestination` | done |
+| `builds_terminated_uri_list_for_each_dragged_path` | test | 3360 |  | `TestClient_BuildsTerminatedURIListForEachDraggedPath` | done |
+| `skips_paths_that_have_no_file_url` | test | 3373 |  | `TestClient_SkipsPathsThatHaveNoFileURL` | done |
+| `builds_empty_uri_list_without_convertible_paths` | test | 3383 |  | `TestClient_BuildsEmptyURIListWithoutConvertiblePaths` | done |
+| `caches_cursor_rectangle_committed_after_done` | test | 3395 |  | `TestClient_CachesCursorRectangleCommittedAfterDone` | done |
+| `skips_unchanged_cursor_rectangle_after_done` | test | 3415 |  | `TestClient_SkipsUnchangedCursorRectangleAfterDone` | done |
+| `skips_cursor_rectangles_with_unchanged_protocol_coordinates` | test | 3433 |  | `TestClient_SkipsCursorRectanglesWithUnchangedProtocolCoordinates` | done |
+
+## gpui_linux/src/linux/wayland/cursor.rs
+
+Go target: `platform/linux/wayland/cursor.go` (package `wayland`), tests in `cursor_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Cursor` | struct | 11 |  | `Cursor` | done |
+| `LoadedTheme` | struct | 20 |  | `LoadedTheme` | done |
+| `Cursor::drop` | method | 27 |  | `(Cursor).Destroy` | done |
+| `Cursor::new` | method | 34 |  | `NewCursor` | done |
+| `Cursor::set_theme` | method | 76 |  | `(Cursor).SetTheme` | done |
+| `Cursor::set_size` | method | 89 |  | `(Cursor).SetSize` | done |
+| `Cursor::set_icon` | method | 94 |  | `(Cursor).SetIcon` | done |
+
+## gpui_linux/src/linux/wayland.rs
+
+Go target: `platform/linux/wayland/wayland.go` (package `wayland`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `to_shape` | fn | 18 |  | `toShape` | done |
 
 ## gpui_linux/src/linux/wayland/display.rs
 
@@ -50,7 +74,7 @@ Go target: `platform/linux/wayland/display.go` (package `wayland`), tests in `di
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_refresh_interval_from_millihertz` | test | 61 |  | `TestDisplay_RefreshIntervalFromMillihertz` | todo |
+| `test_refresh_interval_from_millihertz` | test | 61 |  | `TestDisplay_RefreshIntervalFromMillihertz` | done |
 
 ## gpui_linux/src/linux/wayland/serial.rs
 
@@ -58,11 +82,11 @@ Go target: `platform/linux/wayland/serial.go` (package `wayland`), tests in `ser
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_selection_serial_ignores_unrelated_serial_kinds` | test | 121 |  | `TestSerial_SelectionSerialIgnoresUnrelatedSerialKinds` | todo |
-| `test_selection_serial_uses_mouse_press_without_key_press` | test | 133 |  | `TestSerial_SelectionSerialUsesMousePressWithoutKeyPress` | todo |
-| `test_selection_serial_uses_event_arrival_order_across_rollover` | test | 141 |  | `TestSerial_SelectionSerialUsesEventArrivalOrderAcrossRollover` | todo |
-| `test_selection_serial_is_unavailable_without_eligible_input` | test | 150 |  | `TestSerial_SelectionSerialIsUnavailableWithoutEligibleInput` | todo |
-| `test_zero_is_a_valid_selection_serial` | test | 163 |  | `TestSerial_ZeroIsAValidSelectionSerial` | todo |
+| `test_selection_serial_ignores_unrelated_serial_kinds` | test | 121 |  | `TestSerial_SelectionSerialIgnoresUnrelatedSerialKinds` | done |
+| `test_selection_serial_uses_mouse_press_without_key_press` | test | 133 |  | `TestSerial_SelectionSerialUsesMousePressWithoutKeyPress` | done |
+| `test_selection_serial_uses_event_arrival_order_across_rollover` | test | 141 |  | `TestSerial_SelectionSerialUsesEventArrivalOrderAcrossRollover` | done |
+| `test_selection_serial_is_unavailable_without_eligible_input` | test | 150 |  | `TestSerial_SelectionSerialIsUnavailableWithoutEligibleInput` | done |
+| `test_zero_is_a_valid_selection_serial` | test | 163 |  | `TestSerial_ZeroIsAValidSelectionSerial` | done |
 
 ## gpui_linux/src/linux/wayland/window.rs
 
@@ -125,3 +149,8 @@ Go target: `platform/linux/wayland/window.go` (package `wayland`), tests in `win
 | `clamps_radii` | test | 2444 |  | `TestWindowRoundedRectTests_ClampsRadii` | todo |
 | `empty_area` | test | 2457 |  | `TestWindowRoundedRectTests_EmptyArea` | todo |
 
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-WLFOREIGN | `WaylandConnection.WindowIdentifier` exports the focused surface through xdg-foreign (zxdg_exporter_v2, else v1) synchronously on the main goroutine with a private event queue, as ashpd does on a helper thread, and keeps one export per surface until the window drops or the connection closes; later calls for the same surface return the same `wayland:<handle>`. Upstream creates a new export per call and destroys it when the returned identifier drops | `gpui_linux/src/linux/wayland/client.rs:1532-1549`, ashpd-0.13.13 `window_identifier/wayland.rs` | `common.LinuxClient.WindowIdentifier` returns a plain string the caller cannot release; xdg-foreign is hand-defined in `xdg_foreign.go` because wlproto has no bindings for it |
