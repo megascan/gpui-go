@@ -1,0 +1,7 @@
+M2-exit verify: `sh docs/port/verify.sh M2-exit` exit 0 (2026-11-24).
+- build/vet examples, text, linux common; go test . ./text/... ./platform/... ./render/...: ok.
+- shoot hello_world, text, svg_example, image_example on Wayland (HDMI-A-1, tiled 941x1030): all four PNGs read. Text sharp and positioned, CJK/Hangul/emoji fallback present, SVG dragons tinted, local EXIF JPEG (rotated), remote picsum images, CI badge SVG and color.svg asset present.
+- image_example: the tiled window (941 px) is narrower than upstream's requested 1100 px, so the centered image row overflows and the first caption is cut on the left ("ge loaded from..."); a 1100x600 capture showed the full layout. The EXIF image box is 256x512 (taffy 0.15 aspect-ratio behaviour, checked identical against the Rust crate).
+- paritycheck -area examples-m2 -all-done: ok (0 rows); linux-common and gotext -all-done -allow-blocked: ok.
+- gh pr checks feat/port: CI-PENDING, Actions billing blocked (TECH_DEBT CI-BILLING).
+- Not committed or pushed by this stage (worker rules forbid git add/commit); origin/feat/port..HEAD already contains the harness's M4-ios-window commit, whose iOS paths must reach origin through M4-ci-macos first.

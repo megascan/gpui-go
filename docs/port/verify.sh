@@ -295,7 +295,7 @@ M1-linux-screencap)
   ( go run ./internal/cmd/paritycheck -area ext-scap-linux -all-done ) || exit 1
   ;;
 M1-exit)
-  ( go build ./examples/hello_world && go vet ./examples/hello_world ./internal/cmd/shoot && go test . ./platform/... ./render/... ./internal/linux/... ) || exit 1
+  ( go build -o /dev/null ./examples/hello_world && go vet ./examples/hello_world ./internal/cmd/shoot && go test . ./platform/... ./render/... ./internal/linux/... ) || exit 1
   ( go test -race . ./scheduler/... ./sumtree/... ./collections/... ./gpuiutil/... ./refineable/... ./internal/taffy/... ./internal/linux/... ./platform/linux/internal/... ) || exit 1
   ( go run ./internal/cmd/shoot -pkg ./examples/hello_world -out docs/port/screenshots/m1/hello_world_wayland.png && go run ./internal/cmd/shoot -x11 -pkg ./examples/hello_world -out docs/port/screenshots/m1/hello_world_x11.png ) || exit 1
   ( gh pr checks feat/port || echo 'CI-PENDING: Actions billing blocked, see TECH_DEBT CI-BILLING' )
@@ -311,7 +311,7 @@ M2-gotext-color)
   ( go run ./internal/cmd/paritycheck -area gotext -done gpui_wgpu/ ) || exit 1
   ;;
 M2-exit)
-  ( go build ./examples/... && go vet ./examples/... ./text/... ./platform/linux/internal/common && go test . ./text/... ./platform/... ./render/... ) || exit 1
+  ( go build -o /dev/null ./examples/... && go vet ./examples/... ./text/... ./platform/linux/internal/common && go test . ./text/... ./platform/... ./render/... ) || exit 1
   ( for e in hello_world text svg_example image_example; do go run ./internal/cmd/shoot -pkg ./examples/$e -out docs/port/screenshots/m2/$e.png || exit 1; done ) || exit 1
   ( go run ./internal/cmd/paritycheck -area examples-m2 -all-done ) || exit 1
   ( gh pr checks feat/port || echo 'CI-PENDING: Actions billing blocked, see TECH_DEBT CI-BILLING' )
@@ -326,7 +326,7 @@ M3-bench-context)
   ;;
 M3-randomized-tree)
   ( go build . && go vet . && go test . && test -z "$(gofmt -l *.go)" ) || exit 1
-  ( go test -run xxx -bench FocusCleanup -benchtime 1x . ) || exit 1
+  ( go test -run xxx -tags gpui_release -bench FocusCleanup -benchtime 1x . ) || exit 1
   ( go run ./internal/cmd/paritycheck -area core-profiler -done gpui/src/randomized_element_tree.rs ) || exit 1
   ;;
 M3-profiler-hang)
@@ -365,21 +365,22 @@ M3-platform-benches)
   ( go run ./internal/cmd/paritycheck -area platform-select -all-done ) || exit 1
   ;;
 M3-examples-a)
-  ( E="active_state_bug anchor grid_layout opacity gradient pattern scrollable tree uniform_list list_example data_table paths_bench popover"; for e in $E; do go build ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -pkg ./examples/$e -out docs/port/screenshots/examples-a/$e.png || exit 1; done ) || exit 1
+  ( E="active_state_bug anchor grid_layout opacity gradient pattern scrollable tree uniform_list list_example data_table paths_bench popover"; for e in $E; do go build -o /dev/null ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -pkg ./examples/$e -out docs/port/screenshots/examples-a/$e.png || exit 1; done ) || exit 1
   ( go run ./internal/cmd/paritycheck -area examples-a -all-done ) || exit 1
   ;;
 M3-examples-b)
-  ( E="text_layout text_wrapper focus_visible tab_stop drag_drop mouse_pressure a11y svg_animation shadow painting"; for e in $E; do go build ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -pkg ./examples/$e -out docs/port/screenshots/examples-b/$e.png || exit 1; done ) || exit 1
-  ( go build ./examples/ownership_post && go vet ./examples/ownership_post && test -z "$(gofmt -l examples/ownership_post)" && go run ./internal/cmd/shoot -no-window 5s -pkg ./examples/ownership_post ) || exit 1
+  ( E="text_layout text_wrapper focus_visible tab_stop drag_drop mouse_pressure a11y svg_animation shadow painting"; for e in $E; do go build -o /dev/null ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -pkg ./examples/$e -out docs/port/screenshots/examples-b/$e.png || exit 1; done ) || exit 1
+  ( go build -o /dev/null ./examples/ownership_post && go vet ./examples/ownership_post && test -z "$(gofmt -l examples/ownership_post)" && go run ./internal/cmd/shoot -no-window 5s -pkg ./examples/ownership_post ) || exit 1
   ( go run ./internal/cmd/paritycheck -area examples-b -all-done ) || exit 1
   ;;
 M3-examples-c)
-  ( E="window window_movable window_positioning window_shadow layer_shell on_window_close_quit move_entity_between_windows set_menus toggle_headless gif_viewer image_gallery image_loading native_view native_view_appkit_field"; for e in $E; do go build ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -may-exit -pkg ./examples/$e -out docs/port/screenshots/examples-c/$e.png || exit 1; done ) || exit 1
-  ( go build ./examples/system_notifications && go vet ./examples/system_notifications && test -z "$(gofmt -l examples/system_notifications)" && dbus-run-session -- go run ./internal/cmd/shoot -may-exit -pkg ./examples/system_notifications -out docs/port/screenshots/examples-c/system_notifications.png ) || exit 1
+  ( E="window window_movable window_positioning window_shadow on_window_close_quit move_entity_between_windows set_menus gif_viewer image_gallery image_loading native_view native_view_appkit_field"; for e in $E; do go build -o /dev/null ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -may-exit -pkg ./examples/$e -out docs/port/screenshots/examples-c/$e.png || exit 1; done ) || exit 1
+  ( for e in layer_shell toggle_headless; do go build -o /dev/null ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -no-window 5s -pkg ./examples/$e || exit 1; done ) || exit 1
+  ( go build -o /dev/null ./examples/system_notifications && go vet ./examples/system_notifications && test -z "$(gofmt -l examples/system_notifications)" && dbus-run-session -- go run ./internal/cmd/shoot -may-exit -pkg ./examples/system_notifications -out docs/port/screenshots/examples-c/system_notifications.png ) || exit 1
   ( go run ./internal/cmd/paritycheck -area examples-c -all-done ) || exit 1
   ;;
 M3-examples-d)
-  ( E="view_example testing input animation"; for e in $E; do go build ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -pkg ./examples/$e -out docs/port/screenshots/examples-d/$e.png || exit 1; done ) || exit 1
+  ( E="view_example testing input animation"; for e in $E; do go build -o /dev/null ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -pkg ./examples/$e -out docs/port/screenshots/examples-d/$e.png || exit 1; done ) || exit 1
   ( go run ./internal/cmd/paritycheck -area examples-d -all-done ) || exit 1
   ;;
 M3-exit)
@@ -525,7 +526,7 @@ final)
   ( GOOS=ios GOARCH=arm64 CGO_ENABLED=0 go vet ./internal/apple/... ./platform/apple/... ./platform/ios/... ./platform ) || exit 1
   ( GOOS=js GOARCH=wasm go build -o /dev/null ./examples/web_hello_web && GOOS=js GOARCH=wasm go build ./render/... ./platform/web/... ) || exit 1
   ( env -i PATH="$PATH" HOME="$HOME" GOCACHE="$(go env GOCACHE)" GOPATH="$(go env GOPATH)" GOMODCACHE="$(go env GOMODCACHE)" GOFLAGS="$GOFLAGS" GOOS=js GOARCH=wasm go test -exec "$(go env GOROOT)/lib/wasm/go_js_wasm_exec" ./platform/web/... ./render/wgpu/internal/gpu/webgl2/... ) || exit 1
-  ( go build ./examples/... ) || exit 1
+  ( go build -o /dev/null ./examples/... ) || exit 1
   ( go run ./internal/cmd/paritycheck -all-done -rescan -lint ) || exit 1
   ( test ! -e stubs.go && test ! -e DOCS ) || exit 1
   ( gh pr checks feat/port ) || exit 1

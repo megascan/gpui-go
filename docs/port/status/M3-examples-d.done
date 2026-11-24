@@ -1,0 +1,1 @@
+M3-examples-d: sh docs/port/verify.sh M3-examples-d exit 0 (build/vet/test/gofmt/shoot for view_example, testing, input, animation; paritycheck 15 rows all done). Cross-target CGO_ENABLED=0 vet and test -c pass for darwin/arm64, windows/amd64, js/wasm. Screenshots in docs/port/screenshots/examples-d/ read and checked against upstream sources.

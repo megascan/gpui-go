@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M3-bench-context exit 0 (2026-11-24); also go test -tags gpui_profiler -run TestBenchContext_ . ok; go test -tags gpui_release -bench FocusCleanup -benchtime 1x . ok

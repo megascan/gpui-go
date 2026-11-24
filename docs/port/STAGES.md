@@ -47,7 +47,7 @@ Builders cannot see each other's work. These rules are what keeps their output c
 22. Code style: gofmt; no comments in code except terse godoc on exported API (first sentence starts with the symbol name), `//go:` and `//gpui:` directives and generated-file headers; no per-file licence headers (LICENSE + NOTICE cover it); errors wrapped with `%w`; no new third-party dependency; no `init` side effects other than registration and the platform thread lock.
 23. Verification: a stage is finished when `sh /home/strange/Projects/gpui-go-wt/port/docs/port/verify.sh <stage>` exits 0. It runs exactly the commands in the stage's Verify block in STAGES.md (build, vet, test and gofmt on the stage's own packages, `go test -c -o /dev/null` for other targets, plus paritycheck), never a whole-repo build except in exit stages. Build outputs go to /dev/null, never /tmp. Builders do not edit verify.sh or STAGES.md; an exit stage may, changing both together.
 24. Running things: shell commands start with `cd /home/strange/Projects/gpui-go-wt/port &&` (the working directory resets between calls). Anything that can take more than about 20 seconds (full test runs, cgo builds of render/wgpu, CI waits) runs in the background; never sleep-poll in the foreground. Run examples and spikes only through internal/cmd/shoot or with `timeout`, at low priority, and leave no window, process or headless output behind.
-25. Screenshots: internal/cmd/shoot (built in M1-exit) is the only way examples are captured; images go to docs/port/screenshots/<group>/<example>.png. `-may-exit` accepts a program that exits 0 before a window appears; `-no-window <duration>` is for programs that never open one (success if alive at the deadline or exited 0). Open every image with the Read tool and check it for missing content, clipping, blur and wrong framing before it is recorded as verified. What cannot be checked on this machine is an owner check (decision 30); it is never claimed as verified.
+25. Screenshots: internal/cmd/shoot (built in M1-exit) is the only way examples are captured; images go to docs/port/screenshots/<group>/<example>.png. `-may-exit` accepts a program that exits 0 before a window appears; `-no-window <duration>` is for programs that never open one (success if alive at the deadline or exited 0). On Hyprland shoot never shows the example to the owner: a `hyprctl eval` Lua hook on `window.open_early` moves every window of the child's process group, unfocused and floating, to a hidden `special:gpui-shoot-<pid>` workspace and resizes it to `-size` (default 800x600 logical); the capture is `grim -T <stableId>` of the toplevel, so pixel size is the logical size times the scale of the monitor that had focus. Open every image with the Read tool and check it for missing content, clipping, blur and wrong framing before it is recorded as verified. What cannot be checked on this machine is an owner check (decision 30); it is never claimed as verified.
 26. Git: branch feat/port, base dev, no Co-Authored-By lines. Only the exit and CI stages commit and push, and only the paths of stages that have a docs/port/status/<stage>.done file (skip if the harness already committed them); never `git add -A`, never force-push. M0-exit opens the draft PR so the macOS and Windows runners compile the root and leaf packages from then on. Exits before M4 never commit internal/apple, internal/win, platform/apple, platform/macos, platform/ios, platform/windows, a11y/macos, a11y/windows or examples/ios_ios, even when those stages are done: the Apple and iOS paths are first committed by M4-ci-macos, the Windows paths by M4-ci-windows, so an unfinished platform never turns an earlier exit's CI red. Web stages are committed like Linux code by the first exit after they are done (the web renderer files before M1-exit, which depends on them; platform/web and the web example by M3-exit at the latest).
 27. Scheduling: at most three stages run at once and at most one core stage at a time. When more are ready than there are free builders, take the highest Prio in the Stage index (the length of the longest dependency chain from the stage to M4-exit), ties by order in this file. The root chain is the critical path; the other lanes feed it.
 28. Owner decisions (DESIGN 14, all decided): (1) Wayland goes through libwayland-client with purego, with typed wrappers from the in-repo generator wlgen; (2) D-Bus is github.com/godbus/dbus/v5 v5.2.4; (3) the WebGL fallback is ported (M4-web-webgl-shaders, M4-web-webgl); wgpu-native v29 against upstream's wgpu 30 is the accepted limit L-WGPUVER with a TECH_DEBT entry to bump the binding; the multi-threaded web dispatcher is the accepted limit L-WEBTHREADS and every shared path follows upstream's single-threaded branch; (4) action JSON schema comes from internal/jsonschema; (5) screen capture is ported: Linux through the xdg ScreenCast portal plus PipeWire (purego over libpipewire-0.3) and X11 capture, Windows through Windows.Graphics.Capture, macOS through ScreenCaptureKit as upstream, plus visual_test.rs. Accessibility adapters are native Go ports of accesskit_consumer / atspi / macos / windows.
@@ -110,7 +110,7 @@ cd /home/strange/Projects/gpui-go-wt/port && for t in darwin/arm64 darwin/amd64 
 cd /home/strange/Projects/gpui-go-wt/port && GOOS=ios GOARCH=arm64 CGO_ENABLED=0 go vet ./internal/apple/... ./platform/apple/... ./platform/ios/... ./platform
 cd /home/strange/Projects/gpui-go-wt/port && GOOS=js GOARCH=wasm go build -o /dev/null ./examples/web_hello_web && GOOS=js GOARCH=wasm go build ./render/... ./platform/web/...
 cd /home/strange/Projects/gpui-go-wt/port && env -i PATH="$PATH" HOME="$HOME" GOCACHE="$(go env GOCACHE)" GOPATH="$(go env GOPATH)" GOMODCACHE="$(go env GOMODCACHE)" GOFLAGS="$GOFLAGS" GOOS=js GOARCH=wasm go test -exec "$(go env GOROOT)/lib/wasm/go_js_wasm_exec" ./platform/web/... ./render/wgpu/internal/gpu/webgl2/...
-cd /home/strange/Projects/gpui-go-wt/port && go build ./examples/...
+cd /home/strange/Projects/gpui-go-wt/port && go build -o /dev/null ./examples/...
 cd /home/strange/Projects/gpui-go-wt/port && go run ./internal/cmd/paritycheck -all-done -rescan -lint
 cd /home/strange/Projects/gpui-go-wt/port && test ! -e stubs.go && test ! -e DOCS
 cd /home/strange/Projects/gpui-go-wt/port && gh pr checks feat/port
@@ -1335,7 +1335,7 @@ go run ./internal/cmd/paritycheck -area ext-scap-linux -all-done
 - Verify (`sh docs/port/verify.sh M1-exit` runs exactly these, from the worktree root):
 
 ```sh
-go build ./examples/hello_world && go vet ./examples/hello_world ./internal/cmd/shoot && go test . ./platform/... ./render/... ./internal/linux/...
+go build -o /dev/null ./examples/hello_world && go vet ./examples/hello_world ./internal/cmd/shoot && go test . ./platform/... ./render/... ./internal/linux/...
 go test -race . ./scheduler/... ./sumtree/... ./collections/... ./gpuiutil/... ./refineable/... ./internal/taffy/... ./internal/linux/... ./platform/linux/internal/...
 go run ./internal/cmd/shoot -pkg ./examples/hello_world -out docs/port/screenshots/m1/hello_world_wayland.png && go run ./internal/cmd/shoot -x11 -pkg ./examples/hello_world -out docs/port/screenshots/m1/hello_world_x11.png
 gh pr checks feat/port
@@ -1393,7 +1393,7 @@ go run ./internal/cmd/paritycheck -area gotext -done gpui_wgpu/
 - Verify (`sh docs/port/verify.sh M2-exit` runs exactly these, from the worktree root):
 
 ```sh
-go build ./examples/... && go vet ./examples/... ./text/... ./platform/linux/internal/common && go test . ./text/... ./platform/... ./render/...
+go build -o /dev/null ./examples/... && go vet ./examples/... ./text/... ./platform/linux/internal/common && go test . ./text/... ./platform/... ./render/...
 for e in hello_world text svg_example image_example; do go run ./internal/cmd/shoot -pkg ./examples/$e -out docs/port/screenshots/m2/$e.png || exit 1; done
 go run ./internal/cmd/paritycheck -area examples-m2 -all-done
 gh pr checks feat/port
@@ -1440,7 +1440,7 @@ go run ./internal/cmd/paritycheck -area core-profiler,core-tests -done gpui/src/
 
 ```sh
 go build . && go vet . && go test . && test -z "$(gofmt -l *.go)"
-go test -run xxx -bench FocusCleanup -benchtime 1x .
+go test -run xxx -tags gpui_release -bench FocusCleanup -benchtime 1x .
 go run ./internal/cmd/paritycheck -area core-profiler -done gpui/src/randomized_element_tree.rs
 ```
 
@@ -1581,7 +1581,7 @@ go run ./internal/cmd/paritycheck -area platform-select -all-done
 - Verify (`sh docs/port/verify.sh M3-examples-a` runs exactly these, from the worktree root):
 
 ```sh
-E="active_state_bug anchor grid_layout opacity gradient pattern scrollable tree uniform_list list_example data_table paths_bench popover"; for e in $E; do go build ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -pkg ./examples/$e -out docs/port/screenshots/examples-a/$e.png || exit 1; done
+E="active_state_bug anchor grid_layout opacity gradient pattern scrollable tree uniform_list list_example data_table paths_bench popover"; for e in $E; do go build -o /dev/null ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -pkg ./examples/$e -out docs/port/screenshots/examples-a/$e.png || exit 1; done
 go run ./internal/cmd/paritycheck -area examples-a -all-done
 ```
 
@@ -1595,8 +1595,8 @@ go run ./internal/cmd/paritycheck -area examples-a -all-done
 - Verify (`sh docs/port/verify.sh M3-examples-b` runs exactly these, from the worktree root):
 
 ```sh
-E="text_layout text_wrapper focus_visible tab_stop drag_drop mouse_pressure a11y svg_animation shadow painting"; for e in $E; do go build ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -pkg ./examples/$e -out docs/port/screenshots/examples-b/$e.png || exit 1; done
-go build ./examples/ownership_post && go vet ./examples/ownership_post && test -z "$(gofmt -l examples/ownership_post)" && go run ./internal/cmd/shoot -no-window 5s -pkg ./examples/ownership_post
+E="text_layout text_wrapper focus_visible tab_stop drag_drop mouse_pressure a11y svg_animation shadow painting"; for e in $E; do go build -o /dev/null ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -pkg ./examples/$e -out docs/port/screenshots/examples-b/$e.png || exit 1; done
+go build -o /dev/null ./examples/ownership_post && go vet ./examples/ownership_post && test -z "$(gofmt -l examples/ownership_post)" && go run ./internal/cmd/shoot -no-window 5s -pkg ./examples/ownership_post
 go run ./internal/cmd/paritycheck -area examples-b -all-done
 ```
 
@@ -1610,8 +1610,9 @@ go run ./internal/cmd/paritycheck -area examples-b -all-done
 - Verify (`sh docs/port/verify.sh M3-examples-c` runs exactly these, from the worktree root):
 
 ```sh
-E="window window_movable window_positioning window_shadow layer_shell on_window_close_quit move_entity_between_windows set_menus toggle_headless gif_viewer image_gallery image_loading native_view native_view_appkit_field"; for e in $E; do go build ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -may-exit -pkg ./examples/$e -out docs/port/screenshots/examples-c/$e.png || exit 1; done
-go build ./examples/system_notifications && go vet ./examples/system_notifications && test -z "$(gofmt -l examples/system_notifications)" && dbus-run-session -- go run ./internal/cmd/shoot -may-exit -pkg ./examples/system_notifications -out docs/port/screenshots/examples-c/system_notifications.png
+E="window window_movable window_positioning window_shadow on_window_close_quit move_entity_between_windows set_menus gif_viewer image_gallery image_loading native_view native_view_appkit_field"; for e in $E; do go build -o /dev/null ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -may-exit -pkg ./examples/$e -out docs/port/screenshots/examples-c/$e.png || exit 1; done
+for e in layer_shell toggle_headless; do go build -o /dev/null ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -no-window 5s -pkg ./examples/$e || exit 1; done
+go build -o /dev/null ./examples/system_notifications && go vet ./examples/system_notifications && test -z "$(gofmt -l examples/system_notifications)" && dbus-run-session -- go run ./internal/cmd/shoot -may-exit -pkg ./examples/system_notifications -out docs/port/screenshots/examples-c/system_notifications.png
 go run ./internal/cmd/paritycheck -area examples-c -all-done
 ```
 
@@ -1625,7 +1626,7 @@ go run ./internal/cmd/paritycheck -area examples-c -all-done
 - Verify (`sh docs/port/verify.sh M3-examples-d` runs exactly these, from the worktree root):
 
 ```sh
-E="view_example testing input animation"; for e in $E; do go build ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -pkg ./examples/$e -out docs/port/screenshots/examples-d/$e.png || exit 1; done
+E="view_example testing input animation"; for e in $E; do go build -o /dev/null ./examples/$e && go vet ./examples/$e && go test ./examples/$e && test -z "$(gofmt -l examples/$e)" && go run ./internal/cmd/shoot -pkg ./examples/$e -out docs/port/screenshots/examples-d/$e.png || exit 1; done
 go run ./internal/cmd/paritycheck -area examples-d -all-done
 ```
 
@@ -2065,7 +2066,7 @@ go run ./internal/cmd/paritycheck -area web -done gpui_web/src/
 - Tier: standard. Risky: no.
 - Depends on: M4-web-text, M4-web-webgl
 - Owns: `examples/web_hello_web/`, `docs/port/parity/web.md`
-- Core task: `_ref/gpui_web/examples/hello_web`: main.rs, dynamic_fonts.rs, font_fallback_test.rs, http_client_test.rs, queue_test.rs as Go files (the three *_test.rs are runtime self-tests, hence the `_testing.go` names), index.html and gallery.js adapted to load a Go wasm binary with wasm_exec.js, the test_*.mjs drivers adapted likewise. Build the wasm binary; run the node drivers that do not need WebGPU. Opening it in a browser (WebGPU and the WebGL2 fallback) is an owner check: write it to docs/port/owner-checks/M4-web-example.md, do not launch a browser. Every Go file of the example carries `//go:build js && wasm`, so `go build ./examples/...` on Linux skips it.
+- Core task: `_ref/gpui_web/examples/hello_web`: main.rs, dynamic_fonts.rs, font_fallback_test.rs, http_client_test.rs, queue_test.rs as Go files (the three *_test.rs are runtime self-tests, hence the `_testing.go` names), index.html and gallery.js adapted to load a Go wasm binary with wasm_exec.js, the test_*.mjs drivers adapted likewise. Build the wasm binary; run the node drivers that do not need WebGPU. Opening it in a browser (WebGPU and the WebGL2 fallback) is an owner check: write it to docs/port/owner-checks/M4-web-example.md, do not launch a browser. Every Go file of the example carries `//go:build js && wasm`, so `go build -o /dev/null ./examples/...` on Linux skips it.
 - Verify (`sh docs/port/verify.sh M4-web-example` runs exactly these, from the worktree root):
 
 ```sh
@@ -2081,7 +2082,7 @@ go run ./internal/cmd/paritycheck -area web -all-done -allow-blocked
 - Tier: complex. Risky: yes.
 - Depends on: M3-exit, M4-macos-a11y, M4-ios-window
 - Owns: `platform/platform_darwin.go`, `platform/apple/ (fixes only)`, `platform/macos/ (fixes only)`, `platform/ios/ (fixes only)`, `internal/apple/ (fixes only)`, `a11y/macos/ (fixes only)`, `.github/workflows/ci.yml`, `docs/port/OWNER-CHECKS.md`
-- Core task: platform/platform_darwin.go returns MacPlatform (and the Metal headless renderer for tests). Commit the Apple packages (first time they are pushed), push, then loop on the macos-14 job with `gh run view --log-failed`: vet, the internal/apple, platform/apple and platform/macos tests (selector and struct smoke tests, text system, atlas, shader compile, keychain, pasteboard), root tests on macOS, and `go build ./examples/...`. Fix in the Apple packages; root or shared-package problems go to docs/port/handoff/M4-ci-macos.md with a repro unless the fix is local to a darwin file. Wait for CI in the background, never in a foreground sleep. Fold docs/port/owner-checks/*.md into docs/port/OWNER-CHECKS.md and list there what only a person with a Mac / iPhone simulator can confirm (hello_world on screen, IME, native views, VoiceOver).
+- Core task: platform/platform_darwin.go returns MacPlatform (and the Metal headless renderer for tests). Commit the Apple packages (first time they are pushed), push, then loop on the macos-14 job with `gh run view --log-failed`: vet, the internal/apple, platform/apple and platform/macos tests (selector and struct smoke tests, text system, atlas, shader compile, keychain, pasteboard), root tests on macOS, and `go build -o /dev/null ./examples/...`. Fix in the Apple packages; root or shared-package problems go to docs/port/handoff/M4-ci-macos.md with a repro unless the fix is local to a darwin file. Wait for CI in the background, never in a foreground sleep. Fold docs/port/owner-checks/*.md into docs/port/OWNER-CHECKS.md and list there what only a person with a Mac / iPhone simulator can confirm (hello_world on screen, IME, native views, VoiceOver).
 - Verify (`sh docs/port/verify.sh M4-ci-macos` runs exactly these, from the worktree root):
 
 ```sh
@@ -2095,7 +2096,7 @@ gh pr checks feat/port
 - Tier: complex. Risky: yes.
 - Depends on: M4-ci-macos, M4-windows-a11y, M4-windows-screencap
 - Owns: `platform/platform_windows.go`, `platform/windows/ (fixes only)`, `internal/win/ (fixes only)`, `a11y/windows/ (fixes only)`, `.github/workflows/ci.yml`, `docs/port/OWNER-CHECKS.md`
-- Core task: platform/platform_windows.go returns WindowsPlatform and registers the WGC screen-capture back end (internal/win/screencap) with gpui.RegisterScapBackend. Commit the Windows packages (first time they are pushed), push, loop on the windows-latest job as in M4-ci-macos: vet, platform/windows tests (struct sizes, COM helpers, DirectWrite, atlas, HLSL compile on WARP, dialogs, vsync), root tests on Windows, `go build ./examples/...`. Fold docs/port/owner-checks/*.md and add the Windows owner checks (hello_world on screen, IME, DPI changes, Narrator) to docs/port/OWNER-CHECKS.md.
+- Core task: platform/platform_windows.go returns WindowsPlatform and registers the WGC screen-capture back end (internal/win/screencap) with gpui.RegisterScapBackend. Commit the Windows packages (first time they are pushed), push, loop on the windows-latest job as in M4-ci-macos: vet, platform/windows tests (struct sizes, COM helpers, DirectWrite, atlas, HLSL compile on WARP, dialogs, vsync), root tests on Windows, `go build -o /dev/null ./examples/...`. Fold docs/port/owner-checks/*.md and add the Windows owner checks (hello_world on screen, IME, DPI changes, Narrator) to docs/port/OWNER-CHECKS.md.
 - Verify (`sh docs/port/verify.sh M4-ci-windows` runs exactly these, from the worktree root):
 
 ```sh
