@@ -113,25 +113,6 @@ func (w *WindowsWindowInner) visibility() gpui.WindowVisibility {
 	panic("windows: unimplemented WindowsWindowInner.visibility")
 }
 
-// DirectManipulationHandler turns DirectManipulation viewport updates into input; M4-windows-shell ports it.
-type DirectManipulationHandler struct{}
-
-func (h *DirectManipulationHandler) setScaleFactor(scaleFactor float32) {
-	panic("windows: unimplemented DirectManipulationHandler.setScaleFactor")
-}
-
-func (h *DirectManipulationHandler) onPointerHitTest(wparam win32.WPARAM) {
-	panic("windows: unimplemented DirectManipulationHandler.onPointerHitTest")
-}
-
-func (h *DirectManipulationHandler) update() {
-	panic("windows: unimplemented DirectManipulationHandler.update")
-}
-
-func (h *DirectManipulationHandler) drainEvents() []gpui.PlatformInput {
-	panic("windows: unimplemented DirectManipulationHandler.drainEvents")
-}
-
 // A11yState is a window's accessibility adapter; M4-windows-window and M4-windows-a11y port it.
 type A11yState struct{}
 

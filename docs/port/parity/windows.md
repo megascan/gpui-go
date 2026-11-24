@@ -19,12 +19,12 @@ Go target: `platform/windows/dialog.go` (package `windows`), tests in `dialog_te
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `task_dialog_cancellation_requires_cancel_button_or_internal_request` | test | 252 |  | `TestDialog_TaskDialogCancellationRequiresCancelButtonOrInternalRequest` | todo |
-| `closing_owner_cancels_every_outstanding_dialog` | test | 280 |  | `TestDialog_ClosingOwnerCancelsEveryOutstandingDialog` | todo |
-| `closed_owner_waits_for_active_dialog_but_queued_requests_stay_cancelled` | test | 296 |  | `TestDialog_ClosedOwnerWaitsForActiveDialogButQueuedRequestsStayCancelled` | todo |
-| `cancelling_one_request_does_not_cancel_its_owner_or_other_requests` | test | 311 |  | `TestDialog_CancellingOneRequestDoesNotCancelItsOwnerOrOtherRequests` | todo |
-| `dialogs_serialize_per_owner` | test | 322 |  | `TestDialog_DialogsSerializePerOwner` | todo |
-| `ownerless_request_can_be_cancelled_without_a_window` | test | 334 |  | `TestDialog_OwnerlessRequestCanBeCancelledWithoutAWindow` | todo |
+| `task_dialog_cancellation_requires_cancel_button_or_internal_request` | test | 252 |  | `TestDialog_TaskDialogCancellationRequiresCancelButtonOrInternalRequest` | done |
+| `closing_owner_cancels_every_outstanding_dialog` | test | 280 |  | `TestDialog_ClosingOwnerCancelsEveryOutstandingDialog` | done |
+| `closed_owner_waits_for_active_dialog_but_queued_requests_stay_cancelled` | test | 296 |  | `TestDialog_ClosedOwnerWaitsForActiveDialogButQueuedRequestsStayCancelled` | done |
+| `cancelling_one_request_does_not_cancel_its_owner_or_other_requests` | test | 311 |  | `TestDialog_CancellingOneRequestDoesNotCancelItsOwnerOrOtherRequests` | done |
+| `dialogs_serialize_per_owner` | test | 322 |  | `TestDialog_DialogsSerializePerOwner` | done |
+| `ownerless_request_can_be_cancelled_without_a_window` | test | 334 |  | `TestDialog_OwnerlessRequestCanBeCancelledWithoutAWindow` | done |
 
 ## gpui_windows/src/direct_write.rs
 
