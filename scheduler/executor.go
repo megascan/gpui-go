@@ -143,7 +143,7 @@ func (e SendLocalExecutor) SpawnAt[T any](location Location, body func(s *Scope)
 
 func boxDedicated[T any](f func(executor LocalExecutor, s *Scope) (T, error)) func(executor LocalExecutor, s *Scope) (any, error) {
 	return func(executor LocalExecutor, s *Scope) (any, error) {
-		v, err := f(executor, s)
+		v, err := recoverBackgroundPanic(func(s *Scope) (T, error) { return f(executor, s) })(s)
 		return v, err
 	}
 }
@@ -215,7 +215,7 @@ func (e BackgroundExecutor) SpawnRealtimeAt[T any](location Location, body func(
 			}
 		}
 	})
-	return spawnTask(newRunnableMeta(location), body, func(runnable *Runnable) {
+	return spawnTask(newRunnableMeta(location), recoverBackgroundPanic(body), func(runnable *Runnable) {
 		if tx.TrySend(runnable) != nil {
 			runnable.Close()
 		}
@@ -302,7 +302,7 @@ func (e *DedicatedExecutor) Spawn[T any](body func(s *Scope) (T, error)) *Task[T
 // SpawnAt is Spawn with an explicit spawn location.
 func (e *DedicatedExecutor) SpawnAt[T any](location Location, body func(s *Scope) (T, error)) *Task[T] {
 	sender := e.sender
-	return spawnTask(newRunnableMeta(location), body, func(runnable *Runnable) {
+	return spawnTask(newRunnableMeta(location), recoverBackgroundPanic(body), func(runnable *Runnable) {
 		if sender.trySendIfOpen(runnable) != nil {
 			runnable.Close()
 		}

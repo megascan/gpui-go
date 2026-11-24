@@ -3472,18 +3472,37 @@ type imageDecoder interface {
 }
 
 const (
-	imageDecodeMaxAllocBytes uint64 = webpMaxCanvasBytes
-	imageDecodeMaxTotalBytes uint64 = 2 * imageDecodeMaxAllocBytes
+	imageDecodeMaxAllocBytes     uint64 = webpMaxCanvasBytes
+	imageDecodeMaxTotalBytes     uint64 = 2 * imageDecodeMaxAllocBytes
+	imageDecodeMaxAnimationBytes uint64 = 4 * imageDecodeMaxAllocBytes
 )
 
 var errImageLimitsExceeded = errors.New("the image is too large to decode within the memory limit")
 
 type imageDecodeBudget struct {
 	remaining uint64
+	reserved  uint64
 }
 
 func newImageDecodeBudget() *imageDecodeBudget {
 	return &imageDecodeBudget{remaining: imageDecodeMaxTotalBytes}
+}
+
+func newAnimationDecodeBudget() *imageDecodeBudget {
+	return &imageDecodeBudget{remaining: imageDecodeMaxAnimationBytes}
+}
+
+func (b *imageDecodeBudget) acquire() func() {
+	return imageDecodeMemory.acquire(b.reserved)
+}
+
+func (b *imageDecodeBudget) reserveBytes(size uint64) error {
+	if size > imageDecodeMaxAllocBytes || size > b.remaining {
+		return errImageLimitsExceeded
+	}
+	b.remaining -= size
+	b.reserved += size
+	return nil
 }
 
 func imageBufferBytes(width, height, bytesPerPixel uint64) (uint64, error) {
@@ -3503,11 +3522,7 @@ func (b *imageDecodeBudget) reserve(width, height, bytesPerPixel uint64) error {
 	if err != nil {
 		return err
 	}
-	if size > b.remaining {
-		return errImageLimitsExceeded
-	}
-	b.remaining -= size
-	return nil
+	return b.reserveBytes(size)
 }
 
 func colorModelBytesPerPixel(model color.Model) uint64 {
@@ -3559,6 +3574,8 @@ func decodeStaticImageFromDecoder(decoder imageDecoder) ([]ImageFrame, error) {
 	if err != nil {
 		return nil, fmt.Errorf("decoding image: %w", err)
 	}
+	release := budget.acquire()
+	defer release()
 	decoded, err := decoder.decode()
 	if err != nil {
 		return nil, fmt.Errorf("decoding image: %w", err)
@@ -3588,10 +3605,11 @@ func decodeAnimatedFrames(frames iter.Seq2[ImageFrame, error], formatName string
 }
 
 func decodeGifImage(bytes []byte) ([]ImageFrame, error) {
-	frames, err := newGifFrames(bytes)
+	frames, release, err := newGifFrames(bytes)
 	if err != nil {
 		return nil, err
 	}
+	defer release()
 	return decodeAnimatedFrames(frames, "GIF")
 }
 
@@ -4081,11 +4099,12 @@ func imageIntoRGBA8(img image.Image) *image.RGBA {
 }
 
 type stdImageDecoder struct {
-	data       []byte
-	orient     imageOrientation
-	config     image.Config
-	buffers    []uint64
-	decodeFunc func(r io.Reader) (image.Image, error)
+	data        []byte
+	orient      imageOrientation
+	config      image.Config
+	buffers     []uint64
+	bufferBytes []uint64
+	decodeFunc  func(r io.Reader) (image.Image, error)
 }
 
 func (d *stdImageDecoder) orientation() (imageOrientation, error) {
@@ -4098,11 +4117,16 @@ func (d *stdImageDecoder) reserve(budget *imageDecodeBudget) (uint64, uint64, er
 	}
 	width, height := uint64(d.config.Width), uint64(d.config.Height)
 	buffers := d.buffers
-	if len(buffers) == 0 {
+	if len(buffers) == 0 && len(d.bufferBytes) == 0 {
 		buffers = []uint64{colorModelBytesPerPixel(d.config.ColorModel)}
 	}
 	for _, bytesPerPixel := range buffers {
 		if err := budget.reserve(width, height, bytesPerPixel); err != nil {
+			return 0, 0, err
+		}
+	}
+	for _, size := range d.bufferBytes {
+		if err := budget.reserveBytes(size); err != nil {
 			return 0, 0, err
 		}
 	}
@@ -4148,6 +4172,14 @@ func jpegIsProgressive(data []byte) bool {
 }
 
 func jpegDecodeBuffers(data []byte, config image.Config) []uint64 {
+	if sizes, ok := jpegDecodeBytes(data, config); ok {
+		pixels := uint64(config.Width) * uint64(config.Height)
+		buffers := make([]uint64, 0, len(sizes))
+		for _, size := range sizes {
+			buffers = append(buffers, (size+pixels-1)/pixels)
+		}
+		return buffers
+	}
 	components := jpegComponentCount(config.ColorModel)
 	buffers := []uint64{components}
 	if jpegIsProgressive(data) {
@@ -4175,7 +4207,13 @@ func newImageDecoder(data []byte, format ImageFormat) (imageDecoder, error) {
 		if err != nil {
 			return nil, err
 		}
-		return &stdImageDecoder{data: data, orient: orientationFromExifOption(jpegExifMetadata(data)), config: config, buffers: jpegDecodeBuffers(data, config), decodeFunc: jpeg.Decode}, nil
+		d := &stdImageDecoder{data: data, orient: orientationFromExifOption(jpegExifMetadata(data)), config: config, decodeFunc: jpeg.Decode}
+		if sizes, ok := jpegDecodeBytes(data, config); ok {
+			d.bufferBytes = sizes
+		} else {
+			d.buffers = jpegDecodeBuffers(data, config)
+		}
+		return d, nil
 	case ImageFormatBmp:
 		config, err := bmp.DecodeConfig(bytes.NewReader(data))
 		if err != nil {
@@ -4187,7 +4225,17 @@ func newImageDecoder(data []byte, format ImageFormat) (imageDecoder, error) {
 		if err != nil {
 			return nil, err
 		}
-		return &stdImageDecoder{data: data, orient: tiffOrientation(data), config: config, decodeFunc: tiff.Decode}, nil
+		if config.Width < 0 || config.Height < 0 {
+			return nil, errImageLimitsExceeded
+		}
+		if _, err := imageBufferBytes(uint64(config.Width), uint64(config.Height), 1); err != nil {
+			return nil, err
+		}
+		strips, err := tiffDecodeBytes(data, config)
+		if err != nil {
+			return nil, err
+		}
+		return &stdImageDecoder{data: data, orient: tiffOrientation(data), config: config, buffers: []uint64{colorModelBytesPerPixel(config.ColorModel)}, bufferBytes: strips, decodeFunc: tiff.Decode}, nil
 	case ImageFormatIco:
 		return newIcoDecoder(data)
 	case ImageFormatPnm:
@@ -4252,44 +4300,61 @@ func gifFrameSizes(data []byte) [][2]uint64 {
 	return sizes
 }
 
-func reserveGifFrames(sizes [][2]uint64, width, height int) error {
-	budget := newImageDecodeBudget()
+func reserveGifFrames(sizes [][2]uint64, width, height int) (*imageDecodeBudget, error) {
+	budget := newAnimationDecodeBudget()
 	for _, size := range sizes {
 		if err := budget.reserve(size[0], size[1], 1); err != nil {
-			return err
+			return nil, err
 		}
 	}
 	for range len(sizes) + 1 {
 		if err := budget.reserve(uint64(width), uint64(height), 4); err != nil {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+	return budget, nil
 }
 
-func newGifFrames(data []byte) (iter.Seq2[ImageFrame, error], error) {
+func gifPalette(m *image.Paletted) [256][4]byte {
+	var palette [256][4]byte
+	for i := range palette {
+		palette[i] = [4]byte{0, 0, 0, 255}
+	}
+	for i, c := range m.Palette[:min(len(m.Palette), 256)] {
+		n := color.NRGBAModel.Convert(c).(color.NRGBA)
+		palette[i] = [4]byte{n.R, n.G, n.B, n.A}
+	}
+	return palette
+}
+
+func newGifFrames(data []byte) (iter.Seq2[ImageFrame, error], func(), error) {
 	config, err := gif.DecodeConfig(bytes.NewReader(data))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	if err := reserveGifFrames(gifFrameSizes(data), config.Width, config.Height); err != nil {
-		return nil, err
+	budget, err := reserveGifFrames(gifFrameSizes(data), config.Width, config.Height)
+	if err != nil {
+		return nil, nil, err
 	}
+	release := budget.acquire()
 	decoded, err := gif.DecodeAll(bytes.NewReader(data))
 	if err != nil {
-		return nil, err
+		release()
+		return nil, nil, err
 	}
 	width, height := decoded.Config.Width, decoded.Config.Height
 	sizes := make([][2]uint64, 0, len(decoded.Image))
 	for _, paletted := range decoded.Image {
 		sizes = append(sizes, [2]uint64{uint64(paletted.Rect.Dx()), uint64(paletted.Rect.Dy())})
 	}
-	if err := reserveGifFrames(sizes, width, height); err != nil {
-		return nil, err
+	if _, err := reserveGifFrames(sizes, width, height); err != nil {
+		release()
+		return nil, nil, err
 	}
 	return func(yield func(ImageFrame, error) bool) {
 		nonDisposed := image.NewRGBA(image.Rect(0, 0, width, height))
 		for i, paletted := range decoded.Image {
+			decoded.Image[i] = nil
 			disposal := gifDisposalAny
 			if i < len(decoded.Disposal) {
 				switch decoded.Disposal[i] {
@@ -4301,19 +4366,18 @@ func newGifFrames(data []byte) (iter.Seq2[ImageFrame, error], error) {
 					disposal = gifDisposalPrevious
 				}
 			}
-			frame := imageIntoRGBA8(paletted)
-			left, top := paletted.Rect.Min.X, paletted.Rect.Min.Y
+			palette := gifPalette(paletted)
+			bounds := paletted.Rect
 			out := image.NewRGBA(image.Rect(0, 0, width, height))
 			for y := range height {
 				for x := range width {
 					previous := nonDisposed.Pix[nonDisposed.PixOffset(x, y):][:4]
 					target := out.Pix[out.PixOffset(x, y):][:4]
-					frameX, frameY := x-left, y-top
-					if frameX < 0 || frameY < 0 || frameX >= frame.Rect.Dx() || frameY >= frame.Rect.Dy() {
+					if x < bounds.Min.X || y < bounds.Min.Y || x >= bounds.Max.X || y >= bounds.Max.Y {
 						copy(target, previous)
 						continue
 					}
-					copy(target, frame.Pix[frame.PixOffset(frameX, frameY):][:4])
+					copy(target, palette[paletted.Pix[paletted.PixOffset(x, y)]][:])
 					if target[3] == 0 {
 						copy(target, previous)
 					}
@@ -4335,7 +4399,7 @@ func newGifFrames(data []byte) (iter.Seq2[ImageFrame, error], error) {
 				return
 			}
 		}
-	}, nil
+	}, release, nil
 }
 
 var (
@@ -4360,6 +4424,7 @@ type webpDecoder struct {
 	animated  bool
 	exif      []byte
 	hasExif   bool
+	lossless  bool
 	frameData []webpChunk
 }
 
@@ -4419,6 +4484,7 @@ func newWebpDecoder(data []byte) (*webpDecoder, error) {
 		d.width = header&0x3fff + 1
 		d.height = (header>>14)&0x3fff + 1
 		d.hasAlpha = (header>>28)&1 != 0
+		d.lossless = true
 	case "VP8X":
 		if len(first.data) < 10 {
 			return nil, errWebpInvalidChunkSize
@@ -4454,6 +4520,7 @@ func newWebpDecoder(data []byte) (*webpDecoder, error) {
 			!d.animated && hasVP8 == hasVP8L {
 			return nil, errWebpChunkMissing
 		}
+		d.lossless = hasVP8L
 	default:
 		return nil, fmt.Errorf("invalid chunk signature: %q", first.fourCC)
 	}
@@ -4472,6 +4539,11 @@ func (d *webpDecoder) reserve(budget *imageDecodeBudget) (uint64, uint64, error)
 	width, height := uint64(d.width), uint64(d.height)
 	if err := budget.reserve(width, height, 4); err != nil {
 		return 0, 0, err
+	}
+	if d.lossless {
+		if err := budget.reserve(width, height, 4); err != nil {
+			return 0, 0, err
+		}
 	}
 	return width, height, nil
 }
@@ -4548,6 +4620,17 @@ func (d *webpDecoder) readFrame(anmf webpChunk) (frame []byte, frameX, frameY, f
 		err = errWebpInvalidChunkSize
 		return
 	}
+	bitstream := subchunks[0]
+	if bitstream.fourCC == "ALPH" && len(subchunks) >= 2 {
+		bitstream = subchunks[1]
+	}
+	if w, h, ok := webpBitstreamDims(bitstream.fourCC, bitstream.data); ok && (w != frameWidth || h != frameHeight) {
+		err = errWebpInconsistentImageSize
+		return
+	} else if !ok {
+		err = errWebpInvalidChunkSize
+		return
+	}
 	switch subchunks[0].fourCC {
 	case "VP8 ":
 		frame, err = decodeWebpFramePixels(webpFile(webpChunkBytes("VP8 ", subchunks[0].data)), frameWidth, frameHeight, false)
@@ -4577,13 +4660,15 @@ func (d *webpDecoder) readFrame(anmf webpChunk) (frame []byte, frameX, frameY, f
 
 func (d *webpDecoder) frames() iter.Seq2[ImageFrame, error] {
 	return func(yield func(ImageFrame, error) bool) {
-		budget := newImageDecodeBudget()
-		for range len(d.frameData) + 3 {
+		budget := newAnimationDecodeBudget()
+		for range len(d.frameData) + 4 {
 			if err := budget.reserve(uint64(d.width), uint64(d.height), 4); err != nil {
 				yield(ImageFrame{}, err)
 				return
 			}
 		}
+		release := budget.acquire()
+		defer release()
 		canvas := make([]byte, int(d.width)*int(d.height)*4)
 		var disposeNextFrame bool
 		var previousWidth, previousHeight, previousX, previousY uint32

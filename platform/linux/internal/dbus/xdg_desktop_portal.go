@@ -179,6 +179,7 @@ func listen(ctx context.Context, conn *godbus.Conn, send func(Event)) error {
 		active[[2]string{setting.namespace, setting.key}] = setting
 	}
 
+	pin := NewOwnerPin(conn, portalService)
 	for {
 		select {
 		case <-ctx.Done():
@@ -187,7 +188,7 @@ func listen(ctx context.Context, conn *godbus.Conn, send func(Event)) error {
 			if !ok {
 				return nil
 			}
-			if sig.Name != settingChangedSignal || sig.Path != portalPath || len(sig.Body) < 3 {
+			if sig.Name != settingChangedSignal || sig.Path != portalPath || len(sig.Body) < 3 || !pin.Matches(sig.Sender) {
 				continue
 			}
 			namespace, _ := sig.Body[0].(string)

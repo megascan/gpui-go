@@ -69,3 +69,26 @@ func TestSecurity_SEC037_ForegroundPanicStillPropagates(t *testing.T) {
 		t.Fatalf("foreground panic: got %v, want boom", got)
 	}
 }
+
+func TestSecurity_R2_13_RealtimeAndDedicatedPanicsSurfaceAsErrors(t *testing.T) {
+	s := newFIFOScheduler()
+	var panicErr *PanicError
+	rt := s.background().SpawnRealtime(func(*Scope) (int, error) { panic("rt") }).Fallible()
+	if r := BlockOn[Result[int]](rt); !errors.As(r.Err, &panicErr) {
+		t.Fatalf("realtime panic: %v", r.Err)
+	}
+	dd := s.background().SpawnDedicated(func(LocalExecutor, *Scope) (int, error) { panic("dd") }).Fallible()
+	if r := BlockOn[Result[int]](dd); !errors.As(r.Err, &panicErr) {
+		t.Fatalf("dedicated panic: %v", r.Err)
+	}
+	de := NewDedicatedExecutor(s.background())
+	defer de.Close()
+	task := de.Spawn(func(*Scope) (int, error) { panic("de") }).Fallible()
+	if r := BlockOn[Result[int]](task); !errors.As(r.Err, &panicErr) {
+		t.Fatalf("dedicated executor panic: %v", r.Err)
+	}
+	after := de.Spawn(func(*Scope) (int, error) { return 7, nil }).Fallible()
+	if r := BlockOn[Result[int]](after); r.Err != nil || r.Value != 7 {
+		t.Fatalf("dedicated executor after panic: %v", r)
+	}
+}

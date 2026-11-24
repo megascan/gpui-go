@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 	"testing"
+	"time"
 
 	"github.com/megascan/gpui-go"
 	"github.com/megascan/gpui-go/internal/securityharness/lib/bombchild"

@@ -21,13 +21,13 @@ type cachedLoadState[T any] struct {
 }
 
 type cachedLoad[T any] struct {
-	state *cachedLoadState[T]
-	task  *Task[struct{}]
+	state      *cachedLoadState[T]
+	task       *Task[struct{}]
+	background *Task[T]
 }
 
 type cachedLoadReleaser interface {
 	release()
-	evict(cx *App)
 }
 
 func newCachedLoad[T any](future func(s *scheduler.Scope) T, cx *App) *cachedLoad[T] {
@@ -40,9 +40,12 @@ func newObservedCachedLoad[T any](future func(s *scheduler.Scope) T, cx *App, on
 		return future(s), nil
 	})
 	fg := cx.Spawn(func(cx *AsyncApp) (struct{}, error) {
-		result, _ := task.Await(cx)
+		result, err := task.Await(cx)
 		if state.evicted {
 			return struct{}{}, nil
+		}
+		if err != nil {
+			result = cachedLoadFailure[T](err)
 		}
 		if state.loaded {
 			panic("a cached load completes only once")
@@ -61,7 +64,22 @@ func newObservedCachedLoad[T any](future func(s *scheduler.Scope) T, cx *App, on
 		})
 		return struct{}{}, nil
 	})
-	return &cachedLoad[T]{state: state, task: fg}
+	return &cachedLoad[T]{state: state, task: fg, background: task}
+}
+
+var errorType = reflect.TypeFor[error]()
+
+func cachedLoadFailure[T any](err error) T {
+	var result T
+	value := reflect.ValueOf(&result).Elem()
+	if value.Kind() == reflect.Struct {
+		if field := value.FieldByName("Err"); field.IsValid() && field.CanSet() && field.Type() == errorType {
+			field.Set(reflect.ValueOf(err))
+			return result
+		}
+	}
+	slog.Error(fmt.Sprintf("Failed to load asset: %v", err))
+	return result
 }
 
 func (l *cachedLoad[T]) get() (T, bool) {
@@ -84,19 +102,9 @@ func (l *cachedLoad[T]) useBy(view EntityID) (T, bool) {
 func (l *cachedLoad[T]) release() {
 	l.state.evicted = true
 	l.task.Cancel()
-}
-
-func (l *cachedLoad[T]) evict(cx *App) {
-	views := l.state.views
-	l.release()
-	if len(views) == 0 {
-		return
+	if l.background != nil {
+		l.background.Cancel()
 	}
-	cx.Defer(func(cx *App) {
-		for view := range views {
-			cx.Notify(view)
-		}
-	})
 }
 
 const (
@@ -105,19 +113,23 @@ const (
 )
 
 type assetCache struct {
-	entries map[loadingAssetKey]*list.Element
-	order   list.List
-	bytes   int64
+	entries      map[loadingAssetKey]*list.Element
+	order        list.List
+	bytes        int64
+	frame        uint64
+	windowFrames map[WindowID]uint64
 }
 
 type assetSlot struct {
-	key   loadingAssetKey
-	load  cachedLoadReleaser
-	bytes int64
+	key       loadingAssetKey
+	load      cachedLoadReleaser
+	bytes     int64
+	loaded    bool
+	usedFrame uint64
 }
 
 func newAssetCache() *assetCache {
-	return &assetCache{entries: map[loadingAssetKey]*list.Element{}}
+	return &assetCache{entries: map[loadingAssetKey]*list.Element{}, frame: 1, windowFrames: map[WindowID]uint64{}}
 }
 
 func (c *assetCache) has(key loadingAssetKey) bool {
@@ -131,11 +143,20 @@ func (c *assetCache) get(key loadingAssetKey) (*assetSlot, bool) {
 		return nil, false
 	}
 	c.order.MoveToFront(element)
-	return element.Value.(*assetSlot), true
+	slot := element.Value.(*assetSlot)
+	c.markUsed(slot)
+	return slot, true
+}
+
+func (c *assetCache) markUsed(slot *assetSlot) {
+	if drawInProgress() {
+		slot.usedFrame = c.frame
+	}
 }
 
 func (c *assetCache) insert(slot *assetSlot, cx *App) {
 	c.entries[slot.key] = c.order.PushFront(slot)
+	c.markUsed(slot)
 	c.trim(slot, cx)
 }
 
@@ -159,17 +180,55 @@ func (c *assetCache) loaded(key loadingAssetKey, bytes int64, cx *App) {
 	slot := element.Value.(*assetSlot)
 	c.bytes += bytes - slot.bytes
 	slot.bytes = bytes
+	slot.loaded = true
 	c.trim(slot, cx)
 }
 
-func (c *assetCache) trim(keep *assetSlot, cx *App) {
-	for len(c.entries) > maxAssetCacheEntries || c.bytes > maxAssetCacheBytes {
-		element := c.order.Back()
-		if element == nil || element.Value.(*assetSlot) == keep {
-			return
+func (c *assetCache) endFrame(window WindowID, cx *App) {
+	c.windowFrames[window] = c.frame
+	c.frame++
+	c.trim(nil, cx)
+}
+
+func (c *assetCache) forgetWindow(window WindowID, cx *App) {
+	delete(c.windowFrames, window)
+	c.trim(nil, cx)
+}
+
+func (c *assetCache) overBudget() bool {
+	return len(c.entries) > maxAssetCacheEntries || c.bytes > maxAssetCacheBytes
+}
+
+func (c *assetCache) pinned(slot *assetSlot) bool {
+	if !slot.loaded {
+		return true
+	}
+	if slot.usedFrame == 0 {
+		return false
+	}
+	if slot.usedFrame == c.frame {
+		return true
+	}
+	for _, frame := range c.windowFrames {
+		if slot.usedFrame == frame {
+			return true
 		}
-		slot, _ := c.remove(element.Value.(*assetSlot).key)
-		slot.load.evict(cx)
+	}
+	return false
+}
+
+func (c *assetCache) trim(keep *assetSlot, _ *App) {
+	if !c.overBudget() {
+		return
+	}
+	for element := c.order.Back(); element != nil && c.overBudget(); {
+		previous := element.Prev()
+		slot := element.Value.(*assetSlot)
+		if slot != keep && !c.pinned(slot) {
+			c.remove(slot.key)
+			slot.load.release()
+		}
+		element = previous
 	}
 }
 

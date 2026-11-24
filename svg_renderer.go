@@ -285,6 +285,9 @@ func (r SvgRenderer) parseOptions() []svg.Option {
 		if defaultData == nil {
 			defaultData = svg.DefaultDataResolver(options...)
 		}
+		if r.checkTextPaths(data) != nil {
+			return nil, false
+		}
 		kind, ok := defaultData(mime, data)
 		if !ok || reserveSvgRasterImage(budget, kind) != nil {
 			return nil, false
@@ -328,18 +331,44 @@ func reserveSvgRasterImage(budget *imageDecodeBudget, kind svg.ImageKind) error 
 	return nil
 }
 
-const svgFilterMaxWork float64 = 1 << 24
+const (
+	svgFilterMaxWork        float64 = 1 << 28
+	svgFilterMaxRegionArea  float64 = 1 << 26
+	svgNestedImageMaxPixels float64 = 1 << 27
+)
 
-var errSvgFilterWorkExceeded = errors.New("SVG filters exceed the rendering work limit")
+var (
+	errSvgFilterWorkExceeded  = errors.New("SVG filters exceed the rendering work limit")
+	errSvgNestedImageExceeded = errors.New("SVG nested images exceed the rendering pixel limit")
+)
 
 type svgFilterWork struct {
 	canvasLeft, canvasTop, canvasRight, canvasBottom float64
+	canvasArea                                       float64
 	total                                            float64
+	nested                                           float64
+	regionExceeded                                   bool
 }
 
 func newSvgFilterWork(width, height uint32) *svgFilterWork {
 	w, h := float64(width), float64(height)
-	return &svgFilterWork{canvasLeft: -2 * w, canvasTop: -2 * h, canvasRight: 3 * w, canvasBottom: 3 * h}
+	return &svgFilterWork{canvasLeft: -2 * w, canvasTop: -2 * h, canvasRight: 3 * w, canvasBottom: 3 * h, canvasArea: w * h}
+}
+
+func (w *svgFilterWork) err() error {
+	switch {
+	case w.regionExceeded || w.total > svgFilterMaxWork:
+		return errSvgFilterWorkExceeded
+	case w.nested > svgNestedImageMaxPixels:
+		return errSvgNestedImageExceeded
+	}
+	return nil
+}
+
+func checkSvgRenderWork(tree *svg.Tree, transform svg.Transform, width, height uint32) error {
+	work := newSvgFilterWork(width, height)
+	work.walk(tree.Root(), transform, false, work.canvasArea)
+	return work.err()
 }
 
 func (w *svgFilterWork) region(filter *svg.Filter, transform svg.Transform, full bool) (float64, float64) {
@@ -377,10 +406,14 @@ func svgFilterPrimitiveWork(kind svg.KindFilter, transform svg.Transform, width,
 	return 1
 }
 
-func (w *svgFilterWork) walk(group *svg.Group, base svg.Transform, full bool) {
+func (w *svgFilterWork) walk(group *svg.Group, base svg.Transform, full bool, layer float64) {
 	transform := base.PreConcat(group.AbsTransform())
 	for _, filter := range group.Filters() {
 		width, height := w.region(filter, transform, full)
+		if width*height > svgFilterMaxRegionArea {
+			w.regionExceeded = true
+		}
+		layer = max(layer, width*height)
 		work := 1.0
 		for _, primitive := range filter.Primitives() {
 			work += svgFilterPrimitiveWork(primitive.Kind(), transform, width, height)
@@ -388,19 +421,26 @@ func (w *svgFilterWork) walk(group *svg.Group, base svg.Transform, full bool) {
 		w.total += work * width * height
 	}
 	group.Subroots(func(g *svg.Group) {
-		w.walk(g, transform, full)
+		w.walk(g, transform, full, layer)
 	})
 	for _, child := range group.Children() {
 		switch c := child.(type) {
 		case *svg.Group:
-			w.walk(c, base, full)
+			w.walk(c, base, full, layer)
 		case *svg.Text:
 			c.Subroots(func(g *svg.Group) {
-				w.walk(g, base, full)
+				w.walk(g, base, full, layer)
+			})
+		case *svg.Image:
+			if _, ok := c.Kind().(svg.ImageKindSVG); ok {
+				w.nested += layer
+			}
+			c.Subroots(func(g *svg.Group) {
+				w.walk(g, transform, true, layer)
 			})
 		default:
 			c.Subroots(func(g *svg.Group) {
-				w.walk(g, transform, true)
+				w.walk(g, transform, true, layer)
 			})
 		}
 	}
@@ -408,7 +448,7 @@ func (w *svgFilterWork) walk(group *svg.Group, base svg.Transform, full bool) {
 
 // ParseSvg parses SVG data into a ParsedSvg that can be rasterized at any scale.
 func (r SvgRenderer) ParseSvg(bytes []byte) (*ParsedSvg, error) {
-	tree, err := svg.FromData(bytes, r.parseOptions()...)
+	tree, err := r.parseTree(bytes)
 	if err != nil {
 		return nil, err
 	}
@@ -503,8 +543,15 @@ func (r SvgRenderer) renderAlphaMask(params RenderSvgParams, bytes []byte) (Size
 	return Size[DevicePixels]{}, nil, false, nil
 }
 
+func (r SvgRenderer) parseTree(data []byte) (*svg.Tree, error) {
+	if err := r.checkTextPaths(data); err != nil {
+		return nil, err
+	}
+	return svg.FromData(data, r.parseOptions()...)
+}
+
 func (r SvgRenderer) renderPixmap(bytes []byte, size SvgSize) (*okage.Pixmap, error) {
-	tree, err := svg.FromData(bytes, r.parseOptions()...)
+	tree, err := r.parseTree(bytes)
 	if err != nil {
 		return nil, err
 	}
@@ -548,10 +595,8 @@ func rasterizeTree(tree *svg.Tree, size SvgSize) (*okage.Pixmap, error) {
 	height *= scale
 
 	transform := okagepath.TransformFromScale(width/svgSize.Width(), height/svgSize.Height())
-	work := newSvgFilterWork(f32AsU32(width), f32AsU32(height))
-	work.walk(tree.Root(), transform, false)
-	if work.total > svgFilterMaxWork {
-		return nil, errSvgFilterWorkExceeded
+	if err := checkSvgRenderWork(tree, transform, f32AsU32(width), f32AsU32(height)); err != nil {
+		return nil, err
 	}
 
 	pixmap, ok := okage.NewPixmap(f32AsU32(width), f32AsU32(height))

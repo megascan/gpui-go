@@ -331,8 +331,9 @@ func listenForSystemPowerEvents(conn *godbus.Conn, powerSender *ChannelSender[Sy
 	signals := make(chan *godbus.Signal, 16)
 	conn.Signal(signals)
 	defer conn.RemoveSignal(signals)
+	pin := dbus.NewOwnerPin(conn, login1Service)
 	for message := range signals {
-		if message.Path != login1Path || message.Name != login1Interface+".PrepareForSleep" {
+		if message.Path != login1Path || message.Name != login1Interface+".PrepareForSleep" || !pin.Matches(message.Sender) {
 			continue
 		}
 		if len(message.Body) != 1 {
@@ -412,6 +413,7 @@ func portalCall(conn *godbus.Conn, method string, options map[string]godbus.Vari
 	if handle != "" {
 		path = handle
 	}
+	pin := dbus.NewOwnerPin(conn, portalService)
 	timer := time.NewTimer(PortalResponseTimeout)
 	defer timer.Stop()
 	for {
@@ -426,7 +428,7 @@ func portalCall(conn *godbus.Conn, method string, options map[string]godbus.Vari
 		if !open {
 			return portalRequest{}, errors.New("D-Bus connection closed")
 		}
-		if signal.Path != path || signal.Name != portalRequestInterface+".Response" || len(signal.Body) < 1 {
+		if signal.Path != path || signal.Name != portalRequestInterface+".Response" || len(signal.Body) < 1 || !pin.Matches(signal.Sender) {
 			continue
 		}
 		response, _ := signal.Body[0].(uint32)
@@ -482,6 +484,9 @@ func OpenURIInternal(executor gpui.BackgroundExecutor, bus func() (*godbus.Conn,
 		slog.Error(err.Error())
 		return
 	}
+	if parsed.Scheme == "mailto" {
+		parsed.RawQuery = filterMailtoQuery(parsed.RawQuery)
+	}
 	spawnDetached(executor, func() {
 		opened := runOpenCommands(parsed.String(), activationToken, environment)
 		if !opened {
@@ -494,6 +499,23 @@ func OpenURIInternal(executor gpui.BackgroundExecutor, bus func() (*godbus.Conn,
 			}
 		}
 	})
+}
+
+var mailtoAllowedFields = []string{"to", "cc", "bcc", "subject", "body"}
+
+func filterMailtoQuery(raw string) string {
+	var kept []string
+	for field := range strings.SplitSeq(raw, "&") {
+		key, _, _ := strings.Cut(field, "=")
+		name, err := url.QueryUnescape(key)
+		if err != nil {
+			continue
+		}
+		if slices.Contains(mailtoAllowedFields, strings.ToLower(name)) {
+			kept = append(kept, field)
+		}
+	}
+	return strings.Join(kept, "&")
 }
 
 // RevealPathInternal opens the directory of path with the OpenURI portal, falling back to the

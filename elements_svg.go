@@ -1,11 +1,12 @@
 package gpui
 
 import (
-	"encoding/binary"
+	"errors"
 	"fmt"
+	"hash/maphash"
 	"math"
-	"math/bits"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/megascan/gpui-go/gpuiutil"
@@ -57,16 +58,27 @@ func (s *Svg) ExternalPath(path SharedString) *Svg {
 // Data sets the raw SVG data for this element. The SVG will be rendered directly from the
 // provided bytes.
 func (s *Svg) Data(data []byte) *Svg {
-	var lengthPrefix [8]byte
-	binary.LittleEndian.PutUint64(lengthPrefix[:], uint64(len(data)))
-	message := make([]byte, 0, len(lengthPrefix)+len(data))
-	message = append(message, lengthPrefix[:]...)
-	message = append(message, data...)
-	hash := sipHash13(message)
-	path := SharedString(fmt.Sprintf("__binary_svg__%d", hash))
 	s.data = append(make([]byte, 0, len(data)), data...)
-	s.dataPath = Some(path)
+	s.dataPath = Some(svgDataKey(data))
 	return s
+}
+
+const (
+	svgKeyReservedPrefix = "\x00"
+	svgDataKeyPrefix     = svgKeyReservedPrefix + "svg-data\x00"
+	svgFileKeyPrefix     = svgKeyReservedPrefix + "svg-file\x00"
+)
+
+var svgDataKeySeeds = [2]maphash.Seed{maphash.MakeSeed(), maphash.MakeSeed()}
+
+var errSvgReservedPath = errors.New("SVG asset path uses the reserved prefix")
+
+func svgDataKey(data []byte) SharedString {
+	return SharedString(fmt.Sprintf("%s%016x%016x", svgDataKeyPrefix, maphash.Bytes(svgDataKeySeeds[0], data), maphash.Bytes(svgDataKeySeeds[1], data)))
+}
+
+func svgFileKey(path SharedString) SharedString {
+	return SharedString(svgFileKeyPrefix) + path
 }
 
 // WithTransformation transforms the SVG element with the given transformation. Note that this
@@ -159,10 +171,14 @@ func (s *Svg) Paint(globalID *GlobalElementID, inspectorID *InspectorElementID, 
 				gpuiutil.LogErr(result.Err)
 				return
 			}
-			if err := window.paintAnimatedSvg(bounds, path, result.Value, transformation, animation, color.Opacity(alpha), cx); err != nil {
+			if err := window.paintAnimatedSvg(bounds, svgFileKey(path), result.Value, transformation, animation, color.Opacity(alpha), cx); err != nil {
 				gpuiutil.LogErr(err)
 			}
 		} else if path, ok := s.path.Get(); ok && hasColor {
+			if strings.HasPrefix(string(path), svgKeyReservedPrefix) {
+				gpuiutil.LogErr(fmt.Errorf("painting SVG %q: %w", path, errSvgReservedPath))
+				return
+			}
 			if err := window.paintAnimatedSvg(bounds, path, nil, transformation, animation, color.Opacity(alpha), cx); err != nil {
 				gpuiutil.LogErr(err)
 			}
@@ -461,7 +477,7 @@ type svgAsset struct{}
 // Load reads the SVG file at source.
 func (svgAsset) Load(source SharedString, _ *App) func(s *scheduler.Scope) scheduler.Result[[]byte] {
 	return func(*scheduler.Scope) scheduler.Result[[]byte] {
-		bytes, err := os.ReadFile(string(source))
+		bytes, err := readSvgFile(string(source))
 		if err != nil {
 			return scheduler.Result[[]byte]{Err: err}
 		}
@@ -469,45 +485,32 @@ func (svgAsset) Load(source SharedString, _ *App) func(s *scheduler.Scope) sched
 	}
 }
 
-func sipHash13(message []byte) uint64 {
-	v0 := uint64(0x736f6d6570736575)
-	v1 := uint64(0x646f72616e646f6d)
-	v2 := uint64(0x6c7967656e657261)
-	v3 := uint64(0x7465646279746573)
-	round := func() {
-		v0 += v1
-		v1 = bits.RotateLeft64(v1, 13)
-		v1 ^= v0
-		v0 = bits.RotateLeft64(v0, 32)
-		v2 += v3
-		v3 = bits.RotateLeft64(v3, 16)
-		v3 ^= v2
-		v0 += v3
-		v3 = bits.RotateLeft64(v3, 21)
-		v3 ^= v0
-		v2 += v1
-		v1 = bits.RotateLeft64(v1, 17)
-		v1 ^= v2
-		v2 = bits.RotateLeft64(v2, 32)
+func readSvgFile(path string) ([]byte, error) {
+	info, err := os.Stat(path)
+	if err != nil {
+		return nil, err
 	}
-	length := len(message)
-	for len(message) >= 8 {
-		m := binary.LittleEndian.Uint64(message)
-		v3 ^= m
-		round()
-		v0 ^= m
-		message = message[8:]
+	if !info.Mode().IsRegular() {
+		return nil, fmt.Errorf("loading SVG from %q: not a regular file", path)
 	}
-	b := uint64(length) << 56
-	for i, c := range message {
-		b |= uint64(c) << (8 * i)
+	if info.Size() > imageAssetMaxBytes {
+		return nil, fmt.Errorf("loading SVG from %q: %w", path, errImageAssetTooLarge)
 	}
-	v3 ^= b
-	round()
-	v0 ^= b
-	v2 ^= 0xff
-	round()
-	round()
-	round()
-	return v0 ^ v1 ^ v2 ^ v3
+	file, err := os.OpenFile(path, os.O_RDONLY|imageOpenNonblockFlag, 0)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	opened, err := file.Stat()
+	if err != nil {
+		return nil, err
+	}
+	if !opened.Mode().IsRegular() || !os.SameFile(info, opened) {
+		return nil, fmt.Errorf("loading SVG from %q: file changed while opening", path)
+	}
+	data, err := readImageBody(file, imageAssetMaxBytes)
+	if err != nil {
+		return nil, fmt.Errorf("loading SVG from %q: %w", path, err)
+	}
+	return data, nil
 }

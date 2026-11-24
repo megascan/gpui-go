@@ -4,12 +4,14 @@ package screencap
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/binary"
 	"fmt"
-	"math/rand/v2"
 	"strings"
 	"time"
 
 	godbus "github.com/godbus/dbus/v5"
+	"github.com/megascan/gpui-go/platform/linux/internal/dbus"
 )
 
 const (
@@ -229,7 +231,7 @@ func NewScreenCastPortal(conn *godbus.Conn) *ScreenCastPortal {
 	return &ScreenCastPortal{
 		conn:       conn,
 		proxy:      screenCastProxy{obj: conn.Object(portalDesktopService, portalDesktopPath)},
-		token:      fmt.Sprintf("scap_%d", uint16(rand.Uint32())),
+		token:      newPortalToken(),
 		cursorMode: 1,
 	}
 }
@@ -254,10 +256,17 @@ func (p *ScreenCastPortal) selectSourcesArgs() (PropMap, error) {
 	}, nil
 }
 
+func newPortalToken() string {
+	var b [8]byte
+	_, _ = rand.Read(b[:])
+	return fmt.Sprintf("scap_%016x", binary.LittleEndian.Uint64(b[:]))
+}
+
 type reqWaiter struct {
 	conn *godbus.Conn
 	ch   chan *godbus.Signal
 	opts []godbus.MatchOption
+	pin  *dbus.OwnerPin
 }
 
 func subscribeReqResponse(conn *godbus.Conn) (*reqWaiter, error) {
@@ -271,7 +280,7 @@ func subscribeReqResponse(conn *godbus.Conn) (*reqWaiter, error) {
 		conn.RemoveSignal(ch)
 		return nil, err
 	}
-	return &reqWaiter{conn: conn, ch: ch, opts: opts}, nil
+	return &reqWaiter{conn: conn, ch: ch, opts: opts, pin: dbus.NewOwnerPin(conn, portalDesktopService)}, nil
 }
 
 func (w *reqWaiter) close() {
@@ -280,24 +289,24 @@ func (w *reqWaiter) close() {
 }
 
 func (w *reqWaiter) wait(path godbus.ObjectPath, iterations int, timeout time.Duration) *RequestResponse {
-	timer := time.NewTimer(timeout)
+	timer := time.NewTimer(time.Duration(iterations) * timeout)
 	defer timer.Stop()
-	for range iterations {
-		timer.Reset(timeout)
+	for {
 		select {
 		case sig, ok := <-w.ch:
 			if !ok {
 				return nil
 			}
-			if sig.Path == path && strings.HasPrefix(sig.Name, portalRequest+".") {
-				if res, ok := readRequestResponse(sig); ok {
-					return &res
-				}
+			if sig.Path != path || !strings.HasPrefix(sig.Name, portalRequest+".") || !w.pin.Matches(sig.Sender) {
+				continue
+			}
+			if res, ok := readRequestResponse(sig); ok {
+				return &res
 			}
 		case <-timer.C:
+			return nil
 		}
 	}
-	return nil
 }
 
 func callWithResponse(conn *godbus.Conn, iterations int, call func() (godbus.ObjectPath, error)) (*RequestResponse, error) {

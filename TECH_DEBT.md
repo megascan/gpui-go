@@ -14,7 +14,7 @@ Hacks, workarounds and known issues. Remove entries when resolved. Stages write 
 | M0-EXIT-OPEN | root | handoff items M0-exit left open |
 | STAGE-DEBT | all | per-stage debt folded below |
 | SEC-PLAUSIBLE | windows, macos, web | security findings that need a real host to confirm |
-| SEC-FOLLOWUP | root, text/gotext, NOTICE | follow-ups from the round 1 security fixes |
+| SEC-FOLLOWUP | root, text/gotext, platform, NOTICE | follow-ups from the round 1 and 2 security fixes |
 
 ## L-WGPUVER
 
@@ -754,8 +754,12 @@ These are unverified, found by static review only. Details are in docs/security/
 - **SEC-042:** bare-name LoadLibraryA of amd_ags_x64.dll and nvapi64.dll allows DLL planting (platform/windows/util.go:158).
 - **SEC-043:** the UIA COM adapters have no recover, so a panic from a UIA client crashes the app (a11y/windows/node.go, text.go).
 
-## SEC-FOLLOWUP (security sweep round 1 fixes)
-- **Asset LRU evicts in-use entries:** above 1 GiB or 4096 entries (`maxAssetCacheBytes`, `maxAssetCacheEntries` in asset_cache.go) the LRU evicts entries that visible views still use; they refetch on notify, so an app showing more than the cap thrashes. Pin entries observed in the current frame, or size the cap from the atlas.
-- **SVG filter work cap:** `svgFilterMaxWork` (2^24, svg_renderer.go) may refuse large legitimate blurs or morphology on big canvases. Tune it against real icon/illustration sets.
+## SEC-FOLLOWUP (security sweep round 1 and 2 fixes)
 - **Text layout perf:** harness TestS03_07 went from 3.95 s to 7.9 s after the gotext panic-recovery changes (shape.go/font.go defers). The integration rerun measured 3.82 s (machine under gate load earlier). Re-measure on a quiet machine; if the regression is real, move the recover out of the per-glyph `charmap` path.
 - **NOTICE gaps (SEC-041 partial):** licence texts for taffy, lyon and accesskit are still missing. scap's licence has a non-standard clause and the xkbcommon-rs attribution is unclear: owner decision needed.
+- **SVG textPath false refusals:** `checkTextPaths` (svg_textpath_guard.go) refuses with `errSvgTextPathUnmeasured` when it cannot locate a probe: textPaths reached through `switch`, `marker`, `defs`+`use`, `display=none` guide paths, style sheets with complex selectors (`:`, `+`, `~`, `[`), and machines with no fonts (no text tree to measure). Legitimate SVGs in these shapes fail to render. Measure those cases instead of refusing.
+- **Asset cache can exceed its cap:** entries that are loading or used in the current or last drawn frame of a window are pinned (asset_cache.go `pinned`), so a visible set larger than 1 GiB / 4096 entries keeps the cache above `maxAssetCacheBytes` until it scrolls out. Bounded by what the app draws, not by an attacker beyond that; consider a hard ceiling that degrades to placeholders.
+- **SVG-embedded rasters bypass the decode semaphore:** `data:` images inside an SVG reserve against the per-image budget (`reserveSvgRasterImage`) but okage decodes them outside `imageDecodeMemory` (image_decode_limits.go), so many concurrent SVG renders can still exceed the 1 GiB process-wide in-flight cap.
+- **Windows clipboard image decode has no budget (INFO):** `platform/windows/clipboard.go:414` decodes clipboard images without `imageDecodeBudget`. User-initiated paste from a same-session owner; route it through the raster decode budget when Windows can be tested (CI-BILLING).
+- **OpenURL scheme allowlist is Linux-only:** D-SEC-OPENURL / D-SEC-R2-11 (http/https/mailto only, mailto field filter, OpenWithSystem absolute existing paths) apply on Linux; Windows `ShellExecuteW`, macOS, iOS and web still open any scheme (SEC-018 non-Linux parts PLAUSIBLE), so platforms now behave differently. Port the allowlist when those platforms can be tested.
+- **Background panics are swallowed:** D-SEC-TASKPANIC turns a background panic into a `*PanicError` (stderr log only). A caller that drops the error, or waits on state the panicking task would have produced, now hangs or misbehaves where the process used to crash. Audit `Detach()`ed background tasks and consider a process-wide panic hook / counter for apps that prefer crash-on-panic.

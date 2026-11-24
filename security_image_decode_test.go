@@ -110,10 +110,10 @@ func TestSecurity_SEC001_ProgressiveJpegDetection(t *testing.T) {
 	if !jpegIsProgressive(padded) {
 		t.Fatal("progressive JPEG with extraneous bytes before SOF2 not detected")
 	}
-	binary.BigEndian.PutUint16(padded[i+4+5:], 9000)
-	binary.BigEndian.PutUint16(padded[i+4+7:], 9000)
+	binary.BigEndian.PutUint16(padded[i+4+5:], 12000)
+	binary.BigEndian.PutUint16(padded[i+4+7:], 12000)
 	_, err := decodeStaticImage(padded, ImageFormatJpeg)
-	securityExpectLimit(t, "progressive JPEG 9000x9000", err)
+	securityExpectLimit(t, "progressive JPEG 12000x12000", err)
 	baseline := bytes.Clone(padded)
 	baseline[i+4+1] = 0xc0
 	decoder, err := newImageDecoder(baseline, ImageFormatJpeg)
@@ -121,7 +121,7 @@ func TestSecurity_SEC001_ProgressiveJpegDetection(t *testing.T) {
 		t.Fatal(err)
 	}
 	if _, _, err := decoder.reserve(newImageDecodeBudget()); err != nil {
-		t.Fatalf("baseline JPEG 9000x9000 rejected: %v", err)
+		t.Fatalf("baseline JPEG 12000x12000 rejected: %v", err)
 	}
 }
 

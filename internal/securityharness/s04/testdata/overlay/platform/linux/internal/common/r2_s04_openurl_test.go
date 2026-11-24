@@ -3,6 +3,7 @@
 package common
 
 import (
+	"net/url"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -47,11 +48,25 @@ func TestR2_S04_02_MailtoAttachmentParams(t *testing.T) {
 	for _, call := range calls {
 		arg := call.args[len(call.args)-1]
 		t.Logf("launched %s %q", call.program, call.args)
-		if strings.Contains(strings.ToLower(arg), "attach") {
-			reached = append(reached, arg)
+		_, query, _ := strings.Cut(arg, "?")
+		if query == "" {
+			continue
+		}
+		for field := range strings.SplitSeq(query, "&") {
+			key, _, _ := strings.Cut(field, "=")
+			name, err := url.QueryUnescape(key)
+			if err != nil {
+				reached = append(reached, arg)
+				break
+			}
+			switch strings.ToLower(name) {
+			case "to", "cc", "bcc", "subject", "body", "in-reply-to":
+			default:
+				reached = append(reached, arg)
+			}
 		}
 	}
 	if len(reached) > 0 {
-		t.Errorf("mailto: passes the allowlist with attach/attachment parameters intact, handed to the desktop mail handler: %q", reached)
+		t.Errorf("mailto: passes the allowlist with attach/attachment or other non-allowlisted parameters intact, handed to the desktop mail handler: %q", reached)
 	}
 }

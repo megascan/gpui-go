@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
@@ -720,12 +721,13 @@ func (p *linuxPlatform) RevealPath(path string) {
 
 // OpenWithSystem opens path with xdg-open on a background goroutine.
 func (p *linuxPlatform) OpenWithSystem(path string) {
+	target, err := openWithSystemTarget(path)
+	if err != nil {
+		slog.Error(err.Error())
+		return
+	}
 	environment, hasEnvironment := p.connection.graphicalEnvironment()
 	p.BackgroundExecutor().Spawn(func(s *scheduler.Scope) (struct{}, error) {
-		target := path
-		if strings.HasPrefix(target, "-") {
-			target = "./" + target
-		}
 		command := exec.Command("xdg-open", target)
 		if hasEnvironment {
 			environment.ApplyTo(command)
@@ -735,6 +737,26 @@ func (p *linuxPlatform) OpenWithSystem(path string) {
 		}
 		return struct{}{}, nil
 	}).Detach()
+}
+
+func openWithSystemTarget(path string) (string, error) {
+	if path == "" {
+		return "", errors.New("OpenWithSystem: empty path")
+	}
+	if !filepath.IsAbs(path) {
+		if scheme, _, found := strings.Cut(path, ":"); found && !strings.Contains(scheme, "/") {
+			return "", fmt.Errorf("OpenWithSystem: refusing URL-shaped target %q", path)
+		}
+		abs, err := filepath.Abs(path)
+		if err != nil {
+			return "", fmt.Errorf("OpenWithSystem: %w", err)
+		}
+		path = abs
+	}
+	if _, err := os.Stat(path); err != nil {
+		return "", fmt.Errorf("OpenWithSystem: %w", err)
+	}
+	return path, nil
 }
 
 // OnQuit registers the quit callback.

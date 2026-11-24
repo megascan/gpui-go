@@ -1526,6 +1526,7 @@ func (cx *App) recordEntitiesAccessed(windowHandle AnyWindowHandle, invalidator 
 		trackedEntities[entity] = struct{}{}
 	}
 	cx.trackedEntities[windowHandle.id] = trackedEntities
+	cx.loadingAssets.endFrame(windowHandle.id, cx)
 }
 
 func (cx *App) newObserver(key EntityID, value handler) Subscription {
@@ -3174,6 +3175,7 @@ func updateWindowTrail(windowID WindowID, window *Window, cx *App) bool {
 		cx.endPlatformDrag(windowID)
 		delete(cx.windowHandles, windowID)
 		cx.windows.remove(windowID)
+		cx.loadingAssets.forgetWindow(windowID, cx)
 		if tracked, ok := cx.trackedEntities[windowID]; ok {
 			delete(cx.trackedEntities, windowID)
 			for entityID := range tracked {

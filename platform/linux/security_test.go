@@ -153,9 +153,25 @@ func TestSecurity_SEC017_OpenWithSystemNeutralisesLeadingDash(t *testing.T) {
 	}
 	t.Setenv("PATH", bin+":"+os.Getenv("PATH"))
 	t.Setenv("DBUS_SESSION_BUS_ADDRESS", "unix:path="+filepath.Join(root, "no-bus"))
+	work := filepath.Join(root, "work")
+	if err := os.MkdirAll(work, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	t.Chdir(work)
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	targets := []string{"--help", "-x", "--manual"}
+	want := make(map[string]bool, len(targets))
+	for _, target := range targets {
+		if err := os.WriteFile(filepath.Join(cwd, target), nil, 0o644); err != nil {
+			t.Fatal(err)
+		}
+		want[filepath.Join(cwd, target)] = true
+	}
 	p := newLinuxPlatform(gpui.WindowingModesHeadless)
 	defer p.Close()
-	targets := []string{"--help", "-x", "--manual"}
 	for _, target := range targets {
 		p.OpenWithSystem(target)
 	}
@@ -180,8 +196,15 @@ func TestSecurity_SEC017_OpenWithSystemNeutralisesLeadingDash(t *testing.T) {
 		t.Fatalf("launches = %q", launched)
 	}
 	for _, arg := range launched {
-		if strings.HasPrefix(arg, "-") || !strings.HasPrefix(arg, "./-") {
+		if strings.HasPrefix(arg, "-") {
 			t.Fatalf("xdg-open received option-like argument %q", arg)
 		}
+		if !want[arg] {
+			t.Fatalf("xdg-open received %q, want one of the absolute paths %v", arg, want)
+		}
+		delete(want, arg)
+	}
+	if len(want) != 0 {
+		t.Fatalf("targets never launched: %v", want)
 	}
 }
