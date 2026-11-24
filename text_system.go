@@ -213,6 +213,7 @@ type fontIDWithSize struct {
 type TextSystem struct {
 	platformTextSystem     PlatformTextSystem
 	fontIDsByFontMu        sync.RWMutex
+	fontIDsUpgradeMu       sync.Mutex
 	fontIDsByFont          map[Font]cachedFont
 	fontMetricsMu          sync.RWMutex
 	fontMetrics            map[FontID]FontMetrics
@@ -277,9 +278,11 @@ func (ts *TextSystem) AddFonts(fonts [][]byte) error {
 	if err := ts.platformTextSystem.AddFonts(fonts); err != nil {
 		return err
 	}
+	ts.fontIDsUpgradeMu.Lock()
 	ts.fontIDsByFontMu.Lock()
 	clear(ts.fontIDsByFont)
 	ts.fontIDsByFontMu.Unlock()
+	ts.fontIDsUpgradeMu.Unlock()
 	ts.missingGlyphReporter.reset()
 	ts.fontGeneration.Add(1)
 	return nil
@@ -537,8 +540,13 @@ func (ts *TextSystem) recommendedRenderingMode(fontID FontID, fontSize Pixels) T
 func (ts *TextSystem) resolveFontUncached(font Font) FontID {
 	var fontError error
 	fontID, found := func() (FontID, bool) {
-		ts.fontIDsByFontMu.Lock()
-		defer ts.fontIDsByFontMu.Unlock()
+		ts.fontIDsUpgradeMu.Lock()
+		defer ts.fontIDsUpgradeMu.Unlock()
+		insert := func(key Font, value cachedFont) {
+			ts.fontIDsByFontMu.Lock()
+			ts.fontIDsByFont[key] = value
+			ts.fontIDsByFontMu.Unlock()
+		}
 		if cached, ok := ts.fontIDsByFont[font]; ok && (cached.kind == cachedFontDirect || cached.kind == cachedFontFallback) {
 			return cached.fontID, true
 		}
@@ -550,7 +558,7 @@ func (ts *TextSystem) resolveFontUncached(font Font) FontID {
 				} else {
 					cached = cachedFont{kind: cachedFontMissing, err: err}
 				}
-				ts.fontIDsByFont[candidate] = cached
+				insert(candidate, cached)
 			}
 			switch cached.kind {
 			case cachedFontDirect:
@@ -567,7 +575,7 @@ func (ts *TextSystem) resolveFontUncached(font Font) FontID {
 		}
 		for _, fallback := range ts.fallbackFontStack {
 			if fontID, ok := lookupFont(fallback); ok {
-				ts.fontIDsByFont[font] = cachedFont{kind: cachedFontFallback, fontID: fontID}
+				insert(font, cachedFont{kind: cachedFontFallback, fontID: fontID})
 				return fontID, true
 			}
 		}

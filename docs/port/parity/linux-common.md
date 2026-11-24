@@ -110,7 +110,7 @@ Go target: `platform/linux/platform.go` (package `linux`), tests in `platform_te
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
 | `failed_wayland_attach_preserves_headless_app_and_allows_retry` | test | 2049 | feat:wayland | `TestPlatformDisplayModeTests_FailedWaylandAttachPreservesHeadlessAppAndAllowsRetry` | done |
-| `headless_windows_block_switching_to_a_display_server` | test | 2102 | feat:wayland | `TestPlatformDisplayModeTests_HeadlessWindowsBlockSwitchingToADisplayServer` | blocked:M0-window-paint |
+| `headless_windows_block_switching_to_a_display_server` | test | 2102 | feat:wayland | `TestPlatformDisplayModeTests_HeadlessWindowsBlockSwitchingToADisplayServer` | done |
 | `display_modes_limit_switching` | test | 2134 |  | `TestPlatformDisplayModeTests_DisplayModesLimitSwitching` | done |
 
 ## gpui_linux/src/linux/headless.rs
@@ -154,7 +154,7 @@ Go target: `platform/linux/internal/common/text_system.go` (package `common`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `pub use gpui_wgpu::CosmicTextSystem` | use | 1 |  | `newTextSystem` (returns `gpui.NoopTextSystem` until M2-exit wires text/gotext) | blocked:M2-exit |
+| `pub use gpui_wgpu::CosmicTextSystem` | use | 1 |  | `newTextSystem` | done |
 
 ## Deviations registered here
 

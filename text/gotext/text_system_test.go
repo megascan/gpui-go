@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"fmt"
 	"math"
-	"os"
 	"runtime"
 	"slices"
 	"sync"
@@ -101,9 +100,6 @@ func TestCosmicTextSystem_AllFontNamesTracksAvailableFamilies(t *testing.T) {
 }
 
 func TestCosmicTextSystem_CachedFontResolutionDoesNotWaitForColdLookups(t *testing.T) {
-	if os.Getenv("GOTEXT_ROOT_RESOLVE_FONT_FIXED") == "" {
-		t.Skip("blocked:M2-exit: gpui.TextSystem.resolveFontUncached holds fontIDsByFontMu exclusively across the platform FontID call, where upstream holds an upgradable read; see docs/port/handoff/M2-gotext-layout.md")
-	}
 	for _, family := range []gpui.SharedString{".ZedSans", "Missing Font"} {
 		platformTextSystem := newTestTextSystem(t)
 		textSystem := gpui.NewTextSystem(platformTextSystem)
@@ -253,7 +249,37 @@ func TestCosmicTextSystem_ShapeTextWithMixedDirectionParagraphs(t *testing.T) {
 }
 
 func TestCosmicTextSystem_ReportsGraphemesThatExhaustFontFallback(t *testing.T) {
-	t.Skip("blocked:M0-test-contexts: needs TestAppContext.BuildWithTextSystem and App.OnMissingGlyphs")
+	platformTextSystem := newTestTextSystem(t)
+	dispatcher := gpui.NewTestDispatcher(0)
+	cx := gpui.TestAppContextBuildWithTextSystem(dispatcher, gpui.None[string](), platformTextSystem)
+	defer cx.Close()
+	var observed []gpui.MissingGlyph
+	subscription := cx.UpdateR(func(cx *gpui.App) gpui.Subscription {
+		return cx.OnMissingGlyphs(func(missingGlyphs []gpui.MissingGlyph, _ *gpui.App) {
+			observed = append(observed, missingGlyphs...)
+		})
+	})
+	defer subscription.Unsubscribe()
+	text := gpui.SharedString("界")
+
+	cx.Update(func(cx *gpui.App) {
+		textSystem := gpui.NewWindowTextSystem(cx.TextSystem())
+		run := gpui.DefaultTextRun()
+		run.Len = len(text)
+		run.Font = gpui.NewFont("IBM Plex Sans")
+		textSystem.ShapeLine(text, gpui.Px(14.0), []gpui.TextRun{run}, gpui.None[gpui.Pixels]())
+	})
+	cx.RunUntilParked()
+
+	if len(observed) != 1 {
+		t.Fatalf("observed %d missing glyphs, want 1", len(observed))
+	}
+	if observed[0].Grapheme() != "界" {
+		t.Fatalf("grapheme %q, want %q", observed[0].Grapheme(), "界")
+	}
+	if observed[0].FontClass() != gpui.FallbackFontClassProportional {
+		t.Fatalf("font class %v, want Proportional", observed[0].FontClass())
+	}
 }
 
 func TestCosmicTextSystem_CombinesMissingGlyphsFromOneGrapheme(t *testing.T) {
