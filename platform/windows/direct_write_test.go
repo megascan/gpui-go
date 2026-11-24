@@ -93,8 +93,10 @@ func TestDirectWrite_TabsPreserveNativeAdvancesAndCursor(t *testing.T) {
 						runs = []gpui.TextRun{{Len: len(text), Font: font}}
 					}
 					shaped := textSystem.ShapeLine(gpui.SharedString(text), fontSize, runs, gpui.None[gpui.Pixels]())
+					cursor := shaped.Cursor()
 					expectedX := gpui.Px(0.0)
 					for index, character := range text {
+						end := index + utf8.RuneLen(character)
 						var expectedEnd gpui.Pixels
 						if character == '\t' {
 							expectedEnd = tabInterval * (gpui.Pixels(math.Floor(float64(expectedX/tabInterval))) + 1.0)
@@ -107,6 +109,13 @@ func TestDirectWrite_TabsPreserveNativeAdvancesAndCursor(t *testing.T) {
 						}
 						if got, ok := shaped.IndexForX(expectedX + gpui.Px(0.01)); !ok || got != index {
 							t.Fatalf("%s, %q, index=%d: index_for_x = %d, %v", family, text, index, got, ok)
+						}
+						piece := cursor.TakeUntil(end)
+						if string(piece.Text) != string(character) {
+							t.Fatalf("%s, %q, index=%d: piece %q", family, text, index, piece.Text)
+						}
+						if absPx(piece.Width()-(expectedEnd-expectedX)) >= gpui.Px(0.001) {
+							t.Fatalf("%s, %q, index=%d: piece width %v", family, text, index, piece.Width())
 						}
 						expectedX = expectedEnd
 					}
@@ -222,6 +231,20 @@ func checkUnicodeSeparatorCursor(t *testing.T, separator rune) {
 				}
 				if referenceIndex != expected.glyph.Index {
 					t.Fatalf("%q: index %d, expected %d", text, referenceIndex, expected.glyph.Index)
+				}
+			}
+
+			cursor := shaped.Cursor()
+			for index, character := range text {
+				piece := cursor.TakeUntil(index + utf8.RuneLen(character))
+				if string(piece.Text) != string(character) {
+					t.Fatalf("%q: piece %q, expected %q", text, piece.Text, string(character))
+				}
+				if piece.Len() != utf8.RuneLen(character) {
+					t.Fatalf("%q: piece len %d", text, piece.Len())
+				}
+				if character == separator && piece.Width() != gpui.Px(0.0) {
+					t.Fatalf("%q: separator width %v", text, piece.Width())
 				}
 			}
 		}

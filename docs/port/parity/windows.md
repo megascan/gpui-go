@@ -32,9 +32,9 @@ Go target: `platform/windows/direct_write.go` (package `windows`), tests in `dir
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `tabs_preserve_native_advances_and_cursor` | test | 1808 |  | `TestDirectWrite_TabsPreserveNativeAdvancesAndCursor` | blocked:M0-text-elements |
-| `unicode_line_separators_preserve_shaped_line_cursor` | test | 1934 |  | `TestDirectWrite_UnicodeLineSeparatorsPreserveShapedLineCursor` | blocked:M0-text-elements |
-| `unicode_paragraph_separators_preserve_shaped_line_cursor` | test | 1939 |  | `TestDirectWrite_UnicodeParagraphSeparatorsPreserveShapedLineCursor` | blocked:M0-text-elements |
+| `tabs_preserve_native_advances_and_cursor` | test | 1808 |  | `TestDirectWrite_TabsPreserveNativeAdvancesAndCursor` | done |
+| `unicode_line_separators_preserve_shaped_line_cursor` | test | 1934 |  | `TestDirectWrite_UnicodeLineSeparatorsPreserveShapedLineCursor` | done |
+| `unicode_paragraph_separators_preserve_shaped_line_cursor` | test | 1939 |  | `TestDirectWrite_UnicodeParagraphSeparatorsPreserveShapedLineCursor` | done |
 | `test_cluster_map` | test | 2041 |  | `TestDirectWrite_ClusterMap` | done |
 
 ## gpui_windows/src/directx_atlas.rs
@@ -67,15 +67,15 @@ Go target: `platform/windows/platform.go` (package `windows`), tests in `platfor
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `WindowsPlatform` | struct | 53 |  | `WindowsPlatform` | todo |
-| `WindowsPlatform::new` | assoc-fn | 184 |  | `NewWindowsPlatform` | todo |
+| `WindowsPlatform` | struct | 53 |  | `WindowsPlatform` | done |
+| `WindowsPlatform::new` | assoc-fn | 184 |  | `NewWindowsPlatform` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_read_credential_with_username` | test | 1935 |  | `TestPlatform_ReadCredentialWithUsername` | todo |
-| `test_read_credential_without_username` | test | 1943 |  | `TestPlatform_ReadCredentialWithoutUsername` | todo |
-| `test_encode_restart_arguments` | test | 1988 |  | `TestPlatform_EncodeRestartArguments` | todo |
-| `test_clipboard` | test | 2004 |  | `TestPlatform_Clipboard` | todo |
+| `test_read_credential_with_username` | test | 1935 |  | `TestPlatform_ReadCredentialWithUsername` | done |
+| `test_read_credential_without_username` | test | 1943 |  | `TestPlatform_ReadCredentialWithoutUsername` | done |
+| `test_encode_restart_arguments` | test | 1988 |  | `TestPlatform_EncodeRestartArguments` | done |
+| `test_clipboard` | test | 2004 |  | `TestPlatform_Clipboard` | done |
 
 ## gpui_windows/src/vsync.rs
 
@@ -131,3 +131,9 @@ Go target: `platform/windows/window.go` (package `windows`), tests in `window_te
 | D-WINSTRNUL | `com.NewHSTRING` / `NewBSTR` encode with `utf16.Encode` and `HSTRING.String` / `BSTRToString` decode the full counted length with `utf16.Decode`, so embedded NULs round-trip | windows-rs `HSTRING::from`, `BSTR::from` | as windows-rs, which never truncates or rejects interior NULs |
 | D-WINSHADERRT | build.rs's fxc step is replaced by compiling the embedded, byte-identical shaders.hlsl with `D3DCompile` (d3dcompiler_47) on first use (`NewRawShaderBytes`, platform/windows/directx_shaders.go, the `shader_resources` module of directx_renderer.rs), with the build.rs entry points and vs_4_1/ps_4_1 targets; flags are `D3DCOMPILE_OPTIMIZATION_LEVEL3` (fxc `/O3`), or upstream's debug flags under `gpuiutil.DebugAssertions`; the include is served by a Go `ID3DInclude` instead of fxc's file-system include; no SDK lookup | `gpui_windows/build.rs:23-201`, `gpui_windows/src/directx_renderer.rs:1722-1880` | Go has no build scripts; DESIGN 8.4 |
 | D-WINDXIFACE | `DirectXRenderer` keeps upstream's methods (`DrawWithAppearance`, `Resize`, `HandleDeviceLost`, `MarkDrawable`, `RenderToImage`) and adds the `render.Renderer` set: `Draw(scene)` clears with the background chosen by `UpdateTransparency`, `GPUSpecs` logs `gpu_specs`' error, `DeviceLost` is false and `Recover` a no-op because the platform detects loss and calls `HandleDeviceLost`, `SupportsDualSourceBlending` is true, `SetSubpixelLayout` a no-op (the order comes from DirectWrite) | `gpui_windows/src/directx_renderer.rs:148-830` | the shared `render.Renderer` interface has no background-appearance or devices parameter |
+| D-WINDEVLOST | A failed device-lost recovery in the vsync goroutine logs the error and retries on the next vsync instead of panicking; the platform window's `WM_GPUI_GPU_DEVICE_LOST` handler ignores (returns 1) devices that are not the current vsync goroutine's, and the goroutine then skips the per-window messages, so a stale goroutine left by a headless/windowed toggle never replaces the live devices | `gpui_windows/src/platform.rs:440-470`, `:1763-1800` | upstream's panic kills the process from a background thread; the generation check closes the detach/attach race |
+| D-WININITDX | `connectInitially` logs a DirectX init failure and stays headless instead of panicking | `gpui_windows/src/platform.rs:394-409` | lets apps without a usable adapter (RDP, VMs) degrade; `SetWindowingMode` already reports the same error |
+| D-WINNEWCLEAN | `NewWindowsPlatform` destroys the platform window, closes the text system and calls `OleUninitialize` on every error return after they were created, and checks `CreateWindowExW`'s error before using the create context | `gpui_windows/src/platform.rs:new` | upstream relies on Drop; Go has no Drop on early returns |
+| D-WINREVEAL | `openTargetInExplorer` frees both PIDLs with `CoTaskMemFree` and compares against `HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND)`, so the open-parent-folder fallback runs | `gpui_windows/src/platform.rs:open_target_in_explorer` | upstream leaks the PIDLs and compares against the raw Win32 code, so its fallback is dead |
+| D-WINCREDNUL | Credential username and target names containing NUL are rejected with an error (`UTF16FromString`) instead of being truncated at the Win32 boundary | `gpui_windows/src/platform.rs:write_credentials` | two distinct URLs could map to the same credential |
+| D-WINSCAPSTUB | `ScreenCaptureSources` delivers an error through the oneshot until the root scap glue (M3-root-capture) lands, instead of panicking | `gpui_windows/src/platform.rs:730-734` | a capability check followed by listing must not crash the process |
