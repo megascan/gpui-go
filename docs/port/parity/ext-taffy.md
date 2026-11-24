@@ -1850,6 +1850,199 @@ Fixture counts per category (6504 files in tag v0.15.0). `flex-wrap: balance` fi
 | `tests/xml/gridflex` (28, all pass) | fixture | - | test | `TestXml` | done |
 | `tests/xml/blockgrid` (56, all pass) | fixture | - | test | `TestXml` | done |
 
+## tests/hand_written split
+
+`tests/hand_written/*.rs` holds 26 test files (5150 lines; `hand_written.rs` is the module list). Sorted by file name, M0-taffy-handwritten-a takes files until the running line total reaches half (2575): `absolute_replaced` through `measure` (15 files, 2852 lines). M0-taffy-handwritten-b takes the other 11: `min_max_overrides`, `negative_available_space`, `oof_hoisting`, `position`, `relayout`, `root_constraints`, `rounding`, `safe_alignment`, `scroll_size`, `scrollable_overflow`, `serde`. `#[ignore]` tests call `t.Skip("#[ignore]")` before the ported body; `#[should_panic(expected = ...)]` is `hwShouldPanic`.
+
+## tests/hand_written/absolute_replaced.rs
+
+Go target: `internal/taffy/hand_written_absolute_replaced_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::absolute_replaced` is the Go file stem, so the inner `mod absolute_replaced` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `auto_size_uses_intrinsic_size_despite_insets` | test | 38 | test | `TestHandWrittenAbsoluteReplaced_AutoSizeUsesIntrinsicSizeDespiteInsets` | done |
+| `auto_height_uses_aspect_ratio_despite_insets` | test | 50 | test | `TestHandWrittenAbsoluteReplaced_AutoHeightUsesAspectRatioDespiteInsets` | done |
+| `non_replaced_auto_size_is_stretched_between_insets` | test | 62 | test | `TestHandWrittenAbsoluteReplaced_NonReplacedAutoSizeIsStretchedBetweenInsets` | done |
+
+## tests/hand_written/adversarial_styles.rs
+
+Go target: `internal/taffy/hand_written_adversarial_styles_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::adversarial_styles` is the Go file stem, so the inner `mod adversarial_styles` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `non_finite_flex_factor_terminates` | test | 21 | test | `TestHandWrittenAdversarialStyles_NonFiniteFlexFactorTerminates` | done |
+| `non_finite_grid_container_size_terminates` | test | 51 | test | `TestHandWrittenAdversarialStyles_NonFiniteGridContainerSizeTerminates` | done |
+| `repetition_without_line_names_resolves_lines` | test | 75 | test | `TestHandWrittenAdversarialStyles_RepetitionWithoutLineNamesResolvesLines` | done |
+| `zero_span_and_named_span_terminates` | test | 108 | test | `TestHandWrittenAdversarialStyles_ZeroSpanAndNamedSpanTerminates` | done |
+| `repetition_with_wrong_line_name_set_count_panics` | test | 133 | test | `TestHandWrittenAdversarialStyles_RepetitionWithWrongLineNameSetCountPanics` | done |
+| `small_item_in_max_size_occupied_grid_terminates` | test | 160 | test | `TestHandWrittenAdversarialStyles_SmallItemInMaxSizeOccupiedGridTerminates` | done |
+| `extreme_placements_and_spans_terminate` | test | 193 | test | `TestHandWrittenAdversarialStyles_ExtremePlacementsAndSpansTerminate` | done |
+
+## tests/hand_written/baseline.rs
+
+Go target: `internal/taffy/hand_written_baseline_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::baseline` is the Go file stem, so the inner `mod baseline` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `flex_baseline_alignment_uses_measure_function_baseline` | test | 28 | test | `TestHandWrittenBaseline_FlexBaselineAlignmentUsesMeasureFunctionBaseline` | done |
+| `block_scroll_container_child_without_baseline_synthesizes_from_border_box` | test | 79 | test | `TestHandWrittenBaseline_BlockScrollContainerChildWithoutBaselineSynthesizesFromBorderBox` | done |
+| `block_non_scroll_container_child_without_baseline_contributes_nothing` | test | 142 | test | `TestHandWrittenBaseline_BlockNonScrollContainerChildWithoutBaselineContributesNothing` | done |
+| `block_scroll_container_child_baseline_is_clamped_to_border_box` | test | 203 | test | `TestHandWrittenBaseline_BlockScrollContainerChildBaselineIsClampedToBorderBox` | done |
+| `flex_baseline_is_ignored_when_alignment_is_not_baseline` | test | 270 | test | `TestHandWrittenBaseline_FlexBaselineIsIgnoredWhenAlignmentIsNotBaseline` | done |
+
+## tests/hand_written/block_margin.rs
+
+Go target: `internal/taffy/hand_written_block_margin_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::block_margin` is the Go file stem, so the inner `mod block_margin` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `layout_margin_excludes_collapsed_margins` | test | 16 | test | `TestHandWrittenBlockMargin_LayoutMarginExcludesCollapsedMargins` | done |
+
+## tests/hand_written/block_replaced.rs
+
+Go target: `internal/taffy/hand_written_block_replaced_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::block_replaced` is the Go file stem, so the inner `mod block_replaced` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `auto_width_uses_intrinsic_size` | test | 24 | test | `TestHandWrittenBlockReplaced_AutoWidthUsesIntrinsicSize` | done |
+| `non_replaced_child_is_stretch_sized` | test | 41 | test | `TestHandWrittenBlockReplaced_NonReplacedChildIsStretchSized` | done |
+| `explicit_width_is_used` | test | 52 | test | `TestHandWrittenBlockReplaced_ExplicitWidthIsUsed` | done |
+| `max_width_clamps_intrinsic_size` | test | 74 | test | `TestHandWrittenBlockReplaced_MaxWidthClampsIntrinsicSize` | done |
+| `auto_margins_center_replaced_child` | test | 95 | test | `TestHandWrittenBlockReplaced_AutoMarginsCenterReplacedChild` | done |
+
+## tests/hand_written/border_and_padding.rs
+
+Go target: `internal/taffy/hand_written_border_and_padding_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::border_and_padding` is the Go file stem, so the inner `mod border_and_padding` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `border_on_a_single_axis_doesnt_increase_size` | test | 11 | test | `TestHandWrittenBorderAndPadding_BorderOnASingleAxisDoesntIncreaseSize` | done |
+| `padding_on_a_single_axis_doesnt_increase_size` | test | 39 | test | `TestHandWrittenBorderAndPadding_PaddingOnASingleAxisDoesntIncreaseSize` | done |
+| `border_and_padding_on_a_single_axis_doesnt_increase_size` | test | 67 | test | `TestHandWrittenBorderAndPadding_BorderAndPaddingOnASingleAxisDoesntIncreaseSize` | done |
+| `vertical_border_and_padding_percentage_values_use_available_space_correctly` | test | 90 | test | `TestHandWrittenBorderAndPadding_VerticalBorderAndPaddingPercentageValuesUseAvailableSpaceCorrectly` | done |
+
+## tests/hand_written/caching.rs
+
+Go target: `internal/taffy/hand_written_caching_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::caching` is the Go file stem, so the inner `mod caching` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `measure_count_flexbox` | test | 9 | test | `TestHandWrittenCaching_MeasureCountFlexbox` | done |
+| `measure_count_grid` | test | 26 | test | `TestHandWrittenCaching_MeasureCountGrid` | done |
+| `measure_count_nested_grid` | test | 46 | test | `TestHandWrittenCaching_MeasureCountNestedGrid` | done |
+| `measure_count_grid_item_with_known_width` | test | 73 | test | `TestHandWrittenCaching_MeasureCountGridItemWithKnownWidth` | done |
+| `measure_count_grid_item_in_fixed_track` | test | 99 | test | `TestHandWrittenCaching_MeasureCountGridItemInFixedTrack` | done |
+| `measure_count_flex_in_grid` | test | 141 | test | `TestHandWrittenCaching_MeasureCountFlexInGrid` | done |
+| `grid_block_item_height_not_polluted_by_width_measure` | test | 175 | test | `TestHandWrittenCaching_GridBlockItemHeightNotPollutedByWidthMeasure` | done |
+| `grid_item_spanning_only_unaffected_tracks_is_not_measured` | test | 228 | test | `TestHandWrittenCaching_GridItemSpanningOnlyUnaffectedTracksIsNotMeasured` | done |
+
+## tests/hand_written/compressible_replaced.rs
+
+Go target: `internal/taffy/hand_written_compressible_replaced_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::compressible_replaced` is the Go file stem, so the inner `mod compressible_replaced` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `block_level_auto_width_uses_intrinsic_size` | test | 44 | test | `TestHandWrittenCompressibleReplaced_BlockLevelAutoWidthUsesIntrinsicSize` | done |
+| `block_level_justify_self_stretch_stretches` | test | 53 | test | `TestHandWrittenCompressibleReplaced_BlockLevelJustifySelfStretchStretches` | done |
+| `absolute_auto_size_is_stretched_between_insets` | test | 67 | test | `TestHandWrittenCompressibleReplaced_AbsoluteAutoSizeIsStretchedBetweenInsets` | done |
+| `replaced_implies_compressible_replaced` | test | 82 | test | `TestHandWrittenCompressibleReplaced_ReplacedImpliesCompressibleReplaced` | done |
+
+## tests/hand_written/detailed_grid_info.rs
+
+Go target: none; `hand_written.rs` or the file gates the module on `detailed_layout_info, grid`, which gpui does not enable (D-TAFFY-FEATURE).
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `no_line_names` | test | 26 | detailed_layout_info, grid | - | n/a:D-TAFFY-FEATURE |
+| `zoomed_track_list` | test | 52 | detailed_layout_info, grid | - | n/a:D-TAFFY-FEATURE |
+| `template_and_area_line_names` | test | 74 | detailed_layout_info, grid | - | n/a:D-TAFFY-FEATURE |
+| `repeat_expansion_line_names` | test | 137 | detailed_layout_info, grid | - | n/a:D-TAFFY-FEATURE |
+| `implicit_tracks_shift_line_names` | test | 175 | detailed_layout_info, grid | - | n/a:D-TAFFY-FEATURE |
+| `item_grid_area` | test | 211 | detailed_layout_info, grid | - | n/a:D-TAFFY-FEATURE |
+| `absolute_grid_area_named_span` | test | 296 | detailed_layout_info, grid | - | n/a:D-TAFFY-FEATURE |
+| `rtl_line_names_are_logical_order` | test | 341 | detailed_layout_info, grid | - | n/a:D-TAFFY-FEATURE |
+
+## tests/hand_written/fit_content_calc.rs
+
+Go target: none; `hand_written.rs` or the file gates the module on `calc, grid, block_layout`, which gpui does not enable (D-TAFFY-FEATURE).
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `grid_track_fit_content_calc_limit` | test | 212 | calc, grid, block_layout | - | n/a:D-TAFFY-FEATURE |
+| `block_item_fit_content_calc_width` | test | 235 | calc, grid, block_layout | - | n/a:D-TAFFY-FEATURE |
+| `grid_track_fit_content_calc_matches_equivalent_length_and_percentage` | test | 278 | calc, grid, block_layout | - | n/a:D-TAFFY-FEATURE |
+
+## tests/hand_written/flex_line_count.rs
+
+Go target: none; `hand_written.rs` or the file gates the module on `flexbox_balance`, which gpui does not enable (D-TAFFY-FEATURE).
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `wrap_line_count_divides_cross_available_space` | test | 35 | flexbox_balance | - | n/a:D-TAFFY-FEATURE |
+| `wrap_reverse_line_count_divides_cross_available_space` | test | 40 | flexbox_balance | - | n/a:D-TAFFY-FEATURE |
+| `nowrap_line_count_has_no_effect` | test | 46 | flexbox_balance | - | n/a:D-TAFFY-FEATURE |
+| `wrap_line_count_divides_fit_content_cross_size` | test | 64 | flexbox_balance | - | n/a:D-TAFFY-FEATURE |
+| `nowrap_line_count_does_not_divide_fit_content_cross_size` | test | 69 | flexbox_balance | - | n/a:D-TAFFY-FEATURE |
+
+## tests/hand_written/floats.rs
+
+Go target: `internal/taffy/hand_written_floats_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::floats` is the Go file stem, so the inner `mod floats` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `float_no_higher_than_earlier_floats` | test | 14 | test | `TestHandWrittenFloats_FloatNoHigherThanEarlierFloats` | done |
+| `clear_past_zero_width_float` | test | 61 | test | `TestHandWrittenFloats_ClearPastZeroWidthFloat` | done |
+| `oversized_float_overflows_containing_block` | test | 120 | test | `TestHandWrittenFloats_OversizedFloatOverflowsContainingBlock` | done |
+| `float_beside_existing_float_moves_down_instead_of_overflowing` | test | 134 | test | `TestHandWrittenFloats_FloatBesideExistingFloatMovesDownInsteadOfOverflowing` | done |
+| `auto_margins_include_float_avoidance_offsets` | test | 155 | test | `TestHandWrittenFloats_AutoMarginsIncludeFloatAvoidanceOffsets` | done |
+| `float_avoiding_auto_margins_in_nested_block_ignore_relative_insets_and_clearance` | test | 217 | test | `TestHandWrittenFloats_FloatAvoidingAutoMarginsInNestedBlockIgnoreRelativeInsetsAndClearance` | done |
+
+## tests/hand_written/grid_percentage_rerun.rs
+
+Go target: `internal/taffy/hand_written_grid_percentage_rerun_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::grid_percentage_rerun` is the Go file stem, so the inner `mod grid_percentage_rerun` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `fit_content_percentage_indefinite_container_max_content_available_space` | test | 40 | test | `TestHandWrittenGridPercentageRerun_FitContentPercentageIndefiniteContainerMaxContentAvailableSpace` | done |
+| `fit_content_percentage_indefinite_container_definite_available_space` | test | 45 | test | `TestHandWrittenGridPercentageRerun_FitContentPercentageIndefiniteContainerDefiniteAvailableSpace` | done |
+| `percentage_rows_indefinite_container_max_content_available_space` | test | 81 | test | `TestHandWrittenGridPercentageRerun_PercentageRowsIndefiniteContainerMaxContentAvailableSpace` | done |
+| `percentage_rows_indefinite_container_definite_available_space` | test | 86 | test | `TestHandWrittenGridPercentageRerun_PercentageRowsIndefiniteContainerDefiniteAvailableSpace` | done |
+
+## tests/hand_written/initial_containing_block.rs
+
+Go target: `internal/taffy/hand_written_initial_containing_block_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::initial_containing_block` is the Go file stem, so the inner `mod initial_containing_block` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `root_is_placed_at_its_margin` | test | 25 | test | `TestHandWrittenInitialContainingBlock_RootIsPlacedAtItsMargin` | done |
+| `inset_zero_fills_viewport` | test | 36 | test | `TestHandWrittenInitialContainingBlock_InsetZeroFillsViewport` | done |
+| `bottom_right_insets_resolve_against_viewport` | test | 51 | test | `TestHandWrittenInitialContainingBlock_BottomRightInsetsResolveAgainstViewport` | done |
+| `static_position_is_unaffected` | test | 71 | test | `TestHandWrittenInitialContainingBlock_StaticPositionIsUnaffected` | done |
+| `fixed_root_is_positioned_by_its_insets` | test | 83 | test | `TestHandWrittenInitialContainingBlock_FixedRootIsPositionedByItsInsets` | done |
+
+## tests/hand_written/measure.rs
+
+Go target: `internal/taffy/hand_written_measure_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::measure` is the Go file stem, so the inner `mod measure` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `measure_root` | test | 12 | test | `TestHandWrittenMeasure_MeasureRoot` | done |
+| `measure_child` | test | 22 | test | `TestHandWrittenMeasure_MeasureChild` | done |
+| `measure_child_constraint` | test | 38 | test | `TestHandWrittenMeasure_MeasureChildConstraint` | done |
+| `measure_child_constraint_padding_parent` | test | 60 | test | `TestHandWrittenMeasure_MeasureChildConstraintPaddingParent` | done |
+| `measure_child_with_flex_grow` | test | 93 | test | `TestHandWrittenMeasure_MeasureChildWithFlexGrow` | done |
+| `measure_child_with_flex_shrink` | test | 118 | test | `TestHandWrittenMeasure_MeasureChildWithFlexShrink` | done |
+| `remeasure_child_after_growing` | test | 144 | test | `TestHandWrittenMeasure_RemeasureChildAfterGrowing` | done |
+| `remeasure_child_after_shrinking` | test | 178 | test | `TestHandWrittenMeasure_RemeasureChildAfterShrinking` | done |
+| `remeasure_child_after_stretching` | test | 209 | test | `TestHandWrittenMeasure_RemeasureChildAfterStretching` | done |
+| `width_overrides_measure` | test | 249 | test | `TestHandWrittenMeasure_WidthOverridesMeasure` | done |
+| `height_overrides_measure` | test | 266 | test | `TestHandWrittenMeasure_HeightOverridesMeasure` | done |
+| `flex_basis_overrides_measure` | test | 283 | test | `TestHandWrittenMeasure_FlexBasisOverridesMeasure` | done |
+| `stretch_overrides_measure` | test | 315 | test | `TestHandWrittenMeasure_StretchOverridesMeasure` | done |
+| `explicit_min_main_size_skips_min_content_measurement` | test | 336 | test | `TestHandWrittenMeasure_ExplicitMinMainSizeSkipsMinContentMeasurement` | done |
+| `measure_absolute_child` | test | 360 | test | `TestHandWrittenMeasure_MeasureAbsoluteChild` | done |
+| `ignore_invalid_measure` | test | 383 | test | `TestHandWrittenMeasure_IgnoreInvalidMeasure` | done |
+
 ## Deviations registered here
 
 | Id | Deviation | Upstream | Go |
