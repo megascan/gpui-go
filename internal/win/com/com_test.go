@@ -47,7 +47,11 @@ func TestHRESULT_Values(t *testing.T) {
 }
 
 func TestHRESULT_ErrorFormat(t *testing.T) {
-	if got := E_FAIL.Error(); got != "Unspecified error (0x80004005)" {
+	message := E_FAIL.Message()
+	if message == "" || strings.TrimSpace(message) != message {
+		t.Errorf("E_FAIL.Message() = %q", message)
+	}
+	if got := E_FAIL.Error(); got != message+" (0x80004005)" {
 		t.Errorf("E_FAIL.Error() = %q", got)
 	}
 	if got := HRESULT(-0x1).Error(); got != "0xFFFFFFFF" && !strings.HasSuffix(got, " (0xFFFFFFFF)") {

@@ -165,7 +165,7 @@ func (s *Span) W0p5() {}
 }
 
 func TestLint_DocsCaseCollision(t *testing.T) {
-	probs := lintTree(t, map[string]string{"DOCS/readme.md": "x\n"})
+	probs := lintTree(t, map[string]string{"pkg/DOCS/readme.md": "x\n"})
 	if !hasProblem(probs, "differs only by case from docs/") {
 		t.Fatalf("want case problem, got %v", probs)
 	}

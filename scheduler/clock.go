@@ -12,7 +12,7 @@ type Instant struct {
 
 // InstantNow returns the current monotonic instant.
 func InstantNow() Instant {
-	return Instant{t: time.Now()}
+	return Instant{t: monotonicNow()}
 }
 
 // Add returns the instant d after i.

@@ -158,7 +158,10 @@ func runOnNativeThread(t *testing.T, f func()) {
 		nativeThreadFuncs.Take(key)
 		t.Fatal(err)
 	}
-	windows.CloseHandle(handle)
+	defer windows.CloseHandle(handle)
+	if _, err := windows.WaitForSingleObject(handle, windows.INFINITE); err != nil {
+		t.Fatal(err)
+	}
 	<-done
 }
 

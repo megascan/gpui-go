@@ -10,6 +10,7 @@ Hacks, workarounds and known issues. Remove entries when resolved. Stages write 
 | L-WEBTHREADS | platform/web | no multi-threaded web dispatcher |
 | GO-DIRECTIVE | go.mod | `go 1.27.3` instead of `go 1.27` |
 | CI-BILLING | .github | Actions jobs are not started (billing / spending limit, macos-14 runner config) |
+| WINE-TEST | windows tests | Windows test failures that only happen under Wine (local substitute for CI) |
 | M0-EXIT-OPEN | root | handoff items M0-exit left open |
 | STAGE-DEBT | all | per-stage debt folded below |
 
@@ -28,6 +29,15 @@ github.com/xo/okage v0.20.1 declares `go 1.27.3`, so the main module's go line c
 ## CI-BILLING
 
 GitHub Actions refuses to start the ci workflow's jobs on megascan/gpui-go: ubuntu and windows report "recent account payments have failed or your spending limit needs to be increased", macos-14 reports "The configuration 'macos-14-arm64-us-xl' is not supported". Every run on feat/port is cancelled after a few seconds, so the macOS and Windows compile checks have never run. Owner action: fix billing / the spending limit, then re-run the workflow on the draft PR.
+
+## WINE-TEST
+
+With CI down, Windows tests run locally under Wine: `GOOS=windows CGO_ENABLED=0 go test -c -o /tmp/<n>.exe <pkg>`, then `wine /tmp/<n>.exe` from the package dir. Remaining failures, all Wine or cross-build artifacts (re-check on real Windows once CI-BILLING is fixed, then drop this entry):
+- `.` TestEntityMap_LeakBacktraceFormat: the binary is cross-built on Linux, so frame paths are `/home/...` while Wine's cwd is `Z:\...`; `filepath.Rel` fails and the path stays absolute. A native Windows build records `C:/...` paths and passes.
+- `platform/windows` TestDirectWrite_TabsPreserveNativeAdvancesAndCursor, TestDirectWrite_UnicodeLineSeparatorsPreserveShapedLineCursor, TestDirectWrite_UnicodeParagraphSeparatorsPreserveShapedLineCursor: Wine's `IDWriteFontSet::GetMatchingFonts` returns E_NOTIMPL and Consolas / Segoe UI are not installed, so font selection fails.
+- `a11y/windows` TestSimple_Navigation, TestSimple_Focus, TestSimple_ElementFromPointAndRangeValueSetValue: Wine's uiautomationcore stubs `get_ControlViewWalker`, `get_CurrentHasKeyboardFocus` and `ElementFromPoint` (E_NOTIMPL).
+- `internal/win/com` TestWinrt_ActivateInstance: Wine's WinRT activation returns E_NOTIMPL.
+- `internal/cmd/stylegen` TestStylegen_TypeChecksAgainstContract: needs the `go` tool on PATH, which the Wine environment lacks.
 
 ## M0-EXIT-OPEN
 

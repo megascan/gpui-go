@@ -8,17 +8,27 @@ import (
 	"github.com/megascan/gpui-go/internal/win/com"
 	"github.com/megascan/gpui-go/internal/win/win32"
 	"github.com/megascan/gpui-go/scheduler"
+	xwin "golang.org/x/sys/windows"
 )
 
 func onDialogThread(t *testing.T, f func()) {
 	t.Helper()
+	finished, err := xwin.CreateEvent(nil, 1, 0, nil)
+	if err != nil {
+		t.Fatalf("creating dialog thread event: %v", err)
+	}
+	defer xwin.CloseHandle(finished)
 	done := make(chan any, 1)
-	err := spawnDialogThread(func() {
+	err = spawnDialogThread(func() {
+		defer xwin.SetEvent(finished)
 		defer func() { done <- recover() }()
 		f()
 	})
 	if err != nil {
 		t.Fatalf("spawning dialog thread: %v", err)
+	}
+	if _, err := xwin.WaitForSingleObject(finished, xwin.INFINITE); err != nil {
+		t.Fatalf("waiting for dialog thread: %v", err)
 	}
 	if p := <-done; p != nil {
 		panic(p)
