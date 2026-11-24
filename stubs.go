@@ -1,29 +1,16 @@
 package gpui
 
 import (
+	"encoding/json/jsontext"
 	"math/rand/v2"
 	"reflect"
 	"testing"
 	"time"
+	"weak"
 
 	"github.com/megascan/gpui-go/a11y"
 	"github.com/megascan/gpui-go/scheduler"
 )
-
-// App is the GPUI application context (M0-app-core ports it).
-type App struct {
-	entities *entityMap
-}
-
-// FindDisplay returns the display with the given id, or nil (M0-app-core ports it).
-func (cx *App) FindDisplay(id DisplayID) PlatformDisplay {
-	panic("gpui: unimplemented App.FindDisplay")
-}
-
-// PrimaryDisplay returns the primary display, or nil (M0-app-core ports it).
-func (cx *App) PrimaryDisplay() PlatformDisplay {
-	panic("gpui: unimplemented App.PrimaryDisplay")
-}
 
 // New builds an entity that is owned by the application (M0-app-contexts ports it).
 func (cx *App) New[T any](buildEntity func(cx *Context[T]) *T) Entity[T] {
@@ -50,7 +37,7 @@ func (cx *App) ReadWindow[V, R any](window WindowHandle[V], read func(root Entit
 	panic("gpui: unimplemented App.ReadWindow")
 }
 
-// WithWindow runs f against the entity's current window (M0-app-core ports it).
+// WithWindow runs f against the entity's current window (M0-app-effects ports it).
 func (cx *App) WithWindow[R any](entityID EntityID, f func(window *Window, cx *App) R) (R, bool) {
 	panic("gpui: unimplemented App.WithWindow")
 }
@@ -75,12 +62,7 @@ func (cx *App) DefaultGlobal[G any]() *G {
 	panic("gpui: unimplemented App.DefaultGlobal")
 }
 
-// Observe arranges for f to be called whenever the entity notifies (M0-app-effects ports it).
-func (cx *App) Observe[W any](entity Entity[W], onNotify func(entity Entity[W], cx *App)) Subscription {
-	panic("gpui: unimplemented App.Observe")
-}
-
-// Spawn spawns the future returned by f on the foreground executor (M0-app-core ports it).
+// Spawn spawns the future returned by f on the foreground executor (M0-app-effects ports it).
 func (cx *App) Spawn[R any](f func(cx *AsyncApp) (R, error)) *Task[R] {
 	panic("gpui: unimplemented App.Spawn")
 }
@@ -88,11 +70,6 @@ func (cx *App) Spawn[R any](f func(cx *AsyncApp) (R, error)) *Task[R] {
 // Defer schedules f to run at the end of the current effect cycle (M0-app-effects ports it).
 func (cx *App) Defer(f func(cx *App)) {
 	panic("gpui: unimplemented App.Defer")
-}
-
-// OpenWindow opens a new window whose root view is returned by build (M0-app-core ports it).
-func (cx *App) OpenWindow[V any](options WindowOptions, build func(window *Window, cx *App) Entity[V]) (WindowHandle[V], error) {
-	panic("gpui: unimplemented App.OpenWindow")
 }
 
 func (cx *App) leaseGlobal[G any]() *globalLease[G] {
@@ -139,11 +116,6 @@ func (cx *App) readWindow(window AnyWindowHandle, read func(root AnyView, cx *Ap
 	panic("gpui: unimplemented App.readWindow")
 }
 
-// ForegroundExecutor returns the main-thread executor (M0-app-core ports it).
-func (cx *App) ForegroundExecutor() ForegroundExecutor {
-	panic("gpui: unimplemented App.ForegroundExecutor")
-}
-
 func (cx *App) backgroundExecutor() BackgroundExecutor {
 	panic("gpui: unimplemented App.backgroundExecutor")
 }
@@ -158,51 +130,6 @@ type globalLease[G any] struct {
 
 func (l *globalLease[G]) get() *G {
 	panic("gpui: unimplemented globalLease.get")
-}
-
-// AppCell wraps the App with upstream's borrow tracking (M0-app-core ports it).
-type AppCell struct{}
-
-// Borrow starts a shared borrow of the App; Release on the guard ends it (M0-app-core ports it).
-func (c *AppCell) Borrow() AppRef {
-	panic("gpui: unimplemented AppCell.Borrow")
-}
-
-// BorrowMut starts a mutable borrow of the App and panics on a conflicting borrow (M0-app-core ports it).
-func (c *AppCell) BorrowMut() AppRefMut {
-	panic("gpui: unimplemented AppCell.BorrowMut")
-}
-
-// TryBorrowMut starts a mutable borrow of the App or returns the borrow error (M0-app-core ports it).
-func (c *AppCell) TryBorrowMut() (AppRefMut, error) {
-	panic("gpui: unimplemented AppCell.TryBorrowMut")
-}
-
-// AppRef is a shared borrow of the App (M0-app-core ports it). It does not embed *App, so a
-// shared borrow implements neither AppContext nor BorrowAppContext.
-type AppRef struct {
-	app *App
-}
-
-// Get returns the borrowed App for reads only, as upstream's Deref to &App; mutation needs
-// BorrowMut (M0-app-core ports it).
-func (r AppRef) Get() *App {
-	panic("gpui: unimplemented AppRef.Get")
-}
-
-// Release ends the borrow, as the guard's Drop does upstream (M0-app-core ports it).
-func (r AppRef) Release() {
-	panic("gpui: unimplemented AppRef.Release")
-}
-
-// AppRefMut is a mutable borrow of the App (M0-app-core ports it).
-type AppRefMut struct {
-	*App
-}
-
-// Release ends the borrow, as the guard's Drop does upstream (M0-app-core ports it).
-func (r AppRefMut) Release() {
-	panic("gpui: unimplemented AppRefMut.Release")
 }
 
 // GpuiBorrow is a mutable lease of an entity obtained with AsMut (M0-app-effects ports it).
@@ -250,9 +177,6 @@ type RenderSvgParams struct {
 	// Size is the rasterized size.
 	Size Size[DevicePixels]
 }
-
-// SystemWindowTab is a window tab of the system tab bar (M0-app-core ports it).
-type SystemWindowTab struct{}
 
 // TestWindow is the test platform's window (M0-test-platform ports it).
 type TestWindow struct{}
@@ -322,6 +246,9 @@ func (cx *Context[T]) Listener[E any](listener func(this *T, event *E, window *W
 // AsyncApp is an App handle that can be held across await points (M0-app-contexts ports it).
 type AsyncApp struct {
 	*scheduler.Scope
+	app                weak.Pointer[AppCell]
+	bgExecutor         BackgroundExecutor
+	foregroundExecutor ForegroundExecutor
 }
 
 // Update runs f with the App, parking the task until the main thread runs it (M0-app-contexts ports it).
@@ -434,7 +361,11 @@ type WindowHandle[V any] struct {
 
 // Window is a GPUI window (M0-window-core ports it).
 type Window struct {
-	focus Option[FocusID]
+	handle           AnyWindowHandle
+	displayID        Option[DisplayID]
+	lastWindowBounds WindowBounds
+	root             Option[AnyView]
+	focus            Option[FocusID]
 }
 
 // HasPendingKeystrokes reports whether a multi-stroke binding is pending (M0-window-dispatch ports it).
@@ -456,15 +387,6 @@ func (cx *AsyncWindowContext) Update(f func(window *Window, cx *App)) error {
 // UpdateR runs f with the window and App and returns its result (M0-app-contexts ports it).
 func (cx *AsyncWindowContext) UpdateR[R any](f func(window *Window, cx *App) R) (R, error) {
 	panic("gpui: unimplemented AsyncWindowContext.UpdateR")
-}
-
-// ToAsync returns an AsyncApp that holds the app weakly (M0-app-core ports it).
-func (cx *App) ToAsync() *AsyncApp {
-	panic("gpui: unimplemented App.ToAsync")
-}
-
-func (cx *App) update(f func(cx *App)) {
-	panic("gpui: unimplemented App.update")
 }
 
 func (cx *App) clearPendingKeystrokes() {
@@ -491,11 +413,14 @@ func Hash[T any](data T) uint64 {
 }
 
 // SvgRenderer renders SVGs into images (M0-elements-media ports it).
-type SvgRenderer struct{}
+type SvgRenderer struct {
+	assetSource AssetSource
+}
 
 // NewSvgRenderer creates an SVG renderer loading referenced assets from assetSource (M0-elements-media ports it).
+// The placeholder body only stores the source, so App construction works before M0-elements-media.
 func NewSvgRenderer(assetSource AssetSource) SvgRenderer {
-	panic("gpui: unimplemented NewSvgRenderer")
+	return SvgRenderer{assetSource: assetSource}
 }
 
 // RenderSingleFrame renders an SVG into a single-frame image (M0-elements-media ports it).
@@ -1115,10 +1040,6 @@ type TouchDragEvent struct{}
 // BackGestureEvent is a back-navigation gesture recognized by the platform (M0-gestures-spring ports it).
 type BackGestureEvent struct{}
 
-func (cx *App) actionRegistry() *actionRegistry {
-	panic("gpui: unimplemented App.actionRegistry")
-}
-
 // HangDetector detects hangs from the foreground journal (M3-profiler-hang ports it).
 type HangDetector struct{}
 
@@ -1175,3 +1096,134 @@ func recordView(timing ViewTiming) {}
 func recordDraw(timing FrameTiming) {}
 
 func recordPresent(timing PresentTiming, frame Option[FrameTiming]) {}
+
+// PathForAuxiliaryExecutable returns the path of the executable with the given name in the application bundle (M0-app-effects ports it).
+func (cx *App) PathForAuxiliaryExecutable(name string) (string, error) {
+	panic("gpui: unimplemented App.PathForAuxiliaryExecutable")
+}
+
+// GlobalMut returns the global of type G for mutation and notifies its observers (M0-app-effects ports it).
+func (cx *App) GlobalMut[G any]() *G {
+	panic("gpui: unimplemented App.GlobalMut")
+}
+
+func (cx *App) flushEffects() {
+	panic("gpui: unimplemented App.flushEffects")
+}
+
+type effect interface {
+	isEffect()
+}
+
+type effectRefreshWindows struct{}
+
+func (effectRefreshWindows) isEffect() {}
+
+// AnyDrag is the type-erased state of an active drag (M0-app-effects ports it).
+type AnyDrag struct{}
+
+// KeystrokeEvent is a keystroke and the action it resolved to (M0-app-effects ports it).
+type KeystrokeEvent struct{}
+
+// HTTPClient is the HTTP client used by the application (D-HTTP, M0-app-effects ports it).
+type HTTPClient interface{}
+
+// NullHTTPClient is an HTTPClient that fails every request (M0-app-effects ports it).
+type NullHTTPClient struct{}
+
+func newWindow(handle AnyWindowHandle, options WindowOptions, cx *App) (*Window, error) {
+	panic("gpui: unimplemented newWindow")
+}
+
+// NewWindowHandle creates a handle from a window id without checking the root type (M0-window-core ports it).
+func NewWindowHandle[V any](id WindowID) WindowHandle[V] {
+	panic("gpui: unimplemented NewWindowHandle")
+}
+
+// AsU64 converts the window id to a uint64 (M0-window-core ports it).
+func (id WindowID) AsU64() uint64 {
+	panic("gpui: unimplemented WindowID.AsU64")
+}
+
+// WindowID returns the id of the window (M0-window-core ports it).
+func (h AnyWindowHandle) WindowID() WindowID {
+	panic("gpui: unimplemented AnyWindowHandle.WindowID")
+}
+
+// Update updates the root view of the window; it fails when the window has been closed (M0-window-core ports it).
+func (h AnyWindowHandle) Update(cx AppContext, update func(root AnyView, window *Window, cx *App)) error {
+	panic("gpui: unimplemented AnyWindowHandle.Update")
+}
+
+// Clear clears the element arena the draw ran against (M0-window-core ports it).
+func (a ArenaClearNeeded) Clear(cx *App) {
+	panic("gpui: unimplemented ArenaClearNeeded.Clear")
+}
+
+type windowInvalidator struct{}
+
+type focusMap struct{}
+
+func defaultFocusMap() *focusMap {
+	return &focusMap{}
+}
+
+// Defer schedules f to run at the end of the current effect cycle with this window (M0-window-paint ports it).
+func (w *Window) Defer(cx *App, f func(window *Window, cx *App)) {
+	panic("gpui: unimplemented Window.Defer")
+}
+
+func (w *Window) appearanceChanged(cx *App) {
+	panic("gpui: unimplemented Window.appearanceChanged")
+}
+
+func (w *Window) notifyDisplayObservers(cx *App) {
+	panic("gpui: unimplemented Window.notifyDisplayObservers")
+}
+
+func (w *Window) debugState() jsontext.Value {
+	panic("gpui: unimplemented Window.debugState")
+}
+
+// ActivateWindow brings the window to the front of the application (M0-window-dispatch ports it).
+func (w *Window) ActivateWindow() {
+	panic("gpui: unimplemented Window.ActivateWindow")
+}
+
+type promptBuilder interface {
+	isPromptBuilder()
+}
+
+type promptBuilderDefault struct{}
+
+func (promptBuilderDefault) isPromptBuilder() {}
+
+// DefaultKeymap returns an empty keymap (M0-keymap ports it). The placeholder body returns a zero Keymap.
+func DefaultKeymap() *Keymap {
+	return &Keymap{}
+}
+
+// Inspector manages inspector state (M0-element ports it).
+type Inspector struct{}
+
+// InspectorRenderer renders the inspector UI; it is set on the App (M0-element ports it).
+type InspectorRenderer func(inspector *Inspector, window *Window, cx *Context[Inspector]) AnyElement
+
+type inspectorElementRegistry struct{}
+
+func defaultInspectorElementRegistry() inspectorElementRegistry {
+	return inspectorElementRegistry{}
+}
+
+func anyViewFromEntity[V any](entity Entity[V]) AnyView {
+	panic("gpui: unimplemented anyViewFromEntity")
+}
+
+// ForegroundJournal is the foreground work journal of the app's thread (M3-profiler-journal ports it).
+type ForegroundJournal struct{}
+
+func installForegroundJournal() ForegroundJournal {
+	return ForegroundJournal{}
+}
+
+func observePower(cx *App) {}
