@@ -22,6 +22,7 @@ type scope struct {
 	baseType  string
 	implTrait bool
 	counted   bool
+	foreign   bool
 }
 
 type fileParser struct {
@@ -325,7 +326,8 @@ func (p *fileParser) items(i, end int, sc *scope) {
 			case p.kw(i, "default") && !p.punct(i+1, "!") && !p.punct(i+1, "(") && !p.punct(i+1, ":") && !p.punct(i+1, "="):
 				i++
 				continue
-			case p.kw(i, "async"), p.kw(i, "unsafe"), p.kw(i, "auto"):
+			case p.kw(i, "async"), p.kw(i, "unsafe"), p.kw(i, "auto"),
+				p.kw(i, "safe") && (p.kw(i+1, "fn") || p.kw(i+1, "static")):
 				i++
 				continue
 			case p.kw(i, "const") && (p.kw(i+1, "fn") || p.kw(i+1, "unsafe") || p.kw(i+1, "async") || p.kw(i+1, "extern")):
@@ -408,7 +410,12 @@ func (p *fileParser) items(i, end int, sc *scope) {
 			}
 			j := p.skipToBodyOrSemi(i+1, end)
 			if j < end && p.punct(j, "{") {
-				j = p.match(j)
+				body := p.match(j)
+				if sc.kind == ctxMod {
+					inner := &scope{kind: ctxMod, test: testCtx, cfg: itemCfg, counted: sc.counted, foreign: true}
+					p.items(j+1, body, inner)
+				}
+				j = body
 			}
 			i = j + 1
 		case "trait":
@@ -609,7 +616,7 @@ func (p *fileParser) onFn(sc *scope, attrs []attr, vis, name string, line int, c
 	switch sc.kind {
 	case ctxMod:
 		p.out.decls[name] = true
-		if testCtx {
+		if testCtx || sc.foreign {
 			return
 		}
 		for _, a := range attrs {
@@ -675,10 +682,7 @@ func (p *fileParser) warn(line int, format string, args ...any) {
 
 func (p *fileParser) onType(sc *scope, vis, kind, name string, line int, cfg []string, testCtx bool) {
 	p.out.decls[name] = true
-	if sc.kind != ctxMod {
-		return
-	}
-	if testCtx {
+	if sc.kind != ctxMod || testCtx || sc.foreign {
 		return
 	}
 	if vis == "pub" {
@@ -694,7 +698,7 @@ func (p *fileParser) onType(sc *scope, vis, kind, name string, line int, cfg []s
 
 func (p *fileParser) onValue(sc *scope, vis, kind, name string, line int, cfg []string, testCtx bool) {
 	p.out.decls[name] = true
-	if testCtx || p.macros || vis != "pub" || name == "_" {
+	if testCtx || sc.foreign || p.macros || vis != "pub" || name == "_" {
 		return
 	}
 	p.record(Item{Name: name, Kind: kind, Line: line, Cfg: cfg})

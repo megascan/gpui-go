@@ -160,6 +160,19 @@ func TestScan_ProcMacros(t *testing.T) {
 	}
 }
 
+func TestScan_ExternBlockItemsAreDeclaredNotCounted(t *testing.T) {
+	src := "#[link(name = \"AppKit\", kind = \"framework\")]\nunsafe extern \"C\" {\n    pub static NSAppearanceNameAqua: *mut AnyObject;\n    pub(super) static kTISPropertyInputSourceID: CFStringRef;\n    pub fn CVDisplayLinkStart(link: *mut c_void) -> i32;\n    safe fn LMGetKbdType() -> u16;\n    pub type Opaque;\n}\npub fn after() {}\n"
+	fr := parseFile("gpui_macos", "gpui_macos/src/platform.rs", src)
+	if got := names(fr.items, false); !slices.Equal(got, []string{"fn after"}) {
+		t.Fatalf("items = %q", got)
+	}
+	for _, n := range []string{"NSAppearanceNameAqua", "kTISPropertyInputSourceID", "CVDisplayLinkStart", "LMGetKbdType", "Opaque", "after"} {
+		if !fr.decls[n] {
+			t.Fatalf("%s is not declared", n)
+		}
+	}
+}
+
 func refDir(t *testing.T) string {
 	root, err := filepath.Abs("../../../..")
 	if err != nil {

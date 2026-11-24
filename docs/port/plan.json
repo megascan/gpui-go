@@ -57,10 +57,10 @@
   "cd /home/strange/Projects/gpui-go-wt/port && go test -tags gpui_profiler .",
   "cd /home/strange/Projects/gpui-go-wt/port && s=$(find . -name '*_gen.go' | sort | xargs sha256sum) && go generate ./... && [ \"$s\" = \"$(find . -name '*_gen.go' | sort | xargs sha256sum)\" ]",
   "cd /home/strange/Projects/gpui-go-wt/port && for t in darwin/arm64 darwin/amd64 windows/amd64 windows/arm64 js/wasm; do GOOS=${t%/*} GOARCH=${t#*/} CGO_ENABLED=0 go vet ./... && GOOS=${t%/*} GOARCH=${t#*/} CGO_ENABLED=0 go test -c -o /dev/null ./... || exit 1; done",
-  "cd /home/strange/Projects/gpui-go-wt/port && GOOS=ios GOARCH=arm64 CGO_ENABLED=0 go vet ./internal/apple/... ./platform/apple/... ./platform/ios/... ./platform",
+  "cd /home/strange/Projects/gpui-go-wt/port && sh docs/port/ios-vet.sh ./internal/apple/... ./platform/apple/... ./platform/ios/... ./platform",
   "cd /home/strange/Projects/gpui-go-wt/port && GOOS=js GOARCH=wasm go build -o /dev/null ./examples/web_hello_web && GOOS=js GOARCH=wasm go build ./render/... ./platform/web/...",
-  "cd /home/strange/Projects/gpui-go-wt/port && GOOS=js GOARCH=wasm go test -exec \"$(go env GOROOT)/lib/wasm/go_js_wasm_exec\" ./platform/web/... ./render/wgpu/internal/gpu/webgl2/...",
-  "cd /home/strange/Projects/gpui-go-wt/port && go build ./examples/...",
+  "cd /home/strange/Projects/gpui-go-wt/port && env -i PATH=\"$PATH\" HOME=\"$HOME\" GOCACHE=\"$(go env GOCACHE)\" GOPATH=\"$(go env GOPATH)\" GOMODCACHE=\"$(go env GOMODCACHE)\" GOFLAGS=\"$GOFLAGS\" GOOS=js GOARCH=wasm go test -exec \"$(go env GOROOT)/lib/wasm/go_js_wasm_exec\" ./platform/web/... ./render/wgpu/internal/gpu/webgl2/...",
+  "cd /home/strange/Projects/gpui-go-wt/port && go build -o /dev/null ./examples/...",
   "cd /home/strange/Projects/gpui-go-wt/port && go run ./internal/cmd/paritycheck -all-done -rescan -lint",
   "cd /home/strange/Projects/gpui-go-wt/port && test ! -e stubs.go && test ! -e DOCS",
   "cd /home/strange/Projects/gpui-go-wt/port && gh pr checks feat/port"
