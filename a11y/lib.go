@@ -16,7 +16,7 @@ import (
 	"unicode"
 
 	"github.com/megascan/gpui-go/gpuiutil"
-	"github.com/megascan/gpui-go/internal/jsonschema"
+	"github.com/megascan/gpui-go/jsonschema"
 )
 
 // Uuid is a 128-bit universally unique identifier.

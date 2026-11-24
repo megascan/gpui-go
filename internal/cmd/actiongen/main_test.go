@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"flag"
+	"go/parser"
+	"go/token"
 	"os"
 	"path/filepath"
 	"strings"
@@ -48,6 +50,34 @@ func TestActiongen_Golden(t *testing.T) {
 				t.Errorf("%s: output differs from %s:\n%s", in, golden, got)
 			}
 		}
+	}
+}
+
+func TestActiongen_ImportsArePublic(t *testing.T) {
+	src, err := os.ReadFile("testdata/actions.go")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := Generate("testdata/actions.go", src, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	f, err := parser.ParseFile(token.NewFileSet(), "actions_gen.go", got, parser.ImportsOnly)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sawSchema := false
+	for _, imp := range f.Imports {
+		path := strings.Trim(imp.Path.Value, `"`)
+		if strings.Contains(path, "/internal/") || strings.HasSuffix(path, "/internal") {
+			t.Errorf("generated code imports %s, which modules outside gpui-go cannot import", path)
+		}
+		if path == jsonschemaPkg {
+			sawSchema = true
+		}
+	}
+	if !sawSchema {
+		t.Fatalf("testdata/actions.go no longer produces a JSON schema import:\n%s", got)
 	}
 }
 

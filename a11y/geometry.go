@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/megascan/gpui-go/internal/jsonschema"
+	"github.com/megascan/gpui-go/jsonschema"
 )
 
 // Affine is a 2D affine transform. Derived from kurbo.

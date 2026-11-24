@@ -139,7 +139,7 @@ Folded by M0-exit from docs/port/debt/<stage>.md for every stage with a docs/por
 ### M0-entities
 
 - Strict leak reports (handles, subscriptions, leases collected without their drop method) go to one process-global list drained by `entityMap.report()`. Parallel tests in one binary can see each other's reports.
-- Strict mode is the default in every test binary (`testing.Testing()` with `GPUI_LEAK_DETECTION` unset), not only this repo's. Downstream users opt out with `GPUI_LEAK_DETECTION=1`.
+- Strict mode is the default in every test binary (`testing.Testing()` with `GPUI_LEAK_DETECTION` unset), not only this repo's. Downstream users opt out of strict (not of detection, which upstream's `cfg(test)` keeps on) with `GPUI_LEAK_DETECTION=1`.
 - A lease abandoned by a panic that a test recovers is reported in strict mode; upstream skips the LeaseInner check while panicking, which Go cannot detect.
 - Over-release panics inside a `runtime.AddCleanup` callback run on the cleanup goroutine and abort the process (upstream panics on the dropping thread).
 - `Clone` / `Upgrade` after the ref-count table was collected skip leak tracking; upstream's `upgrade().unwrap()` panics there.
@@ -163,7 +163,7 @@ Folded by M0-exit from docs/port/debt/<stage>.md for every stage with a docs/por
 ### M0-geometry-units
 
 - `(Pixels).Pow` goes through float64 math.Pow; Rust powf on f32 may differ by 1 ulp.
-- JSONSchema for AbsoluteLength, DefiniteLength, Length, Rgba and Hsla is `{"type":"string"}` without upstream's `pattern`: internal/jsonschema.Schema has no Pattern field (handoff written).
+- JSONSchema for AbsoluteLength, DefiniteLength, Length, Rgba and Hsla is `{"type":"string"}` without upstream's `pattern`: jsonschema.Schema has no Pattern field (handoff written).
 - Pixels/ScaledPixels `Sum` impls are not ported (Go loops add natively); `Hash` impls rely on Go `==` map keys (no canonical_float_bits, so +0/-0 hash equal as in upstream, NaN keys differ).
 - `IsZero` methods on Point/Size/Bounds/units are also picked up by encoding/json/v2 `omitzero`; Size.IsZero is true when either side is zero, so a bare `omitzero` Size field would be dropped then. Refinements wrap fields in Option, so generated code is unaffected.
 - Parse error texts follow Rust's ParseFloatError / ParseIntError wording; anyhow context chains collapse to the outermost message except ParseDefiniteLength's percent branch, which appends the cause with %w.
@@ -331,7 +331,7 @@ Folded by M0-exit from docs/port/debt/<stage>.md for every stage with a docs/por
 ### M0-text-system
 
 - FontFeatures / FontFallbacks intern every distinct list in a process-wide sync.Map that never shrinks (upstream shares Arc lists and frees them). Feature and fallback sets are few in practice.
-- D-SCHEMAKW: FontFeatures and FontWeight JSON schemas are reduced until internal/jsonschema gains patternProperties / multipleOf / default.
+- D-SCHEMAKW: FontFeatures and FontWeight JSON schemas are reduced until jsonschema gains patternProperties / multipleOf / default.
 - TestLineLayout_BreakIndicesMatchICU pins go-text segmenter output against ICU's for two inputs only; ICU new_for_non_complex_scripts and go-text's UAX #14 may differ on other scripts.
 
 ### M0-window-a11y
@@ -706,7 +706,7 @@ Folded by M0-exit from docs/port/debt/<stage>.md for every stage with a docs/por
 
 - refinegen Debug output (`String()`) uses Go field names, not upstream's snake_case names.
 - refineable.Eq falls back to reflect.DeepEqual for non-comparable types without an `Eq(T) bool` method; DeepEqual differs from Rust PartialEq for NaN inside slices and for func values.
-- refinegen ignores `JsonSchema` / `Deserialize` / other directive args (schemas come from internal/jsonschema, D-SCHEMA); `Serialize` emits `json:"<snake or source json name>,omitzero"` tags.
+- refinegen ignores `JsonSchema` / `Deserialize` / other directive args (schemas come from jsonschema, D-SCHEMA); `Serialize` emits `json:"<snake or source json name>,omitzero"` tags.
 - Nested refineable fields convert with `<Type>FromRefinement` (free function); a nested type from another package must export that function (refinegen-generated types do).
 - `TruncateToBottomNSortedBy` uses its own quickselect; on ties the kept elements may differ from Rust's `select_nth_unstable_by` (equal under compare).
 

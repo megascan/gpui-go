@@ -84,9 +84,9 @@ func runExample() {
 				return
 			}
 			bounds := gpui.BoundsCentered(gpui.None[gpui.DisplayID](), gpui.NewSize(gpui.Px(300.0), gpui.Px(300.0)), cx)
-			if _, err := cx.OpenWindow(gpui.WindowOptions{
-				WindowBounds: gpui.Some(gpui.WindowBoundsWindowed(bounds)),
-			}, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[SvgExample] {
+			options := gpui.DefaultWindowOptions()
+			options.WindowBounds = gpui.Some(gpui.WindowBoundsWindowed(bounds))
+			if _, err := cx.OpenWindow(options, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[SvgExample] {
 				return cx.New(func(_ *gpui.Context[SvgExample]) *SvgExample { return &SvgExample{} })
 			}); err != nil {
 				panic(err)

@@ -399,3 +399,27 @@ func TestEntityMap_LeakBacktraceFormat(t *testing.T) {
 		t.Fatalf("backtrace keeps frames from testing.tRunner on:\n%s", out)
 	}
 }
+
+func TestEntityMap_LeakDetectionModeFromEnv(t *testing.T) {
+	for _, c := range []struct {
+		value  string
+		set    bool
+		inTest bool
+		want   leakDetectionMode
+	}{
+		{"", false, true, leakDetectionStrict},
+		{"strict", true, true, leakDetectionStrict},
+		{"1", true, true, leakDetectionOn},
+		{"0", true, true, leakDetectionOn},
+		{"", true, true, leakDetectionOn},
+		{"", false, false, leakDetectionOff},
+		{"", true, false, leakDetectionOff},
+		{"strict", true, false, leakDetectionStrict},
+		{"1", true, false, leakDetectionOn},
+		{"0", true, false, leakDetectionOn},
+	} {
+		if got := parseLeakDetectionMode(c.value, c.set, c.inTest); got != c.want {
+			t.Errorf("GPUI_LEAK_DETECTION=%q set=%v test=%v: got mode %d, want %d", c.value, c.set, c.inTest, got, c.want)
+		}
+	}
+}

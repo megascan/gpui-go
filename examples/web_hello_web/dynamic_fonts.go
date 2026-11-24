@@ -136,9 +136,9 @@ func RunDynamicFonts() {
 			return
 		}
 		bounds := gpui.BoundsCentered(gpui.None[gpui.DisplayID](), gpui.NewSize(gpui.Px(900), gpui.Px(500)), cx)
-		if _, err := cx.OpenWindow(gpui.WindowOptions{
-			WindowBounds: gpui.Some(gpui.WindowBoundsWindowed(bounds)),
-		}, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[DynamicFonts] {
+		options := gpui.DefaultWindowOptions()
+		options.WindowBounds = gpui.Some(gpui.WindowBoundsWindowed(bounds))
+		if _, err := cx.OpenWindow(options, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[DynamicFonts] {
 			return cx.New(NewDynamicFonts)
 		}); err != nil {
 			js.Global().Get("console").Call("error", err.Error())

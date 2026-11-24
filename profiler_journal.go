@@ -746,7 +746,6 @@ func (g *testForegroundJournalGuard) End() {
 	g.previous = nil
 }
 
-// installTestForegroundJournal installs a test journal with its own runnable counter, mirroring upstream's per-thread counter.
 func installTestForegroundJournal(capacity, pendingCapacity int) (ForegroundJournal, *testForegroundJournalGuard) {
 	runnables := newForegroundRunnableCounter()
 	handle, publisher := newForegroundJournal(capacity, pendingCapacity)

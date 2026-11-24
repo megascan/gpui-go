@@ -229,7 +229,7 @@ func write(name string, src []byte) {
 
 func genEnums() []byte {
 	var b bytes.Buffer
-	b.WriteString(header + "package a11y\n\nimport \"github.com/megascan/gpui-go/internal/jsonschema\"\n\n")
+	b.WriteString(header + "package a11y\n\nimport \"github.com/megascan/gpui-go/jsonschema\"\n\n")
 	for _, e := range enums {
 		fmt.Fprintf(&b, "// %s\ntype %s uint8\n\n", e.doc, e.name)
 		fmt.Fprintf(&b, "// %s variants, with accesskit's discriminants.\nconst (\n", e.name)

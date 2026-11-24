@@ -242,7 +242,7 @@ func TestReflect_NameCollisionQualifies(t *testing.T) {
 	}
 	var qualified bool
 	for name := range root.Defs {
-		if name != "Dup" && strings.HasPrefix(name, "github.com.megascan.gpui-go.internal.jsonschema.Dup") {
+		if name != "Dup" && strings.HasPrefix(name, "github.com.megascan.gpui-go.jsonschema.Dup") {
 			qualified = true
 		}
 	}

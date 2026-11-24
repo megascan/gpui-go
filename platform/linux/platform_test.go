@@ -66,7 +66,7 @@ func TestPlatformDisplayModeTests_FailedWaylandAttachPreservesHeadlessAppAndAllo
 
 func TestPlatformDisplayModeTests_HeadlessWindowsBlockSwitchingToADisplayServer(t *testing.T) {
 	runScenario(t, "HeadlessWindowsBlockSwitchingToADisplayServer", windowingModesAll, func(cx *gpui.AsyncApp) {
-		window, err := cx.OpenWindow(gpui.WindowOptions{}, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[Blank] {
+		window, err := cx.OpenWindow(gpui.DefaultWindowOptions(), func(_ *gpui.Window, cx *gpui.App) gpui.Entity[Blank] {
 			return cx.New(func(*gpui.Context[Blank]) *Blank { return &Blank{} })
 		})
 		if err != nil {

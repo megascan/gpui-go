@@ -343,15 +343,15 @@ func runExample() {
 		defaultContext := DefaultTextContext()
 		cx.SetGlobal(GlobalTextContext{TextContext: &defaultContext})
 
-		window, err := cx.OpenWindow(gpui.WindowOptions{
-			Titlebar: gpui.Some(gpui.TitlebarOptions{
-				Title: gpui.Some[gpui.SharedString]("GPUI Typography"),
-			}),
-			WindowBounds: gpui.Some(gpui.WindowBoundsWindowed(gpui.NewBounds(
-				gpui.NewPoint(gpui.Px(0.0), gpui.Px(0.0)),
-				gpui.NewSize(gpui.Px(920.), gpui.Px(720.)),
-			))),
-		}, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[TextExample] {
+		options := gpui.DefaultWindowOptions()
+		options.Titlebar = gpui.Some(gpui.TitlebarOptions{
+			Title: gpui.Some[gpui.SharedString]("GPUI Typography"),
+		})
+		options.WindowBounds = gpui.Some(gpui.WindowBoundsWindowed(gpui.NewBounds(
+			gpui.NewPoint(gpui.Px(0.0), gpui.Px(0.0)),
+			gpui.NewSize(gpui.Px(920.), gpui.Px(720.)),
+		)))
+		window, err := cx.OpenWindow(options, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[TextExample] {
 			return cx.New(func(_ *gpui.Context[TextExample]) *TextExample {
 				return &TextExample{nextID: 0, fontFamily: ".ZedMono"}
 			})

@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/megascan/gpui-go/internal/jsonschema"
+	"github.com/megascan/gpui-go/jsonschema"
 )
 
 // FontFeature is one OpenType feature tag and its value.

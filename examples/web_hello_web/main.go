@@ -336,9 +336,9 @@ func runHelloWeb() {
 			return
 		}
 		bounds := gpui.BoundsCentered(gpui.None[gpui.DisplayID](), gpui.NewSize(gpui.Px(640), gpui.Px(560)), cx)
-		if _, err := cx.OpenWindow(gpui.WindowOptions{
-			WindowBounds: gpui.Some(gpui.WindowBoundsWindowed(bounds)),
-		}, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[HelloWeb] {
+		options := gpui.DefaultWindowOptions()
+		options.WindowBounds = gpui.Some(gpui.WindowBoundsWindowed(bounds))
+		if _, err := cx.OpenWindow(options, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[HelloWeb] {
 			return cx.New(NewHelloWeb)
 		}); err != nil {
 			panic(fmt.Sprintf("failed to open window: %v", err))

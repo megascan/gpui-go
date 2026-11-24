@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/megascan/gpui-go/internal/jsonschema"
+	"github.com/megascan/gpui-go/jsonschema"
 )
 
 // FontFallbacks are the fallback font family names configured for a font. Equal lists share

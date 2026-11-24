@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"github.com/megascan/gpui-go/gpuiutil"
-	"github.com/megascan/gpui-go/internal/jsonschema"
+	"github.com/megascan/gpui-go/jsonschema"
 )
 
 //go:generate go run github.com/megascan/gpui-go/internal/cmd/refinegen geometry.go

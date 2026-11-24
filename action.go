@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"sync"
 
-	"github.com/megascan/gpui-go/internal/jsonschema"
+	"github.com/megascan/gpui-go/jsonschema"
 )
 
 // Action is a value that can be bound to keystrokes and dispatched through the element tree.

@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/megascan/gpui-go/gpuiutil"
-	"github.com/megascan/gpui-go/internal/jsonschema"
+	"github.com/megascan/gpui-go/jsonschema"
 )
 
 var testTextDecoration = TextDecoration{

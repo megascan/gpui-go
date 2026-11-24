@@ -197,16 +197,15 @@ func runExample() {
 				Disabled: false,
 			}})
 
-			windowOptions := gpui.WindowOptions{
-				Titlebar: gpui.Some(gpui.TitlebarOptions{
-					Title:              gpui.Some[gpui.SharedString]("Image Example"),
-					AppearsTransparent: false,
-				}),
-				WindowBounds: gpui.Some(gpui.WindowBoundsWindowed(gpui.Bounds[gpui.Pixels]{
-					Size:   gpui.NewSize(gpui.Px(1100.), gpui.Px(600.)),
-					Origin: gpui.NewPoint(gpui.Px(200.), gpui.Px(200.)),
-				})),
-			}
+			windowOptions := gpui.DefaultWindowOptions()
+			windowOptions.Titlebar = gpui.Some(gpui.TitlebarOptions{
+				Title:              gpui.Some[gpui.SharedString]("Image Example"),
+				AppearsTransparent: false,
+			})
+			windowOptions.WindowBounds = gpui.Some(gpui.WindowBoundsWindowed(gpui.Bounds[gpui.Pixels]{
+				Size:   gpui.NewSize(gpui.Px(1100.), gpui.Px(600.)),
+				Origin: gpui.NewPoint(gpui.Px(200.), gpui.Px(200.)),
+			}))
 
 			if _, err := cx.OpenWindow(windowOptions, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[ImageShowcase] {
 				return cx.New(func(_ *gpui.Context[ImageShowcase]) *ImageShowcase {

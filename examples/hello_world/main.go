@@ -54,9 +54,9 @@ func (h *HelloWorld) Render(_ *gpui.Window, _ *gpui.Context[HelloWorld]) gpui.In
 func runExample() {
 	platform.Application().Run(func(cx *gpui.App) {
 		bounds := gpui.BoundsCentered(gpui.None[gpui.DisplayID](), gpui.NewSize(gpui.Px(500.), gpui.Px(500.0)), cx)
-		if _, err := cx.OpenWindow(gpui.WindowOptions{
-			WindowBounds: gpui.Some(gpui.WindowBoundsWindowed(bounds)),
-		}, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[HelloWorld] {
+		options := gpui.DefaultWindowOptions()
+		options.WindowBounds = gpui.Some(gpui.WindowBoundsWindowed(bounds))
+		if _, err := cx.OpenWindow(options, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[HelloWorld] {
 			return cx.New(func(_ *gpui.Context[HelloWorld]) *HelloWorld {
 				return &HelloWorld{text: "World"}
 			})

@@ -14,7 +14,7 @@ The context you get when you work with an `Entity[T]`. It adds methods for that 
 
 ## `*gpui.AsyncApp` and `*gpui.AsyncWindowContext`
 
-The contexts above are only valid during the call they are passed to. Call `cx.ToAsync()` to get an async context, or use the one a foreground task receives from `cx.Spawn`. An async context can be kept across awaits (`task.Await(acx)`). Entity and window calls through an async context return an `error`, because the window or the whole app may be gone by the time the call runs.
+The contexts above are only valid during the call they are passed to. Call `cx.ToAsync()` to get an async context, or use the one a foreground task receives from `cx.Spawn`. An async context can be kept across awaits (`task.Await(acx)`). It holds the app weakly. Window calls (`UpdateWindow`, `ReadWindow`, and `Update`/`UpdateRoot`/`ReadGlobal`/`UpdateGlobal` on `AsyncWindowContext`) return an `error`, because the window may be closed or the app may be quitting by the time the call runs; `WithWindow` reports `false` instead. App and entity calls (`AsyncApp.Update`/`UpdateR`, `New`, `entity.Update(acx, ...)`, `ReadGlobal`, ...) return no error and panic with "app was released before async operation completed" if the app is gone, which does not happen in foreground tasks spawned with `cx.Spawn`. To stop work when an entity is gone, hold a `WeakEntity` and check the `error` from `weak.Update(acx, ...)`.
 
 ## `*gpui.TestAppContext`
 

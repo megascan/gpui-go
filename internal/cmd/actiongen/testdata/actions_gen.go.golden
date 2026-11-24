@@ -9,7 +9,7 @@ import (
 	"reflect"
 
 	"github.com/megascan/gpui-go"
-	"github.com/megascan/gpui-go/internal/jsonschema"
+	"github.com/megascan/gpui-go/jsonschema"
 )
 
 func (MoveUp) Name() string {

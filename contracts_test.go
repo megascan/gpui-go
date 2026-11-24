@@ -166,7 +166,7 @@ var _ = func(cx *App, acx *AsyncApp, vcx VisualContext, cell *AppCell, t *testin
 	var _ error = VisualContextFocus(vcx, e)
 	var _ AnyWindowHandle = vcx.WindowHandle()
 
-	var _, _ = cx.OpenWindow(WindowOptions{}, func(w *Window, cx *App) Entity[counter] {
+	var _, _ = cx.OpenWindow(DefaultWindowOptions(), func(w *Window, cx *App) Entity[counter] {
 		return cx.New(func(cx *Context[counter]) *counter { return &counter{} })
 	})
 

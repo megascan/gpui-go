@@ -2,7 +2,7 @@
 
 package a11y
 
-import "github.com/megascan/gpui-go/internal/jsonschema"
+import "github.com/megascan/gpui-go/jsonschema"
 
 // Role is the type of an accessibility node.
 type Role uint8

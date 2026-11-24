@@ -34,7 +34,7 @@ M0-a11y-schema)
   ( go run ./internal/cmd/paritycheck -area ext-a11y ) || exit 1
   ;;
 M0-jsonschema)
-  ( go build ./internal/jsonschema/... && go vet ./internal/jsonschema/... && go test ./internal/jsonschema/... && test -z "$(gofmt -l internal/jsonschema)" ) || exit 1
+  ( go build ./jsonschema/... && go vet ./jsonschema/... && go test ./jsonschema/... && test -z "$(gofmt -l jsonschema)" ) || exit 1
   ;;
 M0-etagere)
   ( go build ./internal/etagere/... && go vet ./internal/etagere/... && go test ./internal/etagere/... && test -z "$(gofmt -l internal/etagere)" ) || exit 1
@@ -229,7 +229,7 @@ M0-window-a11y)
   ;;
 M0-exit)
   ( go build . && go vet . && go test . && test -z "$(gofmt -l *.go)" ) || exit 1
-  ( PK=". ./scheduler/... ./sumtree/... ./collections/... ./gpuiutil/... ./refineable/... ./a11y ./internal/taffy/... ./internal/lyon/... ./internal/etagere/... ./internal/jsonschema/... ./internal/cmd/paritycheck/... ./internal/cmd/refinegen/... ./internal/cmd/actiongen/... ./internal/cmd/stylegen/..."; go vet $PK && go test $PK && go test -race . ./scheduler/... && for t in darwin/arm64 windows/amd64 js/wasm; do GOOS=${t%/*} GOARCH=${t#*/} CGO_ENABLED=0 go vet $PK && GOOS=${t%/*} GOARCH=${t#*/} CGO_ENABLED=0 go test -c -o /dev/null $PK || exit 1; done ) || exit 1
+  ( PK=". ./scheduler/... ./sumtree/... ./collections/... ./gpuiutil/... ./refineable/... ./a11y ./internal/taffy/... ./internal/lyon/... ./internal/etagere/... ./jsonschema/... ./internal/cmd/paritycheck/... ./internal/cmd/refinegen/... ./internal/cmd/actiongen/... ./internal/cmd/stylegen/..."; go vet $PK && go test $PK && go test -race . ./scheduler/... && for t in darwin/arm64 windows/amd64 js/wasm; do GOOS=${t%/*} GOARCH=${t#*/} CGO_ENABLED=0 go vet $PK && GOOS=${t%/*} GOARCH=${t#*/} CGO_ENABLED=0 go test -c -o /dev/null $PK || exit 1; done ) || exit 1
   ( go run ./internal/cmd/paritycheck -area core-geometry,core-app,core-input,core-platform,core-window,core-style,core-text,core-elements,macros,core-tests -rescan ) || exit 1
   ( gh pr checks feat/port || echo 'CI-PENDING: Actions billing blocked, see TECH_DEBT CI-BILLING' )
   ;;

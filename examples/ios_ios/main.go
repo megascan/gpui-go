@@ -52,7 +52,7 @@ func (e *IosExample) Render(_ *gpui.Window, cx *gpui.Context[IosExample]) gpui.I
 func runExample() {
 	platform.Application().Run(func(cx *gpui.App) {
 		ios.SetStatusBarStyle(ios.StatusBarContentStyleLight)
-		if _, err := cx.OpenWindow(gpui.WindowOptions{}, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[IosExample] {
+		if _, err := cx.OpenWindow(gpui.DefaultWindowOptions(), func(_ *gpui.Window, cx *gpui.App) gpui.Entity[IosExample] {
 			return cx.New(func(_ *gpui.Context[IosExample]) *IosExample {
 				return &IosExample{tapCount: 0}
 			})

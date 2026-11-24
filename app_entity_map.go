@@ -837,19 +837,20 @@ const (
 
 var currentLeakDetectionMode = sync.OnceValue(func() leakDetectionMode {
 	value, set := os.LookupEnv("GPUI_LEAK_DETECTION")
+	return parseLeakDetectionMode(value, set, testing.Testing())
+})
+
+func parseLeakDetectionMode(value string, set, inTest bool) leakDetectionMode {
 	switch {
 	case value == "strict":
 		return leakDetectionStrict
-	case testing.Testing():
-		if !set {
-			return leakDetectionStrict
-		}
-		return leakDetectionOn
-	case value != "" && value != "0":
+	case inTest && !set:
+		return leakDetectionStrict
+	case inTest || value != "":
 		return leakDetectionOn
 	}
 	return leakDetectionOff
-})
+}
 
 var leakBacktrace = sync.OnceValue(func() bool {
 	return os.Getenv("LEAK_BACKTRACE") != ""

@@ -41,7 +41,7 @@ var importRules = []osRule{
 	{"internal/win", []string{"windows"}},
 }
 
-var rootAllowedInternal = []string{"a11y", "scheduler", "sumtree", "collections", "refineable", "gpuiutil", "internal/taffy", "internal/etagere", "internal/lyon", "internal/jsonschema"}
+var rootAllowedInternal = []string{"a11y", "scheduler", "sumtree", "collections", "refineable", "gpuiutil", "jsonschema", "internal/taffy", "internal/etagere", "internal/lyon"}
 
 var rootForbiddenThirdParty = []string{"purego", "webgpu", "godbus", "gen2brain"}
 
@@ -225,7 +225,7 @@ func lintFile(root, module, dir string, f *goFile, fset *token.FileSet) []Proble
 		case strings.HasPrefix(p, module+"/"):
 			target := strings.TrimPrefix(p, module+"/")
 			if dir == "." && !rootMayImport(target) {
-				add(imp.Pos(), fmt.Sprintf("root package imports %s; only internal/{taffy,etagere,lyon,jsonschema} and the core packages are allowed", target))
+				add(imp.Pos(), fmt.Sprintf("root package imports %s; only jsonschema, internal/{taffy,etagere,lyon} and the core packages are allowed", target))
 			}
 			for _, r := range importRules {
 				if under(target, r.prefix) {

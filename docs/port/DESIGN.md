@@ -81,7 +81,8 @@ gpui (root)                     the whole gpui crate: app, entities, window, ele
    |-- a11y                     pure-Go AccessKit schema (+ consumer, atspi, macos, windows adapters)
    |-- scheduler                scheduler crate
    |-- sumtree, collections, refineable, gpuiutil
-   `-- internal/{taffy,etagere,lyon,jsonschema}
+   |-- jsonschema               schemars replacement (public: actiongen output imports it)
+   `-- internal/{taffy,etagere,lyon}
 internal/linux/{wl,wlproto,xkb,xcbshim,pw}             OS bindings shared by several packages (linux)
 internal/apple/{objc,cf,gcd,ct,cg,mtl,appkit,uikit}    (darwin)
 internal/win/{com,win32,dwrite,d3d,wgc,screencap}      (windows)
@@ -122,7 +123,7 @@ Test support stays in the root package as ordinary (non-`_test.go`) files, becau
 
 Import rules, enforced by `go vet` cross-compiles and a paritycheck lint:
 
-1. `gpui` imports only `a11y`, `scheduler`, `sumtree`, `collections`, `refineable`, `gpuiutil`, `internal/{taffy,etagere,lyon,jsonschema}`, the standard library, `go-text/typesetting/segmenter` (line breaking), `xo/okage` (SVG, path rasterisation) and image decoders. It never imports a platform, a renderer, cgo or purego.
+1. `gpui` imports only `a11y`, `scheduler`, `sumtree`, `collections`, `refineable`, `gpuiutil`, `jsonschema`, `internal/{taffy,etagere,lyon}`, the standard library, `go-text/typesetting/segmenter` (line breaking), `xo/okage` (SVG, path rasterisation) and image decoders. It never imports a platform, a renderer, cgo or purego.
 2. Platform and renderer packages import `gpui`; nothing imports them except `platform` and examples.
 3. `render/wgpu` is the only package that pulls in cgo (through `oliverbestmann/webgpu`), apart from the dev tool `internal/cmd/wlspike`. On darwin and windows nothing on the default path needs cgo, so `GOOS=darwin`, `GOOS=windows` and `GOOS=js GOARCH=wasm` `go vet ./...` and `go test -c -o /dev/null ./...` run from Linux.
 4. `platform/linux` owns `LinuxPlatform` and backend selection (`gpui_linux/src/linux/platform.rs:295`, `gpui_linux/src/linux/display_connection.rs:23-66`); `wayland` and `x11` are sub-packages; the state both share (`LinuxCommon`, `gpui_linux/src/linux/platform.rs:91`) moves to `platform/linux/internal/common` to break the cycle.
@@ -169,7 +170,7 @@ Go rule:
 - A strong cycle leaks exactly as upstream: the entity map holds the state, the state holds the handle, the handle stays reachable.
 - Entity state that owns handles may implement `interface{ Drop(cx *App) }`; the app calls it when the entity is released, after release observers, where Rust drop glue would run.
 - `Subscription` stays active until `Unsubscribe()`; `Detach()` marks it intentional. `Task` runs until `Cancel()`; `Detach()` marks it intentional. No GC-driven cancel or unsubscribe: a task that stops at a random collection is worse than one that keeps running.
-- Leak detection is ported 1:1 (`LeakDetector`, `HandleID`, snapshots, `assert_released`, the exit report: `gpui/src/app/entity_map.rs:1041-1228`), on in tests and under `GPUI_LEAK_DETECTION=1`, with `LEAK_BACKTRACE=1` capturing `runtime.Callers`. In strict mode (`GPUI_LEAK_DETECTION=strict`, default in this repo's own tests) the cleanup also reports handles, tasks and subscriptions that were collected without `Release` / `Cancel` / `Detach` / `Unsubscribe`, which is how a missed implicit-drop site in ported code shows up.
+- Leak detection is ported 1:1 (`LeakDetector`, `HandleID`, snapshots, `assert_released`, the exit report: `gpui/src/app/entity_map.rs:1041-1228`), on in test binaries whatever `GPUI_LEAK_DETECTION` says (upstream's `cfg(test)`) and elsewhere when `GPUI_LEAK_DETECTION` is non-empty, `0` included (`gpui/build.rs:13-16`), with `LEAK_BACKTRACE=1` capturing `runtime.Callers`. In strict mode (`GPUI_LEAK_DETECTION=strict`, default in test binaries when the variable is unset) the cleanup also reports entity and focus handles, leases and subscriptions that were collected without `Release` / `endLease` / `Detach` / `Unsubscribe`, which is how a missed implicit-drop site in ported code shows up. Tasks are not tracked: upstream's detector covers entity handles only, and a `Task` collected without `Cancel` / `Detach` keeps running (no GC-driven cancel, above).
 - `WeakEntity[T]` holds the id and a `weak.Pointer` to the ref-count table (upstream `Weak<RwLock<EntityRefCounts>>`, `gpui/src/app/entity_map.rs:350`); `Upgrade` is increment-if-not-zero (`:694-703`).
 - The entity lease is kept: updating an entity removes it from the map for the duration, and a nested update or read panics with upstream's message (`gpui/src/app/entity_map.rs:166-190`, `:311-312`). Windows are leased the same way (`gpui/src/app.rs:900`, `:2490`).
 - `AppCell` (`gpui/src/app.rs:85-183`) keeps upstream's borrow tracking; it does not become a plain `*App`. The cell counts shared borrows and flags a mutable one; `Borrow`, `BorrowMut` and `TryBorrowMut` return `AppRef` / `AppRefMut` guards whose `Release` ends the borrow (callers `defer` it). The origin of the current borrow group is recorded with `runtime.Caller`, and a conflicting borrow panics with upstream's text ("RefCell already borrowed: attempted {kind} App borrow at {location}; existing {kind} borrow group began at {origin}", or "origin unavailable"); the try form returns `AppBorrowError`, and `TRACK_THREAD_BORROWS` behaves as upstream. Application, AsyncApp and the test contexts reach the App only through the guard, so a re-entrant update panics where upstream's does.
@@ -254,7 +255,7 @@ Go tasks are coroutines built on `iter.Pull`. One poll is one `next()`; the body
 | hot reload via subsecond (`gpui/src/gpui.rs:69-70`, `gpui/src/hot_reload.rs`) | not ported | D-HOTRELOAD |
 | proptest (`gpui/src/test.rs:43-66`, `sum_tree/src/property_test.rs`) | seeded generators through `gpui.PropertyTest`, no shrinking | D-PROPTEST |
 | criterion benches (`gpui_macros/src/gpui_macros.rs:222`, `gpui/src/bench.rs:18-51`) | `testing.B` with the same seed handling | D-BENCH |
-| schemars (`gpui/src/action.rs:139`) | `internal/jsonschema` reflector | D-SCHEMA |
+| schemars (`gpui/src/action.rs:139`) | `jsonschema` reflector | D-SCHEMA |
 | cargo features | `test-support`: always compiled. `inspector` (also on in debug builds, `gpui/src/element.rs:34`): always compiled, runtime switch. `profiler` (`gpui/src/gpui.rs:64-67`): build tag `gpui_profiler`. `leak-detection`: runtime (5.2). `wayland`, `x11`: always compiled on linux | D-FEATURE |
 | `http_client` crate (`gpui/src/gpui.rs:6`, `gpui/src/app.rs:3747`) | `gpui.HTTPClient` interface over `net/http` | D-HTTP |
 
@@ -329,7 +330,7 @@ func (e Entity[T]) Downgrade() WeakEntity[T]
 func (e Entity[T]) IntoAny() AnyEntity
 func (e Entity[T]) Read(cx *App) *T
 func (e Entity[T]) ReadWith[R any](cx AppContext, f func(*T, *App) R) R
-func (e Entity[T]) Update(cx AppContext, f func(*T, *Context[T]))
+func (e Entity[T]) Update(cx AppContext, f func(*T, *Context[T]))          // panics once an async context's app is gone, as upstream
 func (e Entity[T]) UpdateR[R any](cx AppContext, f func(*T, *Context[T]) R) R
 func (e Entity[T]) UpdateIn(cx VisualContext, f func(*T, *Window, *Context[T])) error      // VisualContext::Result<T>, gpui/src/gpui.rs:265
 func (e Entity[T]) UpdateInR[R any](cx VisualContext, f func(*T, *Window, *Context[T]) R) (R, error)
@@ -337,30 +338,33 @@ func (e Entity[T]) IntoAnyElement() AnyElement      // panics unless *T implemen
 
 type WeakEntity[T any] struct{ /* id, weak.Pointer[refCounts] */ }
 func (w WeakEntity[T]) Upgrade() (Entity[T], bool)
-func (w WeakEntity[T]) Update(cx AppContext, f func(*T, *Context[T])) error
+func (w WeakEntity[T]) Update(cx AppContext, f func(*T, *Context[T])) error        // "entity released"
+func (w WeakEntity[T]) UpdateR[R any](cx AppContext, f func(*T, *Context[T]) R) (R, error)
 
 type AppContext interface {              // sealed; gpui/src/gpui.rs:174-250
-    updateEntity(h AnyEntity, f func(state any, cx *App))
-    readEntity(h AnyEntity, f func(state any, cx *App))
+    newEntity(t reflect.Type, build func(slot AnyEntity, cx *App) any) AnyEntity
     reserveEntity(t reflect.Type) AnyEntity
     insertEntity(slot AnyEntity, build func(cx *App) any) AnyEntity
-    asMut(h AnyEntity) (lease any, end func())                           // as_mut
+    updateEntity(h AnyEntity, f func(state any, cx *App))
+    asMut(h AnyEntity) *App                                              // as_mut
+    readEntity(h AnyEntity, f func(state any, cx *App))
     updateWindow(h AnyWindowHandle, f func(root AnyView, w *Window, cx *App)) error
-    withWindow(h AnyWindowHandle, f func(w *Window, cx *App)) error
+    withWindow(id EntityID, f func(w *Window, cx *App)) bool            // Option<R>
     readWindow(h AnyWindowHandle, f func(root AnyView, cx *App)) error
-    readGlobal(t reflect.Type, f func(g any, cx *App)) error
     backgroundExecutor() BackgroundExecutor
+    readGlobal(t reflect.Type, f func(g any, cx *App))
 }
-func AppContextNew[T any](cx AppContext, build func(cx *Context[T]) *T) (Entity[T], error)
-func AppContextReserveEntity[T any](cx AppContext) (Reservation[T], error)
-func AppContextInsertEntity[T any](cx AppContext, r Reservation[T], build func(cx *Context[T]) *T) (Entity[T], error)
-func AppContextUpdateEntity[T, R any](cx AppContext, e Entity[T], f func(*T, *Context[T]) R) (R, error)
-func AppContextReadEntity[T, R any](cx AppContext, e Entity[T], f func(*T, *App) R) (R, error)
-func AppContextAsMut[T any](cx AppContext, e Entity[T]) (GpuiBorrow[T], error)
+func AppContextNew[T any](cx AppContext, build func(cx *Context[T]) *T) Entity[T]
+func AppContextReserveEntity[T any](cx AppContext) Reservation[T]
+func AppContextInsertEntity[T any](cx AppContext, r Reservation[T], build func(cx *Context[T]) *T) Entity[T]
+func AppContextUpdateEntity[T, R any](cx AppContext, e Entity[T], f func(*T, *Context[T]) R) R
+func AppContextReadEntity[T, R any](cx AppContext, e Entity[T], f func(*T, *App) R) R
+func AppContextAsMut[T any](cx AppContext, e Entity[T]) GpuiBorrow[T]
+func AppContextUpdateWindow[R any](cx AppContext, h AnyWindowHandle, f func(AnyView, *Window, *App) R) (R, error)
 func AppContextReadWindow[V, R any](cx AppContext, h WindowHandle[V], f func(Entity[V], *App) R) (R, error)
-func AppContextWithWindow[R any](cx AppContext, h AnyWindowHandle, f func(*Window, *App) R) (R, error)
-func AppContextReadGlobal[G, R any](cx AppContext, f func(*G, *App) R) (R, error)
-func AppContextBackgroundSpawn[R any](cx AppContext, f func() R) *Task[R]
+func AppContextWithWindow[R any](cx AppContext, id EntityID, f func(*Window, *App) R) (R, bool)
+func AppContextReadGlobal[G, R any](cx AppContext, f func(*G, *App) R) R
+func AppContextBackgroundSpawn[R any](cx AppContext, f func(s *scheduler.Scope) (R, error)) *Task[R]
 
 type VisualContext interface {           // gpui/src/gpui.rs:259-300
     AppContext
@@ -398,7 +402,7 @@ func (s Subscription) Detach()
 
 `Context[T]` embeds `*App`, which is upstream's `Deref<Target = App>` (`gpui/src/app/context.rs:25-37`); a type in another package that embeds `*App` satisfies `AppContext`, which replaces `#[derive(AppContext)]` (`gpui_macros/src/gpui_macros.rs:59`).
 
-A Go interface cannot carry generic methods, so `AppContext` is sealed with the non-generic primitives above and the generic operations are the `AppContext*` / `VisualContext*` free functions. The contexts that are not `App` (`AsyncApp`, `AsyncWindowContext`, `TestAppContext`, `VisualTestContext`, `HeadlessAppContext`, `BenchAppContext`) implement the primitives the way upstream implements the trait for them (over the weak app handle and the AppCell borrow guard, failing with an error once the app is gone), and each context type, `App` and `Context[T]` included, also has the upstream-named generic methods (`New`, `ReserveEntity`, `InsertEntity`, `ReadGlobal`, `BackgroundSpawn`, `ReadWindow`, `WithWindow`, `AsMut`) as one-line delegates to those functions, so ported call sites read `cx.New(...)` in any context. Upstream's associated `Result<T>` is `T` on `App` and `Context<T>` and `anyhow::Result<T>` on the async and test contexts; the Go methods follow that per type (plain value on `*App` and `*Context[T]`, `(T, error)` elsewhere), and the free functions always return the error form.
+A Go interface cannot carry generic methods, so `AppContext` is sealed with the non-generic primitives above and the generic operations are the `AppContext*` / `VisualContext*` free functions. The contexts that are not `App` (`AsyncApp`, `AsyncWindowContext`, `TestAppContext`, `VisualTestContext`, `HeadlessAppContext`, `BenchAppContext`) implement the primitives the way upstream implements the trait for them (over the weak app handle and the AppCell borrow guard), and each context type, `App` and `Context[T]` included, also has the upstream-named generic methods (`New`, `ReserveEntity`, `InsertEntity`, `ReadGlobal`, `BackgroundSpawn`, `ReadWindow`, `WithWindow`, `AsMut`) as one-line delegates to those functions, so ported call sites read `cx.New(...)` in any context. At zed@6501df1 `AppContext` has no associated `Result`: entity, global and `AsyncApp.Update` calls return plain values on every context and panic once an async context's app is gone ("app was released before async operation completed", `gpui/src/app/async_context.rs:29-33`), window calls return `error` (`update_window`, `read_window`: "app was released" / "app is quitting") and `with_window` returns `bool` (`Option`). Only `VisualContext` keeps `Result<T>`, which is `error` / `(R, error)` on every Go implementation. `WeakEntity.Update` returns `error` ("entity released").
 
 Effects keep upstream's structure: `Effect` variants and the flush loop (`gpui/src/app.rs:3607-3628`, `:2275-2300`), `pending_updates` nesting (`:1456-1474`), `SubscriberSet` semantics (`gpui/src/subscription.rs:14-160`). Events and globals are keyed by `reflect.Type` where upstream keys by `TypeId` (`gpui/src/app.rs:911`, `:947`).
 
@@ -526,9 +530,14 @@ type Styler interface{ Style() *StyleRefinement }
 type Styled[S Styler] struct{ self S }
 func (s *Styled[S]) Flex() S                       // 116 hand-written + 3099 generated methods
 
-type Interactive[S any] struct{ self S }
-func (i *Interactive[S]) ID[I ElementIDSource](id I) *Stateful[S]
-func (i *Interactive[S]) OnClick(f func(*ClickEvent, *Window, *App)) S
+type Interactive[S InteractiveElement] struct{ self S }
+func (i *Interactive[S]) OnMouseDown(button MouseButton, f func(*MouseDownEvent, *Window, *App)) S
+
+type InteractiveID[S InteractiveElement] struct{ self S }       // D-IDMIXIN
+func (i *InteractiveID[S]) ID[I ElementIDSource](id I) *Stateful[S]
+
+type StatefulInteractive[S StatefulInteractiveElement] struct{ self S }
+func (m *StatefulInteractive[S]) OnClick(f func(*ClickEvent, *Window, *App)) S
 
 type Parent[S any] struct{ self S }
 func (p *Parent[S]) Child(child IntoElement) S
@@ -540,7 +549,7 @@ func (f *Fluent[S]) When(cond bool, then func(S) S) S
 func (f *Fluent[S]) Map[U any](fn func(S) U) U
 
 type Div struct {
-    Styled[*Div]; Interactive[*Div]; Parent[*Div]; Fluent[*Div]
+    Styled[*Div]; Interactive[*Div]; InteractiveID[*Div]; Parent[*Div]; Fluent[*Div]
     /* gpui/src/elements/div.rs:1905 */
 }
 func NewDiv() *Div
@@ -801,7 +810,7 @@ Deviations (same behaviour, different form) are D-NAME, D-RAII, D-OPT, D-VOID, D
 1. Wayland binding over libwayland-client through purego, with typed wrappers generated by `wlgen` (section 1, 8.1): yes.
 2. D-Bus library for the Linux platform: `github.com/godbus/dbus/v5` v5.2.4: yes.
 3. WebGL fallback, wgpu version and web threading: the WebGL2 fallback is scheduled (M4-web-webgl-shaders, M4-web-webgl) on upstream's webgl path (8.5). wgpu-native v29 against upstream's wgpu 30 is the accepted limit L-WGPUVER, documented in section 13 with a TECH_DEBT entry to bump the binding. The multi-threaded web dispatcher is the accepted limit L-WEBTHREADS; logic follows upstream's single-threaded path.
-4. JSON schema for actions (D-SCHEMA): `internal/jsonschema`: yes.
+4. JSON schema for actions (D-SCHEMA): `jsonschema` (public: generated action code imports it from other modules): yes.
 5. Screen capture is scheduled: the interfaces and scap glue in the root (M0-platform-types, M3-root-capture); Linux through the xdg-desktop-portal ScreenCast session plus PipeWire (purego over libpipewire-0.3) and the X11 engine (M1-linux-screencap); Windows through Windows.Graphics.Capture (M4-windows-screencap); macOS through ScreenCaptureKit as upstream (M4-macos-platform). `gpui/src/platform/visual_test.rs` is ported (M3-root-capture), with its macOS-only tests in M4-macos-platform.
 
 Nothing is open. Checks that need a person (macOS, Windows or iOS on screen, a browser, an interactive portal dialog) are owner checks in docs/port/OWNER-CHECKS.md; they never leave a row blocked.

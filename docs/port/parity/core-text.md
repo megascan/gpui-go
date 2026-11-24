@@ -305,5 +305,5 @@ Go target: `text_system_line_wrapper.go` (package `gpui`), tests in `text_system
 | Id | Deviation | Upstream | Go |
 |---|---|---|---|
 | D-FIELDMETHOD | Go forbids a field and a method of the same name: `FontMetrics`' pixel-scaling methods (`ascent`, `descent`, `line_gap`, `underline_position`, `underline_thickness`, `cap_height`, `x_height`, `bounding_box`) get a `Pixels` suffix; the fields keep upstream's names | `gpui/src/text_system.rs:1224-1262` | `text_system.go` |
-| D-SCHEMAKW | internal/jsonschema.Schema has no `patternProperties`, `multipleOf` or `default`: `FontFeatures`' schema is a plain `object` and `FontWeight`'s omits `default: 400` (handoff M0-text-system) | `gpui/src/text_system/font_features.rs:146-162`, `gpui/src/text_system.rs:1037-1052` | `text_system_font_features.go`, `text_system.go` |
+| D-SCHEMAKW | jsonschema.Schema has no `patternProperties`, `multipleOf` or `default`: `FontFeatures`' schema is a plain `object` and `FontWeight`'s omits `default: 400` (handoff M0-text-system) | `gpui/src/text_system/font_features.rs:146-162`, `gpui/src/text_system.rs:1037-1052` | `text_system_font_features.go`, `text_system.go` |
 

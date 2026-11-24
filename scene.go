@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/megascan/gpui-go/gpuiutil"
-	"github.com/megascan/gpui-go/internal/jsonschema"
+	"github.com/megascan/gpui-go/jsonschema"
 )
 
 // DrawOrder is the position of a primitive in the scene's drawing order.
