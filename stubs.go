@@ -37,9 +37,6 @@ type RenderSvgParams struct {
 	Size Size[DevicePixels]
 }
 
-// TestWindow is the test platform's window (M0-test-platform ports it).
-type TestWindow struct{}
-
 // WindowControlArea is a window control area that corresponds to the platform window (M0-window-core ports it).
 type WindowControlArea uint8
 
@@ -392,7 +389,12 @@ type HitboxBehavior uint8
 type PaintQuad struct{}
 
 // DispatchEventResult reports what happened during event dispatch (M0-window-dispatch ports it).
-type DispatchEventResult struct{}
+type DispatchEventResult struct {
+	// Propagate reports whether the event should continue to the platform.
+	Propagate bool
+	// DefaultPrevented reports whether a handler prevented the default action.
+	DefaultPrevented bool
+}
 
 // A11ySubtreeBuilder adds synthetic accessibility nodes below an element (M0-window-a11y ports it).
 type A11ySubtreeBuilder struct {

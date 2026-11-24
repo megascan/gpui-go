@@ -635,9 +635,9 @@ Go target: `platform_testing_platform.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `TestScreenCaptureSource` | struct | 64 |  | `TestScreenCaptureSource` | todo |
-| `TestScreenCaptureStream` | struct | 67 |  | `TestScreenCaptureStream` | todo |
-| `TestScreenCaptureSource::new` | assoc-fn | 846 | feat:test-support | `NewTestScreenCaptureSource` | todo |
+| `TestScreenCaptureSource` | struct | 64 |  | `TestScreenCaptureSource` | done |
+| `TestScreenCaptureStream` | struct | 67 |  | `TestScreenCaptureStream` | done |
+| `TestScreenCaptureSource::new` | assoc-fn | 846 | feat:test-support | `NewTestScreenCaptureSource` | done |
 
 ## gpui/src/platform/test/window.rs
 
@@ -645,32 +645,32 @@ Go target: `platform_testing_window.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `TestWindow` | struct | 71 |  | `TestWindow` | todo |
-| `TestWindow::simulate_close` | method | 152 |  | `(TestWindow).SimulateClose` | todo |
-| `TestWindow::simulate_scheduled_frame` | method | 159 |  | `(TestWindow).SimulateScheduledFrame` | todo |
-| `TestWindow::frame_scheduled` | method | 178 |  | `(TestWindow).FrameScheduled` | todo |
-| `TestWindow::simulate_visibility_change` | method | 182 |  | `(TestWindow).SimulateVisibilityChange` | todo |
-| `TestWindow::simulate_move_to_display` | method | 195 |  | `(TestWindow).SimulateMoveToDisplay` | todo |
-| `TestWindow::simulate_visual_viewport_change` | method | 207 |  | `(TestWindow).SimulateVisualViewportChange` | todo |
-| `TestWindow::simulate_insets_change` | method | 219 |  | `(TestWindow).SimulateInsetsChange` | todo |
-| `TestWindow::virtual_keyboard_requests` | method | 231 |  | `(TestWindow).VirtualKeyboardRequests` | todo |
-| `TestWindow::virtual_keyboard_dismissals` | method | 235 |  | `(TestWindow).VirtualKeyboardDismissals` | todo |
-| `TestWindow::text_input_configurations` | method | 240 |  | `(TestWindow).TextInputConfigurations` | todo |
-| `TestWindow::text_input_state_changes` | method | 244 |  | `(TestWindow).TextInputStateChanges` | todo |
-| `TestWindow::simulate_resize` | method | 248 |  | `(TestWindow).SimulateResize` | todo |
-| `TestWindow::simulate_scale_factor_change` | method | 262 |  | `(TestWindow).SimulateScaleFactorChange` | todo |
-| `TestWindow::attached_native_view_count` | method | 272 |  | `(TestWindow).AttachedNativeViewCount` | todo |
-| `TestWindow::focused_native_view` | method | 277 |  | `(TestWindow).FocusedNativeView` | todo |
-| `TestWindow::hit_test_native_view` | method | 282 |  | `(TestWindow).HitTestNativeView` | todo |
-| `TestWindow::simulate_key_down_before_native_view` | method | 291 |  | `(TestWindow).SimulateKeyDownBeforeNativeView` | todo |
-| `TestWindow::simulate_native_view_focused` | method | 301 |  | `(TestWindow).SimulateNativeViewFocused` | todo |
-| `TestWindow::simulate_appearance_change` | method | 322 |  | `(TestWindow).SimulateAppearanceChange` | todo |
-| `TestWindow::simulate_decorations_change` | method | 333 |  | `(TestWindow).SimulateDecorationsChange` | todo |
-| `TestWindow::frame_wake_count` | method | 345 |  | `(TestWindow).FrameWakeCount` | todo |
-| `TestWindow::simulate_frame_request` | method | 351 |  | `(TestWindow).SimulateFrameRequest` | todo |
-| `TestWindow::simulate_input` | method | 361 |  | `(TestWindow).SimulateInput` | todo |
-| `TestWindow::external_drag_files` | method | 372 |  | `(TestWindow).ExternalDragFiles` | todo |
-| `TestWindow::set_start_external_drag_result` | method | 376 |  | `(TestWindow).SetStartExternalDragResult` | todo |
+| `TestWindow` | struct | 71 |  | `TestWindow` | done |
+| `TestWindow::simulate_close` | method | 152 |  | `(TestWindow).SimulateClose` | done |
+| `TestWindow::simulate_scheduled_frame` | method | 159 |  | `(TestWindow).SimulateScheduledFrame` | done |
+| `TestWindow::frame_scheduled` | method | 178 |  | `(TestWindow).FrameScheduled` | done |
+| `TestWindow::simulate_visibility_change` | method | 182 |  | `(TestWindow).SimulateVisibilityChange` | done |
+| `TestWindow::simulate_move_to_display` | method | 195 |  | `(TestWindow).SimulateMoveToDisplay` | done |
+| `TestWindow::simulate_visual_viewport_change` | method | 207 |  | `(TestWindow).SimulateVisualViewportChange` | done |
+| `TestWindow::simulate_insets_change` | method | 219 |  | `(TestWindow).SimulateInsetsChange` | done |
+| `TestWindow::virtual_keyboard_requests` | method | 231 |  | `(TestWindow).VirtualKeyboardRequests` | done |
+| `TestWindow::virtual_keyboard_dismissals` | method | 235 |  | `(TestWindow).VirtualKeyboardDismissals` | done |
+| `TestWindow::text_input_configurations` | method | 240 |  | `(TestWindow).TextInputConfigurations` | done |
+| `TestWindow::text_input_state_changes` | method | 244 |  | `(TestWindow).TextInputStateChanges` | done |
+| `TestWindow::simulate_resize` | method | 248 |  | `(TestWindow).SimulateResize` | done |
+| `TestWindow::simulate_scale_factor_change` | method | 262 |  | `(TestWindow).SimulateScaleFactorChange` | done |
+| `TestWindow::attached_native_view_count` | method | 272 |  | `(TestWindow).AttachedNativeViewCount` | done |
+| `TestWindow::focused_native_view` | method | 277 |  | `(TestWindow).FocusedNativeView` | done |
+| `TestWindow::hit_test_native_view` | method | 282 |  | `(TestWindow).HitTestNativeView` | done |
+| `TestWindow::simulate_key_down_before_native_view` | method | 291 |  | `(TestWindow).SimulateKeyDownBeforeNativeView` | done |
+| `TestWindow::simulate_native_view_focused` | method | 301 |  | `(TestWindow).SimulateNativeViewFocused` | done |
+| `TestWindow::simulate_appearance_change` | method | 322 |  | `(TestWindow).SimulateAppearanceChange` | done |
+| `TestWindow::simulate_decorations_change` | method | 333 |  | `(TestWindow).SimulateDecorationsChange` | done |
+| `TestWindow::frame_wake_count` | method | 345 |  | `(TestWindow).FrameWakeCount` | done |
+| `TestWindow::simulate_frame_request` | method | 351 |  | `(TestWindow).SimulateFrameRequest` | done |
+| `TestWindow::simulate_input` | method | 361 |  | `(TestWindow).SimulateInput` | done |
+| `TestWindow::external_drag_files` | method | 372 |  | `(TestWindow).ExternalDragFiles` | done |
+| `TestWindow::set_start_external_drag_result` | method | 376 |  | `(TestWindow).SetStartExternalDragResult` | done |
 
 
 ## Deviations registered here
