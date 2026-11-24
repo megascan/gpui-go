@@ -26,7 +26,7 @@ Go target: `internal/cmd/(index)` (package `-`)
 | `border_style_methods` | proc-macro | 141 |  | `internal/cmd/stylegen` -> `styled_gen.go` (`Styled[S]` methods, see DESIGN §9) | dev:D-MACRO |
 | `box_shadow_style_methods` | proc-macro | 147 |  | `internal/cmd/stylegen` -> `styled_gen.go` (`Styled[S]` methods, see DESIGN §9) | dev:D-MACRO |
 | `test` | proc-macro-attribute | 189 |  | `see DESIGN §9 (test)` | dev:D-MACRO |
-| `bench` | proc-macro-attribute | 222 |  | `see DESIGN §9 (bench)` | blocked:M3-bench-context |
+| `bench` | proc-macro-attribute | 222 |  | `RunBench`, `RunBenchRng`, `RunBenchInputs`, `RunBenchInputsRng` (see DESIGN §9 (bench)) | dev:D-BENCH |
 | `property_test` | proc-macro-attribute | 295 |  | `see DESIGN §9 (property_test)` | dev:D-MACRO |
 | `derive_inspector_reflection` | proc-macro-attribute | 317 | feat:inspector,debug | `see DESIGN §9 (derive_inspector_reflection)` | blocked:M3-root-capture |
 

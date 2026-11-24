@@ -10,8 +10,8 @@ Go target: `bench.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `bench_group` | macro | 18 |  | `see DESIGN §9 (bench_group!)` | todo |
-| `bench_main` | macro | 51 |  | `see DESIGN §9 (bench_main!)` | todo |
+| `bench_group` | macro | 18 |  | `RunBench` (testing.B, see DESIGN §9 (bench_group!)) | dev:D-BENCH |
+| `bench_main` | macro | 51 |  | `RunBench` (testing.B, see DESIGN §9 (bench_main!)) | dev:D-BENCH |
 
 ## gpui/src/debug_overlay.rs
 
@@ -225,47 +225,50 @@ Go target: `app_bench_context.go` (package `gpui`), tests in `app_bench_context_
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `bench_platform` | fn | 47 |  | `BenchPlatform` | todo |
-| `ForegroundWorkSummary` | struct | 78 |  | `ForegroundWorkSummary` | todo |
-| `BenchReport` | struct | 103 |  | `BenchReport` | todo |
-| `BenchReport::with_fps` | assoc-fn | 118 |  | `BenchReportWithFps` | todo |
-| `BenchReport::with_frame_budget_nanos` | assoc-fn | 125 |  | `BenchReportWithFrameBudgetNanos` | todo |
-| `BenchReport::metrics` | method | 140 |  | `(BenchReport).Metrics` | todo |
-| `BenchReport::foreground_work` | method | 230 |  | `(BenchReport).ForegroundWork` | todo |
-| `BenchReport::print` | method | 252 |  | `(BenchReport).Print` | todo |
-| `BenchAppContext` | struct | 496 |  | `BenchAppContext` | todo |
-| `BenchAppContext::new` | assoc-fn | 511 |  | `NewBenchAppContext` | todo |
-| `BenchAppContext::new_with_platform_and_report` | assoc-fn | 525 |  | `NewBenchAppContextWithPlatformAndReport` | todo |
-| `BenchAppContext::benchmark_name` | method | 568 |  | `(BenchAppContext).BenchmarkName` | todo |
-| `BenchAppContext::background_executor` | method | 573 |  | `(BenchAppContext).BackgroundExecutor` | todo |
-| `BenchAppContext::foreground_executor` | method | 578 |  | `(BenchAppContext).ForegroundExecutor` | todo |
-| `BenchAppContext::update` | method | 583 |  | `(BenchAppContext).Update` | todo |
-| `BenchAppContext::read` | method | 589 |  | `(BenchAppContext).Read` | todo |
-| `BenchAppContext::run_until_idle` | method | 599 |  | `(BenchAppContext).RunUntilIdle` | todo |
-| `BenchAppContext::settle` | method | 629 |  | `(BenchAppContext).Settle` | todo |
-| `BenchAppContext::run_until` | method | 649 |  | `(BenchAppContext).RunUntil` | todo |
-| `BenchAppContext::bench_iter` | method | 671 |  | `(BenchAppContext).BenchIter` | todo |
-| `BenchAppContext::bench_task` | method | 700 |  | `(BenchAppContext).BenchTask` | todo |
-| `BenchAppContext::bench_batched_task` | method | 716 |  | `(BenchAppContext).BenchBatchedTask` | todo |
-| `BenchAppContext::bench_renderer` | method | 799 |  | `(BenchAppContext).BenchRenderer` | todo |
-| `BenchAppContext::bench_renderer_session` | method | 864 |  | `(BenchAppContext).BenchRendererSession` | todo |
-| `BenchAppContext::add_empty_window` | method | 1007 |  | `(BenchAppContext).AddEmptyWindow` | todo |
-| `BenchAppContext::teardown` | method | 1060 |  | `(BenchAppContext).Teardown` | todo |
-| `BenchWindowContext` | struct | 1182 |  | `BenchWindowContext` | todo |
-| `BenchWindowContext::app_context` | method | 1189 |  | `(BenchWindowContext).AppContext` | todo |
-| `BenchWindowContext::window_handle` | method | 1194 |  | `(BenchWindowContext).WindowHandle` | todo |
-| `BenchWindowContext::run_until_idle` | method | 1200 |  | `(BenchWindowContext).RunUntilIdle` | todo |
-| `BenchWindowContext::update` | method | 1205 |  | `(BenchWindowContext).Update` | todo |
-| `BenchWindowContext::simulate_resize` | method | 1215 |  | `(BenchWindowContext).SimulateResize` | todo |
+| `bench_platform` | fn | 47 |  | `BenchPlatform` | done |
+| `ForegroundWorkSummary` | struct | 78 |  | `ForegroundWorkSummary` | done |
+| `BenchReport` | struct | 103 |  | `BenchReport` | done |
+| `BenchReport::with_fps` | assoc-fn | 118 |  | `BenchReportWithFps` | done |
+| `BenchReport::with_frame_budget_nanos` | assoc-fn | 125 |  | `BenchReportWithFrameBudgetNanos` | done |
+| `BenchReport::metrics` | method | 140 |  | `(BenchReport).Metrics` | done |
+| `BenchReport::foreground_work` | method | 230 |  | `(BenchReport).ForegroundWork` | done |
+| `BenchReport::print` | method | 252 |  | `(BenchReport).Print` | done |
+| `BenchAppContext` | struct | 496 |  | `BenchAppContext` | done |
+| `BenchAppContext::new` | assoc-fn | 511 |  | `NewBenchAppContext` | done |
+| `BenchAppContext::new_with_platform_and_report` | assoc-fn | 525 |  | `NewBenchAppContextWithPlatformAndReport` | done |
+| `BenchAppContext::benchmark_name` | method | 568 |  | `(BenchAppContext).BenchmarkName` | done |
+| `BenchAppContext::background_executor` | method | 573 |  | `(BenchAppContext).BackgroundExecutor` | done |
+| `BenchAppContext::foreground_executor` | method | 578 |  | `(BenchAppContext).ForegroundExecutor` | done |
+| `BenchAppContext::update` | method | 583 |  | `(BenchAppContext).Update` | done |
+| `BenchAppContext::read` | method | 589 |  | `(BenchAppContext).Read` | done |
+| `BenchAppContext::run_until_idle` | method | 599 |  | `(BenchAppContext).RunUntilIdle` | done |
+| `BenchAppContext::settle` | method | 629 |  | `(BenchAppContext).Settle` | done |
+| `BenchAppContext::run_until` | method | 649 |  | `(BenchAppContext).RunUntil` | done |
+| `BenchAppContext::bench_iter` | method | 671 |  | `(BenchAppContext).BenchIter` | done |
+| `BenchAppContext::bench_task` | method | 700 |  | `(BenchAppContext).BenchTask` | done |
+| `BenchAppContext::bench_batched_task` | method | 716 |  | `(BenchAppContext).BenchBatchedTask` | done |
+| `BenchAppContext::bench_renderer` | method | 799 |  | `(BenchAppContext).BenchRenderer` | done |
+| `BenchAppContext::bench_renderer_session` | method | 864 |  | `(BenchAppContext).BenchRendererSession` | done |
+| `BenchAppContext::add_empty_window` | method | 1007 |  | `(BenchAppContext).AddEmptyWindow` | done |
+| `BenchAppContext::teardown` | method | 1060 |  | `(BenchAppContext).Teardown` | done |
+| `BenchWindowContext` | struct | 1182 |  | `BenchWindowContext` | done |
+| `BenchWindowContext::app_context` | method | 1189 |  | `(BenchWindowContext).AppContext` | done |
+| `BenchWindowContext::window_handle` | method | 1194 |  | `(BenchWindowContext).WindowHandle` | done |
+| `BenchWindowContext::run_until_idle` | method | 1200 |  | `(BenchWindowContext).RunUntilIdle` | done |
+| `BenchWindowContext::update` | method | 1205 |  | `(BenchWindowContext).Update` | done |
+| `BenchWindowContext::simulate_resize` | method | 1215 |  | `(BenchWindowContext).SimulateResize` | done |
+| `BenchMeasurement` | re-export | 13 |  | `BenchMeasurement` | dev:D-BENCHMETRICS |
+| `MetricReport` | re-export | 13 |  | `MetricReport` | dev:D-BENCHMETRICS |
+| `CountingAllocator` | re-export | 13 |  | `BenchMeasurementFromEnv` (heap allocation counters) | dev:D-BENCHMETRICS |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `secondary_metric_is_normalized_per_iteration_for_bench_iter` | test | 1428 | feat:test-support | `TestBenchContext_SecondaryMetricIsNormalizedPerIterationForBenchIter` | todo |
-| `secondary_metric_is_accumulated_across_per_iteration_batches` | test | 1443 | feat:test-support | `TestBenchContext_SecondaryMetricIsAccumulatedAcrossPerIterationBatches` | todo |
-| `foreground_work_reports_long_task_without_window_draw` | test | 1464 |  | `TestBenchContext_ForegroundWorkReportsLongTaskWithoutWindowDraw` | todo |
-| `foreground_work_excludes_setup_before_trace_scope_starts` | test | 1510 |  | `TestBenchContext_ForegroundWorkExcludesSetupBeforeTraceScopeStarts` | todo |
-| `bench_task_reports_long_task_without_window` | test | 1550 |  | `TestBenchContext_BenchTaskReportsLongTaskWithoutWindow` | todo |
-| `task_completion_supports_non_send_foreground_output` | test | 1588 |  | `TestBenchContext_TaskCompletionSupportsNonSendForegroundOutput` | todo |
+| `secondary_metric_is_normalized_per_iteration_for_bench_iter` | test | 1428 | feat:test-support | `TestBenchContext_SecondaryMetricIsNormalizedPerIterationForBenchIter` | done |
+| `secondary_metric_is_accumulated_across_per_iteration_batches` | test | 1443 | feat:test-support | `TestBenchContext_SecondaryMetricIsAccumulatedAcrossPerIterationBatches` | done |
+| `foreground_work_reports_long_task_without_window_draw` | test | 1464 |  | `TestBenchContext_ForegroundWorkReportsLongTaskWithoutWindowDraw` | done |
+| `foreground_work_excludes_setup_before_trace_scope_starts` | test | 1510 |  | `TestBenchContext_ForegroundWorkExcludesSetupBeforeTraceScopeStarts` | done |
+| `bench_task_reports_long_task_without_window` | test | 1550 |  | `TestBenchContext_BenchTaskReportsLongTaskWithoutWindow` | done |
+| `task_completion_supports_non_send_foreground_output` | test | 1588 |  | `TestBenchContext_TaskCompletionSupportsNonSendForegroundOutput` | done |
 
 ## gpui/src/profiler/actions.rs
 
@@ -427,3 +430,4 @@ Go target: `profiler_hang_monitor.go` (package `gpui`)
 | D-PROFTHREAD | The thread-local `THREAD_TIMINGS` becomes a registry keyed by an explicit `ThreadID` (allocated with `NewThreadID`); `UpdateRunningTask`, `SaveTaskTiming`, `GetCurrentThreadTaskTimings` and `GetCurrentThreadTimings` take the dispatcher's `ThreadID` as first parameter, and `ReleaseThreadTimings` is the thread-exit drop | `gpui/src/profiler.rs:42`, `:59`, `:540-556`, `:671-697` | Go has no thread-local storage and goroutines have no stable identity; the dispatcher owns its thread identity |
 | D-JOURNALTHREAD | The thread-local foreground journal and runnable counter become one process-wide journal behind a mutex; record calls from any goroutine reach it, and an unbalanced `end_turn` returns without the debug assertion (tests share the journal that earlier Apps installed, where upstream gives each test thread none) | `gpui/src/profiler/journal.rs:526-529`, `:727-731` | Go has no thread-local storage; the dispatchers must only journal the main thread's polls (handoff) |
 | D-SUSPENDCLOCK | `system_suspended_time` is the package variable `systemSuspendedTime`, returning no clock until per-OS files set it (CLOCK_BOOTTIME - CLOCK_MONOTONIC on Linux, QueryInterruptTime - QueryUnbiasedInterruptTime on Windows, mach_continuous_time - mach_absolute_time on macOS) | `gpui/src/profiler/journal.rs:882-970` | One upstream file maps to one Go file and the root package cannot hold OS-specific code in profiler_journal.go; the per-OS bodies need files outside this stage (handoff) |
+| D-BENCHMETRICS | The `bench_metrics` crate (not vendored in `_ref`) becomes `BenchMeasurement` / `MetricReport` / `Bencher` in app_bench_context.go: testing.B's wall time is the primary measurement, secondary counters are `BenchCounter` funcs; `BENCH_MEASUREMENT` accepts `default` (heap allocations and bytes from runtime/metrics instead of `CountingAllocator` and hardware counters) and `wall-time`; `bench_task` / `bench_batched_task` outputs and inputs are dropped by calling their `Release` method when they have one | `gpui/src/app/bench_context.rs:13`, `gpui/src/bench.rs:51` | Go cannot replace the global allocator or read perf counters without cgo; Criterion's `Bencher` is testing.B (D-BENCH) |

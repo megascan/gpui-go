@@ -10,9 +10,9 @@ Go target: `bench_focus_cleanup_test.go` (package `gpui_test`), tests in `bench_
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `no_drops` | gpui::bench(inputs = [0, 100, 1_000, 10_000], input_name = "handles", group = "focus_cleanup_no_drops_10000_effects", fps = 120) | 13 |  | `BenchmarkFocusCleanup_NoDrops` | blocked:M3-bench-context |
-| `final_drops` | gpui::bench(inputs = [10_000], input_name = "handles", group = "focus_cleanup_final_drops_10000_effects", fps = 120) | 23 |  | `BenchmarkFocusCleanup_FinalDrops` | blocked:M3-bench-context |
-| `final_drops_with_windows` | gpui::bench(inputs = [1, 10], input_name = "windows", group = "focus_cleanup_final_drops_with_windows_10000_handles_10000_effects", fps = 120) | 33 |  | `BenchmarkFocusCleanup_FinalDropsWithWindows` | blocked:M3-bench-context |
+| `no_drops` | gpui::bench(inputs = [0, 100, 1_000, 10_000], input_name = "handles", group = "focus_cleanup_no_drops_10000_effects", fps = 120) | 13 |  | `BenchmarkFocusCleanup_NoDrops` | done |
+| `final_drops` | gpui::bench(inputs = [10_000], input_name = "handles", group = "focus_cleanup_final_drops_10000_effects", fps = 120) | 23 |  | `BenchmarkFocusCleanup_FinalDrops` | done |
+| `final_drops_with_windows` | gpui::bench(inputs = [1, 10], input_name = "windows", group = "focus_cleanup_final_drops_with_windows_10000_handles_10000_effects", fps = 120) | 33 |  | `BenchmarkFocusCleanup_FinalDropsWithWindows` | done |
 
 ## gpui/tests/action_macros.rs
 
