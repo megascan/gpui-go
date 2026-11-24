@@ -58,6 +58,54 @@ Go target: `platform/macos/display_link.go` (package `macos`), tests in `display
 | `host_timestamp_preserves_request_age_at_different_clock_rates` | test | 665 |  | `TestDisplayLink_HostTimestampPreservesRequestAgeAtDifferentClockRates` | todo |
 | `invalid_host_timestamps_fall_back_to_receipt_time` | test | 680 |  | `TestDisplayLink_InvalidHostTimestampsFallBackToReceiptTime` | todo |
 
+## gpui_macos/src/events.rs
+
+Go target: `platform/macos/events.go` (package `macos`), tests in `events_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `ESCAPE_KEY` | const | 30 |  | `escapeKey` | done |
+| `key_to_menu_equivalent` | fn | 46 |  | `keyToMenuEquivalent` | done |
+| `read_modifiers` | fn | 101 |  | `readModifiers` | done |
+| `platform_input_from_native` | fn | 118 |  | `platformInputFromNative` | done |
+| `parse_keystroke` | fn | 348 |  | `parseKeystroke` | done |
+| `always_use_command_layout` | fn | 504 |  | `alwaysUseCommandLayout` | done |
+| `chars_for_modified_key` | fn | 517 |  | `charsForModifiedKey` | done |
+
+## gpui_macos/src/gpui_macos.rs
+
+Go target: `platform/macos/gpui_macos.go` (package `macos`), tests in `gpui_macos_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `metal_renderer::SurfaceBounds` | re-export | 20 |  | `SurfaceBounds` | blocked:M4-apple-metal-renderer |
+| `metal_renderer::MetalHeadlessRenderer` | re-export | 23 |  | `MetalHeadlessRenderer` | blocked:M4-apple-metal-renderer |
+| `MacPlatform` | re-export | 45 |  | `MacPlatform` | blocked:M4-macos-platform |
+| `BoolExt` | trait | 47 |  | - | n/a:D-MACOS-OBJCBOOL |
+| `NSStringExt::to_str` | method | 62 |  | `nsStringToStr` | done |
+| `NSRange` | struct | 79 |  | `NSRange` | done |
+| `NSRange::invalid` | assoc-fn | 85 |  | `nsRangeInvalid` | done |
+| `NSRange::is_valid` | method | 92 |  | `(NSRange).isValid` | done |
+| `NSRange::to_range` | method | 96 |  | `(NSRange).toRange` | done |
+| `From<Range<usize>> for NSRange` | impl | 107 |  | `nsRangeFromRange` | done |
+| `ns_string` | fn | 124 |  | `nsString` | done |
+
+## gpui_macos/src/keyboard.rs
+
+Go target: `platform/macos/keyboard.go` (package `macos`), tests in `keyboard_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `MacKeyboardLayout` | struct | 13 |  | `MacKeyboardLayout` | done |
+| `MacKeyboardMapper` | struct | 18 |  | `MacKeyboardMapper` | done |
+| `MacKeyboardLayout::id` | method | 23 |  | `(MacKeyboardLayout).ID` | done |
+| `MacKeyboardLayout::name` | method | 27 |  | `(MacKeyboardLayout).Name` | done |
+| `MacKeyboardMapper::map_key_equivalent` | method | 33 |  | `(MacKeyboardMapper).MapKeyEquivalent` | done |
+| `MacKeyboardMapper::get_key_equivalents` | method | 48 |  | `(MacKeyboardMapper).GetKeyEquivalents` | done |
+| `MacKeyboardLayout::new` | assoc-fn | 54 |  | `NewMacKeyboardLayout` | done |
+| `MacKeyboardMapper::new` | assoc-fn | 86 |  | `NewMacKeyboardMapper` | done |
+| `get_key_equivalents` | fn | 117 |  | `getKeyEquivalents` | done |
+
 ## gpui_macos/src/pasteboard.rs
 
 Go target: `platform/macos/pasteboard.go` (package `macos`), tests in `pasteboard_test.go`
@@ -97,6 +145,17 @@ Go target: `platform/macos/platform.go` (package `macos`)
 |---|---|---|---|---|---|
 | `MacPlatform` | struct | 167 |  | `MacPlatform` | todo |
 | `MacPlatform::new` | assoc-fn | 219 |  | `NewMacPlatform` | todo |
+| `TISCopyCurrentKeyboardLayoutInputSource` | extern-fn | 1654 |  | `tisCopyCurrentKeyboardLayoutInputSource` | dev:D-MACOS-CARBON |
+| `TISCopyCurrentKeyboardInputSource` | extern-fn | 1655 |  | `tisCopyCurrentKeyboardInputSource` | dev:D-MACOS-CARBON |
+| `TISGetInputSourceProperty` | extern-fn | 1656 |  | `tisGetInputSourceProperty` | dev:D-MACOS-CARBON |
+| `UCKeyTranslate` | extern-fn | 1661 |  | `ucKeyTranslate` | dev:D-MACOS-CARBON |
+| `LMGetKbdType` | extern-fn | 1673 |  | `lmGetKbdType` | dev:D-MACOS-CARBON |
+| `kTISPropertyUnicodeKeyLayoutData` | static | 1674 |  | `kTISPropertyUnicodeKeyLayoutData` | dev:D-MACOS-CARBON |
+| `kTISPropertyInputSourceID` | static | 1675 |  | `kTISPropertyInputSourceID` | dev:D-MACOS-CARBON |
+| `kTISPropertyLocalizedName` | static | 1676 |  | `kTISPropertyLocalizedName` | dev:D-MACOS-CARBON |
+| `kTISPropertyInputSourceIsASCIICapable` | static | 1677 |  | `kTISPropertyInputSourceIsASCIICapable` | dev:D-MACOS-CARBON |
+| `kTISPropertyInputSourceType` | static | 1678 |  | `kTISPropertyInputSourceType` | dev:D-MACOS-CARBON |
+| `kTISTypeKeyboardInputMode` | static | 1679 |  | `kTISTypeKeyboardInputMode` | dev:D-MACOS-CARBON |
 
 ## gpui_macos/src/screen_capture.rs
 
@@ -140,3 +199,10 @@ Go target: `platform/macos/window_native_views.go` (package `macos`), tests in `
 | `gpui_is_owed_the_release_of_each_button_pressed_in_a_native_view` | test | 1565 |  | `TestNativeViews_GpuiIsOwedTheReleaseOfEachButtonPressedInANativeView` | todo |
 | `stacking_puts_shown_views_between_the_gpui_view_and_everything_else` | test | 1578 |  | `TestNativeViews_StackingPutsShownViewsBetweenTheGpuiViewAndEverythingElse` | todo |
 
+
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-MACOS-OBJCBOOL | `BoolExt::to_objc` has no Go symbol: Go `bool` is passed to and returned from `objc.Send` directly and purego marshals it as Objective-C `BOOL` | `gpui_macos/src/gpui_macos.rs:47-55` | objc2's `Bool` newtype has no Go counterpart |
+| D-MACOS-CARBON | The Carbon / HIToolbox externs of `platform.rs` (TIS*, UCKeyTranslate, LMGetKbdType, kTIS* statics) are lazily resolved purego bindings in `platform.go`, loaded by `loadCarbon`; `CFDataGetBytePtr` is bound there too | `gpui_macos/src/platform.rs:1652-1680` | `#[link(name = "Carbon")]` has no purego counterpart; resolved on first use instead of at link time |
