@@ -158,8 +158,8 @@ Go target: `platform/macos/platform.go` (package `macos`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `MacPlatform` | struct | 167 |  | `MacPlatform` | todo |
-| `MacPlatform::new` | assoc-fn | 219 |  | `NewMacPlatform` | todo |
+| `MacPlatform` | struct | 167 |  | `MacPlatform` | dev:D-MACOS-PLATFORMIVAR |
+| `MacPlatform::new` | assoc-fn | 219 |  | `NewMacPlatform` | dev:D-FEATURE |
 | `TISCopyCurrentKeyboardLayoutInputSource` | extern-fn | 1654 |  | `tisCopyCurrentKeyboardLayoutInputSource` | dev:D-MACOS-CARBON |
 | `TISCopyCurrentKeyboardInputSource` | extern-fn | 1655 |  | `tisCopyCurrentKeyboardInputSource` | dev:D-MACOS-CARBON |
 | `TISGetInputSourceProperty` | extern-fn | 1656 |  | `tisGetInputSourceProperty` | dev:D-MACOS-CARBON |
@@ -178,8 +178,8 @@ Go target: `platform/macos/screen_capture.go` (package `macos`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `MacScreenCaptureSource` | struct | 25 |  | `MacScreenCaptureSource` | todo |
-| `MacScreenCaptureStream` | struct | 30 |  | `MacScreenCaptureStream` | todo |
+| `MacScreenCaptureSource` | struct | 25 |  | `MacScreenCaptureSource` | done |
+| `MacScreenCaptureStream` | struct | 30 |  | `MacScreenCaptureStream` | dev:D-MACOS-SCKFRAME |
 
 ## gpui_macos/src/system_notifications.rs
 
@@ -187,7 +187,7 @@ Go target: `platform/macos/system_notifications.go` (package `macos`), tests in 
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_notification_commands_do_not_wait_for_the_service` | gpui::test | 361 |  | `TestSystemNotifications_NotificationCommandsDoNotWaitForTheService` | todo |
+| `test_notification_commands_do_not_wait_for_the_service` | gpui::test | 361 |  | `TestSystemNotifications_NotificationCommandsDoNotWaitForTheService` | done |
 
 ## gpui_macos/src/window.rs
 
@@ -231,3 +231,5 @@ Go target: `platform/macos/window_native_views.go` (package `macos`), tests in `
 |---|---|---|---|
 | D-MACOS-OBJCBOOL | `BoolExt::to_objc` has no Go symbol: Go `bool` is passed to and returned from `objc.Send` directly and purego marshals it as Objective-C `BOOL` | `gpui_macos/src/gpui_macos.rs:47-55` | objc2's `Bool` newtype has no Go counterpart |
 | D-MACOS-CARBON | The Carbon / HIToolbox externs of `platform.rs` (TIS*, UCKeyTranslate, LMGetKbdType, kTIS* statics) are lazily resolved purego bindings in `platform.go`, loaded by `loadCarbon`; `CFDataGetBytePtr` is bound there too | `gpui_macos/src/platform.rs:1652-1680` | `#[link(name = "Carbon")]` has no purego counterpart; resolved on first use instead of at link time |
+| D-MACOS-PLATFORMIVAR | The `platform` ivar of `GPUIApplication` / `GPUIApplicationDelegate` is a package map from the object to its `*MacPlatform` (`setMacPlatformIvar` / `getMacPlatform`, same panic messages); the classes are registered lazily by `NewMacPlatform` instead of a `#[ctor]` | `gpui_macos/src/platform.rs:60-163,1324-1346` | Go pointers cannot be stored in Objective-C ivars |
+| D-MACOS-SCKFRAME | `ScreenCaptureFrame.Frame` is the sample buffer's CVImageBufferRef borrowed for the duration of the frame callback, not a retained `CVImageBuffer` released on drop | `gpui_macos/src/screen_capture.rs:264-277` | Go has no drop to release a retained frame; callers that keep a frame retain it |
