@@ -570,7 +570,7 @@ Go target: `platform_scap_screen_capture.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `scap_screen_sources` | fn | 18 |  | `ScapScreenSources` | blocked:M3-root-capture |
+| `scap_screen_sources` | fn | 18 |  | `ScapScreenSources` | done |
 
 ## gpui/src/platform/threaded_dispatcher.rs
 
@@ -602,9 +602,9 @@ Go target: `platform_visual_testing.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `VisualTestPlatform` | struct | 31 |  | `VisualTestPlatform` | blocked:M3-root-capture |
-| `VisualTestPlatform::new` | assoc-fn | 44 |  | `NewVisualTestPlatform` | blocked:M3-root-capture |
-| `VisualTestPlatform::dispatcher` | method | 62 |  | `(VisualTestPlatform).Dispatcher` | blocked:M3-root-capture |
+| `VisualTestPlatform` | struct | 31 |  | `VisualTestPlatform` | done |
+| `VisualTestPlatform::new` | assoc-fn | 44 |  | `NewVisualTestPlatform` | done |
+| `VisualTestPlatform::dispatcher` | method | 62 |  | `(VisualTestPlatform).Dispatcher` | done |
 
 ## gpui/src/platform/test/dispatcher.rs
 
@@ -687,3 +687,10 @@ Go target: `platform_testing_window.go` (package `gpui`)
 | D-GETTER | A getter that returns a public field of the same name is not declared; callers read the exported field (`Image.ID`, `Image.Format`, `Image.Bytes`, `ClipboardItem.Entries`, `ClipboardString.Text`) | `gpui/src/platform.rs:3326`, `:3555`, `:3615`, `:3620`, `:3651` | `platform.go` |
 | D-IMAGEFRAME | The image crate's `Frame` is `ImageFrame` (window.rs owns a `Frame`), with the BGRA bytes in an `*image.RGBA` container (not premultiplied) and `Delay` as `time.Duration` instead of `image::Delay`'s millisecond ratio | `gpui/src/platform.rs:57`, `:3462-3531` | `platform.go` |
 | D-IMGDECODE | Decoders are the Go standard library (png, jpeg, gif), x/image (bmp, tiff, webp still images and frame bitstreams) and in-repo ports of the image crate's ICO, PNM, EXIF-orientation and WebP animation compositing (image-webp 0.2.4). Differences: `image/gif` decodes all frames or fails, so one bad GIF frame fails the image where the image crate skips that frame; BMP files cover x/image/bmp's subset (1/4/8/24/32-bit uncompressed), and BMP entries inside ICO the same subset via the in-repo DIB reader; lossy WebP pixel values come from x/image's YCbCr conversion (as L-JPEG for JPEG); TIFF orientation is read from IFD0 tag 274 directly; the animated WebP canvas is capped at 512 MiB (the image crate's default `Limits::max_alloc`) and a frame that fails to decode is yielded as an error and skipped | `gpui/src/platform.rs:3462-3531` | `platform.go` |
+
+## Notes (M3-root-capture)
+
+- scap_screen_capture.rs is `//go:build linux || windows` (upstream's cfg). Blocking threads are goroutines. With no `ScapBackend` registered, `scap::get_all_targets` and `Capturer::build` fail with scap's `CapturerBuildError::NotSupported` text, "Screen capturing is not supported". The back end's capturer is closed through an `interface{ Close() }` assertion wherever upstream drops `Capturer`.
+- `start_scap_default_target_source` is `pub(crate)` upstream and stays unexported (`startScapDefaultTargetSource`); nothing upstream calls it (the Wayland call is commented out).
+- `ScapDefaultTargetCaptureSource` holds the `SyncSender` of its capture thread, and dropping it ends a capture whose stream was never requested. A `ScreenCaptureSource` has no drop in Go, so the source has `Release()` (reach it with an `interface{ Release() }` assertion), and `toDynScreenCaptureSources` calls it when the receiver is gone, as upstream's failed `send` drops the sources. A `ScapStream` whose send fails is stopped the same way.
+- visual_test.rs: `PlatformDefaults` supplies upstream's provided methods; the macOS-only find-pasteboard overrides check `runtime.GOOS == "darwin"` and use the defaults elsewhere. Its macOS tests belong to M4-macos-platform.

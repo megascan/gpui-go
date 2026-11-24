@@ -377,3 +377,8 @@ Go target: `util.go` (package `gpui`), tests in `util_test.go`
 
 - util.rs: `Fluent[S]` has `Map`, `When`, `WhenElse`, `WhenSome[T]`, `WhenNone[T]`; `WhenNone` takes `Option[T]` by value. The crate-private rounding helpers (`roundHalfTowardZero`, `...F64`, `roundToDevicePixel`, `roundStrokeToDevicePixel`, `floorToDevicePixel`, `ceilToDevicePixel`) and `atomicIncrIfNotZero` (`*atomic.Uint64`) are unexported in util.go. `TestUtil_WithTimeout` was ported by M0-test-contexts; `now_or_never` is a single `Poll` with a no-op waker.
 - colors.rs: `GlobalColors` embeds `*Colors` (Deref); `DefaultColors` is an interface implemented by `(*App).DefaultColors`; `impl Default for Colors` has no Go function (the name `DefaultColors` is the trait's), `ColorsLight` is the default; `From<WindowAppearance>` is `(WindowAppearance).ToDefaultAppearance`.
+
+## Notes (M3-root-capture)
+
+- arena.rs: every row is `n/a:D-ARENA`; elements live on the Go heap and the window's frame-scoped drops go through `Window.deferArenaDrop`.
+- prelude.rs (re-exports only, no scanned rows) is done by alias: every name it re-exports is already exported by package `gpui`, so `import "github.com/megascan/gpui-go"` is the prelude. `TaskExt as _` maps to the methods on `gpui.Task[T]`, `util::FluentBuilder` to `Fluent[S]`.

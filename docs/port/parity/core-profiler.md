@@ -37,8 +37,8 @@ Go target: `hot_reload.go` (package `gpui`), tests in `hot_reload_test.go`
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `receives_only_matching_patches_over_the_websocket` | test | 136 |  | `TestHotReload_ReceivesOnlyMatchingPatchesOverTheWebsocket` | todo |
-| `refresh_renders_cached_views_without_recreating_state` | gpui::test | 220 |  | `TestHotReload_RefreshRendersCachedViewsWithoutRecreatingState` | todo |
+| `receives_only_matching_patches_over_the_websocket` | test | 136 |  | `TestHotReload_ReceivesOnlyMatchingPatchesOverTheWebsocket` | n/a:D-HOTRELOAD |
+| `refresh_renders_cached_views_without_recreating_state` | gpui::test | 220 |  | `TestHotReload_RefreshRendersCachedViewsWithoutRecreatingState` | n/a:D-HOTRELOAD |
 
 ## gpui/src/profiler.rs
 
