@@ -190,19 +190,19 @@ Go target: `internal/taffy/compute_grid_explicit_grid.go` (package `taffy`), tes
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `explicit_grid_sizing_no_repeats` | test | 397 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingNoRepeats` | todo |
-| `explicit_grid_sizing_auto_fill_exact_fit` | test | 421 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingAutoFillExactFit` | todo |
-| `explicit_grid_sizing_auto_fill_non_exact_fit` | test | 452 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingAutoFillNonExactFit` | todo |
-| `explicit_grid_sizing_auto_fill_min_size_exact_fit` | test | 483 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingAutoFillMinSizeExactFit` | todo |
-| `explicit_grid_sizing_auto_fill_min_size_non_exact_fit` | test | 514 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingAutoFillMinSizeNonExactFit` | todo |
-| `explicit_grid_sizing_auto_fill_multiple_repeated_tracks` | test | 545 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingAutoFillMultipleRepeatedTracks` | todo |
-| `explicit_grid_sizing_auto_fill_gap` | test | 576 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingAutoFillGap` | todo |
-| `explicit_grid_sizing_no_defined_size` | test | 608 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingNoDefinedSize` | todo |
-| `explicit_grid_sizing_mix_repeated_and_non_repeated` | test | 639 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingMixRepeatedAndNonRepeated` | todo |
-| `explicit_grid_sizing_mix_with_padding` | test | 671 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingMixWithPadding` | todo |
-| `auto_repeat_clamping_preserves_template_source_order` | test | 703 |  | `TestComputeGridExplicitGrid_AutoRepeatClampingPreservesTemplateSourceOrder` | todo |
-| `explicit_track_count_accumulation_saturates` | test | 747 |  | `TestComputeGridExplicitGrid_ExplicitTrackCountAccumulationSaturates` | todo |
-| `test_initialize_grid_tracks` | test | 771 |  | `TestComputeGridExplicitGrid_InitializeGridTracks` | todo |
+| `explicit_grid_sizing_no_repeats` | test | 397 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingNoRepeats` | done |
+| `explicit_grid_sizing_auto_fill_exact_fit` | test | 421 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingAutoFillExactFit` | done |
+| `explicit_grid_sizing_auto_fill_non_exact_fit` | test | 452 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingAutoFillNonExactFit` | done |
+| `explicit_grid_sizing_auto_fill_min_size_exact_fit` | test | 483 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingAutoFillMinSizeExactFit` | done |
+| `explicit_grid_sizing_auto_fill_min_size_non_exact_fit` | test | 514 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingAutoFillMinSizeNonExactFit` | done |
+| `explicit_grid_sizing_auto_fill_multiple_repeated_tracks` | test | 545 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingAutoFillMultipleRepeatedTracks` | done |
+| `explicit_grid_sizing_auto_fill_gap` | test | 576 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingAutoFillGap` | done |
+| `explicit_grid_sizing_no_defined_size` | test | 608 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingNoDefinedSize` | done |
+| `explicit_grid_sizing_mix_repeated_and_non_repeated` | test | 639 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingMixRepeatedAndNonRepeated` | done |
+| `explicit_grid_sizing_mix_with_padding` | test | 671 |  | `TestComputeGridExplicitGrid_ExplicitGridSizingMixWithPadding` | done |
+| `auto_repeat_clamping_preserves_template_source_order` | test | 703 |  | `TestComputeGridExplicitGrid_AutoRepeatClampingPreservesTemplateSourceOrder` | done |
+| `explicit_track_count_accumulation_saturates` | test | 747 |  | `TestComputeGridExplicitGrid_ExplicitTrackCountAccumulationSaturates` | done |
+| `test_initialize_grid_tracks` | test | 771 |  | `TestComputeGridExplicitGrid_InitializeGridTracks` | done |
 
 ## src/compute/grid/implicit_grid.rs
 
@@ -210,10 +210,10 @@ Go target: `internal/taffy/compute_grid_implicit_grid.go` (package `taffy`), tes
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `child_min_max_line_auto` | test | 175 |  | `TestComputeGridImplicitGrid_ChildMinMaxLineAuto` | todo |
-| `child_min_max_line_negative_track` | test | 185 |  | `TestComputeGridImplicitGrid_ChildMinMaxLineNegativeTrack` | todo |
-| `explicit_grid_sizing_with_children` | test | 216 |  | `TestComputeGridImplicitGrid_ExplicitGridSizingWithChildren` | todo |
-| `negative_implicit_grid_sizing` | test | 233 |  | `TestComputeGridImplicitGrid_NegativeImplicitGridSizing` | todo |
+| `child_min_max_line_auto` | test | 175 |  | `TestComputeGridImplicitGrid_ChildMinMaxLineAuto` | done |
+| `child_min_max_line_negative_track` | test | 185 |  | `TestComputeGridImplicitGrid_ChildMinMaxLineNegativeTrack` | done |
+| `explicit_grid_sizing_with_children` | test | 216 |  | `TestComputeGridImplicitGrid_ExplicitGridSizingWithChildren` | done |
+| `negative_implicit_grid_sizing` | test | 233 |  | `TestComputeGridImplicitGrid_NegativeImplicitGridSizing` | done |
 
 ## src/compute/grid/mod.rs
 
@@ -242,19 +242,19 @@ Go target: `internal/taffy/compute_grid_placement.go` (package `taffy`), tests i
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_only_fixed_placement` | test | 410 |  | `TestComputeGridPlacement_OnlyFixedPlacement` | todo |
-| `test_placement_spanning_origin` | test | 429 |  | `TestComputeGridPlacement_PlacementSpanningOrigin` | todo |
-| `test_only_auto_placement_row_flow` | test | 448 |  | `TestComputeGridPlacement_OnlyAutoPlacementRowFlow` | todo |
-| `test_only_auto_placement_column_flow` | test | 472 |  | `TestComputeGridPlacement_OnlyAutoPlacementColumnFlow` | todo |
-| `test_oversized_item` | test | 496 |  | `TestComputeGridPlacement_OversizedItem` | todo |
-| `test_fixed_in_secondary_axis` | test | 512 |  | `TestComputeGridPlacement_FixedInSecondaryAxis` | todo |
-| `test_definite_in_secondary_axis_with_fully_definite_negative` | test | 531 |  | `TestComputeGridPlacement_DefiniteInSecondaryAxisWithFullyDefiniteNegative` | todo |
-| `test_dense_packing_algorithm` | test | 549 |  | `TestComputeGridPlacement_DensePackingAlgorithm` | todo |
-| `test_sparse_packing_algorithm` | test | 567 |  | `TestComputeGridPlacement_SparsePackingAlgorithm` | todo |
-| `test_auto_placement_in_negative_tracks` | test | 585 |  | `TestComputeGridPlacement_AutoPlacementInNegativeTracks` | todo |
-| `test_overlarge_placement_is_clamped` | test | 603 |  | `TestComputeGridPlacement_OverlargePlacementIsClamped` | todo |
-| `auto_placement_cursor_saturates_at_integer_bounds` | test | 627 |  | `TestComputeGridPlacement_AutoPlacementCursorSaturatesAtIntegerBounds` | todo |
-| `indefinite_spans_saturate_at_integer_bounds` | test | 632 |  | `TestComputeGridPlacement_IndefiniteSpansSaturateAtIntegerBounds` | todo |
+| `test_only_fixed_placement` | test | 410 |  | `TestComputeGridPlacement_OnlyFixedPlacement` | done |
+| `test_placement_spanning_origin` | test | 429 |  | `TestComputeGridPlacement_PlacementSpanningOrigin` | done |
+| `test_only_auto_placement_row_flow` | test | 448 |  | `TestComputeGridPlacement_OnlyAutoPlacementRowFlow` | done |
+| `test_only_auto_placement_column_flow` | test | 472 |  | `TestComputeGridPlacement_OnlyAutoPlacementColumnFlow` | done |
+| `test_oversized_item` | test | 496 |  | `TestComputeGridPlacement_OversizedItem` | done |
+| `test_fixed_in_secondary_axis` | test | 512 |  | `TestComputeGridPlacement_FixedInSecondaryAxis` | done |
+| `test_definite_in_secondary_axis_with_fully_definite_negative` | test | 531 |  | `TestComputeGridPlacement_DefiniteInSecondaryAxisWithFullyDefiniteNegative` | done |
+| `test_dense_packing_algorithm` | test | 549 |  | `TestComputeGridPlacement_DensePackingAlgorithm` | done |
+| `test_sparse_packing_algorithm` | test | 567 |  | `TestComputeGridPlacement_SparsePackingAlgorithm` | done |
+| `test_auto_placement_in_negative_tracks` | test | 585 |  | `TestComputeGridPlacement_AutoPlacementInNegativeTracks` | done |
+| `test_overlarge_placement_is_clamped` | test | 603 |  | `TestComputeGridPlacement_OverlargePlacementIsClamped` | done |
+| `auto_placement_cursor_saturates_at_integer_bounds` | test | 627 |  | `TestComputeGridPlacement_AutoPlacementCursorSaturatesAtIntegerBounds` | done |
+| `indefinite_spans_saturate_at_integer_bounds` | test | 632 |  | `TestComputeGridPlacement_IndefiniteSpansSaturateAtIntegerBounds` | done |
 
 ## src/compute/grid/track_sizing.rs
 

@@ -1,7 +1,5 @@
 package taffy
 
-type itemPlacement = inBothAbsAxis[Line[originZeroGridPlacement]]
-
 // DetailedGridInfo is the detailed information of a grid container's layout (owner: M0-taffy-grid-sizing).
 type DetailedGridInfo[S CheapCloneStr] struct{}
 
