@@ -91,12 +91,42 @@ Go target: `internal/taffy/compute_flexbox.go` (package `taffy`), tests in `comp
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `compute_flexbox_layout` | fn | 234 |  | `ComputeFlexboxLayout` | todo |
+| `compute_flexbox_layout` | fn | 234 |  | `ComputeFlexboxLayout` | done |
+| `FlexItem` (private) | struct | 26 |  | `flexItem` | done |
+| `FlexLine` (private) | struct | 134 |  | `flexLine` | done |
+| `AlgoConstants` (private) | struct | 144 |  | `algoConstants` | done |
+| `compute_preliminary` (private) | fn | 329 |  | `computePreliminary` | done |
+| `resolve_normal_alignment` (private) | fn | 570 |  | `resolveNormalAlignment` | done |
+| `compute_constants` (private) | fn | 579 |  | `computeConstants` | done |
+| `resolve_relative_inset` (private) | fn | 696 |  | `resolveRelativeInset` | done |
+| `generate_anonymous_flex_items` (private) | fn | 722 |  | `generateAnonymousFlexItems` | done |
+| `determine_available_space` (private) | fn | 834 |  | `determineAvailableSpace` | done |
+| `determine_flex_base_size` (private) | fn | 885 |  | `determineFlexBaseSize` | done |
+| `collect_flex_lines` (private) | fn | 1181 |  | `collectFlexLines` | done |
+| `item_known_dimension_definiteness` (private) | fn | 1346 |  | `itemKnownDimensionDefiniteness` | done |
+| `determine_container_main_size` (private) | fn | 1369 |  | `determineContainerMainSize` | done |
+| `resolve_flexible_lengths` (private) | fn | 1696 |  | `resolveFlexibleLengths` | done |
+| `determine_hypothetical_cross_size` (private) | fn | 1892 |  | `determineHypotheticalCrossSize` | done |
+| `calculate_children_base_lines` (private) | fn | 1978 |  | `calculateChildrenBaseLines` | done |
+| `calculate_cross_size` (private) | fn | 2068 |  | `calculateCrossSize` | done |
+| `handle_align_content_stretch` (private) | fn | 2132 |  | `handleAlignContentStretch` | done |
+| `determine_used_cross_size` (private) | fn | 2168 |  | `determineUsedCrossSize` | done |
+| `distribute_remaining_free_space` (private) | fn | 2237 |  | `distributeRemainingFreeSpace` | done |
+| `resolve_cross_axis_auto_margins` (private) | fn | 2309 |  | `resolveCrossAxisAutoMargins` | done |
+| `align_flex_items_along_cross_axis` (private) | fn | 2364 |  | `alignFlexItemsAlongCrossAxis` | done |
+| `determine_container_cross_size` (private) | fn | 2458 |  | `determineContainerCrossSize` | done |
+| `align_flex_lines_per_align_content` (private) | fn | 2489 |  | `alignFlexLinesPerAlignContent` | done |
+| `calculate_flex_item` (private) | fn | 2511 |  | `calculateFlexItem` | done |
+| `calculate_layout_line` (private) | fn | 2644 |  | `calculateLayoutLine` | done |
+| `final_layout_pass` (private) | fn | 2707 |  | `finalLayoutPass` | done |
+| `collect_oof_candidates` (private) | fn | 2771 |  | `collectOofCandidates` | done |
+| `sum_axis_gaps` (private) | fn | 2924 |  | `sumAxisGaps` | done |
+| `collect_balanced_flex_lines`, `balance` module | fn | 1271 | flexbox_balance | - | n/a:D-TAFFY-FEATURE |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `zero_sized_item_rule` | test | 3399 | flexbox_balance | `TestComputeFlexbox_ZeroSizedItemRule` | todo |
-| `matches_naive_dp` | test | 3414 | flexbox_balance | `TestComputeFlexbox_MatchesNaiveDp` | todo |
+| `zero_sized_item_rule` | test | 3399 | flexbox_balance | `TestComputeFlexbox_ZeroSizedItemRule` | n/a:D-TAFFY-FEATURE |
+| `matches_naive_dp` | test | 3414 | flexbox_balance | `TestComputeFlexbox_MatchesNaiveDp` | n/a:D-TAFFY-FEATURE |
 
 ## src/compute/float.rs
 
@@ -334,19 +364,26 @@ Go target: `internal/taffy/compute_oof.go` (package `taffy`), tests in `compute_
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `resolve_static_offset` | fn | 35 |  | `ResolveStaticOffset` | todo |
+| `resolve_static_offset` | fn | 35 |  | `ResolveStaticOffset` | done |
+| `resolve_static_offset_axis` (private) | fn | 54 |  | `resolveStaticOffsetAxis` | done |
+| `align_in_line` (private) | fn | 62 |  | `alignInLine` | done |
+| `OofAlignment` (private) | enum | 73 |  | `oofAlignment` | done |
+| `OofAxis` (private) | struct | 125 |  | `oofAxis` | done |
+| `OofBoxLayout` (private) | struct | 418 |  | `oofBoxLayout` | done |
+| `layout_oof_box` (private) | fn | 447 |  | `layoutOofBox` | done |
+| `perform_oof_layout` (private) | fn | 727 |  | `performOofLayout` | done |
 | `compute_oof_layout` | fn | 348 |  | `ComputeOofLayout` | done |
-| `OofLayoutResult` | struct | 370 |  | `OofLayoutResult` | todo |
-| `compute_oof_layout_for_area` | fn | 389 |  | `ComputeOofLayoutForArea` | todo |
+| `OofLayoutResult` | struct | 370 |  | `OofLayoutResult` | done |
+| `compute_oof_layout_for_area` | fn | 389 |  | `ComputeOofLayoutForArea` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `start_alignment` | test | 865 |  | `TestComputeOof_StartAlignment` | todo |
-| `end_alignment` | test | 872 |  | `TestComputeOof_EndAlignment` | todo |
-| `center_alignment` | test | 879 |  | `TestComputeOof_CenterAlignment` | todo |
-| `safe_alignment_falls_back_only_on_overflow` | test | 887 |  | `TestComputeOof_SafeAlignmentFallsBackOnlyOnOverflow` | todo |
-| `unsafe_alignment_never_falls_back` | test | 899 |  | `TestComputeOof_UnsafeAlignmentNeverFallsBack` | todo |
-| `degenerate_area` | test | 905 |  | `TestComputeOof_DegenerateArea` | todo |
+| `start_alignment` | test | 865 |  | `TestComputeOof_StartAlignment` | done |
+| `end_alignment` | test | 872 |  | `TestComputeOof_EndAlignment` | done |
+| `center_alignment` | test | 879 |  | `TestComputeOof_CenterAlignment` | done |
+| `safe_alignment_falls_back_only_on_overflow` | test | 887 |  | `TestComputeOof_SafeAlignmentFallsBackOnlyOnOverflow` | done |
+| `unsafe_alignment_never_falls_back` | test | 899 |  | `TestComputeOof_UnsafeAlignmentNeverFallsBack` | done |
+| `degenerate_area` | test | 905 |  | `TestComputeOof_DegenerateArea` | done |
 
 ## src/geometry.rs
 
@@ -1380,7 +1417,7 @@ Go target: `internal/taffy/tree_taffy_tree.go` (package `taffy`), tests in `tree
 | `remove_node_should_remove` | test | 1091 |  | `TestTreeTaffyTree_RemoveNodeShouldRemove` | done |
 | `remove_node_should_detach_hierarchy` | test | 1100 |  | `TestTreeTaffyTree_RemoveNodeShouldDetachHierarchy` | done |
 | `remove_last_node` | test | 1121 |  | `TestTreeTaffyTree_RemoveLastNode` | done |
-| `remove_node_marks_parent_dirty` | test | 1134 |  | `TestTreeTaffyTree_RemoveNodeMarksParentDirty` | blocked:M0-taffy-flexbox |
+| `remove_node_marks_parent_dirty` | test | 1134 |  | `TestTreeTaffyTree_RemoveNodeMarksParentDirty` | done |
 | `set_measure` | test | 1157 |  | `TestTreeTaffyTree_SetMeasure` | done |
 | `set_measure_of_previously_unmeasured_node` | test | 1169 |  | `TestTreeTaffyTree_SetMeasureOfPreviouslyUnmeasuredNode` | done |
 | `add_child` | test | 1182 |  | `TestTreeTaffyTree_AddChild` | done |
@@ -1397,9 +1434,9 @@ Go target: `internal/taffy/tree_taffy_tree.go` (package `taffy`), tests in `tree
 | `test_set_style` | test | 1374 |  | `TestTreeTaffyTree_SetStyle` | done |
 | `test_style` | test | 1384 |  | `TestTreeTaffyTree_Style` | done |
 | `test_layout` | test | 1396 |  | `TestTreeTaffyTree_Layout` | done |
-| `test_mark_dirty` | test | 1406 |  | `TestTreeTaffyTree_MarkDirty` | blocked:M0-taffy-flexbox |
+| `test_mark_dirty` | test | 1406 |  | `TestTreeTaffyTree_MarkDirty` | done |
 | `compute_layout_should_produce_valid_result` | test | 1431 |  | `TestTreeTaffyTree_ComputeLayoutShouldProduceValidResult` | done |
-| `make_sure_layout_location_is_top_left` | test | 1447 |  | `TestTreeTaffyTree_MakeSureLayoutLocationIsTopLeft` | blocked:M0-taffy-flexbox |
+| `make_sure_layout_location_is_top_left` | test | 1447 |  | `TestTreeTaffyTree_MakeSureLayoutLocationIsTopLeft` | done |
 | `set_children_reparents` | test | 1491 |  | `TestTreeTaffyTree_SetChildrenReparents` | done |
 | `remove_drops_the_nodes_context` | test | 1513 |  | `TestTreeTaffyTree_RemoveDropsTheNodesContext` | dev:D-TAFFY-CTXDROP |
 | `clear_drops_every_nodes_context` | test | 1528 |  | `TestTreeTaffyTree_ClearDropsEveryNodesContext` | dev:D-TAFFY-CTXDROP |
@@ -1713,12 +1750,15 @@ Go target: `internal/taffy/xml_test.go` (package `taffy`); the `parse`-feature C
 
 ## tests/xml fixtures
 
+Go target: `internal/taffy/xml_test.go` (package `taffy`, test-only), enabled categories in `fixtures_enabled_test.go`.
+
 Fixture counts per category (6504 files in tag v0.15.0). `flex-wrap: balance` fixtures (136, all in `flex`) need `flexbox_balance` and skip as n/a:D-TAFFY-FEATURE. Fixtures that reach a stub skip as blocked until the stage that owns it lands.
 
 | Upstream test | Kind | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `tests/xml/leaf` (60: 56 pass, 4 lay out a flex container) | fixture | - | test | `TestXml/leaf` | blocked:M0-taffy-flexbox |
-| `tests/xml/flex` (2708, 136 of them n/a) | fixture | - | test | `TestXml/flex` | blocked:M0-taffy-flexbox |
+| `tests/xml/leaf` (60, all pass) | fixture | - | test | `TestXml` | done |
+| `tests/xml/flex` (2708: 2512 pass, 136 n/a, 44 lay out a block box) | fixture | - | test | `TestXml/flex` | blocked:M0-taffy-block |
+| `tests/xml/flex` fixtures that lay out a grid box (16) | fixture | - | test | `TestXml/flex` | blocked:M0-taffy-grid-sizing |
 | `tests/xml/block` (1116) | fixture | - | test | `TestXml/block` | blocked:M0-taffy-block |
 | `tests/xml/blockflex` (52) | fixture | - | test | `TestXml/blockflex` | blocked:M0-taffy-block |
 | `tests/xml/float` (116) | fixture | - | test | `TestXml/float` | blocked:M0-taffy-block |

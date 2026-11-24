@@ -182,7 +182,6 @@ func TestTreeTaffyTree_RemoveLastNode(t *testing.T) {
 }
 
 func TestTreeTaffyTree_RemoveNodeMarksParentDirty(t *testing.T) {
-	t.Skip("needs ComputeFlexboxLayout (M0-taffy-flexbox)")
 	taffy := NewTaffyTree[struct{}]()
 
 	childStyle := defaultStyle()
@@ -506,7 +505,6 @@ func TestTreeTaffyTree_Layout(t *testing.T) {
 }
 
 func TestTreeTaffyTree_MarkDirty(t *testing.T) {
-	t.Skip("needs ComputeFlexboxLayout (M0-taffy-flexbox)")
 	taffy := NewTaffyTree[struct{}]()
 	child0 := leaf(t, taffy)
 	child1 := leaf(t, taffy)
@@ -544,7 +542,6 @@ func TestTreeTaffyTree_ComputeLayoutShouldProduceValidResult(t *testing.T) {
 }
 
 func TestTreeTaffyTree_MakeSureLayoutLocationIsTopLeft(t *testing.T) {
-	t.Skip("needs ComputeFlexboxLayout (M0-taffy-flexbox)")
 	taffy := NewTaffyTree[struct{}]()
 
 	nodeStyle := defaultStyle()

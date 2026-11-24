@@ -35,11 +35,6 @@ type DetailedGridInfo[S CheapCloneStr] struct{}
 // BlockContext is the per-container state of a block formatting context (owner: M0-taffy-block).
 type BlockContext struct{}
 
-// ComputeFlexboxLayout computes the layout of a flexbox container and its direct children (owner: M0-taffy-flexbox).
-func ComputeFlexboxLayout(tree LayoutFlexboxContainer, node NodeID, inputs LayoutInput) LayoutOutput {
-	panic("taffy: unimplemented ComputeFlexboxLayout")
-}
-
 // ComputeBlockLayout computes the layout of a block container and its direct children (owner: M0-taffy-block).
 func ComputeBlockLayout(tree LayoutBlockContainer, nodeID NodeID, inputs LayoutInput, blockCtx *BlockContext) LayoutOutput {
 	panic("taffy: unimplemented ComputeBlockLayout")
@@ -50,56 +45,6 @@ func ComputeGridLayout[S CheapCloneStr](tree LayoutGridContainer[S], node NodeID
 	panic("taffy: unimplemented ComputeGridLayout")
 }
 
-// OofLayoutResult is the result of laying out out-of-flow candidates against an explicit positioning area (owner: M0-taffy-block).
-type OofLayoutResult struct {
-	Hoisted                []NodeID
-	Unclaimed              OofCandidates
-	ScrollableOverflowRect Rect[float32]
-}
-
-// ComputeOofLayoutForArea lays out out-of-flow candidates against an explicit positioning area (owner: M0-taffy-block).
-func ComputeOofLayoutForArea[S CheapCloneStr](
-	tree LayoutContainingBlock[S],
-	geometryOwner NodeID,
-	candidates []OofCandidate,
-	area OofPositioningArea,
-	direction Direction,
-	claims ContainingBlockClaims,
-) OofLayoutResult {
-	panic("taffy: unimplemented ComputeOofLayoutForArea")
-}
-
-type oofBoxLayout struct {
-	layout   Layout
-	surfaced OofCandidates
-	overflow Point[Overflow]
-	contain  Contain
-}
-
-func layoutOofBox[S CheapCloneStr, Tree LayoutContainingBlock[S]](
-	tree Tree,
-	candidate OofCandidate,
-	areaSize Size[float32],
-	areaOffset Point[float32],
-	direction Direction,
-	containerOverflow Point[Overflow],
-	gridOwner Option[NodeID],
-	beforeLayout func(tree Tree, inputs *LayoutInput),
-) oofBoxLayout {
-	panic("taffy: unimplemented layoutOofBox")
-}
-
-func performOofLayout[S CheapCloneStr](
-	tree LayoutContainingBlock[S],
-	nodeID NodeID,
-	candidates []OofCandidate,
-	areaSize Size[float32],
-	areaOffset Point[float32],
-	direction Direction,
-	claims ContainingBlockClaims,
-	containerOverflow Point[Overflow],
-	hoisted *[]NodeID,
-	unclaimed *OofCandidates,
-) Rect[float32] {
-	panic("taffy: unimplemented performOofLayout")
+func (d *DetailedGridInfo[S]) resolveAbsoluteGridArea(gridRow, gridColumn Line[GridPlacement[S]], direction Direction, areaRect Rect[float32]) Rect[float32] {
+	panic("taffy: unimplemented DetailedGridInfo.resolveAbsoluteGridArea")
 }
