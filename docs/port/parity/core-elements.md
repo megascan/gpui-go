@@ -540,44 +540,51 @@ Go target: `elements_text.go` (package `gpui`), tests in `elements_text_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Text` | struct | 67 |  | `Text` | todo |
-| `Text::new` | assoc-fn | 78 |  | `NewText` | todo |
-| `Text::new_inaccessible` | assoc-fn | 92 |  | `NewTextInaccessible` | todo |
-| `Text::id` | method | 98 |  | `(Text).ID` | todo |
-| `Text::with_id` | method | 103 |  | `(Text).WithID` | todo |
-| `Text::text` | method | 110 |  | `(Text).Text` | todo |
-| `__hash_text_macro_location_unstable_do_not_use` | fn | 132 |  | `HashTextMacroLocationUnstableDoNotUse` | todo |
-| `text` | macro | 160 |  | `see DESIGN §9 (text!)` | todo |
-| `StyledText` | struct | 367 |  | `StyledText` | todo |
-| `StyledText::new` | assoc-fn | 377 |  | `NewStyledText` | todo |
-| `StyledText::layout` | method | 388 |  | `(StyledText).Layout` | todo |
-| `StyledText::with_default_highlights` | method | 394 |  | `(StyledText).WithDefaultHighlights` | todo |
-| `StyledText::with_highlights` | method | 409 |  | `(StyledText).WithHighlights` | todo |
-| `StyledText::with_font_family_overrides` | method | 464 |  | `(StyledText).WithFontFamilyOverrides` | todo |
-| `StyledText::with_runs` | method | 502 |  | `(StyledText).WithRuns` | todo |
-| `TextLayout` | struct | 582 |  | `TextLayout` | todo |
-| `TextLayout::paint_background` | method | 779 |  | `(TextLayout).PaintBackground` | todo |
-| `TextLayout::paint_foreground` | method | 784 |  | `(TextLayout).PaintForeground` | todo |
-| `TextLayout::index_for_position` | method | 834 |  | `(TextLayout).IndexForPosition` | todo |
-| `TextLayout::position_for_index` | method | 868 |  | `(TextLayout).PositionForIndex` | todo |
-| `TextLayout::line_layout_for_index` | method | 899 |  | `(TextLayout).LineLayoutForIndex` | todo |
-| `TextLayout::line_layouts` | method | 922 |  | `(TextLayout).LineLayouts` | todo |
-| `TextLayout::bounds` | method | 934 |  | `(TextLayout).Bounds` | todo |
-| `TextLayout::line_height` | method | 939 |  | `(TextLayout).LineHeight` | todo |
-| `TextLayout::len` | method | 944 |  | `(TextLayout).Len` | todo |
-| `TextLayout::text` | method | 949 |  | `(TextLayout).Text` | todo |
-| `TextLayout::wrapped_text` | method | 961 |  | `(TextLayout).WrappedText` | todo |
-| `InteractiveText` | struct | 985 |  | `InteractiveText` | todo |
-| `InteractiveTextState` | struct | 1003 |  | `InteractiveTextState` | todo |
-| `InteractiveText::new` | assoc-fn | 1013 |  | `NewInteractiveText` | todo |
-| `InteractiveText::on_click` | method | 1027 |  | `(InteractiveText).OnClick` | todo |
-| `InteractiveText::on_hover` | method | 1046 |  | `(InteractiveText).OnHover` | todo |
-| `InteractiveText::tooltip` | method | 1055 |  | `(InteractiveText).Tooltip` | todo |
+| `Text` | struct | 67 |  | `Text` | done |
+| `Text::new` | assoc-fn | 78 |  | `NewText` | done |
+| `Text::new_inaccessible` | assoc-fn | 92 |  | `NewTextInaccessible` | done |
+| `Text::id` | method | 98 |  | `(Text).ElementID` | dev:D-NAME |
+| `Text::with_id` | method | 103 |  | `(Text).WithID` | done |
+| `Text::text` | method | 110 |  | `(Text).Text` | done |
+| `__hash_text_macro_location_unstable_do_not_use` | fn | 132 |  | `HashTextMacroLocationUnstableDoNotUse` | done |
+| `text` | macro | 160 |  | `TextMacro` | dev:D-MACRO |
+| `StyledText` | struct | 367 |  | `StyledText` | done |
+| `StyledText::new` | assoc-fn | 377 |  | `NewStyledText` | done |
+| `StyledText::layout` | method | 388 |  | `(StyledText).Layout` | done |
+| `StyledText::with_default_highlights` | method | 394 |  | `(StyledText).WithDefaultHighlights` | done |
+| `StyledText::with_highlights` | method | 409 |  | `(StyledText).WithHighlights` | done |
+| `StyledText::with_font_family_overrides` | method | 464 |  | `(StyledText).WithFontFamilyOverrides` | done |
+| `StyledText::with_runs` | method | 502 |  | `(StyledText).WithRuns` | done |
+| `TextLayout` | struct | 582 |  | `TextLayout` | done |
+| `TextLayout::paint_background` | method | 779 |  | `(TextLayout).PaintBackground` | done |
+| `TextLayout::paint_foreground` | method | 784 |  | `(TextLayout).PaintForeground` | done |
+| `TextLayout::index_for_position` | method | 834 |  | `(TextLayout).IndexForPosition` | done |
+| `TextLayout::position_for_index` | method | 868 |  | `(TextLayout).PositionForIndex` | done |
+| `TextLayout::line_layout_for_index` | method | 899 |  | `(TextLayout).LineLayoutForIndex` | done |
+| `TextLayout::line_layouts` | method | 922 |  | `(TextLayout).LineLayouts` | done |
+| `TextLayout::bounds` | method | 934 |  | `(TextLayout).Bounds` | done |
+| `TextLayout::line_height` | method | 939 |  | `(TextLayout).LineHeight` | done |
+| `TextLayout::len` | method | 944 |  | `(TextLayout).Len` | done |
+| `TextLayout::text` | method | 949 |  | `(TextLayout).Text` | done |
+| `TextLayout::wrapped_text` | method | 961 |  | `(TextLayout).WrappedText` | done |
+| `InteractiveText` | struct | 985 |  | `InteractiveText` | done |
+| `InteractiveTextState` | struct | 1003 |  | `InteractiveTextState` | done |
+| `InteractiveText::new` | assoc-fn | 1013 |  | `NewInteractiveText` | done |
+| `InteractiveText::on_click` | method | 1027 |  | `(InteractiveText).OnClick` | done |
+| `InteractiveText::on_hover` | method | 1046 |  | `(InteractiveText).OnHover` | done |
+| `InteractiveText::tooltip` | method | 1055 |  | `(InteractiveText).Tooltip` | done |
+| `impl Element for Text` | impl | 167 |  | `(Text).RequestLayout` | done |
+| `impl Element for &'static str` | impl | 245 |  | `(*Parent).ChildText` | dev:D-INTO |
+| `impl IntoElement for String` | impl | 297 |  | `(*Parent).ChildText` | dev:D-INTO |
+| `impl IntoElement for Cow<'static, str>` | impl | 305 |  | `(*Parent).ChildText` | dev:D-INTO |
+| `impl Element for SharedString` | impl | 313 |  | `(SharedString).IntoAnyElement` | done |
+| `impl Element for StyledText` | impl | 521 |  | `(*StyledText).IntoAnyElement` | done |
+| `impl Element for InteractiveText` | impl | 1066 |  | `(*InteractiveText).IntoAnyElement` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_into_element_for` | test | 1284 |  | `TestText_IntoElementFor` | todo |
-| `text_macro_id` | test | 1295 |  | `TestText_TextMacroID` | todo |
+| `test_into_element_for` | test | 1284 |  | `TestText_IntoElementFor` | done |
+| `text_macro_id` | test | 1295 |  | `TestText_TextMacroID` | done |
 
 ## gpui/src/elements/uniform_list.rs
 

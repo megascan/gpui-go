@@ -214,16 +214,6 @@ func (a *windowA11y) setActiveDescendant(nodeID a11y.NodeID) {
 	panic("gpui: unimplemented windowA11y.setActiveDescendant")
 }
 
-// Paint paints the line of text at origin (M0-text-elements ports it).
-func (l *WrappedLine) Paint(origin Point[Pixels], lineHeight Pixels, align TextAlign, bounds Option[Bounds[Pixels]], window *Window, cx *App) error {
-	panic("gpui: unimplemented WrappedLine.Paint")
-}
-
-// Size returns the size of the wrapped line (M0-text-elements ports it).
-func (l *WrappedLine) Size(lineHeight Pixels) Size[Pixels] {
-	panic("gpui: unimplemented WrappedLine.Size")
-}
-
 // TimedTransformation is a transformation animated over time (M0-elements-media ports it).
 type TimedTransformation struct{}
 
@@ -244,43 +234,6 @@ func (t Transformation) alphaFactor() float32 {
 
 func (t Transformation) intoMatrix(center Point[Pixels], scaleFactor float32) TransformationMatrix {
 	panic("gpui: unimplemented Transformation.intoMatrix")
-}
-
-// ShapedLine is a line of text that has been shaped and decorated; it embeds its layout
-// (upstream's Deref) (M0-text-elements ports it).
-type ShapedLine struct {
-	*LineLayout
-	// Text is the text that was shaped for this line.
-	Text           SharedString
-	decorationRuns []DecorationRun
-}
-
-// WrappedLine is a line of text that has been shaped, decorated and wrapped; it embeds its
-// layout (upstream's Deref) (M0-text-elements ports it).
-type WrappedLine struct {
-	*WrappedLineLayout
-	// Text is the text that was shaped for this line.
-	Text           SharedString
-	decorationRuns []DecorationRun
-}
-
-// DecorationRun sets the text decoration for a run of text (M0-text-elements ports it).
-type DecorationRun struct {
-	// Len is the length of the run in UTF-8 bytes.
-	Len uint32
-	// Color is the color of the run.
-	Color Hsla
-	// BackgroundColor is the background color of the run.
-	BackgroundColor Option[Hsla]
-	// Underline is the underline style of the run.
-	Underline Option[UnderlineStyle]
-	// Strikethrough is the strikethrough style of the run.
-	Strikethrough Option[StrikethroughStyle]
-}
-
-// IntoAnyElement converts the string into a text element (M0-text-elements ports it).
-func (s SharedString) IntoAnyElement() AnyElement {
-	panic("gpui: unimplemented SharedString.IntoAnyElement")
 }
 
 // HangDetector detects hangs from the foreground journal (M3-profiler-hang ports it).

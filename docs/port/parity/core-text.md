@@ -172,41 +172,41 @@ Go target: `text_system_line.go` (package `gpui`), tests in `text_system_line_te
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `GlyphRasterData` | struct | 15 |  | `GlyphRasterData` | todo |
-| `DecorationRun` | struct | 24 |  | `DecorationRun` | todo |
-| `ShapedLine` | struct | 43 |  | `ShapedLine` | todo |
-| `ShapedLine::cursor` | method | 54 |  | `(ShapedLine).Cursor` | todo |
-| `ShapedLine::len` | method | 79 |  | `(ShapedLine).Len` | todo |
-| `ShapedLine::width` | method | 87 |  | `(ShapedLine).Width` | todo |
-| `ShapedLine::with_len` | method | 93 |  | `(ShapedLine).WithLen` | todo |
-| `ShapedLine::paint` | method | 107 |  | `(ShapedLine).Paint` | todo |
-| `ShapedLine::paint_with_underline_handler` | method | 128 |  | `(ShapedLine).PaintWithUnderlineHandler` | todo |
-| `ShapedLine::paint_background` | method | 159 |  | `(ShapedLine).PaintBackground` | todo |
-| `ShapedLine::split_at` | method | 195 |  | `(ShapedLine).SplitAt` | todo |
-| `ShapedLineCursor` | struct | 267 |  | `ShapedLineCursor` | todo |
-| `ShapedLineCursor::take_until` | method | 284 |  | `(ShapedLineCursor).TakeUntil` | todo |
-| `ShapedLineCursor::x_offset` | method | 379 |  | `(ShapedLineCursor).XOffset` | todo |
-| `LineLayout::paint` | method | 390 |  | `(LineLayout).Paint` | todo |
-| `LineLayout::paint_background` | method | 419 |  | `(LineLayout).PaintBackground` | todo |
-| `WrappedLine` | struct | 448 |  | `WrappedLine` | todo |
-| `WrappedLine::len` | method | 459 |  | `(WrappedLine).Len` | todo |
-| `WrappedLine::paint` | method | 464 |  | `(WrappedLine).Paint` | todo |
-| `WrappedLine::paint_background` | method | 495 |  | `(WrappedLine).PaintBackground` | todo |
+| `GlyphRasterData` | struct | 15 |  | `GlyphRasterData` | done |
+| `DecorationRun` | struct | 24 |  | `DecorationRun` | done |
+| `ShapedLine` | struct | 43 |  | `ShapedLine` | done |
+| `ShapedLine::cursor` | method | 54 |  | `(ShapedLine).Cursor` | done |
+| `ShapedLine::len` | method | 79 |  | `(ShapedLine).Len` | done |
+| `ShapedLine::width` | method | 87 |  | `(ShapedLine).Width` | done |
+| `ShapedLine::with_len` | method | 93 |  | `(ShapedLine).WithLen` | done |
+| `ShapedLine::paint` | method | 107 |  | `(ShapedLine).Paint` | done |
+| `ShapedLine::paint_with_underline_handler` | method | 128 |  | `(ShapedLine).PaintWithUnderlineHandler` | done |
+| `ShapedLine::paint_background` | method | 159 |  | `(ShapedLine).PaintBackground` | done |
+| `ShapedLine::split_at` | method | 195 |  | `(ShapedLine).SplitAt` | done |
+| `ShapedLineCursor` | struct | 267 |  | `ShapedLineCursor` | done |
+| `ShapedLineCursor::take_until` | method | 284 |  | `(ShapedLineCursor).TakeUntil` | done |
+| `ShapedLineCursor::x_offset` | method | 379 |  | `(ShapedLineCursor).XOffset` | done |
+| `LineLayout::paint` | method | 390 |  | `(LineLayout).Paint` | done |
+| `LineLayout::paint_background` | method | 419 |  | `(LineLayout).PaintBackground` | done |
+| `WrappedLine` | struct | 448 |  | `WrappedLine` | done |
+| `WrappedLine::len` | method | 459 |  | `(WrappedLine).Len` | done |
+| `WrappedLine::paint` | method | 464 |  | `(WrappedLine).Paint` | done |
+| `WrappedLine::paint_background` | method | 495 |  | `(WrappedLine).PaintBackground` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_underline_handler_matches_default_paint` | gpui::test | 1008 |  | `TestLine_UnderlineHandlerMatchesDefaultPaint` | todo |
-| `test_underline_handler_reports_zero_advance_geometry` | gpui::test | 1156 |  | `TestLine_UnderlineHandlerReportsZeroAdvanceGeometry` | todo |
-| `test_underline_handler_matches_wrapped_paint` | gpui::test | 1235 |  | `TestLine_UnderlineHandlerMatchesWrappedPaint` | todo |
-| `test_split_at_invariants` | test | 1318 |  | `TestLine_SplitAtInvariants` | todo |
-| `test_split_at_glyph_rebasing` | test | 1369 |  | `TestLine_SplitAtGlyphRebasing` | todo |
-| `test_split_at_decorations` | test | 1466 |  | `TestLine_SplitAtDecorations` | todo |
-| `test_cursor_preserves_shaping_metadata_across_runs` | test | 1619 |  | `TestLine_CursorPreservesShapingMetadataAcrossRuns` | todo |
-| `test_cursor_preserves_existing_visual_order_splitting` | test | 1706 |  | `TestLine_CursorPreservesExistingVisualOrderSplitting` | todo |
-| `test_cursor_partitions_one_decoration_across_three_chunks` | test | 1733 |  | `TestLine_CursorPartitionsOneDecorationAcrossThreeChunks` | todo |
-| `test_cursor_matches_successive_splits_at_ordered_boundaries` | test | 1765 |  | `TestLine_CursorMatchesSuccessiveSplitsAtOrderedBoundaries` | todo |
-| `test_cursor_empty_chunks_and_repeated_boundaries` | test | 1830 |  | `TestLine_CursorEmptyChunksAndRepeatedBoundaries` | todo |
-| `test_cursor_rejects_invalid_boundaries` | test | 1846 |  | `TestLine_CursorRejectsInvalidBoundaries` | todo |
+| `test_underline_handler_matches_default_paint` | gpui::test | 1008 |  | `TestLine_UnderlineHandlerMatchesDefaultPaint` | done |
+| `test_underline_handler_reports_zero_advance_geometry` | gpui::test | 1156 |  | `TestLine_UnderlineHandlerReportsZeroAdvanceGeometry` | done |
+| `test_underline_handler_matches_wrapped_paint` | gpui::test | 1235 |  | `TestLine_UnderlineHandlerMatchesWrappedPaint` | done |
+| `test_split_at_invariants` | test | 1318 |  | `TestLine_SplitAtInvariants` | done |
+| `test_split_at_glyph_rebasing` | test | 1369 |  | `TestLine_SplitAtGlyphRebasing` | done |
+| `test_split_at_decorations` | test | 1466 |  | `TestLine_SplitAtDecorations` | done |
+| `test_cursor_preserves_shaping_metadata_across_runs` | test | 1619 |  | `TestLine_CursorPreservesShapingMetadataAcrossRuns` | done |
+| `test_cursor_preserves_existing_visual_order_splitting` | test | 1706 |  | `TestLine_CursorPreservesExistingVisualOrderSplitting` | done |
+| `test_cursor_partitions_one_decoration_across_three_chunks` | test | 1733 |  | `TestLine_CursorPartitionsOneDecorationAcrossThreeChunks` | done |
+| `test_cursor_matches_successive_splits_at_ordered_boundaries` | test | 1765 |  | `TestLine_CursorMatchesSuccessiveSplitsAtOrderedBoundaries` | done |
+| `test_cursor_empty_chunks_and_repeated_boundaries` | test | 1830 |  | `TestLine_CursorEmptyChunksAndRepeatedBoundaries` | done |
+| `test_cursor_rejects_invalid_boundaries` | test | 1846 |  | `TestLine_CursorRejectsInvalidBoundaries` | done |
 
 ## gpui/src/text_system/line_layout.rs
 
