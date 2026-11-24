@@ -101,7 +101,78 @@ const (
 	uiaScrollItemPatternID     uiaPatternID = 10017
 )
 
-const uiaTextTextSelectionChangedEventID uiaEventID = 20014
+const (
+	uiaToolTipOpenedEventID                            uiaEventID = 20000
+	uiaAutomationFocusChangedEventID                   uiaEventID = 20005
+	uiaSelectionItemElementAddedToSelectionEventID     uiaEventID = 20010
+	uiaSelectionItemElementRemovedFromSelectionEventID uiaEventID = 20011
+	uiaSelectionItemElementSelectedEventID             uiaEventID = 20012
+	uiaSelectionInvalidatedEventID                     uiaEventID = 20013
+	uiaTextTextSelectionChangedEventID                 uiaEventID = 20014
+	uiaTextTextChangedEventID                          uiaEventID = 20015
+	uiaWindowWindowOpenedEventID                       uiaEventID = 20016
+	uiaWindowWindowClosedEventID                       uiaEventID = 20017
+	uiaLiveRegionChangedEventID                        uiaEventID = 20024
+)
+
+type uiaTextAttributeID = int32
+
+const (
+	uiaBackgroundColorAttributeID         uiaTextAttributeID = 40001
+	uiaCultureAttributeID                 uiaTextAttributeID = 40004
+	uiaFontNameAttributeID                uiaTextAttributeID = 40005
+	uiaFontSizeAttributeID                uiaTextAttributeID = 40006
+	uiaFontWeightAttributeID              uiaTextAttributeID = 40007
+	uiaForegroundColorAttributeID         uiaTextAttributeID = 40008
+	uiaHorizontalTextAlignmentAttributeID uiaTextAttributeID = 40009
+	uiaIsItalicAttributeID                uiaTextAttributeID = 40014
+	uiaIsReadOnlyAttributeID              uiaTextAttributeID = 40015
+	uiaIsSubscriptAttributeID             uiaTextAttributeID = 40016
+	uiaIsSuperscriptAttributeID           uiaTextAttributeID = 40017
+	uiaOverlineColorAttributeID           uiaTextAttributeID = 40023
+	uiaOverlineStyleAttributeID           uiaTextAttributeID = 40024
+	uiaStrikethroughColorAttributeID      uiaTextAttributeID = 40025
+	uiaStrikethroughStyleAttributeID      uiaTextAttributeID = 40026
+	uiaUnderlineColorAttributeID          uiaTextAttributeID = 40029
+	uiaUnderlineStyleAttributeID          uiaTextAttributeID = 40030
+	uiaCaretPositionAttributeID           uiaTextAttributeID = 40038
+)
+
+const (
+	caretPositionUnknown         = 0
+	caretPositionEndOfLine       = 1
+	caretPositionBeginningOfLine = 2
+
+	textPatternRangeEndpointStart = 0
+	textPatternRangeEndpointEnd   = 1
+
+	textUnitCharacter = 0
+	textUnitFormat    = 1
+	textUnitWord      = 2
+	textUnitLine      = 3
+	textUnitParagraph = 4
+	textUnitPage      = 5
+	textUnitDocument  = 6
+
+	uiaRootObjectID = -25
+	objidClient     = -4
+
+	automationIdentifierTypeProperty = 0
+
+	gwlpWndProc     = -4
+	wmSetFocus      = 0x0007
+	wmKillFocus     = 0x0008
+	wmGetObject     = 0x003D
+	wmNCDestroy     = 0x0082
+	wmEnterMenuLoop = 0x0211
+	wmExitMenuLoop  = 0x0212
+	wmEnterSizeMove = 0x0231
+	wmExitSizeMove  = 0x0232
+)
+
+var controlTypePropertyGUID = com.MustGUID("{CA774FEA-28AC-4BC2-94CA-ACEC6D6C10A3}")
+
+const uiaSelectionItemIsSelectedPropertyID uiaPropertyID = 30079
 
 const (
 	uiaControlTypePropertyID                       uiaPropertyID = 30003
@@ -201,7 +272,15 @@ var (
 
 	procUiaHostProviderFromHwnd           = uiautomationcore.NewProc("UiaHostProviderFromHwnd")
 	procUiaGetReservedMixedAttributeValue = uiautomationcore.NewProc("UiaGetReservedMixedAttributeValue")
+	procUiaGetReservedNotSupportedValue   = uiautomationcore.NewProc("UiaGetReservedNotSupportedValue")
+	procUiaLookupID                       = uiautomationcore.NewProc("UiaLookupId")
+	procUiaReturnRawElementProvider       = uiautomationcore.NewProc("UiaReturnRawElementProvider")
+	procUiaRaiseAutomationEvent           = uiautomationcore.NewProc("UiaRaiseAutomationEvent")
+	procUiaRaiseAutomationPropertyChanged = uiautomationcore.NewProc("UiaRaiseAutomationPropertyChangedEvent")
 	procLocaleNameToLCID                  = kernel32.NewProc("LocaleNameToLCID")
+	user32                                = windows.NewLazySystemDLL("user32.dll")
+	procCallWindowProcW                   = user32.NewProc("CallWindowProcW")
+	procSetWindowLongPtrW                 = user32.NewProc("SetWindowLongPtrW")
 	procSysAllocStringLen                 = oleaut32.NewProc("SysAllocStringLen")
 )
 
@@ -242,4 +321,46 @@ func bstrFromWide(wide []uint16) com.BSTR {
 		panic("BSTR allocation failed")
 	}
 	return com.BSTR((*uint16)(com.PtrFromUintptr(r)))
+}
+
+func uiaGetReservedNotSupportedValue() (*com.IUnknown, error) {
+	var out *com.IUnknown
+	r, _, _ := procUiaGetReservedNotSupportedValue.Call(uintptr(unsafe.Pointer(&out)))
+	if err := com.HRESULTFromUintptr(r).Err(); err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func uiaLookupID(kind int32, guid *com.GUID) int32 {
+	r, _, _ := procUiaLookupID.Call(uintptr(kind), uintptr(unsafe.Pointer(guid)))
+	return int32(r)
+}
+
+func uiaReturnRawElementProvider(hwnd windows.HWND, wparam WPARAM, lparam LPARAM, el *com.IUnknown) LRESULT {
+	r, _, _ := procUiaReturnRawElementProvider.Call(uintptr(hwnd), uintptr(wparam), uintptr(lparam), uintptr(unsafe.Pointer(el)))
+	return LRESULT(r)
+}
+
+func uiaRaiseAutomationEvent(element *com.IUnknown, eventID uiaEventID) error {
+	r, _, _ := procUiaRaiseAutomationEvent.Call(uintptr(unsafe.Pointer(element)), uintptr(eventID))
+	return com.HRESULTFromUintptr(r).Err()
+}
+
+func uiaRaiseAutomationPropertyChangedEvent(element *com.IUnknown, propertyID uiaPropertyID, oldValue, newValue *com.VARIANT) error {
+	r, _, _ := procUiaRaiseAutomationPropertyChanged.Call(uintptr(unsafe.Pointer(element)), uintptr(propertyID), uintptr(unsafe.Pointer(oldValue)), uintptr(unsafe.Pointer(newValue)))
+	return com.HRESULTFromUintptr(r).Err()
+}
+
+func callWindowProcW(prev uintptr, hwnd windows.HWND, message uint32, wparam WPARAM, lparam LPARAM) LRESULT {
+	r, _, _ := procCallWindowProcW.Call(prev, uintptr(hwnd), uintptr(message), uintptr(wparam), uintptr(lparam))
+	return LRESULT(r)
+}
+
+func setWindowLongPtrW(hwnd windows.HWND, index int32, value uintptr) (uintptr, error) {
+	r, _, err := procSetWindowLongPtrW.Call(uintptr(hwnd), uintptr(index), value)
+	if r == 0 {
+		return 0, err
+	}
+	return r, nil
 }

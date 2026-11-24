@@ -11,6 +11,8 @@ Notes on the port:
 - `GetPatternProvider` and `ControllerFor` return the identity (`IUnknown`) pointer, as upstream's `cast::<IUnknown>()` does; QueryInterface answers all 13 provider IIDs.
 - `IValueProvider::SetValue` decodes the PCWSTR with `windows.UTF16PtrToString` (lossy on unpaired surrogates, where upstream's `to_string().unwrap()` panics).
 - Tests run only on Windows (CI); locally they are cross-compiled.
+- M4-windows-a11y: `text.go`, `adapter.go`, `subclass.go`, `lib.go` replace `stubs.go`. `ITextRangeProvider` methods that take another range cast it with `com.ImplOf` and return E_INVALIDARG for a foreign provider (upstream's `as_impl` is unchecked). `select` is a Go keyword, so `Select` is `platformRange.selectRange`. `Adapter::handle_wm_getobject`'s `impl Into<LRESULT>` is a `func() LRESULT` that calls `UiaReturnRawElementProvider` and releases the element. `Adapter.Release` is the drop of the adapter (and of its `Arc<Context>`); `QueuedEvents.Raise` releases each event after raising it. `platform/windows/a11y.go` forwards to the adapter as `gpui_windows` does; `A11yState.release` is its drop (see docs/port/handoff/M4-windows-a11y.md).
+- UIA client calls in the tests use raw vtable slots of `IUIAutomation`, `IUIAutomationTreeWalker`, `IUIAutomationElement` and `IUIAutomationRangeValuePattern` (windows-rs 0.62 order); the scope fixture's provider thread is a goroutine locked to its OS thread, the focus wait uses a channel with the same 5 s timeout.
 
 ## src/lib.rs
 
@@ -21,16 +23,16 @@ Go target: `a11y/windows/`
 | `mod context` | mod | 6 |  | `Context` | done |
 | `mod filters` | mod | 7 |  | `filter` | done |
 | `mod node` | mod | 8 |  | `platformNode` | done |
-| `mod text` | mod | 9 |  | `platformRange` | blocked:M4-windows-a11y |
+| `mod text` | mod | 9 |  | `platformRange` | done |
 | `mod util` | mod | 10 |  | `Variant` | done |
 | `mod window_handle` | mod | 11 |  | `WindowHandle` | done |
-| `pub use adapter::{Adapter, QueuedEvents}` | use | 14 |  | `Adapter` | blocked:M4-windows-a11y |
-| `pub use subclass::SubclassingAdapter` | use | 17 |  | `SubclassingAdapter` | blocked:M4-windows-a11y |
-| `pub use windows::Win32::Foundation::{HWND, LPARAM, LRESULT, WPARAM}` | use | 19 |  | `HWND` | blocked:M4-windows-a11y |
+| `pub use adapter::{Adapter, QueuedEvents}` | use | 14 |  | `Adapter` | done |
+| `pub use subclass::SubclassingAdapter` | use | 17 |  | `SubclassingAdapter` | done |
+| `pub use windows::Win32::Foundation::{HWND, LPARAM, LRESULT, WPARAM}` | use | 19 |  | `HWND` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `mod tests` | cfg | 21 | test | `TestSimple_HasNativeUia` | blocked:M4-windows-a11y |
+| `mod tests` | cfg | 21 | test | `TestSimple_HasNativeUia` | done |
 
 ## src/window_handle.rs
 
@@ -297,47 +299,47 @@ Go target: `a11y/windows/`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `upgrade_range` | fn | 23 |  | `upgradeRange` | blocked:M4-windows-a11y |
-| `upgrade_range_node` | fn | 31 |  | `upgradeRangeNode` | blocked:M4-windows-a11y |
-| `weak_comparable_position_from_endpoint` | fn | 39 |  | `weakComparablePositionFromEndpoint` | blocked:M4-windows-a11y |
-| `position_from_endpoint` | fn | 50 |  | `positionFromEndpoint` | blocked:M4-windows-a11y |
-| `set_endpoint_position` | fn | 61 |  | `setEndpointPosition` | blocked:M4-windows-a11y |
-| `back_to_unit_start` | fn | 80 |  | `backToUnitStart` | blocked:M4-windows-a11y |
-| `move_forward_to_start` | fn | 134 |  | `moveForwardToStart` | blocked:M4-windows-a11y |
-| `move_forward_to_end` | fn | 147 |  | `moveForwardToEnd` | blocked:M4-windows-a11y |
-| `move_backward` | fn | 160 |  | `moveBackward` | blocked:M4-windows-a11y |
-| `move_position` | fn | 173 |  | `movePosition` | blocked:M4-windows-a11y |
-| `PlatformRange` | struct | 209 |  | `platformRange` | blocked:M4-windows-a11y |
-| `PlatformRange::new` | fn | 215 |  | `newPlatformRange` | blocked:M4-windows-a11y |
-| `PlatformRange::upgrade_context` | fn | 222 |  | `platformRange.upgradeContext` | blocked:M4-windows-a11y |
-| `PlatformRange::with_tree_state_and_context` | fn | 226 |  | `platformRangeWithTreeStateAndContext` | blocked:M4-windows-a11y |
-| `PlatformRange::with_tree_state` | fn | 235 |  | `platformRangeWithTreeState` | blocked:M4-windows-a11y |
-| `PlatformRange::upgrade_node` | fn | 242 |  | `platformRange.upgradeNode` | blocked:M4-windows-a11y |
-| `PlatformRange::upgrade_for_read` | fn | 247 |  | `platformRange.upgradeForRead` | blocked:M4-windows-a11y |
-| `PlatformRange::read_with_context` | fn | 252 |  | `platformRangeReadWithContext` | blocked:M4-windows-a11y |
-| `PlatformRange::read` | fn | 262 |  | `platformRangeRead` | blocked:M4-windows-a11y |
-| `PlatformRange::write` | fn | 269 |  | `platformRangeWrite` | blocked:M4-windows-a11y |
-| `PlatformRange::do_action` | fn | 282 |  | `platformRange.doAction` | blocked:M4-windows-a11y |
-| `PlatformRange::require_same_context` | fn | 295 |  | `platformRange.requireSameContext` | blocked:M4-windows-a11y |
-| `impl Clone for PlatformRange` | impl | 304 |  | `platformRange.clone` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::Clone` | fn | 320 |  | `platformRange.clone` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::Compare` | fn | 324 |  | `platformRange.compare` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::CompareEndpoints` | fn | 331 |  | `platformRange.compareEndpoints` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::ExpandToEnclosingUnit` | fn | 364 |  | `platformRange.expandToEnclosingUnit` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::FindAttribute` | fn | 395 |  | `platformRange.findAttribute` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::FindText` | fn | 406 |  | `platformRange.findText` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::GetAttributeValue` | fn | 418 |  | `platformRange.getAttributeValue` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::GetBoundingRectangles` | fn | 493 |  | `platformRange.getBoundingRectangles` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::GetEnclosingElement` | fn | 511 |  | `platformRange.getEnclosingElement` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::GetText` | fn | 519 |  | `platformRange.getText` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::Move` | fn | 530 |  | `platformRange.move` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::MoveEndpointByUnit` | fn | 553 |  | `platformRange.moveEndpointByUnit` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::MoveEndpointByRange` | fn | 568 |  | `platformRange.moveEndpointByRange` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::Select` | fn | 593 |  | `platformRange.select` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::AddToSelection` | fn | 605 |  | `platformRange.addToSelection` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::RemoveFromSelection` | fn | 610 |  | `platformRange.removeFromSelection` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::ScrollIntoView` | fn | 615 |  | `platformRange.scrollIntoView` | blocked:M4-windows-a11y |
-| `ITextRangeProvider_Impl::GetChildren` | fn | 639 |  | `platformRange.getChildren` | blocked:M4-windows-a11y |
+| `upgrade_range` | fn | 23 |  | `upgradeRange` | done |
+| `upgrade_range_node` | fn | 31 |  | `upgradeRangeNode` | done |
+| `weak_comparable_position_from_endpoint` | fn | 39 |  | `weakComparablePositionFromEndpoint` | done |
+| `position_from_endpoint` | fn | 50 |  | `positionFromEndpoint` | done |
+| `set_endpoint_position` | fn | 61 |  | `setEndpointPosition` | done |
+| `back_to_unit_start` | fn | 80 |  | `backToUnitStart` | done |
+| `move_forward_to_start` | fn | 134 |  | `moveForwardToStart` | done |
+| `move_forward_to_end` | fn | 147 |  | `moveForwardToEnd` | done |
+| `move_backward` | fn | 160 |  | `moveBackward` | done |
+| `move_position` | fn | 173 |  | `movePosition` | done |
+| `PlatformRange` | struct | 209 |  | `platformRange` | done |
+| `PlatformRange::new` | fn | 215 |  | `newPlatformRange` | done |
+| `PlatformRange::upgrade_context` | fn | 222 |  | `platformRange.upgradeContext` | done |
+| `PlatformRange::with_tree_state_and_context` | fn | 226 |  | `platformRangeWithTreeStateAndContext` | done |
+| `PlatformRange::with_tree_state` | fn | 235 |  | `platformRangeWithTreeState` | done |
+| `PlatformRange::upgrade_node` | fn | 242 |  | `platformRange.upgradeNode` | done |
+| `PlatformRange::upgrade_for_read` | fn | 247 |  | `platformRange.upgradeForRead` | done |
+| `PlatformRange::read_with_context` | fn | 252 |  | `platformRangeReadWithContext` | done |
+| `PlatformRange::read` | fn | 262 |  | `platformRangeRead` | done |
+| `PlatformRange::write` | fn | 269 |  | `platformRangeWrite` | done |
+| `PlatformRange::do_action` | fn | 282 |  | `platformRange.doAction` | done |
+| `PlatformRange::require_same_context` | fn | 295 |  | `platformRange.requireSameContext` | done |
+| `impl Clone for PlatformRange` | impl | 304 |  | `platformRange.clone` | done |
+| `ITextRangeProvider_Impl::Clone` | fn | 320 |  | `platformRange.cloneInterface` | done |
+| `ITextRangeProvider_Impl::Compare` | fn | 324 |  | `platformRange.compare` | done |
+| `ITextRangeProvider_Impl::CompareEndpoints` | fn | 331 |  | `platformRange.compareEndpoints` | done |
+| `ITextRangeProvider_Impl::ExpandToEnclosingUnit` | fn | 364 |  | `platformRange.expandToEnclosingUnit` | done |
+| `ITextRangeProvider_Impl::FindAttribute` | fn | 395 |  | `platformRange.findAttribute` | done |
+| `ITextRangeProvider_Impl::FindText` | fn | 406 |  | `platformRange.findText` | done |
+| `ITextRangeProvider_Impl::GetAttributeValue` | fn | 418 |  | `platformRange.getAttributeValue` | done |
+| `ITextRangeProvider_Impl::GetBoundingRectangles` | fn | 493 |  | `platformRange.getBoundingRectangles` | done |
+| `ITextRangeProvider_Impl::GetEnclosingElement` | fn | 511 |  | `platformRange.getEnclosingElement` | done |
+| `ITextRangeProvider_Impl::GetText` | fn | 519 |  | `platformRange.getText` | done |
+| `ITextRangeProvider_Impl::Move` | fn | 530 |  | `platformRange.move` | done |
+| `ITextRangeProvider_Impl::MoveEndpointByUnit` | fn | 553 |  | `platformRange.moveEndpointByUnit` | done |
+| `ITextRangeProvider_Impl::MoveEndpointByRange` | fn | 568 |  | `platformRange.moveEndpointByRange` | done |
+| `ITextRangeProvider_Impl::Select` | fn | 593 |  | `platformRange.selectRange` | done |
+| `ITextRangeProvider_Impl::AddToSelection` | fn | 605 |  | `platformRange.addToSelection` | done |
+| `ITextRangeProvider_Impl::RemoveFromSelection` | fn | 610 |  | `platformRange.removeFromSelection` | done |
+| `ITextRangeProvider_Impl::ScrollIntoView` | fn | 615 |  | `platformRange.scrollIntoView` | done |
+| `ITextRangeProvider_Impl::GetChildren` | fn | 639 |  | `platformRange.getChildren` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
@@ -349,35 +351,37 @@ Go target: `a11y/windows/`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `focus_event` | fn | 27 |  | `focusEvent` | blocked:M4-windows-a11y |
-| `AdapterChangeHandler` | struct | 36 |  | `adapterChangeHandler` | blocked:M4-windows-a11y |
-| `AdapterChangeHandler::new` | fn | 44 |  | `newAdapterChangeHandler` | blocked:M4-windows-a11y |
-| `AdapterChangeHandler::insert_text_change_if_needed_parent` | fn | 55 |  | `adapterChangeHandler.insertTextChangeIfNeededParent` | blocked:M4-windows-a11y |
-| `AdapterChangeHandler::insert_text_change_if_needed` | fn | 78 |  | `adapterChangeHandler.insertTextChangeIfNeeded` | blocked:M4-windows-a11y |
-| `AdapterChangeHandler::element_for_possibly_removed_node` | fn | 87 |  | `adapterChangeHandler.elementForPossiblyRemovedNode` | blocked:M4-windows-a11y |
-| `AdapterChangeHandler::handle_selection_state_change` | fn | 101 |  | `adapterChangeHandler.handleSelectionStateChange` | blocked:M4-windows-a11y |
-| `AdapterChangeHandler::enqueue_selection_changes` | fn | 126 |  | `adapterChangeHandler.enqueueSelectionChanges` | blocked:M4-windows-a11y |
-| `INVALIDATE_LIMIT` | const | 180 |  | `invalidateLimit` | blocked:M4-windows-a11y |
-| `SelectionChanges` | struct | 233 |  | `selectionChanges` | blocked:M4-windows-a11y |
-| `TreeChangeHandler::node_added` | fn | 239 |  | `adapterChangeHandler.NodeAdded` | blocked:M4-windows-a11y |
-| `TreeChangeHandler::node_updated` | fn | 270 |  | `adapterChangeHandler.NodeUpdated` | blocked:M4-windows-a11y |
-| `TreeChangeHandler::focus_moved` | fn | 342 |  | `adapterChangeHandler.FocusMoved` | blocked:M4-windows-a11y |
-| `TreeChangeHandler::node_removed` | fn | 348 |  | `adapterChangeHandler.NodeRemoved` | blocked:M4-windows-a11y |
-| `PLACEHOLDER_ROOT_ID` | const | 375 |  | `placeholderRootID` | blocked:M4-windows-a11y |
-| `State` | enum | 377 |  | `adapterState` | blocked:M4-windows-a11y |
-| `impl Debug for State` | impl | 387 |  | `adapterState.String` | blocked:M4-windows-a11y |
-| `Adapter` | struct | 407 |  | `Adapter` | blocked:M4-windows-a11y |
-| `Adapter::new` | fn | 44 |  | `NewAdapter` | blocked:M4-windows-a11y |
-| `Adapter::with_wrapped_action_handler` | fn | 437 |  | `newAdapterWithWrappedActionHandler` | blocked:M4-windows-a11y |
-| `Adapter::update_if_active` | fn | 464 |  | `Adapter.UpdateIfActive` | blocked:M4-windows-a11y |
-| `Adapter::update_window_focus_state` | fn | 501 |  | `Adapter.UpdateWindowFocusState` | blocked:M4-windows-a11y |
-| `Adapter::handle_wm_getobject` | fn | 535 |  | `Adapter.HandleWmGetobject` | blocked:M4-windows-a11y |
-| `init_uia` | fn | 597 |  | `initUia` | blocked:M4-windows-a11y |
-| `normalize_objid` | fn | 608 |  | `normalizeObjid` | blocked:M4-windows-a11y |
-| `WmGetObjectResult` | struct | 616 |  | `wmGetObjectResult` | blocked:M4-windows-a11y |
-| `impl From<WmGetObjectResult> for LRESULT` | impl | 623 |  | `wmGetObjectResult.lresult` | blocked:M4-windows-a11y |
-| `QueuedEvents` | struct | 631 |  | `QueuedEvents` | blocked:M4-windows-a11y |
-| `QueuedEvents::raise` | fn | 644 |  | `QueuedEvents.Raise` | blocked:M4-windows-a11y |
+| `focus_event` | fn | 27 |  | `focusEvent` | done |
+| `AdapterChangeHandler` | struct | 36 |  | `adapterChangeHandler` | done |
+| `AdapterChangeHandler::new` | fn | 44 |  | `newAdapterChangeHandler` | done |
+| `AdapterChangeHandler::insert_text_change_if_needed_parent` | fn | 55 |  | `adapterChangeHandler.insertTextChangeIfNeededParent` | done |
+| `AdapterChangeHandler::insert_text_change_if_needed` | fn | 78 |  | `adapterChangeHandler.insertTextChangeIfNeeded` | done |
+| `AdapterChangeHandler::element_for_possibly_removed_node` | fn | 87 |  | `adapterChangeHandler.elementForPossiblyRemovedNode` | done |
+| `AdapterChangeHandler::handle_selection_state_change` | fn | 101 |  | `adapterChangeHandler.handleSelectionStateChange` | done |
+| `AdapterChangeHandler::enqueue_selection_changes` | fn | 126 |  | `adapterChangeHandler.enqueueSelectionChanges` | done |
+| `INVALIDATE_LIMIT` | const | 180 |  | `invalidateLimit` | done |
+| `SelectionChanges` | struct | 233 |  | `selectionChanges` | done |
+| `TreeChangeHandler::node_added` | fn | 239 |  | `adapterChangeHandler.NodeAdded` | done |
+| `TreeChangeHandler::node_updated` | fn | 270 |  | `adapterChangeHandler.NodeUpdated` | done |
+| `TreeChangeHandler::focus_moved` | fn | 342 |  | `adapterChangeHandler.FocusMoved` | done |
+| `TreeChangeHandler::node_removed` | fn | 348 |  | `adapterChangeHandler.NodeRemoved` | done |
+| `PLACEHOLDER_ROOT_ID` | const | 375 |  | `placeholderRootID` | done |
+| `State` | enum | 377 |  | `adapterState` | done |
+| `impl Debug for State` | impl | 387 |  | `adapterState.String` | done |
+| `Adapter` | struct | 407 |  | `Adapter` | done |
+| `Adapter::new` | fn | 44 |  | `NewAdapter` | done |
+| `Adapter::with_wrapped_action_handler` | fn | 437 |  | `newAdapterWithWrappedActionHandler` | done |
+| `Adapter::update_if_active` | fn | 464 |  | `Adapter.UpdateIfActive` | done |
+| `Adapter::update_window_focus_state` | fn | 501 |  | `Adapter.UpdateWindowFocusState` | done |
+| `Adapter::handle_wm_getobject` | fn | 535 |  | `Adapter.HandleWmGetobject` | done |
+| `init_uia` | fn | 597 |  | `initUia` | done |
+| `normalize_objid` | fn | 608 |  | `normalizeObjid` | done |
+| `WmGetObjectResult` | struct | 616 |  | `wmGetObjectResult` | done |
+| `impl From<WmGetObjectResult> for LRESULT` | impl | 623 |  | `wmGetObjectResult.lresult` | done |
+| `QueuedEvents` | struct | 631 |  | `QueuedEvents` | done |
+| `QueuedEvents::raise` | fn | 644 |  | `QueuedEvents.Raise` | done |
+| `drop of Adapter (drops its Arc<Context>)` | drop | 407 |  | `Adapter.Release` | dev:D-WINWEAK |
+| `drop of QueuedEvent after raising` | drop | 645 |  | `queuedEvent.release` | done |
 
 ## src/subclass.rs
 
@@ -385,19 +389,19 @@ Go target: `a11y/windows/`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `win32_error` | fn | 19 |  | `win32Error` | blocked:M4-windows-a11y |
-| `LongPtr` | type | 26 |  | `longPtr` | blocked:M4-windows-a11y |
-| `PROP_NAME` | const | 30 |  | `propName` | blocked:M4-windows-a11y |
-| `SubclassState` | struct | 32 |  | `subclassState` | blocked:M4-windows-a11y |
-| `SubclassImpl` | struct | 37 |  | `subclassImpl` | blocked:M4-windows-a11y |
-| `SubclassImpl::new` | fn | 77 |  | `newSubclassImpl` | blocked:M4-windows-a11y |
-| `SubclassImpl::install` | fn | 95 |  | `subclassImpl.install` | blocked:M4-windows-a11y |
-| `SubclassImpl::update_window_focus_state` | fn | 118 |  | `subclassImpl.updateWindowFocusState` | blocked:M4-windows-a11y |
-| `SubclassImpl::uninstall` | fn | 126 |  | `subclassImpl.uninstall` | blocked:M4-windows-a11y |
-| `SubclassingAdapter` | struct | 148 |  | `SubclassingAdapter` | blocked:M4-windows-a11y |
-| `SubclassingAdapter::new` | fn | 77 |  | `NewSubclassingAdapter` | blocked:M4-windows-a11y |
-| `SubclassingAdapter::update_if_active` | fn | 186 |  | `SubclassingAdapter.UpdateIfActive` | blocked:M4-windows-a11y |
-| `impl Drop for SubclassingAdapter` | drop | 200 |  | `SubclassingAdapter.Release` | blocked:M4-windows-a11y |
+| `win32_error` | fn | 19 |  | `win32Error` | done |
+| `LongPtr` | type | 26 |  | `longPtr` | done |
+| `PROP_NAME` | const | 30 |  | `propName` | done |
+| `SubclassState` | struct | 32 |  | `subclassState` | done |
+| `SubclassImpl` | struct | 37 |  | `subclassImpl` | dev:D-WINSUBCLASSPROP |
+| `SubclassImpl::new` | fn | 77 |  | `newSubclassImpl` | done |
+| `SubclassImpl::install` | fn | 95 |  | `subclassImpl.install` | done |
+| `SubclassImpl::update_window_focus_state` | fn | 118 |  | `subclassImpl.updateWindowFocusState` | done |
+| `SubclassImpl::uninstall` | fn | 126 |  | `subclassImpl.uninstall` | done |
+| `SubclassingAdapter` | struct | 148 |  | `SubclassingAdapter` | done |
+| `SubclassingAdapter::new` | fn | 77 |  | `NewSubclassingAdapter` | done |
+| `SubclassingAdapter::update_if_active` | fn | 186 |  | `SubclassingAdapter.UpdateIfActive` | done |
+| `impl Drop for SubclassingAdapter` | drop | 200 |  | `SubclassingAdapter.Release` | done |
 
 ## src/tests
 
@@ -405,15 +409,15 @@ Go target: `a11y/windows/`, in `simple_test.go`, `subclassed_test.go` and `mod_t
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `tests/simple.rs::has_native_uia` | test | 71 |  | `TestSimple_HasNativeUia` | blocked:M4-windows-a11y |
-| `tests/simple.rs::navigation` | test | 95 |  | `TestSimple_Navigation` | blocked:M4-windows-a11y |
-| `tests/simple.rs::focus` | test | 176 |  | `TestSimple_Focus` | blocked:M4-windows-a11y |
-| `tests/subclassed.rs::has_native_uia` | test | 111 |  | `TestSubclassed_HasNativeUia` | blocked:M4-windows-a11y |
-| `tests/subclassed.rs::double_instantiate` | test | 170 |  | `TestSubclassed_DoubleInstantiate` | blocked:M4-windows-a11y |
-| `tests/mod.rs::scope` | fixture | 188 | test | `scope` | blocked:M4-windows-a11y |
-| `tests/mod.rs::FocusEventHandler` | fixture | 304 | test | `focusEventHandler` | blocked:M4-windows-a11y |
-| `tests/mod.rs::ReceivedFocusEvent` | fixture | 266 | test | `receivedFocusEvent` | blocked:M4-windows-a11y |
-| `tests/mod.rs::create_window` | fixture | 137 | test | `createWindow` | blocked:M4-windows-a11y |
+| `tests/simple.rs::has_native_uia` | test | 71 |  | `TestSimple_HasNativeUia` | done |
+| `tests/simple.rs::navigation` | test | 95 |  | `TestSimple_Navigation` | done |
+| `tests/simple.rs::focus` | test | 176 |  | `TestSimple_Focus` | done |
+| `tests/subclassed.rs::has_native_uia` | test | 111 |  | `TestSubclassed_HasNativeUia` | dev:D-WINTESTWINDOW |
+| `tests/subclassed.rs::double_instantiate` | test | 170 |  | `TestSubclassed_DoubleInstantiate` | done |
+| `tests/mod.rs::scope` | fixture | 188 | test | `scope` | done |
+| `tests/mod.rs::FocusEventHandler` | fixture | 304 | test | `focusEventHandler` | done |
+| `tests/mod.rs::ReceivedFocusEvent` | fixture | 266 | test | `receivedFocusEvent` | done |
+| `tests/mod.rs::create_window` | fixture | 137 | test | `createWindow` | done |
 
 ## src/node.rs: added tests
 
@@ -425,6 +429,7 @@ Go target: `a11y/windows/`
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
 | `vtables build (added)` | test | 0 |  | `TestNode_PlatformNodeVtablesBuild` | done |
+| `ElementFromPoint and RangeValue SetValue through UIA (added)` | test | 0 |  | `TestSimple_ElementFromPointAndRangeValueSetValue` | done |
 | `control type covers every role (added)` | test | 0 |  | `TestNode_ControlTypeCoversEveryRole` | done |
 | `properties and patterns (added)` | test | 0 |  | `TestNode_PropertiesAndPatterns` | done |
 | `invoke sends click (added)` | test | 0 |  | `TestNode_InvokeSendsClick` | done |
@@ -442,3 +447,5 @@ Go target: `a11y/windows/`
 | `D-WINCOM` | `#[implement]` is one `com.Object` with 13 native vtables built once in `buildPlatformNodeVtables` (thunks from `windows.NewCallback`); the `properties!` / `patterns!` macros are the `nodeProperties` / `nodePatterns` tables walked in the same order. | M4-windows-a11y-node |
 | `D-WINFLOAT` | Go callbacks cannot take floating-point arguments, so `ElementProviderFromPoint`, `IRangeValueProvider::SetValue` and (arm64, where `UiaPoint` is an HFA in d0/d1) `ITextProvider::RangeFromPoint` enter through assembly trampolines that move the float registers into integer registers before jumping to the callback. | M4-windows-a11y-node |
 | `D-WINSENDSYNC` | `Send` / `Sync` impls and their static assertions have no Go counterpart. | M4-windows-a11y-node |
+| `D-WINSUBCLASSPROP` | The `AccessKitAdapter` window property holds a key into a Go registry of `subclassImpl` values instead of a raw pointer (Go pointers may not be stored in OS memory); `SubclassingAdapter.Release` (the Drop) uninstalls and unregisters it. Test windows likewise keep their state in a map keyed by HWND instead of `GWLP_USERDATA`. | M4-windows-a11y |
+| `D-WINTESTWINDOW` | `tests/subclassed.rs::has_native_uia` creates its hidden window with winit; Go has no winit, so the test subclasses a plain hidden Win32 window of the test's own class. | M4-windows-a11y |

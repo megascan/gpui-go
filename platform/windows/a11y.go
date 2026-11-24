@@ -14,28 +14,25 @@ type a11yCell struct {
 }
 
 func newA11yAdapter(hwnd HWND, isFocused bool, actionHandler *A11yActionHandler) *a11ywin.Adapter {
-	return nil
+	return a11ywin.NewAdapter(hwnd, isFocused, actionHandler)
 }
 
 func (s *A11yState) updateIfActive(update func() a11y.TreeUpdate) (*a11ywin.QueuedEvents, bool) {
-	if s.adapter == nil {
-		return nil, false
-	}
-	return nil, false
+	return s.adapter.UpdateIfActive(update)
 }
 
 func (s *A11yState) updateWindowFocusState(activated bool) (*a11ywin.QueuedEvents, bool) {
-	if s.adapter == nil {
-		return nil, false
-	}
-	return nil, false
+	return s.adapter.UpdateWindowFocusState(activated)
 }
 
 func (s *A11yState) handleWMGetObject(wparam win32.WPARAM, lparam win32.LPARAM) (func() win32.LRESULT, bool) {
-	if s.adapter == nil {
-		return nil, false
-	}
-	return nil, false
+	return s.adapter.HandleWmGetobject(wparam, lparam, s.activationHandler)
 }
 
-func raiseA11yEvents(events *a11ywin.QueuedEvents) {}
+func (s *A11yState) release() {
+	s.adapter.Release()
+}
+
+func raiseA11yEvents(events *a11ywin.QueuedEvents) {
+	events.Raise()
+}
