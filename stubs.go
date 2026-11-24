@@ -4,18 +4,12 @@ import (
 	"encoding/json/jsontext"
 	"image"
 	"reflect"
-	"strconv"
-	"sync"
 	"sync/atomic"
 	"time"
-	"weak"
 
 	"github.com/megascan/gpui-go/a11y"
 	"github.com/megascan/gpui-go/scheduler"
 )
-
-// DefaultWindowSize is the default size of a new window (M0-window-core ports it).
-var DefaultWindowSize = NewSize(Px(1536.), Px(1095.))
 
 // RenderSvgParams identifies a rasterized SVG in the sprite atlas (M0-elements-media ports it).
 type RenderSvgParams struct {
@@ -25,106 +19,10 @@ type RenderSvgParams struct {
 	Size Size[DevicePixels]
 }
 
-// WindowControlArea is a window control area that corresponds to the platform window (M0-window-core ports it).
-type WindowControlArea uint8
-
-const (
-	// WindowControlAreaDrag allows dragging the platform window.
-	WindowControlAreaDrag WindowControlArea = iota
-	// WindowControlAreaClose allows closing the platform window.
-	WindowControlAreaClose
-	// WindowControlAreaMax allows maximizing the platform window.
-	WindowControlAreaMax
-	// WindowControlAreaMin allows minimizing the platform window.
-	WindowControlAreaMin
-)
-
 // NativeViewID identifies a native view within its window (M0-window-a11y ports it).
 type NativeViewID uint64
 
-// WindowID is the identifier of a window (M0-window-core ports it).
-type WindowID uint64
-
-// AnyWindowHandle is a type-erased handle to a window (M0-window-core ports it).
-type AnyWindowHandle struct {
-	id        WindowID
-	stateType reflect.Type
-}
-
-// WindowHandle is a handle to a window whose root view has type V (M0-window-core ports it).
-type WindowHandle[V any] struct {
-	AnyWindowHandle
-}
-
-// Window is a GPUI window (M0-window-core ports it).
-type Window struct {
-	handle             AnyWindowHandle
-	displayID          Option[DisplayID]
-	lastWindowBounds   WindowBounds
-	root               Option[AnyView]
-	focus              Option[FocusID]
-	invalidator        windowInvalidator
-	removed            bool
-	platformWindow     PlatformWindow
-	nextFrameCallbacks *[]FrameCallback
-	needsPresent       *bool
-	refreshing         bool
-	renderedFrame      *frame
-	nextFrame          *frame
-	elementIDStack     elementIDStack
-	dirtyViews         map[EntityID]struct{}
-	windowProfiler     WindowProfiler
-	a11y               windowA11y
-
-	displayObservers      singleSubscriberSet[anyObserver]
-	focusListeners        singleSubscriberSet[anyWindowFocusListener]
-	focusLostListeners    singleSubscriberSet[anyObserver]
-	boundsObservers       singleSubscriberSet[anyObserver]
-	appearanceObservers   singleSubscriberSet[anyObserver]
-	buttonLayoutObservers singleSubscriberSet[anyObserver]
-	visibilityObservers   singleSubscriberSet[func(visibility WindowVisibility, window *Window, cx *App) bool]
-	activationObservers   singleSubscriberSet[anyObserver]
-	pendingInputObservers singleSubscriberSet[anyObserver]
-}
-
-type anyObserver func(window *Window, cx *App) bool
-
-type anyWindowFocusListener func(event *windowFocusEvent, window *Window, cx *App) bool
-
-type windowFocusEvent struct {
-	previousFocusPath []FocusID
-	currentFocusPath  []FocusID
-}
-
-func (e *windowFocusEvent) isFocusIn(focusID FocusID) bool {
-	panic("gpui: unimplemented windowFocusEvent.isFocusIn")
-}
-
-func (e *windowFocusEvent) isFocusOut(focusID FocusID) bool {
-	panic("gpui: unimplemented windowFocusEvent.isFocusOut")
-}
-
-// FocusOutEvent is provided when subscribing for Context.OnFocusOut events (M0-window-core ports it).
-type FocusOutEvent struct {
-	// Blurred is a weak focus handle representing what was blurred.
-	Blurred WeakFocusHandle
-}
-
-// WeakFocusHandle is a weak reference to a focus handle (M0-window-core ports it).
-type WeakFocusHandle struct {
-	id      FocusID
-	handles weak.Pointer[focusMap]
-}
-
-func newWeakFocusHandle(id FocusID, handles *focusMap) WeakFocusHandle {
-	panic("gpui: unimplemented newWeakFocusHandle")
-}
-
-func (w *Window) newFocusListener(value anyWindowFocusListener) (Subscription, func()) {
-	panic("gpui: unimplemented Window.newFocusListener")
-}
-
-// Focus moves focus to the given handle (M0-window-core ports it).
+// Focus moves focus to the given handle (M0-window-paint ports it).
 func (w *Window) Focus(handle FocusHandle, cx *App) {
 	panic("gpui: unimplemented Window.Focus")
 }
@@ -134,17 +32,17 @@ func (w *Window) OnAction(actionType reflect.Type, listener func(action any, pha
 	panic("gpui: unimplemented Window.OnAction")
 }
 
-// Spawn spawns f on the main thread with an AsyncWindowContext for this window (M0-window-core ports it).
+// Spawn spawns f on the main thread with an AsyncWindowContext for this window (M0-window-paint ports it).
 func (w *Window) Spawn[R any](cx *App, f func(cx *AsyncWindowContext) (R, error)) *Task[R] {
 	panic("gpui: unimplemented Window.Spawn")
 }
 
-// SpawnWithPriority spawns f on the main thread with the given priority (M0-window-core ports it).
+// SpawnWithPriority spawns f on the main thread with the given priority (M0-window-paint ports it).
 func (w *Window) SpawnWithPriority[R any](priority Priority, cx *App, f func(cx *AsyncWindowContext) (R, error)) *Task[R] {
 	panic("gpui: unimplemented Window.SpawnWithPriority")
 }
 
-// Prompt presents a platform dialog and returns the index of the clicked button (M0-window-core ports it).
+// Prompt presents a platform dialog and returns the index of the clicked button (M0-window-dispatch ports it).
 func (w *Window) Prompt(level PromptLevel, message string, detail Option[string], answers []PromptButton, cx *App) *scheduler.OneshotReceiver[int] {
 	panic("gpui: unimplemented Window.Prompt")
 }
@@ -153,9 +51,6 @@ func (w *Window) Prompt(level PromptLevel, message string, detail Option[string]
 func (w *Window) HasPendingKeystrokes() bool {
 	panic("gpui: unimplemented Window.HasPendingKeystrokes")
 }
-
-// FocusID identifies a focusable element of a window (M0-window-core ports it).
-type FocusID uint64
 
 // SvgRenderer renders SVGs into images (M0-elements-media ports it).
 type SvgRenderer struct {
@@ -225,16 +120,6 @@ func (w *Window) WithElementState[S, R any](id *GlobalElementID, f func(state Op
 	panic("gpui: unimplemented Window.WithElementState")
 }
 
-// NewQuad creates a quad with the given parameters (M0-window-core ports it).
-func NewQuad(bounds Bounds[Pixels], cornerRadii Corners[Pixels], background Background, borderWidths Edges[Pixels], borderColor Hsla, borderStyle BorderStyle) PaintQuad {
-	panic("gpui: unimplemented NewQuad")
-}
-
-// Outline creates a quad that only paints a border of the given color (M0-window-core ports it).
-func Outline(bounds Bounds[Pixels], borderColor Hsla, borderStyle BorderStyle) PaintQuad {
-	panic("gpui: unimplemented Outline")
-}
-
 // PaintDropShadows paints the outer shadows of an element (M0-window-paint ports it).
 func (w *Window) PaintDropShadows(bounds Bounds[Pixels], cornerRadii Corners[Pixels], shadows []BoxShadow) {
 	panic("gpui: unimplemented Window.PaintDropShadows")
@@ -283,173 +168,6 @@ func (w *Window) RequestAnimationFrame() {
 // ReplaceRoot replaces the window's root view; *V must implement Render[V] (M0-window-paint ports it).
 func (w *Window) ReplaceRoot[V any](cx *App, buildView func(window *Window, cx *Context[V]) *V) Entity[V] {
 	panic("gpui: unimplemented Window.ReplaceRoot")
-}
-
-// ArenaClearNeeded is returned by Window.Draw (M0-window-core ports it).
-type ArenaClearNeeded struct{}
-
-// DispatchPhase is the phase of event dispatch (M0-window-core ports it).
-type DispatchPhase uint8
-
-const (
-	// DispatchPhaseBubble dispatches from the innermost element outwards.
-	DispatchPhaseBubble DispatchPhase = iota
-	// DispatchPhaseCapture dispatches from the window inwards.
-	DispatchPhaseCapture
-)
-
-// FocusHandle is a ref-counted handle to a focusable element (M0-window-core ports it).
-type FocusHandle struct {
-	id FocusID
-	// TabIndex is the element's position in the tab order.
-	TabIndex int
-	// TabStop reports whether the element is reachable with tab navigation.
-	TabStop bool
-}
-
-// Focus moves focus to the element (M0-window-core ports it).
-func (h FocusHandle) Focus(window *Window, cx *App) {
-	panic("gpui: unimplemented FocusHandle.Focus")
-}
-
-// Clone returns a new counted handle (M0-window-core ports it). The placeholder body returns a copy of h.
-func (h FocusHandle) Clone() FocusHandle {
-	return h
-}
-
-// Release drops this handle (M0-window-core ports it). The placeholder body does nothing.
-func (h FocusHandle) Release() {
-}
-
-// Focusable is implemented by views that have a focus handle (M0-window-core ports it).
-type Focusable interface {
-	FocusHandle(cx *App) FocusHandle
-}
-
-// ContentMask restricts painting to the given bounds (M0-window-core ports it).
-type ContentMask[T Number] struct {
-	// Bounds is the area painting is clipped to.
-	Bounds Bounds[T]
-}
-
-// ElementID is the identifier of an element among its siblings (M0-window-core ports it).
-type ElementID struct {
-	kind uint8
-	name SharedString
-	num  uint64
-}
-
-// ElementIDSource is the set of types an ElementID can be built from (M0-window-core ports it).
-type ElementIDSource interface {
-	~string | ~int | ~uint64 | ElementID
-}
-
-const (
-	elementIDView uint8 = iota
-	elementIDInteger
-	elementIDName
-	elementIDUUID
-	elementIDFocusHandle
-	elementIDNamedInteger
-	elementIDPath
-	elementIDCodeLocation
-	elementIDNamedChild
-	elementIDOpaqueID
-)
-
-// NewElementID builds an ElementID from a name (Name), an integer (Integer) or an ElementID (M0-window-core ports it).
-// The placeholder body covers these sources.
-func NewElementID[I ElementIDSource](id I) ElementID {
-	switch v := any(id).(type) {
-	case ElementID:
-		return v
-	}
-	value := reflect.ValueOf(id)
-	switch value.Kind() {
-	case reflect.String:
-		return ElementIDName(SharedString(value.String()))
-	case reflect.Int:
-		return ElementID{kind: elementIDInteger, num: uint64(value.Int())}
-	default:
-		return ElementID{kind: elementIDInteger, num: value.Uint()}
-	}
-}
-
-// ElementIDView is the id of a view element (M0-window-core ports it). The placeholder body is final.
-func ElementIDView(id EntityID) ElementID {
-	return ElementID{kind: elementIDView, num: uint64(id)}
-}
-
-// ElementIDName is a string based id (M0-window-core ports it). The placeholder body is final.
-func ElementIDName(name SharedString) ElementID {
-	return ElementID{kind: elementIDName, name: name}
-}
-
-// ElementIDNamedInteger is a combination of a name and an integer (M0-window-core ports it). The placeholder body is final.
-func ElementIDNamedInteger(name SharedString, integer uint64) ElementID {
-	return ElementID{kind: elementIDNamedInteger, name: name, num: integer}
-}
-
-// Hash feeds the id to h as upstream's derived Hash does (M0-window-core ports it).
-// The placeholder body covers Integer, Name and NamedInteger.
-func (id ElementID) Hash(h *FxHasher) {
-	h.WriteUsize(uint64(id.kind))
-	switch id.kind {
-	case elementIDInteger:
-		h.WriteU64(id.num)
-	case elementIDName:
-		h.WriteString(string(id.name))
-	case elementIDNamedInteger:
-		h.WriteString(string(id.name))
-		h.WriteU64(id.num)
-	default:
-		panic("gpui: unimplemented ElementID.Hash")
-	}
-}
-
-// String formats the id like upstream's Display impl (M0-window-core ports it).
-// The placeholder body covers Integer, Name and NamedInteger.
-func (id ElementID) String() string {
-	switch id.kind {
-	case elementIDInteger:
-		return strconv.FormatUint(id.num, 10)
-	case elementIDName:
-		return string(id.name)
-	case elementIDNamedInteger:
-		return string(id.name) + "-" + strconv.FormatUint(id.num, 10)
-	}
-	panic("gpui: unimplemented ElementID.String")
-}
-
-// GoString formats the id like upstream's Debug impl (M0-window-core ports it).
-// The placeholder body covers Integer, Name and NamedInteger.
-func (id ElementID) GoString() string {
-	switch id.kind {
-	case elementIDInteger:
-		return "Integer(" + strconv.FormatUint(id.num, 10) + ")"
-	case elementIDName:
-		return "Name(" + strconv.Quote(string(id.name)) + ")"
-	case elementIDNamedInteger:
-		return "NamedInteger(" + strconv.Quote(string(id.name)) + ", " + strconv.FormatUint(id.num, 10) + ")"
-	}
-	panic("gpui: unimplemented ElementID.GoString")
-}
-
-// Hitbox is a region that receives mouse events (M0-window-core ports it).
-type Hitbox struct{}
-
-// HitboxBehavior configures how a hitbox affects hit testing (M0-window-core ports it).
-type HitboxBehavior uint8
-
-// PaintQuad describes a quad to paint (M0-window-core ports it).
-type PaintQuad struct{}
-
-// DispatchEventResult reports what happened during event dispatch (M0-window-dispatch ports it).
-type DispatchEventResult struct {
-	// Propagate reports whether the event should continue to the platform.
-	Propagate bool
-	// DefaultPrevented reports whether a handler prevented the default action.
-	DefaultPrevented bool
 }
 
 // A11ySubtreeBuilder adds synthetic accessibility nodes below an element (M0-window-a11y ports it).
@@ -631,9 +349,6 @@ func (s *Stateful[E]) IntoAnyElement() AnyElement {
 	panic("gpui: unimplemented Stateful.IntoAnyElement")
 }
 
-// HitboxID identifies a hitbox within a frame (M0-window-core ports it).
-type HitboxID uint64
-
 // TimedTransformation is a transformation animated over time (M0-elements-media ports it).
 type TimedTransformation struct{}
 
@@ -755,66 +470,7 @@ func recordDraw(timing FrameTiming) {}
 
 func recordPresent(timing PresentTiming, frame Option[FrameTiming]) {}
 
-func newWindow(handle AnyWindowHandle, options WindowOptions, cx *App) (*Window, error) {
-	panic("gpui: unimplemented newWindow")
-}
-
-// NewWindowHandle creates a handle from a window id without checking the root type (M0-window-core ports it).
-func NewWindowHandle[V any](id WindowID) WindowHandle[V] {
-	panic("gpui: unimplemented NewWindowHandle")
-}
-
-// AsU64 converts the window id to a uint64 (M0-window-core ports it).
-func (id WindowID) AsU64() uint64 {
-	panic("gpui: unimplemented WindowID.AsU64")
-}
-
-// WindowID returns the id of the window (M0-window-core ports it).
-func (h AnyWindowHandle) WindowID() WindowID {
-	panic("gpui: unimplemented AnyWindowHandle.WindowID")
-}
-
-// Update updates the root view of the window; it fails when the window has been closed (M0-window-core ports it).
-func (h AnyWindowHandle) Update(cx AppContext, update func(root AnyView, window *Window, cx *App)) error {
-	panic("gpui: unimplemented AnyWindowHandle.Update")
-}
-
-// Clear clears the element arena the draw ran against (M0-window-core ports it).
-func (a ArenaClearNeeded) Clear(cx *App) {
-	panic("gpui: unimplemented ArenaClearNeeded.Clear")
-}
-
-type windowInvalidator struct{}
-
-func (w windowInvalidator) invalidateView(entity EntityID, cx *App) bool {
-	panic("gpui: unimplemented windowInvalidator.invalidateView")
-}
-
-func (w windowInvalidator) isDirty() bool {
-	panic("gpui: unimplemented windowInvalidator.isDirty")
-}
-
-func (w windowInvalidator) setDirty(dirty bool) {
-	panic("gpui: unimplemented windowInvalidator.setDirty")
-}
-
-type focusMap struct {
-	mu             sync.RWMutex
-	droppedHandles []FocusID
-}
-
-func (m *focusMap) removeHandle(id FocusID) {
-	panic("gpui: unimplemented focusMap.removeHandle")
-}
-
-func newFocusHandle(handles *focusMap) FocusHandle {
-	panic("gpui: unimplemented newFocusHandle")
-}
-
-// FrameCallback is a callback run before the next frame of a window (M0-window-core ports it).
-type FrameCallback func(window *Window, cx *App)
-
-// WindowHandle returns a handle to the window (M0-window-core ports it).
+// WindowHandle returns a handle to the window (M0-window-paint ports it).
 func (w *Window) WindowHandle() AnyWindowHandle {
 	panic("gpui: unimplemented Window.WindowHandle")
 }
@@ -852,10 +508,6 @@ type RenderablePromptHandle struct{}
 // NewHangDetector creates a detector over the foreground journal (M3-profiler-hang ports it).
 func NewHangDetector(journal ForegroundJournal, threshold time.Duration, frameBudget time.Duration) *HangDetector {
 	panic("gpui: unimplemented NewHangDetector")
-}
-
-func defaultFocusMap() *focusMap {
-	return &focusMap{}
 }
 
 // Defer schedules f to run at the end of the current effect cycle with this window (M0-window-paint ports it).
@@ -902,50 +554,6 @@ type promptBuilderCustom struct {
 }
 
 func (promptBuilderCustom) isPromptBuilder() {}
-
-type frame struct {
-	focus        Option[FocusID]
-	dispatchTree *dispatchTree
-	debugBounds  map[string]Bounds[Pixels]
-}
-
-type drawPhase uint8
-
-const (
-	drawPhaseNone drawPhase = iota
-	drawPhasePrepaint
-	drawPhasePaint
-	drawPhaseFocus
-)
-
-type elementIDStack struct {
-	ids    []ElementID
-	hashes []uint64
-}
-
-func (s *elementIDStack) push(id ElementID) {
-	panic("gpui: unimplemented elementIDStack.push")
-}
-
-func (s *elementIDStack) pop() (ElementID, bool) {
-	panic("gpui: unimplemented elementIDStack.pop")
-}
-
-func (s *elementIDStack) globalID() GlobalElementID {
-	panic("gpui: unimplemented elementIDStack.globalID")
-}
-
-type prepaintStateIndex struct {
-	hitboxesIndex int
-}
-
-type paintIndex struct {
-	sceneIndex int
-}
-
-func (w *Window) deferArenaDrop(f func()) {
-	panic("gpui: unimplemented Window.deferArenaDrop")
-}
 
 // ScaleFactor returns the window's scale factor (M0-window-paint ports it).
 func (w *Window) ScaleFactor() float32 {
@@ -1024,10 +632,6 @@ func (w *Window) buildInspectorElementID(path InspectorElementPath) InspectorEle
 	panic("gpui: unimplemented Window.buildInspectorElementID")
 }
 
-func (w windowInvalidator) setPhase(phase drawPhase) {
-	panic("gpui: unimplemented windowInvalidator.setPhase")
-}
-
 // WithAbsoluteElementOffset runs f with the element offset set to an absolute value (M0-window-paint ports it).
 func (w *Window) WithAbsoluteElementOffset[R any](offset Point[Pixels], f func(window *Window) R) R {
 	panic("gpui: unimplemented Window.WithAbsoluteElementOffset")
@@ -1036,11 +640,6 @@ func (w *Window) WithAbsoluteElementOffset[R any](offset Point[Pixels], f func(w
 // RenderToImage renders the window's current scene into an image (M0-window-paint ports it).
 func (w *Window) RenderToImage() (*image.RGBA, error) {
 	panic("gpui: unimplemented Window.RenderToImage")
-}
-
-// Root returns the root view of the window (M0-window-core ports it).
-func (h WindowHandle[V]) Root(cx AppContext) (Entity[V], error) {
-	panic("gpui: unimplemented WindowHandle.Root")
 }
 
 // VisualTestPlatform combines a real platform's rendering with a TestDispatcher (M3-root-capture ports it).
@@ -1057,3 +656,121 @@ func NewVisualTestPlatform(platform Platform, seed uint64) *VisualTestPlatform {
 func (p *VisualTestPlatform) Dispatcher() *TestDispatcher {
 	panic("gpui: unimplemented VisualTestPlatform.Dispatcher")
 }
+
+// Focused returns the currently focused handle, which the caller releases (M0-window-paint ports it).
+func (w *Window) Focused(cx *App) (FocusHandle, bool) {
+	panic("gpui: unimplemented Window.Focused")
+}
+
+// RemoveWindow closes the window at the end of the current update (M0-window-paint ports it).
+func (w *Window) RemoveWindow() {
+	panic("gpui: unimplemented Window.RemoveWindow")
+}
+
+// BoundsChanged handles a change of the window's bounds (M0-window-paint ports it).
+func (w *Window) BoundsChanged(cx *App) {
+	panic("gpui: unimplemented Window.BoundsChanged")
+}
+
+func windowDisplayChanged(handle AnyWindowHandle, cx *App) {
+	panic("gpui: unimplemented windowDisplayChanged")
+}
+
+func (w *Window) buttonLayoutChanged(cx *App) {
+	panic("gpui: unimplemented Window.buttonLayoutChanged")
+}
+
+func (w *Window) refreshVisibility(cx *App) {
+	panic("gpui: unimplemented Window.refreshVisibility")
+}
+
+func (w *Window) advanceSceneAnimations(cx *App) {
+	panic("gpui: unimplemented Window.advanceSceneAnimations")
+}
+
+func (w *Window) present() {
+	panic("gpui: unimplemented Window.present")
+}
+
+// IsWindowActive reports whether the window is active (M0-window-paint ports it).
+func (w *Window) IsWindowActive() bool {
+	panic("gpui: unimplemented Window.IsWindowActive")
+}
+
+// MousePosition returns the mouse position relative to the window (M0-window-paint ports it).
+func (w *Window) MousePosition() Point[Pixels] {
+	panic("gpui: unimplemented Window.MousePosition")
+}
+
+// LastInputWasKeyboard reports whether the last input came from the keyboard (M0-window-paint ports it).
+func (w *Window) LastInputWasKeyboard() bool {
+	panic("gpui: unimplemented Window.LastInputWasKeyboard")
+}
+
+func (w *Window) dispatchActionOnNode(nodeID dispatchNodeID, action Action, cx *App) {
+	panic("gpui: unimplemented Window.dispatchActionOnNode")
+}
+
+func (w *Window) handleA11yAction(request a11y.ActionRequest, cx *App) {
+	panic("gpui: unimplemented Window.handleA11yAction")
+}
+
+const rootNodeID a11y.NodeID = 0
+
+type nativeViewState struct{}
+
+func (w *Window) hitTestNativeView(position Point[Pixels]) (NativeViewID, bool) {
+	panic("gpui: unimplemented Window.hitTestNativeView")
+}
+
+func (w *Window) dispatchKeyDownBeforeNativeView(event KeyDownEvent, cx *App) bool {
+	panic("gpui: unimplemented Window.dispatchKeyDownBeforeNativeView")
+}
+
+func (w *Window) focusNativeView(id NativeViewID, cx *App) {
+	panic("gpui: unimplemented Window.focusNativeView")
+}
+
+// DebugFrameOverlay draws frame timings over the window (M3-profiler-hang ports it).
+type DebugFrameOverlay struct{}
+
+// NewDebugFrameOverlay creates an overlay (M3-profiler-hang ports it). The placeholder body returns the zero value.
+func NewDebugFrameOverlay() DebugFrameOverlay {
+	return DebugFrameOverlay{}
+}
+
+// PlatformSignal is a platform frame callback recorded in the foreground journal (M3-profiler-journal ports it).
+type PlatformSignal struct {
+	// WindowID is the window receiving the callback.
+	WindowID WindowID
+	// SignalAt is when the platform requested the callback, if its clock is supported.
+	SignalAt Option[scheduler.Instant]
+	// HandledAt is when foreground handling began.
+	HandledAt scheduler.Instant
+	// Source is whether the callback came from the platform or local scheduling.
+	Source FrameRequestSource
+}
+
+// FrameSkipReason is why a frame request returned without drawing a new frame (M3-profiler-journal ports it).
+type FrameSkipReason uint8
+
+const (
+	// FrameSkipReasonNoRenderNeeded means the callback completed without needing a new render.
+	FrameSkipReasonNoRenderNeeded FrameSkipReason = iota
+	// FrameSkipReasonInactiveFrameRateLimit means an inactive window deferred drawing.
+	FrameSkipReasonInactiveFrameRateLimit
+	// FrameSkipReasonThermalFrameRateLimit means thermal throttling deferred drawing.
+	FrameSkipReasonThermalFrameRateLimit
+	// FrameSkipReasonLowPowerFrameRateLimit means low power mode deferred drawing.
+	FrameSkipReasonLowPowerFrameRateLimit
+	// FrameSkipReasonAnimationFrameRateLimit means a scene animation's frame rate cap deferred presenting.
+	FrameSkipReasonAnimationFrameRateLimit
+)
+
+func recordWindowVisibility(id WindowID, visibility WindowVisibility) {}
+
+func recordPlatformSignal(signal PlatformSignal) {}
+
+func recordReentrantFrameSkipped(windowID WindowID, at scheduler.Instant) {}
+
+func recordFrameSkipped(windowID WindowID, at scheduler.Instant, reason FrameSkipReason) {}
