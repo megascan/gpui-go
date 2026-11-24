@@ -6,6 +6,7 @@ import (
 	"math/rand/v2"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/megascan/gpui-go/a11y"
 	"github.com/megascan/gpui-go/internal/jsonschema"
@@ -225,93 +226,6 @@ const profilerFeatureEnabled = false
 // DefaultWindowSize is the default size of a new window (M0-window-core ports it).
 var DefaultWindowSize = NewSize(Px(1536.), Px(1095.))
 
-// WindowParams are the parameters the platform opens a window with (M0-platform-data ports it).
-type WindowParams struct{}
-
-// WindowBounds is the bounds and state of a window (M0-platform-data ports it).
-type WindowBounds struct{}
-
-// WindowAppearance is the appearance of the application's windows (M0-platform-data ports it).
-type WindowAppearance uint8
-
-const (
-	// WindowAppearanceLight is the light appearance.
-	WindowAppearanceLight WindowAppearance = iota
-	// WindowAppearanceVibrantLight is the vibrant light appearance.
-	WindowAppearanceVibrantLight
-	// WindowAppearanceDark is the dark appearance.
-	WindowAppearanceDark
-	// WindowAppearanceVibrantDark is the vibrant dark appearance.
-	WindowAppearanceVibrantDark
-)
-
-// WindowBackgroundAppearance is the appearance of a window's background (M0-platform-data ports it).
-type WindowBackgroundAppearance uint8
-
-const (
-	// WindowBackgroundAppearanceOpaque is an opaque background.
-	WindowBackgroundAppearanceOpaque WindowBackgroundAppearance = iota
-	// WindowBackgroundAppearanceTransparent is a transparent background.
-	WindowBackgroundAppearanceTransparent
-	// WindowBackgroundAppearanceBlurred is a blurred background.
-	WindowBackgroundAppearanceBlurred
-	// WindowBackgroundAppearanceMicaBackdrop is the Windows Mica backdrop.
-	WindowBackgroundAppearanceMicaBackdrop
-	// WindowBackgroundAppearanceMicaAltBackdrop is the Windows Mica Alt backdrop.
-	WindowBackgroundAppearanceMicaAltBackdrop
-)
-
-// TextRenderingMode is the text rendering mode (M0-platform-data ports it).
-type TextRenderingMode uint8
-
-const (
-	// TextRenderingModePlatformDefault uses the platform's default.
-	TextRenderingModePlatformDefault TextRenderingMode = iota
-	// TextRenderingModeSubpixel uses subpixel rendering.
-	TextRenderingModeSubpixel
-	// TextRenderingModeGrayscale uses grayscale rendering.
-	TextRenderingModeGrayscale
-)
-
-// PathPromptOptions configures a path prompt (M0-platform-data ports it).
-type PathPromptOptions struct{}
-
-// PromptLevel is the severity of a prompt (M0-platform-data ports it).
-type PromptLevel uint8
-
-const (
-	// PromptLevelInfo is an informational prompt.
-	PromptLevelInfo PromptLevel = iota
-	// PromptLevelWarning is a warning prompt.
-	PromptLevelWarning
-	// PromptLevelCritical is a critical prompt.
-	PromptLevelCritical
-)
-
-// PromptButton is a button of a prompt (M0-platform-data ports it).
-type PromptButton struct{}
-
-// CursorStyle is the style of the mouse cursor (M0-platform-data ports it).
-type CursorStyle uint8
-
-// ClipboardItem is an item on the clipboard (M0-platform-data ports it).
-type ClipboardItem struct{}
-
-// PlatformInputHandler connects a window's focused input handler to the platform (M0-platform-data ports it).
-type PlatformInputHandler struct{}
-
-// TextInputConfiguration configures the platform's text input session (M0-platform-data ports it).
-type TextInputConfiguration struct{}
-
-// Menu is an application menu (M0-platform-data ports it).
-type Menu struct{}
-
-// MenuItem is an item of an application menu (M0-platform-data ports it).
-type MenuItem struct{}
-
-// OwnedMenu is an application menu returned by the platform (M0-platform-data ports it).
-type OwnedMenu struct{}
-
 // Capslock is the state of the capslock key (M0-input-types ports it).
 type Capslock struct {
 	// On reports whether capslock is on.
@@ -430,9 +344,6 @@ const (
 
 // NativeViewID identifies a native view within its window (M0-window-a11y ports it).
 type NativeViewID uint64
-
-// WindowOptions configures a new window (M0-platform-data ports it).
-type WindowOptions struct{}
 
 // EntityID is the identifier of an entity (M0-entities ports it).
 type EntityID uint64
@@ -764,7 +675,164 @@ type WindowHandle[V any] struct {
 }
 
 // Window is a GPUI window (M0-window-core ports it).
-type Window struct{}
+type Window struct {
+	focus Option[FocusID]
+}
+
+// HasPendingKeystrokes reports whether a multi-stroke binding is pending (M0-window-dispatch ports it).
+func (w *Window) HasPendingKeystrokes() bool {
+	panic("gpui: unimplemented Window.HasPendingKeystrokes")
+}
+
+// FocusID identifies a focusable element of a window (M0-window-core ports it).
+type FocusID uint64
+
+// AsyncWindowContext is a window handle that can be held across await points (M0-app-contexts ports it).
+type AsyncWindowContext struct{}
+
+// Update runs f with the window and App; it fails when the window is gone (M0-app-contexts ports it).
+func (cx *AsyncWindowContext) Update(f func(window *Window, cx *App)) error {
+	panic("gpui: unimplemented AsyncWindowContext.Update")
+}
+
+// UpdateR runs f with the window and App and returns its result (M0-app-contexts ports it).
+func (cx *AsyncWindowContext) UpdateR[R any](f func(window *Window, cx *App) R) (R, error) {
+	panic("gpui: unimplemented AsyncWindowContext.UpdateR")
+}
+
+// ToAsync returns an AsyncApp that holds the app weakly (M0-app-core ports it).
+func (cx *App) ToAsync() *AsyncApp {
+	panic("gpui: unimplemented App.ToAsync")
+}
+
+func (cx *App) update(f func(cx *App)) {
+	panic("gpui: unimplemented App.update")
+}
+
+func (cx *App) clearPendingKeystrokes() {
+	panic("gpui: unimplemented App.clearPendingKeystrokes")
+}
+
+// IsActionAvailable reports whether an action has a handler in the focused context (M0-app-effects ports it).
+func (cx *App) IsActionAvailable(action Action) bool {
+	panic("gpui: unimplemented App.IsActionAvailable")
+}
+
+// DispatchAction dispatches an action to the focused window or the app (M0-app-effects ports it).
+func (cx *App) DispatchAction(action Action) {
+	panic("gpui: unimplemented App.DispatchAction")
+}
+
+func (cx *AsyncApp) upgradeApp() (*AppCell, bool) {
+	panic("gpui: unimplemented AsyncApp.upgradeApp")
+}
+
+// NoAction is the action that disables a binding (M0-input-types ports it).
+type NoAction struct{}
+
+// Name returns the action's name (M0-input-types ports it).
+func (NoAction) Name() string {
+	panic("gpui: unimplemented NoAction.Name")
+}
+
+// BoxedClone clones the action (M0-input-types ports it).
+func (NoAction) BoxedClone() Action {
+	panic("gpui: unimplemented NoAction.BoxedClone")
+}
+
+// PartialEq compares the action with another (M0-input-types ports it).
+func (NoAction) PartialEq(other Action) bool {
+	panic("gpui: unimplemented NoAction.PartialEq")
+}
+
+// ExternalPaths is a list of paths dragged or pasted from outside the app (M0-input-types ports it).
+type ExternalPaths []string
+
+// RenderImage is a decoded image in BGRA format (M0-input-types ports it).
+type RenderImage struct{}
+
+// AsBytes returns the BGRA bytes of a frame (M0-input-types ports it).
+func (r *RenderImage) AsBytes(frameIndex int) ([]byte, bool) {
+	panic("gpui: unimplemented RenderImage.AsBytes")
+}
+
+// Size returns the size of a frame in pixels (M0-input-types ports it).
+func (r *RenderImage) Size(frameIndex int) Size[DevicePixels] {
+	panic("gpui: unimplemented RenderImage.Size")
+}
+
+// Delay returns the delay of a frame from the previous one (M0-input-types ports it).
+func (r *RenderImage) Delay(frameIndex int) time.Duration {
+	panic("gpui: unimplemented RenderImage.Delay")
+}
+
+// FrameCount returns the number of frames (M0-input-types ports it).
+func (r *RenderImage) FrameCount() int {
+	panic("gpui: unimplemented RenderImage.FrameCount")
+}
+
+// AssetSource loads embedded assets (M0-input-types ports it).
+type AssetSource interface {
+	// Load loads the asset at path; ok is false when there is none.
+	Load(path string) (data []byte, ok bool, err error)
+	// List lists the assets under path.
+	List(path string) ([]SharedString, error)
+}
+
+// NewRenderImage creates a render image from decoded frames (M0-input-types ports it).
+func NewRenderImage(data []ImageFrame) *RenderImage {
+	panic("gpui: unimplemented NewRenderImage")
+}
+
+// Hash is a quick, non-cryptographic hash used to identify data (M0-app-contexts ports it).
+func Hash[T any](data T) uint64 {
+	panic("gpui: unimplemented Hash")
+}
+
+// SvgRenderer renders SVGs into images (M0-elements-media ports it).
+type SvgRenderer struct{}
+
+// NewSvgRenderer creates an SVG renderer loading referenced assets from assetSource (M0-elements-media ports it).
+func NewSvgRenderer(assetSource AssetSource) SvgRenderer {
+	panic("gpui: unimplemented NewSvgRenderer")
+}
+
+// RenderSingleFrame renders an SVG into a single-frame image (M0-elements-media ports it).
+func (r SvgRenderer) RenderSingleFrame(bytes []byte, scaleFactor float32) (*RenderImage, error) {
+	panic("gpui: unimplemented SvgRenderer.RenderSingleFrame")
+}
+
+// ImageSource is a source of image content (M0-elements-media ports it).
+type ImageSource interface {
+	isImageSource()
+}
+
+// ImageSourceImage is cached image data (M0-elements-media ports it).
+type ImageSourceImage struct {
+	// Image is the image.
+	Image *Image
+}
+
+func (ImageSourceImage) isImageSource() {}
+
+// AnyImageCache is a type-erased image cache (M0-elements-media ports it).
+type AnyImageCache struct{}
+
+func imageSourceUseData(source ImageSource, cache Option[AnyImageCache], window *Window, cx *App) (*RenderImage, bool, error) {
+	panic("gpui: unimplemented imageSourceUseData")
+}
+
+func imageSourceGetData(source ImageSource, cache Option[AnyImageCache], window *Window, cx *App) (*RenderImage, bool, error) {
+	panic("gpui: unimplemented imageSourceGetData")
+}
+
+func imageSourceRemoveAsset(source ImageSource, cx *App) {
+	panic("gpui: unimplemented imageSourceRemoveAsset")
+}
+
+func imageSourceIsAssetCached(source ImageSource, cx *App) bool {
+	panic("gpui: unimplemented imageSourceIsAssetCached")
+}
 
 // RemSize returns the window's rem size (M0-window-paint ports it).
 func (w *Window) RemSize() Pixels {

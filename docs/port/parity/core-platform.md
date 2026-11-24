@@ -337,133 +337,159 @@ Go target: `platform.go` (package `gpui`), tests in `platform_test.go`
 | `AtlasTextureId` | struct | 2085 |  | `AtlasTextureID` | done |
 | `AtlasTextureKind` | enum | 2103 |  | `AtlasTextureKind` | done |
 | `TileId` | struct | 2112 |  | `TileID` | done |
-| `PlatformInputHandler` | struct | 2127 |  | `PlatformInputHandler` | todo |
-| `PlatformInputHandler::new` | assoc-fn | 2142 |  | `NewPlatformInputHandler` | todo |
-| `PlatformInputHandler::focus_id` | method | 2159 |  | `(PlatformInputHandler).FocusID` | todo |
-| `PlatformInputHandler::selected_text_range` | method | 2163 |  | `(PlatformInputHandler).SelectedTextRange` | todo |
-| `PlatformInputHandler::marked_text_range` | method | 2174 |  | `(PlatformInputHandler).MarkedTextRange` | todo |
-| `PlatformInputHandler::text_for_range` | method | 2185 |  | `(PlatformInputHandler).TextForRange` | todo |
-| `PlatformInputHandler::replace_text_in_range` | method | 2199 |  | `(PlatformInputHandler).ReplaceTextInRange` | todo |
-| `PlatformInputHandler::replace_and_mark_text_in_range` | method | 2208 |  | `(PlatformInputHandler).ReplaceAndMarkTextInRange` | todo |
-| `PlatformInputHandler::unmark_text` | method | 2228 |  | `(PlatformInputHandler).UnmarkText` | todo |
-| `PlatformInputHandler::paste` | method | 2234 |  | `(PlatformInputHandler).Paste` | todo |
-| `PlatformInputHandler::bounds_for_range` | method | 2240 |  | `(PlatformInputHandler).BoundsForRange` | todo |
-| `PlatformInputHandler::selection_bounds_for_range` | method | 2247 |  | `(PlatformInputHandler).SelectionBoundsForRange` | todo |
-| `PlatformInputHandler::apple_press_and_hold_enabled` | method | 2257 |  | `(PlatformInputHandler).ApplePressAndHoldEnabled` | todo |
-| `PlatformInputHandler::dispatch_input` | method | 2267 |  | `(PlatformInputHandler).DispatchInput` | todo |
-| `PlatformInputHandler::compute_ime_candidate_bounds` | assoc-fn | 2271 |  | `PlatformInputHandlerComputeIMECandidateBounds` | todo |
-| `PlatformInputHandler::selected_bounds` | method | 2306 |  | `(PlatformInputHandler).SelectedBounds` | todo |
-| `PlatformInputHandler::ime_candidate_bounds` | method | 2314 |  | `(PlatformInputHandler).IMECandidateBounds` | todo |
-| `PlatformInputHandler::character_index_for_point` | method | 2323 |  | `(PlatformInputHandler).CharacterIndexForPoint` | todo |
-| `PlatformInputHandler::set_selected_text_range` | method | 2331 |  | `(PlatformInputHandler).SetSelectedTextRange` | todo |
-| `PlatformInputHandler::element_bounds` | method | 2341 |  | `(PlatformInputHandler).ElementBounds` | todo |
-| `PlatformInputHandler::text_length_utf16` | method | 2349 |  | `(PlatformInputHandler).TextLengthUTF16` | todo |
-| `PlatformInputHandler::accepts_text_input` | method | 2357 |  | `(PlatformInputHandler).AcceptsTextInput` | todo |
-| `PlatformInputHandler::query_accepts_text_input` | method | 2362 |  | `(PlatformInputHandler).QueryAcceptsTextInput` | todo |
-| `PlatformInputHandler::query_accepts_focused_text_input` | method | 2372 |  | `(PlatformInputHandler).QueryAcceptsFocusedTextInput` | todo |
-| `PlatformInputHandler::query_prefers_ime_for_printable_keys` | method | 2388 |  | `(PlatformInputHandler).QueryPrefersIMEForPrintableKeys` | todo |
-| `PlatformInputHandler::text_input_configuration` | method | 2399 |  | `(PlatformInputHandler).TextInputConfiguration` | todo |
-| `PlatformInputHandler::text_input_editable_range` | method | 2408 |  | `(PlatformInputHandler).TextInputEditableRange` | todo |
-| `UTF16Selection` | struct | 2419 |  | `UTF16Selection` | todo |
-| `InputHandler` | trait | 2432 |  | `InputHandler` | todo |
-| `InputHandler::selected_text_range` | trait-method | 2437 |  | `InputHandler.SelectedTextRange` | todo |
-| `InputHandler::marked_text_range` | trait-method | 2448 |  | `InputHandler.MarkedTextRange` | todo |
-| `InputHandler::text_for_range` | trait-method | 2454 |  | `InputHandler.TextForRange` | todo |
-| `InputHandler::replace_text_in_range` | trait-method | 2466 |  | `InputHandler.ReplaceTextInRange` | todo |
-| `InputHandler::replace_and_mark_text_in_range` | trait-method | 2480 |  | `InputHandler.ReplaceAndMarkTextInRange` | todo |
-| `InputHandler::unmark_text` | trait-method | 2491 |  | `InputHandler.UnmarkText` | todo |
-| `InputHandler::paste` | trait-method | 2499 |  | `InputHandler.Paste` | todo |
-| `InputHandler::bounds_for_range` | trait-method | 2509 |  | `InputHandler.BoundsForRange` | todo |
-| `InputHandler::selection_bounds_for_range` | trait-method | 2522 |  | `InputHandler.SelectionBoundsForRange` | todo |
-| `InputHandler::character_index_for_point` | trait-method | 2534 |  | `InputHandler.CharacterIndexForPoint` | todo |
-| `InputHandler::set_selected_text_range` | trait-method | 2550 |  | `InputHandler.SetSelectedTextRange` | todo |
-| `InputHandler::element_bounds` | trait-method | 2564 |  | `InputHandler.ElementBounds` | todo |
-| `InputHandler::text_length_utf16` | trait-method | 2569 |  | `InputHandler.TextLengthUTF16` | todo |
-| `InputHandler::apple_press_and_hold_enabled` | trait-method | 2578 |  | `InputHandler.ApplePressAndHoldEnabled` | todo |
-| `InputHandler::accepts_text_input` | trait-method | 2583 |  | `InputHandler.AcceptsTextInput` | todo |
-| `InputHandler::text_input_editable_range` | trait-method | 2597 |  | `InputHandler.TextInputEditableRange` | todo |
-| `InputHandler::prefers_ime_for_printable_keys` | trait-method | 2613 |  | `InputHandler.PrefersIMEForPrintableKeys` | todo |
-| `InputHandler::text_input_configuration` | trait-method | 2622 |  | `InputHandler.TextInputConfiguration` | todo |
-| `TextInputConfiguration` | struct | 2641 |  | `TextInputConfiguration` | todo |
-| `Autocapitalize` | enum | 2654 |  | `Autocapitalize` | todo |
-| `TextInputAction` | enum | 2676 |  | `TextInputAction` | todo |
-| `WindowOptions` | struct | 2698 |  | `WindowOptions` | todo |
-| `WindowParams` | struct | 2795 |  | `WindowParams` | todo |
-| `WindowBounds` | enum | 2855 |  | `WindowBounds` | todo |
-| `WindowBounds::get_bounds` | method | 2874 |  | `(WindowBounds).GetBounds` | todo |
-| `WindowBounds::centered` | assoc-fn | 2884 |  | `WindowBoundsCentered` | todo |
-| `TitlebarOptions` | struct | 2922 |  | `TitlebarOptions` | todo |
-| `WindowKind` | enum | 2936 |  | `WindowKind` | todo |
-| `WindowAppearance` | enum | 2970 |  | `WindowAppearance` | todo |
-| `WindowBackgroundAppearance` | enum | 2996 |  | `WindowBackgroundAppearance` | todo |
-| `TextRenderingMode` | enum | 3020 |  | `TextRenderingMode` | todo |
-| `PathPromptOptions` | struct | 3032 |  | `PathPromptOptions` | todo |
-| `PromptLevel` | enum | 3045 |  | `PromptLevel` | todo |
-| `PromptButton` | enum | 3058 |  | `PromptButton` | todo |
-| `PromptButton::new` | assoc-fn | 3069 |  | `NewPromptButton` | todo |
-| `PromptButton::ok` | assoc-fn | 3074 |  | `PromptButtonOk` | todo |
-| `PromptButton::cancel` | assoc-fn | 3079 |  | `PromptButtonCancel` | todo |
-| `PromptButton::is_cancel` | method | 3085 |  | `(PromptButton).IsCancel` | todo |
-| `PromptButton::label` | method | 3090 |  | `(PromptButton).Label` | todo |
-| `CursorStyle` | enum | 3113 |  | `CursorStyle` | todo |
-| `ClipboardItem` | struct | 3201 |  | `ClipboardItem` | todo |
-| `ClipboardReadError` | enum | 3211 |  | `ClipboardReadError` | todo |
-| `ClipboardEntry` | enum | 3242 |  | `ClipboardEntry` | todo |
-| `ClipboardItem::new_string` | assoc-fn | 3253 |  | `NewClipboardItemString` | todo |
-| `ClipboardItem::new_string_with_metadata` | assoc-fn | 3260 |  | `NewClipboardItemStringWithMetadata` | todo |
-| `ClipboardItem::new_string_with_json_metadata` | assoc-fn | 3270 |  | `NewClipboardItemStringWithJSONMetadata` | todo |
-| `ClipboardItem::new_image` | assoc-fn | 3279 |  | `NewClipboardItemImage` | todo |
-| `ClipboardItem::text` | method | 3287 |  | `(ClipboardItem).Text` | todo |
-| `ClipboardItem::metadata` | method | 3316 |  | `(ClipboardItem).Metadata` | todo |
-| `ClipboardItem::entries` | method | 3326 |  | `(ClipboardItem).Entries` | todo |
-| `ClipboardItem::into_entries` | method | 3331 |  | `(ClipboardItem).IntoEntries` | todo |
-| `ImageFormat` | enum | 3376 |  | `ImageFormat` | todo |
-| `ImageFormat::mime_type` | method | 3402 |  | `(ImageFormat).MimeType` | todo |
-| `ImageFormat::extension` | method | 3417 |  | `(ImageFormat).Extension` | todo |
-| `ImageFormat::from_mime_type` | assoc-fn | 3432 |  | `ImageFormatFromMimeType` | todo |
-| `Image` | struct | 3453 |  | `Image` | todo |
-| `Image::empty` | assoc-fn | 3541 |  | `ImageEmpty` | todo |
-| `Image::from_bytes` | assoc-fn | 3546 |  | `ImageFromBytes` | todo |
-| `Image::id` | method | 3555 |  | `(Image).ID` | todo |
-| `Image::use_render_image` | method | 3560 |  | `(Image).UseRenderImage` | todo |
-| `Image::get_render_image` | method | 3571 |  | `(Image).GetRenderImage` | todo |
-| `Image::remove_asset` | method | 3582 |  | `(Image).RemoveAsset` | todo |
-| `Image::is_asset_cached` | method | 3589 | feat:test-support | `(Image).IsAssetCached` | todo |
-| `Image::to_image_data` | method | 3594 |  | `(Image).ToImageData` | todo |
-| `Image::format` | method | 3615 |  | `(Image).Format` | todo |
-| `Image::bytes` | method | 3620 |  | `(Image).Bytes` | todo |
-| `ClipboardString` | struct | 3627 |  | `ClipboardString` | todo |
-| `ClipboardString::new` | assoc-fn | 3636 |  | `NewClipboardString` | todo |
-| `ClipboardString::with_json_metadata` | method | 3645 |  | `(ClipboardString).WithJSONMetadata` | todo |
-| `ClipboardString::text` | method | 3651 |  | `(ClipboardString).Text` | todo |
-| `ClipboardString::into_text` | method | 3656 |  | `(ClipboardString).IntoText` | todo |
-| `ClipboardString::metadata_json` | method | 3661 |  | `(ClipboardString).MetadataJSON` | todo |
-| `ClipboardString::text_hash` | assoc-fn | 3672 |  | `ClipboardStringTextHash` | todo |
+| `PlatformInputHandler` | struct | 2127 |  | `PlatformInputHandler` | done |
+| `PlatformInputHandler::new` | assoc-fn | 2142 |  | `NewPlatformInputHandler` | done |
+| `PlatformInputHandler::focus_id` | method | 2159 |  | `(PlatformInputHandler).FocusID` | done |
+| `PlatformInputHandler::selected_text_range` | method | 2163 |  | `(PlatformInputHandler).SelectedTextRange` | done |
+| `PlatformInputHandler::marked_text_range` | method | 2174 |  | `(PlatformInputHandler).MarkedTextRange` | done |
+| `PlatformInputHandler::text_for_range` | method | 2185 |  | `(PlatformInputHandler).TextForRange` | done |
+| `PlatformInputHandler::replace_text_in_range` | method | 2199 |  | `(PlatformInputHandler).ReplaceTextInRange` | done |
+| `PlatformInputHandler::replace_and_mark_text_in_range` | method | 2208 |  | `(PlatformInputHandler).ReplaceAndMarkTextInRange` | done |
+| `PlatformInputHandler::unmark_text` | method | 2228 |  | `(PlatformInputHandler).UnmarkText` | done |
+| `PlatformInputHandler::paste` | method | 2234 |  | `(PlatformInputHandler).Paste` | done |
+| `PlatformInputHandler::bounds_for_range` | method | 2240 |  | `(PlatformInputHandler).BoundsForRange` | done |
+| `PlatformInputHandler::selection_bounds_for_range` | method | 2247 |  | `(PlatformInputHandler).SelectionBoundsForRange` | done |
+| `PlatformInputHandler::apple_press_and_hold_enabled` | method | 2257 |  | `(PlatformInputHandler).ApplePressAndHoldEnabled` | done |
+| `PlatformInputHandler::dispatch_input` | method | 2267 |  | `(PlatformInputHandler).DispatchInput` | done |
+| `PlatformInputHandler::compute_ime_candidate_bounds` | assoc-fn | 2271 |  | `PlatformInputHandlerComputeIMECandidateBounds` | done |
+| `PlatformInputHandler::selected_bounds` | method | 2306 |  | `(PlatformInputHandler).SelectedBounds` | done |
+| `PlatformInputHandler::ime_candidate_bounds` | method | 2314 |  | `(PlatformInputHandler).IMECandidateBounds` | done |
+| `PlatformInputHandler::character_index_for_point` | method | 2323 |  | `(PlatformInputHandler).CharacterIndexForPoint` | done |
+| `PlatformInputHandler::set_selected_text_range` | method | 2331 |  | `(PlatformInputHandler).SetSelectedTextRange` | done |
+| `PlatformInputHandler::element_bounds` | method | 2341 |  | `(PlatformInputHandler).ElementBounds` | done |
+| `PlatformInputHandler::text_length_utf16` | method | 2349 |  | `(PlatformInputHandler).TextLengthUTF16` | done |
+| `PlatformInputHandler::accepts_text_input` | method | 2357 |  | `(PlatformInputHandler).AcceptsTextInput` | done |
+| `PlatformInputHandler::query_accepts_text_input` | method | 2362 |  | `(PlatformInputHandler).QueryAcceptsTextInput` | done |
+| `PlatformInputHandler::query_accepts_focused_text_input` | method | 2372 |  | `(PlatformInputHandler).QueryAcceptsFocusedTextInput` | done |
+| `PlatformInputHandler::query_prefers_ime_for_printable_keys` | method | 2388 |  | `(PlatformInputHandler).QueryPrefersIMEForPrintableKeys` | done |
+| `PlatformInputHandler::text_input_configuration` | method | 2399 |  | `(PlatformInputHandler).TextInputConfiguration` | done |
+| `PlatformInputHandler::text_input_editable_range` | method | 2408 |  | `(PlatformInputHandler).TextInputEditableRange` | done |
+| `UTF16Selection` | struct | 2419 |  | `UTF16Selection` | done |
+| `InputHandler` | trait | 2432 |  | `InputHandler` | done |
+| `InputHandler::selected_text_range` | trait-method | 2437 |  | `InputHandler.SelectedTextRange` | done |
+| `InputHandler::marked_text_range` | trait-method | 2448 |  | `InputHandler.MarkedTextRange` | done |
+| `InputHandler::text_for_range` | trait-method | 2454 |  | `InputHandler.TextForRange` | done |
+| `InputHandler::replace_text_in_range` | trait-method | 2466 |  | `InputHandler.ReplaceTextInRange` | done |
+| `InputHandler::replace_and_mark_text_in_range` | trait-method | 2480 |  | `InputHandler.ReplaceAndMarkTextInRange` | done |
+| `InputHandler::unmark_text` | trait-method | 2491 |  | `InputHandler.UnmarkText` | done |
+| `InputHandler::paste` | trait-method | 2499 |  | `InputHandler.Paste` | done |
+| `InputHandler::bounds_for_range` | trait-method | 2509 |  | `InputHandler.BoundsForRange` | done |
+| `InputHandler::selection_bounds_for_range` | trait-method | 2522 |  | `InputHandler.SelectionBoundsForRange` | done |
+| `InputHandler::character_index_for_point` | trait-method | 2534 |  | `InputHandler.CharacterIndexForPoint` | done |
+| `InputHandler::set_selected_text_range` | trait-method | 2550 |  | `InputHandler.SetSelectedTextRange` | done |
+| `InputHandler::element_bounds` | trait-method | 2564 |  | `InputHandler.ElementBounds` | done |
+| `InputHandler::text_length_utf16` | trait-method | 2569 |  | `InputHandler.TextLengthUTF16` | done |
+| `InputHandler::apple_press_and_hold_enabled` | trait-method | 2578 |  | `InputHandler.ApplePressAndHoldEnabled` | done |
+| `InputHandler::accepts_text_input` | trait-method | 2583 |  | `InputHandler.AcceptsTextInput` | done |
+| `InputHandler::text_input_editable_range` | trait-method | 2597 |  | `InputHandler.TextInputEditableRange` | done |
+| `InputHandler::prefers_ime_for_printable_keys` | trait-method | 2613 |  | `InputHandler.PrefersIMEForPrintableKeys` | done |
+| `InputHandler::text_input_configuration` | trait-method | 2622 |  | `InputHandler.TextInputConfiguration` | done |
+| `TextInputConfiguration` | struct | 2641 |  | `TextInputConfiguration` | done |
+| `Autocapitalize` | enum | 2654 |  | `Autocapitalize` | done |
+| `TextInputAction` | enum | 2676 |  | `TextInputAction` | done |
+| `WindowOptions` | struct | 2698 |  | `WindowOptions` | done |
+| `WindowParams` | struct | 2795 |  | `WindowParams` | done |
+| `WindowBounds` | enum | 2855 |  | `WindowBounds` | done |
+| `WindowBounds::get_bounds` | method | 2874 |  | `(WindowBounds).GetBounds` | done |
+| `WindowBounds::centered` | assoc-fn | 2884 |  | `WindowBoundsCentered` | done |
+| `TitlebarOptions` | struct | 2922 |  | `TitlebarOptions` | done |
+| `WindowKind` | enum | 2936 |  | `WindowKind` | done |
+| `WindowAppearance` | enum | 2970 |  | `WindowAppearance` | done |
+| `WindowBackgroundAppearance` | enum | 2996 |  | `WindowBackgroundAppearance` | done |
+| `TextRenderingMode` | enum | 3020 |  | `TextRenderingMode` | done |
+| `PathPromptOptions` | struct | 3032 |  | `PathPromptOptions` | done |
+| `PromptLevel` | enum | 3045 |  | `PromptLevel` | done |
+| `PromptButton` | enum | 3058 |  | `PromptButton` | done |
+| `PromptButton::new` | assoc-fn | 3069 |  | `NewPromptButton` | done |
+| `PromptButton::ok` | assoc-fn | 3074 |  | `PromptButtonOk` | done |
+| `PromptButton::cancel` | assoc-fn | 3079 |  | `PromptButtonCancel` | done |
+| `PromptButton::is_cancel` | method | 3085 |  | `(PromptButton).IsCancel` | done |
+| `PromptButton::label` | method | 3090 |  | `(PromptButton).Label` | done |
+| `CursorStyle` | enum | 3113 |  | `CursorStyle` | done |
+| `ClipboardItem` | struct | 3201 |  | `ClipboardItem` | done |
+| `ClipboardReadError` | enum | 3211 |  | `ClipboardReadError` | done |
+| `ClipboardEntry` | enum | 3242 |  | `ClipboardEntry` | done |
+| `ClipboardItem::new_string` | assoc-fn | 3253 |  | `NewClipboardItemString` | done |
+| `ClipboardItem::new_string_with_metadata` | assoc-fn | 3260 |  | `NewClipboardItemStringWithMetadata` | done |
+| `ClipboardItem::new_string_with_json_metadata` | assoc-fn | 3270 |  | `NewClipboardItemStringWithJSONMetadata` | done |
+| `ClipboardItem::new_image` | assoc-fn | 3279 |  | `NewClipboardItemImage` | done |
+| `ClipboardItem::text` | method | 3287 |  | `(ClipboardItem).Text` | done |
+| `ClipboardItem::metadata` | method | 3316 |  | `(ClipboardItem).Metadata` | done |
+| `ClipboardItem::entries` | method | 3326 |  | `(ClipboardItem).Entries` | n/a:D-GETTER |
+| `ClipboardItem::into_entries` | method | 3331 |  | `(ClipboardItem).IntoEntries` | done |
+| `ImageFormat` | enum | 3376 |  | `ImageFormat` | done |
+| `ImageFormat::mime_type` | method | 3402 |  | `(ImageFormat).MimeType` | done |
+| `ImageFormat::extension` | method | 3417 |  | `(ImageFormat).Extension` | done |
+| `ImageFormat::from_mime_type` | assoc-fn | 3432 |  | `ImageFormatFromMimeType` | done |
+| `Image` | struct | 3453 |  | `Image` | done |
+| `Image::empty` | assoc-fn | 3541 |  | `ImageEmpty` | done |
+| `Image::from_bytes` | assoc-fn | 3546 |  | `ImageFromBytes` | done |
+| `Image::id` | method | 3555 |  | `(Image).ID` | n/a:D-GETTER |
+| `Image::use_render_image` | method | 3560 |  | `(Image).UseRenderImage` | done |
+| `Image::get_render_image` | method | 3571 |  | `(Image).GetRenderImage` | done |
+| `Image::remove_asset` | method | 3582 |  | `(Image).RemoveAsset` | done |
+| `Image::is_asset_cached` | method | 3589 | feat:test-support | `(Image).IsAssetCached` | done |
+| `Image::to_image_data` | method | 3594 |  | `(Image).ToImageData` | dev:L-JPEG |
+| `Image::format` | method | 3615 |  | `(Image).Format` | n/a:D-GETTER |
+| `Image::bytes` | method | 3620 |  | `(Image).Bytes` | n/a:D-GETTER |
+| `ClipboardString` | struct | 3627 |  | `ClipboardString` | done |
+| `ClipboardString::new` | assoc-fn | 3636 |  | `NewClipboardString` | done |
+| `ClipboardString::with_json_metadata` | method | 3645 |  | `(ClipboardString).WithJSONMetadata` | done |
+| `ClipboardString::text` | method | 3651 |  | `(ClipboardString).Text` | n/a:D-GETTER |
+| `ClipboardString::into_text` | method | 3656 |  | `(ClipboardString).IntoText` | done |
+| `ClipboardString::metadata_json` | method | 3661 |  | `(ClipboardString).MetadataJSON` | done |
+| `ClipboardString::text_hash` | assoc-fn | 3672 |  | `ClipboardStringTextHash` | done |
+| `decode_static_image` | fn | 3462 |  | `decodeStaticImage` | dev:L-JPEG |
+| `decode_static_image_from_decoder` | fn | 3472 |  | `decodeStaticImageFromDecoder` | dev:L-JPEG |
+| `decode_animated_frames` | fn | 3489 |  | `decodeAnimatedFrames` | done |
+| `decode_gif_image` | fn | 3517 |  | `decodeGifImage` | dev:D-IMGDECODE |
+| `decode_webp_image` | fn | 3522 |  | `decodeWebpImage` | dev:D-IMGDECODE |
+| `image::Frame` (decoded frame) | struct | 57 |  | `ImageFrame` | dev:D-IMAGEFRAME |
+| `PlatformInputHandler::with_focus` | method | 2150 |  | `(PlatformInputHandler).withFocus` | done |
+| `PlatformInputHandler::unmark_text_during_update` | method | 2263 |  | `(PlatformInputHandler).unmarkTextDuringUpdate` | done |
+| `impl From<&str> for PromptButton` | impl | 3099 |  | `PromptButtonFromStr` | done |
+| `impl From<ClipboardString> for ClipboardEntry` | impl | 3336 |  | `ClipboardEntryFromClipboardString` | done |
+| `impl From<String> for ClipboardEntry` | impl | 3342 |  | `ClipboardEntryFromString` | done |
+| `impl From<Image> for ClipboardEntry` | impl | 3348 |  | `ClipboardEntryFromImage` | done |
+| `impl From<ClipboardEntry> for ClipboardItem` | impl | 3354 |  | `ClipboardItemFromEntry` | done |
+| `impl From<String> for ClipboardItem` | impl | 3362 |  | `ClipboardItemFromString` | done |
+| `impl From<Image> for ClipboardItem` | impl | 3368 |  | `ClipboardItemFromImage` | done |
+| `impl From<String> for ClipboardString` | impl | 3679 |  | `ClipboardStringFromString` | done |
+| `impl Display for ClipboardReadError` | impl | 3224 |  | `(ClipboardReadError).Error` | done |
+| `impl Default for WindowOptions` | impl | 2889 |  | `DefaultWindowOptions` | done |
+| `CursorStyle` Serialize derive | impl | 3111 |  | `(CursorStyle).MarshalJSONTo` | done |
+| `CursorStyle` Deserialize derive | impl | 3111 |  | `(CursorStyle).UnmarshalJSONFrom` | done |
+| `CursorStyle` JsonSchema derive | impl | 3111 |  | `(CursorStyle).JSONSchemaEnum` | done |
+| `CursorStyle` EnumIter derive | impl | 3111 |  | `CursorStyleIter` | done |
+| `ImageFormat` EnumIter derive | impl | 3374 |  | `ImageFormatIter` | done |
+| `InputHandler` provided methods | impl | 2432 |  | `InputHandlerDefaults` | dev:D-DEFAULTS |
+| `InputHandler` provided methods (binding) | impl | 2432 |  | `BindInputHandlerDefaults` | dev:D-DEFAULTS |
+| `std::ops::Range<usize>` in input handler signatures | struct | 2174 |  | `Range` | dev:D-RANGE |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_image_to_image_data_applies_exif_orientation` | test | 3694 |  | `TestPlatformImageTests_ImageToImageDataAppliesExifOrientation` | todo |
-| `test_svg_image_to_image_data_converts_to_bgra` | test | 3710 |  | `TestPlatformImageTests_SvgImageToImageDataConvertsToBgra` | todo |
-| `test_animated_webp_image_to_image_data_decodes_frames` | test | 3728 |  | `TestPlatformImageTests_AnimatedWebpImageToImageDataDecodesFrames` | todo |
-| `only_successful_inserts_are_cached` | test | 3813 |  | `TestPlatformAtlasTests_OnlySuccessfulInsertsAreCached` | todo |
-| `remove_and_clear_invalidate_keys` | test | 3850 |  | `TestPlatformAtlasTests_RemoveAndClearInvalidateKeys` | todo |
-| `coalesced_signals_retain_the_earliest_until_drained` | test | 3882 | feat:profiler | `TestPlatformFrameSignalTests_CoalescedSignalsRetainTheEarliestUntilDrained` | todo |
-| `disabled_profiling_does_not_capture_or_store_timestamps` | test | 3910 | feat:profiler | `TestPlatformFrameSignalTests_DisabledProfilingDoesNotCaptureOrStoreTimestamps` | todo |
-| `test_refresh_interval_from_hz` | test | 3927 | linux,freebsd | `TestPlatform_RefreshIntervalFromHz` | todo |
-| `test_window_button_layout_parse_standard` | test | 3942 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseStandard` | todo |
-| `test_window_button_layout_parse_right_only` | test | 3956 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseRightOnly` | todo |
-| `test_window_button_layout_parse_left_only` | test | 3970 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseLeftOnly` | todo |
-| `test_window_button_layout_parse_with_whitespace` | test | 3984 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseWithWhitespace` | todo |
-| `test_window_button_layout_parse_empty` | test | 3998 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseEmpty` | todo |
-| `test_window_button_layout_parse_intentionally_empty` | test | 4005 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseIntentionallyEmpty` | todo |
-| `test_window_button_layout_parse_invalid_buttons` | test | 4012 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseInvalidButtons` | todo |
-| `test_window_button_layout_parse_deduplicates_same_side_buttons` | test | 4026 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseDeduplicatesSameSideButtons` | todo |
-| `test_window_button_layout_parse_deduplicates_buttons_across_sides` | test | 4040 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseDeduplicatesButtonsAcrossSides` | todo |
-| `test_window_button_layout_parse_gnome_style` | test | 4065 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseGnomeStyle` | todo |
-| `test_window_button_layout_parse_elementary_style` | test | 4072 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseElementaryStyle` | todo |
-| `test_window_button_layout_round_trip` | test | 4079 | linux,freebsd | `TestPlatform_WindowButtonLayoutRoundTrip` | todo |
-| `test_window_button_layout_linux_default` | test | 4096 | linux,freebsd | `TestPlatform_WindowButtonLayoutLinuxDefault` | todo |
-| `test_window_button_layout_parse_all_invalid` | test | 4113 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseAllInvalid` | todo |
+| `test_image_to_image_data_applies_exif_orientation` | test | 3694 |  | `TestPlatformImageTests_ImageToImageDataAppliesExifOrientation` | blocked:M0-elements-media |
+| `test_svg_image_to_image_data_converts_to_bgra` | test | 3710 |  | `TestPlatformImageTests_SvgImageToImageDataConvertsToBgra` | blocked:M0-elements-media |
+| `test_animated_webp_image_to_image_data_decodes_frames` | test | 3728 |  | `TestPlatformImageTests_AnimatedWebpImageToImageDataDecodesFrames` | blocked:M0-elements-media |
+| `only_successful_inserts_are_cached` | test | 3813 |  | `TestPlatformAtlasTests_OnlySuccessfulInsertsAreCached` | done |
+| `remove_and_clear_invalidate_keys` | test | 3850 |  | `TestPlatformAtlasTests_RemoveAndClearInvalidateKeys` | done |
+| `coalesced_signals_retain_the_earliest_until_drained` | test | 3882 | feat:profiler | `TestPlatformFrameSignalTests_CoalescedSignalsRetainTheEarliestUntilDrained` | done |
+| `disabled_profiling_does_not_capture_or_store_timestamps` | test | 3910 | feat:profiler | `TestPlatformFrameSignalTests_DisabledProfilingDoesNotCaptureOrStoreTimestamps` | done |
+| `test_refresh_interval_from_hz` | test | 3927 | linux,freebsd | `TestPlatform_RefreshIntervalFromHz` | done |
+| `test_window_button_layout_parse_standard` | test | 3942 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseStandard` | done |
+| `test_window_button_layout_parse_right_only` | test | 3956 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseRightOnly` | done |
+| `test_window_button_layout_parse_left_only` | test | 3970 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseLeftOnly` | done |
+| `test_window_button_layout_parse_with_whitespace` | test | 3984 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseWithWhitespace` | done |
+| `test_window_button_layout_parse_empty` | test | 3998 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseEmpty` | done |
+| `test_window_button_layout_parse_intentionally_empty` | test | 4005 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseIntentionallyEmpty` | done |
+| `test_window_button_layout_parse_invalid_buttons` | test | 4012 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseInvalidButtons` | done |
+| `test_window_button_layout_parse_deduplicates_same_side_buttons` | test | 4026 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseDeduplicatesSameSideButtons` | done |
+| `test_window_button_layout_parse_deduplicates_buttons_across_sides` | test | 4040 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseDeduplicatesButtonsAcrossSides` | done |
+| `test_window_button_layout_parse_gnome_style` | test | 4065 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseGnomeStyle` | done |
+| `test_window_button_layout_parse_elementary_style` | test | 4072 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseElementaryStyle` | done |
+| `test_window_button_layout_round_trip` | test | 4079 | linux,freebsd | `TestPlatform_WindowButtonLayoutRoundTrip` | done |
+| `test_window_button_layout_linux_default` | test | 4096 | linux,freebsd | `TestPlatform_WindowButtonLayoutLinuxDefault` | done |
+| `test_window_button_layout_parse_all_invalid` | test | 4113 | linux,freebsd | `TestPlatform_WindowButtonLayoutParseAllInvalid` | done |
 
 ## gpui/src/platform/app_menu.rs
 
@@ -471,34 +497,37 @@ Go target: `platform_app_menu.go` (package `gpui`), tests in `platform_app_menu_
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Menu` | struct | 4 |  | `Menu` | todo |
-| `Menu::new` | assoc-fn | 17 |  | `NewMenu` | todo |
-| `Menu::items` | method | 26 |  | `(Menu).Items` | todo |
-| `Menu::disabled` | method | 32 |  | `(Menu).Disabled` | todo |
-| `Menu::owned` | method | 38 |  | `(Menu).Owned` | todo |
-| `OsMenu` | struct | 50 |  | `OsMenu` | todo |
-| `OsMenu::owned` | method | 60 |  | `(OsMenu).Owned` | todo |
-| `SystemMenuType` | enum | 70 |  | `SystemMenuType` | todo |
-| `MenuItem` | enum | 76 |  | `MenuItem` | todo |
-| `MenuItem::separator` | assoc-fn | 108 |  | `MenuItemSeparator` | todo |
-| `MenuItem::submenu` | assoc-fn | 113 |  | `MenuItemSubmenu` | todo |
-| `MenuItem::os_submenu` | assoc-fn | 118 |  | `MenuItemOsSubmenu` | todo |
-| `MenuItem::action` | assoc-fn | 126 |  | `MenuItemAction` | todo |
-| `MenuItem::os_action` | assoc-fn | 137 |  | `MenuItemOsAction` | todo |
-| `MenuItem::owned` | method | 152 |  | `(MenuItem).Owned` | todo |
-| `MenuItem::checked` | method | 176 |  | `(MenuItem).Checked` | todo |
-| `MenuItem::is_checked` | method | 190 |  | `(MenuItem).IsChecked` | todo |
-| `MenuItem::disabled` | method | 198 |  | `(MenuItem).Disabled` | todo |
-| `MenuItem::is_disabled` | method | 215 |  | `(MenuItem).IsDisabled` | todo |
-| `OwnedOsMenu` | struct | 228 |  | `OwnedOsMenu` | todo |
-| `OwnedMenu` | struct | 238 |  | `OwnedMenu` | todo |
-| `OwnedMenuItem` | enum | 250 |  | `OwnedMenuItem` | todo |
-| `OsAction` | enum | 311 |  | `OsAction` | todo |
+| `Menu` | struct | 4 |  | `Menu` | done |
+| `Menu::new` | assoc-fn | 17 |  | `NewMenu` | done |
+| `Menu::items` | method | 26 |  | `(Menu).WithItems` | dev:D-WITH |
+| `Menu::disabled` | method | 32 |  | `(Menu).WithDisabled` | dev:D-WITH |
+| `Menu::owned` | method | 38 |  | `(Menu).Owned` | done |
+| `OsMenu` | struct | 50 |  | `OsMenu` | done |
+| `OsMenu::owned` | method | 60 |  | `(OsMenu).Owned` | done |
+| `SystemMenuType` | enum | 70 |  | `SystemMenuType` | done |
+| `MenuItem` | enum | 76 |  | `MenuItem` | done |
+| `MenuItem::separator` | assoc-fn | 108 |  | `NewMenuItemSeparator` | dev:D-NAME |
+| `MenuItem::submenu` | assoc-fn | 113 |  | `NewMenuItemSubmenu` | dev:D-NAME |
+| `MenuItem::os_submenu` | assoc-fn | 118 |  | `MenuItemOsSubmenu` | done |
+| `MenuItem::action` | assoc-fn | 126 |  | `NewMenuItemAction` | dev:D-NAME |
+| `MenuItem::os_action` | assoc-fn | 137 |  | `MenuItemOsAction` | done |
+| `MenuItem::owned` | method | 152 |  | `(MenuItem).Owned` | done |
+| `MenuItem::checked` | method | 176 |  | `(MenuItem).WithChecked` | dev:D-WITH |
+| `MenuItem::is_checked` | method | 190 |  | `(MenuItem).IsChecked` | done |
+| `MenuItem::disabled` | method | 198 |  | `(MenuItem).WithDisabled` | dev:D-WITH |
+| `MenuItem::is_disabled` | method | 215 |  | `(MenuItem).IsDisabled` | done |
+| `OwnedOsMenu` | struct | 228 |  | `OwnedOsMenu` | done |
+| `OwnedMenu` | struct | 238 |  | `OwnedMenu` | done |
+| `OwnedMenuItem` | enum | 250 |  | `OwnedMenuItem` | done |
+| `OsAction` | enum | 311 |  | `OsAction` | done |
+| `init_app_menus` | fn | 331 |  | `initAppMenus` | done |
+| `impl Clone for OwnedMenuItem` | impl | 280 |  | `(OwnedMenuItem).Clone` | done |
+| `OwnedMenu` Clone derive | impl | 237 |  | `(OwnedMenu).Clone` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_menu` | test | 366 |  | `TestAppMenu_Menu` | todo |
-| `test_menu_item_builder` | test | 380 |  | `TestAppMenu_MenuItemBuilder` | todo |
+| `test_menu` | test | 366 |  | `TestAppMenu_Menu` | done |
+| `test_menu_item_builder` | test | 380 |  | `TestAppMenu_MenuItemBuilder` | done |
 
 ## gpui/src/platform/layer_shell.rs
 
@@ -529,10 +558,11 @@ Go target: `platform_popup.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `PopupOptions` | struct | 16 |  | `PopupOptions` | todo |
-| `PopupAnchor` | enum | 57 |  | `PopupAnchor` | todo |
-| `PopupGravity` | enum | 84 |  | `PopupGravity` | todo |
-| `PopupNotSupportedError` | struct | 134 |  | `PopupNotSupportedError` | todo |
+| `PopupOptions` | struct | 16 |  | `PopupOptions` | done |
+| `PopupAnchor` | enum | 57 |  | `PopupAnchor` | done |
+| `PopupGravity` | enum | 84 |  | `PopupGravity` | done |
+| `PopupNotSupportedError` | struct | 134 |  | `PopupNotSupportedError` | done |
+| `PopupConstraintAdjustment` | bitflags | 111 |  | `PopupConstraintAdjustment` | done |
 
 ## gpui/src/platform/scap_screen_capture.rs
 
@@ -651,3 +681,8 @@ Go target: `platform_testing_window.go` (package `gpui`)
 | D-DEFAULTS | Provided trait methods live on embeddable `PlatformDefaults`, `PlatformWindowDefaults`, `PlatformDisplayDefaults`, `PlatformDispatcherDefaults`, `PlatformTextSystemDefaults`, `PlatformAtlasDefaults`; the first four are bound to the implementor with `Bind<Name>(&d, self)` because some defaults call other trait methods. `cfg`-gated trait methods exist on every GOOS with a no-op default where upstream has none (`read_from_primary`, `get_raw_handle`, ...), and the Linux-only button-layout functions (`WindowButtonLayoutLinuxDefault`, `WindowButtonLayoutParse`, `format`) build on every GOOS so their tests compile everywhere. Rust `#[default]` variants that are not the first become `Default<Type>` constructors (`DefaultLayer`, `DefaultKeyboardInteractivity`, `DefaultLayerShellOptions`, `DefaultWindowControls`) | `gpui/src/platform.rs:394-1552`, `gpui/src/platform/layer_shell.rs:21`, `:55` | `platform.go`, `platform_layer_shell.go` |
 | D-GPUENUM | `repr(C)` enums that are part of GPU data are 4-byte `uint32` types, not `uint8` (`AtlasTextureKind`), so `AtlasTile` keeps upstream's 32-byte layout | `gpui/src/platform.rs:2103` | `platform.go` |
 | D-PLATSEAM | Port-introduced seams with no upstream item: `RawWindowHandle` (tagged struct standing in for the `HasWindowHandle + HasDisplayHandle` supertraits of `PlatformWindow`, returned by `PlatformWindow.RawWindowHandle`); `Close` on `Platform` and `PlatformWindow` (their drop); `ScreenCaptureStream.Stop` (`ScapStream`'s drop); `NativeViewAttachment` (the `Box<dyn Any>` of `attach_native_view`, dropped with `Close`); the `ScapBackend` seam (`ScapBackend`, `ScapCapturer`, `ScapTarget`, `ScapDisplay`, `ScapWindow`, `ScapFrame*`, `ScapCapturerOptions`, `RegisterScapBackend`) mirroring the zed-scap API the glue calls; `UUID` / `NewUUIDV4` for the uuid crate | `gpui/src/platform.rs:1290`, `:811`, `:1385`, `gpui/src/platform/scap_screen_capture.rs:1-325`, zed-scap 0.0.8 | `platform.go` |
+| D-RANGE | `std::ops::Range<usize>` is the root struct `Range{Start, End int}`; `&mut Option<Range<usize>>` out-parameters are `*Option[Range]`. Later stages reuse `Range` for every `Range<usize>` in the root package | `gpui/src/platform.rs:2174-2420` | `platform.go` |
+| D-WITH | A builder method whose name equals an exported field of the same type gets a `With` prefix, because Go cannot declare both: `Menu::items` / `disabled` are `WithItems` / `WithDisabled`, `MenuItem::checked` / `disabled` are `WithChecked` / `WithDisabled` | `gpui/src/platform/app_menu.rs:26`, `:32`, `:176`, `:198` | `platform_app_menu.go` |
+| D-GETTER | A getter that returns a public field of the same name is not declared; callers read the exported field (`Image.ID`, `Image.Format`, `Image.Bytes`, `ClipboardItem.Entries`, `ClipboardString.Text`) | `gpui/src/platform.rs:3326`, `:3555`, `:3615`, `:3620`, `:3651` | `platform.go` |
+| D-IMAGEFRAME | The image crate's `Frame` is `ImageFrame` (window.rs owns a `Frame`), with the BGRA bytes in an `*image.RGBA` container (not premultiplied) and `Delay` as `time.Duration` instead of `image::Delay`'s millisecond ratio | `gpui/src/platform.rs:57`, `:3462-3531` | `platform.go` |
+| D-IMGDECODE | Decoders are the Go standard library (png, jpeg, gif), x/image (bmp, tiff, webp still images and frame bitstreams) and in-repo ports of the image crate's ICO, PNM, EXIF-orientation and WebP animation compositing (image-webp 0.2.4). Differences: `image/gif` decodes all frames or fails, so one bad GIF frame fails the image where the image crate skips that frame; BMP files cover x/image/bmp's subset (1/4/8/24/32-bit uncompressed), and BMP entries inside ICO the same subset via the in-repo DIB reader; lossy WebP pixel values come from x/image's YCbCr conversion (as L-JPEG for JPEG); TIFF orientation is read from IFD0 tag 274 directly; the animated WebP canvas is capped at 512 MiB (the image crate's default `Limits::max_alloc`) and a frame that fails to decode is yielded as an error and skipped | `gpui/src/platform.rs:3462-3531` | `platform.go` |
