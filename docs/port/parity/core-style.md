@@ -140,48 +140,48 @@ Go target: `spring.go` (package `gpui`), tests in `spring_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `SpringConfig` | struct | 13 |  | `SpringConfig` | todo |
-| `SpringConfig::new` | assoc-fn | 24 |  | `NewSpringConfig` | todo |
-| `SpringConfig::canonical` | method | 33 |  | `(SpringConfig).Canonical` | todo |
-| `SpringConfig::step` | method | 43 |  | `(SpringConfig).Step` | todo |
-| `SpringConfig::step_ramp` | method | 57 |  | `(SpringConfig).StepRamp` | todo |
-| `SpringConfig::propagator` | method | 87 |  | `(SpringConfig).Propagator` | todo |
-| `SpringConfig::is_settled` | method | 146 |  | `(SpringConfig).IsSettled` | todo |
-| `SpringConfig::settle_time` | method | 158 |  | `(SpringConfig).SettleTime` | todo |
-| `SpringState` | struct | 252 |  | `SpringState` | todo |
-| `SpringTarget` | trait | 264 |  | `SpringTarget` | todo |
-| `SpringTarget::target` | trait-method | 269 |  | `SpringTarget.Target` | todo |
-| `SpringTarget::resolve` | trait-method | 272 |  | `SpringTarget.Resolve` | todo |
-| `AnimationPhase` | struct | 328 |  | `AnimationPhase` | todo |
-| `AnimationPhase::clamp` | method | 335 |  | `(AnimationPhase).Clamp` | todo |
-| `AnimationPhase::interpolate` | method | 341 |  | `(AnimationPhase).Interpolate` | todo |
-| `AnimationPhase::interpolate_clamped` | method | 346 |  | `(AnimationPhase).InterpolateClamped` | todo |
-| `AnimationPhase::interpolate_between` | method | 351 |  | `(AnimationPhase).InterpolateBetween` | todo |
-| `AnimationPhase::interpolate_between_clamped` | method | 367 |  | `(AnimationPhase).InterpolateBetweenClamped` | todo |
-| `Interpolate` | trait | 408 |  | `Interpolate` | todo |
-| `Interpolate::interpolate` | trait-method | 410 |  | `Interpolate.Interpolate` | todo |
-| `SpringPlayback` | enum | 456 |  | `SpringPlayback` | todo |
-| `SpringAnimation` | struct | 472 |  | `SpringAnimation` | todo |
-| `SpringAnimation::new` | assoc-fn | 482 |  | `NewSpringAnimation` | todo |
-| `SpringAnimation::to` | method | 493 |  | `(SpringAnimation).To` | todo |
-| `SpringAnimation::with_epsilon` | method | 513 |  | `(SpringAnimation).WithEpsilon` | todo |
-| `SpringAnimation::playback` | method | 519 |  | `(SpringAnimation).Playback` | todo |
-| `SpringAnimation::from` | method | 527 |  | `(SpringAnimation).From` | todo |
-| `sampled_easing` | fn | 538 |  | `SampledEasing` | todo |
+| `SpringConfig` | struct | 13 |  | `SpringConfig` | done |
+| `SpringConfig::new` | assoc-fn | 24 |  | `NewSpringConfig` | done |
+| `SpringConfig::canonical` | method | 33 |  | `(SpringConfig).Canonical` | done |
+| `SpringConfig::step` | method | 43 |  | `(SpringConfig).Step` | done |
+| `SpringConfig::step_ramp` | method | 57 |  | `(SpringConfig).StepRamp` | done |
+| `SpringConfig::propagator` | method | 87 |  | `(SpringConfig).Propagator` | done |
+| `SpringConfig::is_settled` | method | 146 |  | `(SpringConfig).IsSettled` | done |
+| `SpringConfig::settle_time` | method | 158 |  | `(SpringConfig).SettleTime` | done |
+| `SpringState` | struct | 252 |  | `SpringState` | done |
+| `SpringTarget` | trait | 264 |  | `SpringTarget` | done |
+| `SpringTarget::target` | trait-method | 269 |  | `SpringTarget.Target` | done |
+| `SpringTarget::resolve` | trait-method | 272 |  | `SpringTarget.Resolve` | done |
+| `AnimationPhase` | struct | 328 |  | `AnimationPhase` | done |
+| `AnimationPhase::clamp` | method | 335 |  | `(AnimationPhase).Clamp` | done |
+| `AnimationPhase::interpolate` | method | 341 |  | `(AnimationPhase).Interpolate` | done |
+| `AnimationPhase::interpolate_clamped` | method | 346 |  | `(AnimationPhase).InterpolateClamped` | done |
+| `AnimationPhase::interpolate_between` | method | 351 |  | `(AnimationPhase).InterpolateBetween` | done |
+| `AnimationPhase::interpolate_between_clamped` | method | 367 |  | `(AnimationPhase).InterpolateBetweenClamped` | done |
+| `Interpolate` | trait | 408 |  | `Interpolate` | done |
+| `Interpolate::interpolate` | trait-method | 410 |  | `Interpolate.Interpolate` | done |
+| `SpringPlayback` | enum | 456 |  | `SpringPlayback` | done |
+| `SpringAnimation` | struct | 472 |  | `SpringAnimation` | done |
+| `SpringAnimation::new` | assoc-fn | 482 |  | `NewSpringAnimation` | done |
+| `SpringAnimation::to` | method | 493 |  | `(SpringAnimation).To` | done |
+| `SpringAnimation::with_epsilon` | method | 513 |  | `(SpringAnimation).WithEpsilon` | done |
+| `SpringAnimation::playback` | method | 519 |  | `(SpringAnimation).Playback` | done |
+| `SpringAnimation::from` | method | 527 |  | `(SpringAnimation).From` | done |
+| `sampled_easing` | fn | 538 |  | `SampledEasing` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `spring_targets_resolve_typed_outputs` | test | 622 |  | `TestSpring_SpringTargetsResolveTypedOutputs` | todo |
-| `animation_phases_interpolate_over_arbitrary_ranges` | test | 633 |  | `TestSpring_AnimationPhasesInterpolateOverArbitraryRanges` | todo |
-| `hsla_interpolation_takes_the_shortest_hue_path` | test | 647 |  | `TestSpring_HslaInterpolationTakesTheShortestHuePath` | todo |
-| `propagators_compose_and_have_expected_determinant` | test | 669 |  | `TestSpring_PropagatorsComposeAndHaveExpectedDeterminant` | todo |
-| `step_preserves_semigroup_for_every_damping_regime` | test | 698 |  | `TestSpring_StepPreservesSemigroupForEveryDampingRegime` | todo |
-| `ramp_tracks_steady_state_lag` | test | 714 |  | `TestSpring_RampTracksSteadyStateLag` | todo |
-| `settling_requires_low_velocity` | test | 735 |  | `TestSpring_SettlingRequiresLowVelocity` | todo |
-| `settle_time_is_conservative_for_every_damping_regime` | test | 756 |  | `TestSpring_SettleTimeIsConservativeForEveryDampingRegime` | todo |
-| `settle_time_accounts_for_motion_outside_an_instantaneous_tolerance` | test | 778 |  | `TestSpring_SettleTimeAccountsForMotionOutsideAnInstantaneousTolerance` | todo |
-| `undamped_spring_never_settles` | test | 792 |  | `TestSpring_UndampedSpringNeverSettles` | todo |
-| `sampled_easing_has_exact_endpoints_and_can_overshoot` | test | 808 |  | `TestSpring_SampledEasingHasExactEndpointsAndCanOvershoot` | todo |
+| `spring_targets_resolve_typed_outputs` | test | 622 |  | `TestSpring_SpringTargetsResolveTypedOutputs` | done |
+| `animation_phases_interpolate_over_arbitrary_ranges` | test | 633 |  | `TestSpring_AnimationPhasesInterpolateOverArbitraryRanges` | done |
+| `hsla_interpolation_takes_the_shortest_hue_path` | test | 647 |  | `TestSpring_HslaInterpolationTakesTheShortestHuePath` | done |
+| `propagators_compose_and_have_expected_determinant` | test | 669 |  | `TestSpring_PropagatorsComposeAndHaveExpectedDeterminant` | done |
+| `step_preserves_semigroup_for_every_damping_regime` | test | 698 |  | `TestSpring_StepPreservesSemigroupForEveryDampingRegime` | done |
+| `ramp_tracks_steady_state_lag` | test | 714 |  | `TestSpring_RampTracksSteadyStateLag` | done |
+| `settling_requires_low_velocity` | test | 735 |  | `TestSpring_SettlingRequiresLowVelocity` | done |
+| `settle_time_is_conservative_for_every_damping_regime` | test | 756 |  | `TestSpring_SettleTimeIsConservativeForEveryDampingRegime` | done |
+| `settle_time_accounts_for_motion_outside_an_instantaneous_tolerance` | test | 778 |  | `TestSpring_SettleTimeAccountsForMotionOutsideAnInstantaneousTolerance` | done |
+| `undamped_spring_never_settles` | test | 792 |  | `TestSpring_UndampedSpringNeverSettles` | done |
+| `sampled_easing_has_exact_endpoints_and_can_overshoot` | test | 808 |  | `TestSpring_SampledEasingHasExactEndpointsAndCanOvershoot` | done |
 
 ## gpui/src/style.rs
 
@@ -480,3 +480,4 @@ Go target: `taffy.go` (package `gpui`), tests in `taffy_test.go`
 |---|---|---|---|
 | D-PRIMITIVE | `Primitive` is a sealed interface over wrapper variants (`PrimitiveQuad{Quad}`, `PrimitivePath{PaintedPath}`, ...); `Bounds` and `ContentMask` are methods of the wrappers. `impl Into<Primitive>` is the `IntoPrimitive` interface, implemented by every primitive struct and every wrapper, so `Scene.InsertPrimitive` takes either | `gpui/src/scene.rs:493-560`, `:220` | the primitive structs have exported `Bounds` / `ContentMask` fields, so they cannot also carry methods of those names |
 | D-SURFACEBUF | `PaintSurface.ImageBuffer` (`CFRetained<CVPixelBuffer>`, macOS and iOS only) is a `uintptr` CVPixelBufferRef present on every GOOS, zero elsewhere; the Apple back end owns its retain and release | `gpui/src/scene.rs:1169-1175` | the root package imports no Apple bindings (DESIGN 4) and the struct does not vary by GOOS |
+| D-SPRINGTARGET | `SpringTarget[O]` / `Interpolate[T]` are method interfaces implemented by `Pixels`, `Rems`, `AnimationPhase` (and `Rgba`, `Hsla` for Interpolate); `float32` and `bool` targets and `float32` interpolation go through the unexported dispatchers `springTargetOf` / `springResolveOf` / `interpolateValue`, which panic for other types. `AnimationPhase` is `type AnimationPhase float32`; `RangeInclusive<f32>` parameters are `start, end float32`; `SpringAnimation::new` returns `SpringAnimation[struct{}]` and `To` is a generic method; `Duration::MAX` is `time.Duration(math.MaxInt64)` (about 292 years) | `gpui/src/spring.rs:264-420`, `:472-535` | Go cannot add methods to `float32` / `bool` or constrain a receiver's type parameter in one method; `time.Duration` is an int64 of nanoseconds |

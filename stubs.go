@@ -15,18 +15,6 @@ import (
 // DefaultWindowSize is the default size of a new window (M0-window-core ports it).
 var DefaultWindowSize = NewSize(Px(1536.), Px(1095.))
 
-// PlatformGestures are the platform's gesture recognition services (M0-gestures-spring ports it).
-type PlatformGestures interface {
-	Tuning() GestureTuning
-	NativeRecognizers() GestureKinds
-}
-
-// GestureTuning holds feel constants for the portable gesture recognizers (M0-gestures-spring ports it).
-type GestureTuning struct{}
-
-// GestureKinds is the set of gesture kinds a platform recognizes natively (M0-gestures-spring ports it).
-type GestureKinds struct{}
-
 // RenderSvgParams identifies a rasterized SVG in the sprite atlas (M0-elements-media ports it).
 type RenderSvgParams struct {
 	// Path is the SVG's asset path.
@@ -742,15 +730,6 @@ type Empty struct{}
 func (Empty) IntoAnyElement() AnyElement {
 	panic("gpui: unimplemented Empty.IntoAnyElement")
 }
-
-// LongPressEvent is a long-press gesture recognized from touch input (M0-gestures-spring ports it).
-type LongPressEvent struct{}
-
-// TouchDragEvent is a direct touch drag claimed by an element (M0-gestures-spring ports it).
-type TouchDragEvent struct{}
-
-// BackGestureEvent is a back-navigation gesture recognized by the platform (M0-gestures-spring ports it).
-type BackGestureEvent struct{}
 
 // HangDetector detects hangs from the foreground journal (M3-profiler-hang ports it).
 type HangDetector struct{}

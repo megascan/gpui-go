@@ -10,63 +10,63 @@ Go target: `gestures.go` (package `gpui`), tests in `gestures_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `OngoingScroll` | struct | 45 |  | `OngoingScroll` | todo |
-| `OngoingScroll::filter` | method | 55 |  | `(OngoingScroll).Filter` | todo |
-| `GestureTuning` | struct | 110 |  | `GestureTuning` | todo |
-| `ScrollPhysics` | enum | 147 |  | `ScrollPhysics` | todo |
-| `ScrollPhysics::ios` | assoc-fn | 173 |  | `ScrollPhysicsIos` | todo |
-| `ScrollPhysics::android` | assoc-fn | 185 |  | `ScrollPhysicsAndroid` | todo |
-| `GestureKinds` | struct | 349 |  | `GestureKinds` | todo |
-| `GestureKinds::NONE` | assoc-const | 363 |  | `GestureKindsNone` | todo |
-| `GestureKinds::ALL` | assoc-const | 371 |  | `GestureKindsAll` | todo |
-| `TouchDragEvent` | struct | 382 |  | `TouchDragEvent` | todo |
-| `BackGestureEvent` | struct | 410 |  | `BackGestureEvent` | todo |
-| `BackGesturePhase` | enum | 421 |  | `BackGesturePhase` | todo |
-| `LongPressEvent` | struct | 445 |  | `LongPressEvent` | todo |
-| `PlatformGestures` | trait | 477 |  | `PlatformGestures` | todo |
-| `PlatformGestures::tuning` | trait-method | 479 |  | `PlatformGestures.Tuning` | todo |
-| `PlatformGestures::native_recognizers` | trait-method | 484 |  | `PlatformGestures.NativeRecognizers` | todo |
-| `NullPlatformGestures` | struct | 491 |  | `NullPlatformGestures` | todo |
+| `OngoingScroll` | struct | 45 |  | `OngoingScroll` | done |
+| `OngoingScroll::filter` | method | 55 |  | `(OngoingScroll).Filter` | done |
+| `GestureTuning` | struct | 110 |  | `GestureTuning` | done |
+| `ScrollPhysics` | enum | 147 |  | `ScrollPhysics` | done |
+| `ScrollPhysics::ios` | assoc-fn | 173 |  | `ScrollPhysicsIos` | done |
+| `ScrollPhysics::android` | assoc-fn | 185 |  | `ScrollPhysicsAndroid` | done |
+| `GestureKinds` | struct | 349 |  | `GestureKinds` | done |
+| `GestureKinds::NONE` | assoc-const | 363 |  | `GestureKindsNone` | done |
+| `GestureKinds::ALL` | assoc-const | 371 |  | `GestureKindsAll` | done |
+| `TouchDragEvent` | struct | 382 |  | `TouchDragEvent` | done |
+| `BackGestureEvent` | struct | 410 |  | `BackGestureEvent` | done |
+| `BackGesturePhase` | enum | 421 |  | `BackGesturePhase` | done |
+| `LongPressEvent` | struct | 445 |  | `LongPressEvent` | done |
+| `PlatformGestures` | trait | 477 |  | `PlatformGestures` | done |
+| `PlatformGestures::tuning` | trait-method | 479 |  | `PlatformGestures.Tuning` | done |
+| `PlatformGestures::native_recognizers` | trait-method | 484 |  | `PlatformGestures.NativeRecognizers` | done |
+| `NullPlatformGestures` | struct | 491 |  | `NullPlatformGestures` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `ongoing_scroll_locks_to_dominant_axis` | test | 1191 |  | `TestGestures_OngoingScrollLocksToDominantAxis` | todo |
-| `ongoing_scroll_unlocks_when_direction_changes` | test | 1210 |  | `TestGestures_OngoingScrollUnlocksWhenDirectionChanges` | todo |
-| `ongoing_scroll_starts_new_gesture_at_timeout_boundary` | test | 1227 |  | `TestGestures_OngoingScrollStartsNewGestureAtTimeoutBoundary` | todo |
-| `ongoing_scroll_ignores_zero_delta_and_resets_when_ended` | test | 1244 |  | `TestGestures_OngoingScrollIgnoresZeroDeltaAndResetsWhenEnded` | todo |
-| `ongoing_scroll_ignores_zero_delta_movement` | test | 1269 |  | `TestGestures_OngoingScrollIgnoresZeroDeltaMovement` | todo |
-| `ongoing_scroll_supports_moved_only_platforms` | test | 1293 |  | `TestGestures_OngoingScrollSupportsMovedOnlyPlatforms` | todo |
-| `touch_within_slop_resolves_to_tap` | test | 1303 |  | `TestGestures_TouchWithinSlopResolvesToTap` | todo |
-| `consecutive_taps_accumulate_tap_count` | test | 1330 |  | `TestGestures_ConsecutiveTapsAccumulateTapCount` | todo |
-| `touch_beyond_slop_resolves_to_pan` | test | 1370 |  | `TestGestures_TouchBeyondSlopResolvesToPan` | todo |
-| `touch_pan_stays_locked_to_its_initial_dominant_axis` | test | 1410 |  | `TestGestures_TouchPanStaysLockedToItsInitialDominantAxis` | todo |
-| `touch_pan_locks_to_horizontal_axis` | test | 1437 |  | `TestGestures_TouchPanLocksToHorizontalAxis` | todo |
-| `predicted_positions_lead_the_pan_but_totals_converge_on_release` | test | 1455 |  | `TestGestures_PredictedPositionsLeadThePanButTotalsConvergeOnRelease` | todo |
-| `predicted_positions_do_not_emit_false_reversals` | test | 1497 |  | `TestGestures_PredictedPositionsDoNotEmitFalseReversals` | todo |
-| `predicted_overshoot_folds_into_the_fling_without_scrolling_backwards` | test | 1552 |  | `TestGestures_PredictedOvershootFoldsIntoTheFlingWithoutScrollingBackwards` | todo |
-| `fast_release_starts_momentum_that_decays_to_a_stop` | test | 1620 |  | `TestGestures_FastReleaseStartsMomentumThatDecaysToAStop` | todo |
-| `diagonal_release_flings_only_on_locked_axis` | test | 1673 |  | `TestGestures_DiagonalReleaseFlingsOnlyOnLockedAxis` | todo |
-| `slow_release_does_not_start_momentum` | test | 1713 |  | `TestGestures_SlowReleaseDoesNotStartMomentum` | todo |
-| `new_touch_interrupts_momentum` | test | 1735 |  | `TestGestures_NewTouchInterruptsMomentum` | todo |
-| `catching_a_fling_pans_immediately_and_never_taps` | test | 1779 |  | `TestGestures_CatchingAFlingPansImmediatelyAndNeverTaps` | todo |
-| `catching_a_fling_takes_the_axis_from_the_new_touch` | test | 1832 |  | `TestGestures_CatchingAFlingTakesTheAxisFromTheNewTouch` | todo |
-| `cancelled_pan_emits_cancelled_scroll_and_no_tap` | test | 1886 |  | `TestGestures_CancelledPanEmitsCancelledScrollAndNoTap` | todo |
-| `concurrent_touches_are_ignored_while_one_is_active` | test | 1916 |  | `TestGestures_ConcurrentTouchesAreIgnoredWhileOneIsActive` | todo |
-| `spline_position_table_matches_the_bezier_curve` | test | 1952 |  | `TestGestures_SplinePositionTableMatchesTheBezierCurve` | todo |
-| `fling_curves_are_sane_for_both_physics` | test | 1989 |  | `TestGestures_FlingCurvesAreSaneForBothPhysics` | todo |
-| `momentum_is_frame_rate_independent` | test | 2011 |  | `TestGestures_MomentumIsFrameRateIndependent` | todo |
-| `flick_velocity_reflects_release_speed_not_window_average` | test | 2066 |  | `TestGestures_FlickVelocityReflectsReleaseSpeedNotWindowAverage` | todo |
-| `samples_before_a_pause_do_not_contribute_velocity` | test | 2090 |  | `TestGestures_SamplesBeforeAPauseDoNotContributeVelocity` | todo |
-| `claimed_touch_drag_emits_phased_stream_without_pan_or_tap` | test | 2109 |  | `TestGestures_ClaimedTouchDragEmitsPhasedStreamWithoutPanOrTap` | todo |
-| `unclaimed_touch_drag_remains_a_pan_candidate` | test | 2144 |  | `TestGestures_UnclaimedTouchDragRemainsAPanCandidate` | todo |
-| `claimed_long_press_emits_phased_stream_without_tap` | test | 2166 |  | `TestGestures_ClaimedLongPressEmitsPhasedStreamWithoutTap` | todo |
-| `unclaimed_long_press_remains_a_tap_candidate` | test | 2199 |  | `TestGestures_UnclaimedLongPressRemainsATapCandidate` | todo |
-| `unclaimed_long_press_can_still_become_a_pan` | test | 2218 |  | `TestGestures_UnclaimedLongPressCanStillBecomeAPan` | todo |
-| `long_press_offer_is_one_shot_and_specific_to_pending_touch` | test | 2240 |  | `TestGestures_LongPressOfferIsOneShotAndSpecificToPendingTouch` | todo |
-| `long_press_cannot_be_offered_after_pending_touch_resolves` | test | 2256 |  | `TestGestures_LongPressCannotBeOfferedAfterPendingTouchResolves` | todo |
-| `claimed_long_press_emits_cancelled_for_its_touch_only` | test | 2272 |  | `TestGestures_ClaimedLongPressEmitsCancelledForItsTouchOnly` | todo |
-| `unrelated_touch_cannot_end_or_cancel_pending_touch` | test | 2294 |  | `TestGestures_UnrelatedTouchCannotEndOrCancelPendingTouch` | todo |
-| `completed_touch_id_cannot_claim_replacement_touch` | test | 2310 |  | `TestGestures_CompletedTouchIDCannotClaimReplacementTouch` | todo |
+| `ongoing_scroll_locks_to_dominant_axis` | test | 1191 |  | `TestGestures_OngoingScrollLocksToDominantAxis` | done |
+| `ongoing_scroll_unlocks_when_direction_changes` | test | 1210 |  | `TestGestures_OngoingScrollUnlocksWhenDirectionChanges` | done |
+| `ongoing_scroll_starts_new_gesture_at_timeout_boundary` | test | 1227 |  | `TestGestures_OngoingScrollStartsNewGestureAtTimeoutBoundary` | done |
+| `ongoing_scroll_ignores_zero_delta_and_resets_when_ended` | test | 1244 |  | `TestGestures_OngoingScrollIgnoresZeroDeltaAndResetsWhenEnded` | done |
+| `ongoing_scroll_ignores_zero_delta_movement` | test | 1269 |  | `TestGestures_OngoingScrollIgnoresZeroDeltaMovement` | done |
+| `ongoing_scroll_supports_moved_only_platforms` | test | 1293 |  | `TestGestures_OngoingScrollSupportsMovedOnlyPlatforms` | done |
+| `touch_within_slop_resolves_to_tap` | test | 1303 |  | `TestGestures_TouchWithinSlopResolvesToTap` | done |
+| `consecutive_taps_accumulate_tap_count` | test | 1330 |  | `TestGestures_ConsecutiveTapsAccumulateTapCount` | done |
+| `touch_beyond_slop_resolves_to_pan` | test | 1370 |  | `TestGestures_TouchBeyondSlopResolvesToPan` | done |
+| `touch_pan_stays_locked_to_its_initial_dominant_axis` | test | 1410 |  | `TestGestures_TouchPanStaysLockedToItsInitialDominantAxis` | done |
+| `touch_pan_locks_to_horizontal_axis` | test | 1437 |  | `TestGestures_TouchPanLocksToHorizontalAxis` | done |
+| `predicted_positions_lead_the_pan_but_totals_converge_on_release` | test | 1455 |  | `TestGestures_PredictedPositionsLeadThePanButTotalsConvergeOnRelease` | done |
+| `predicted_positions_do_not_emit_false_reversals` | test | 1497 |  | `TestGestures_PredictedPositionsDoNotEmitFalseReversals` | done |
+| `predicted_overshoot_folds_into_the_fling_without_scrolling_backwards` | test | 1552 |  | `TestGestures_PredictedOvershootFoldsIntoTheFlingWithoutScrollingBackwards` | done |
+| `fast_release_starts_momentum_that_decays_to_a_stop` | test | 1620 |  | `TestGestures_FastReleaseStartsMomentumThatDecaysToAStop` | done |
+| `diagonal_release_flings_only_on_locked_axis` | test | 1673 |  | `TestGestures_DiagonalReleaseFlingsOnlyOnLockedAxis` | done |
+| `slow_release_does_not_start_momentum` | test | 1713 |  | `TestGestures_SlowReleaseDoesNotStartMomentum` | done |
+| `new_touch_interrupts_momentum` | test | 1735 |  | `TestGestures_NewTouchInterruptsMomentum` | done |
+| `catching_a_fling_pans_immediately_and_never_taps` | test | 1779 |  | `TestGestures_CatchingAFlingPansImmediatelyAndNeverTaps` | done |
+| `catching_a_fling_takes_the_axis_from_the_new_touch` | test | 1832 |  | `TestGestures_CatchingAFlingTakesTheAxisFromTheNewTouch` | done |
+| `cancelled_pan_emits_cancelled_scroll_and_no_tap` | test | 1886 |  | `TestGestures_CancelledPanEmitsCancelledScrollAndNoTap` | done |
+| `concurrent_touches_are_ignored_while_one_is_active` | test | 1916 |  | `TestGestures_ConcurrentTouchesAreIgnoredWhileOneIsActive` | done |
+| `spline_position_table_matches_the_bezier_curve` | test | 1952 |  | `TestGestures_SplinePositionTableMatchesTheBezierCurve` | done |
+| `fling_curves_are_sane_for_both_physics` | test | 1989 |  | `TestGestures_FlingCurvesAreSaneForBothPhysics` | done |
+| `momentum_is_frame_rate_independent` | test | 2011 |  | `TestGestures_MomentumIsFrameRateIndependent` | done |
+| `flick_velocity_reflects_release_speed_not_window_average` | test | 2066 |  | `TestGestures_FlickVelocityReflectsReleaseSpeedNotWindowAverage` | done |
+| `samples_before_a_pause_do_not_contribute_velocity` | test | 2090 |  | `TestGestures_SamplesBeforeAPauseDoNotContributeVelocity` | done |
+| `claimed_touch_drag_emits_phased_stream_without_pan_or_tap` | test | 2109 |  | `TestGestures_ClaimedTouchDragEmitsPhasedStreamWithoutPanOrTap` | done |
+| `unclaimed_touch_drag_remains_a_pan_candidate` | test | 2144 |  | `TestGestures_UnclaimedTouchDragRemainsAPanCandidate` | done |
+| `claimed_long_press_emits_phased_stream_without_tap` | test | 2166 |  | `TestGestures_ClaimedLongPressEmitsPhasedStreamWithoutTap` | done |
+| `unclaimed_long_press_remains_a_tap_candidate` | test | 2199 |  | `TestGestures_UnclaimedLongPressRemainsATapCandidate` | done |
+| `unclaimed_long_press_can_still_become_a_pan` | test | 2218 |  | `TestGestures_UnclaimedLongPressCanStillBecomeAPan` | done |
+| `long_press_offer_is_one_shot_and_specific_to_pending_touch` | test | 2240 |  | `TestGestures_LongPressOfferIsOneShotAndSpecificToPendingTouch` | done |
+| `long_press_cannot_be_offered_after_pending_touch_resolves` | test | 2256 |  | `TestGestures_LongPressCannotBeOfferedAfterPendingTouchResolves` | done |
+| `claimed_long_press_emits_cancelled_for_its_touch_only` | test | 2272 |  | `TestGestures_ClaimedLongPressEmitsCancelledForItsTouchOnly` | done |
+| `unrelated_touch_cannot_end_or_cancel_pending_touch` | test | 2294 |  | `TestGestures_UnrelatedTouchCannotEndOrCancelPendingTouch` | done |
+| `completed_touch_id_cannot_claim_replacement_touch` | test | 2310 |  | `TestGestures_CompletedTouchIDCannotClaimReplacementTouch` | done |
 
 ## gpui/src/input.rs
 
@@ -411,3 +411,4 @@ Go target: `platform_keystroke.go` (package `gpui`)
 |---|---|---|---|
 | D-FLATENUM | `MouseButton::Navigate(NavigationDirection)` is flattened into `MouseButtonNavigateBack` / `MouseButtonNavigateForward` of one comparable `uint8` enum (`MouseButtonNavigate(dir)`, `(MouseButton).Navigation()`); `TouchPhase` puts `Moved` first so the zero value is upstream's `#[default]` (no `Ord` is derived, so order carries no meaning) | `gpui/src/interactive.rs:88-101`, `:453-480` | Keeps the button usable in `switch`, as a map key and as a constant; keeps zero-valued events equal to upstream's `Default` |
 | D-TYPEORDER | `DispatchTree::available_actions` orders actions by the action type's `PkgPath() + "." + String()` | `gpui/src/key_dispatch.rs:364-380` | `reflect.Type` has no ordering; upstream's `TypeId` order is arbitrary per build, so any total order keeps the binary-search dedup |
+| D-GESTUREDEFAULTS | `PlatformGestures` default methods live on `NullPlatformGestures`, which implementations embed; `GestureTuning::default()` is `DefaultGestureTuning()`; `LongPressEvent::default()` (phase Started) is `DefaultLongPressEvent()`, the zero value has `TouchPhaseMoved`; `ScrollPhysics` is a sealed interface over `ScrollPhysicsExponential` / `ScrollPhysicsFrictionSpline`; `GestureKinds::NONE` / `ALL` are package vars | `gpui/src/gestures.rs:110-200`, `:349-375`, `:445-500` | Go interfaces have no default methods and Go has no struct constants or custom zero values |
