@@ -32,10 +32,10 @@ Go target: `platform/windows/direct_write.go` (package `windows`), tests in `dir
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `tabs_preserve_native_advances_and_cursor` | test | 1808 |  | `TestDirectWrite_TabsPreserveNativeAdvancesAndCursor` | todo |
-| `unicode_line_separators_preserve_shaped_line_cursor` | test | 1934 |  | `TestDirectWrite_UnicodeLineSeparatorsPreserveShapedLineCursor` | todo |
-| `unicode_paragraph_separators_preserve_shaped_line_cursor` | test | 1939 |  | `TestDirectWrite_UnicodeParagraphSeparatorsPreserveShapedLineCursor` | todo |
-| `test_cluster_map` | test | 2041 |  | `TestDirectWrite_ClusterMap` | todo |
+| `tabs_preserve_native_advances_and_cursor` | test | 1808 |  | `TestDirectWrite_TabsPreserveNativeAdvancesAndCursor` | blocked:M0-text-elements |
+| `unicode_line_separators_preserve_shaped_line_cursor` | test | 1934 |  | `TestDirectWrite_UnicodeLineSeparatorsPreserveShapedLineCursor` | blocked:M0-text-elements |
+| `unicode_paragraph_separators_preserve_shaped_line_cursor` | test | 1939 |  | `TestDirectWrite_UnicodeParagraphSeparatorsPreserveShapedLineCursor` | blocked:M0-text-elements |
+| `test_cluster_map` | test | 2041 |  | `TestDirectWrite_ClusterMap` | done |
 
 ## gpui_windows/src/directx_atlas.rs
 
