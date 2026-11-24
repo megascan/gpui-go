@@ -1,0 +1,1 @@
+- Manager QA 2026-11-24: paritycheck -lint fails: internal/linux/wl/display.go:285 calls runtime.LockOSThread outside package platform (move to platform or justify in lint allowlist); internal/linux/xcbshim/setup.go:5 has a disallowed comment.
