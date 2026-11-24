@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<protocol name="golden">
+  <interface name="gold_manager" version="3">
+    <enum name="mode">
+      <entry name="none" value="0"/>
+      <entry name="90" value="1"/>
+    </enum>
+    <enum name="flags" bitfield="true">
+      <entry name="read" value="0x1"/>
+      <entry name="write" value="0x2"/>
+    </enum>
+    <request name="destroy" type="destructor"/>
+    <request name="bind_any">
+      <arg name="name" type="uint"/>
+      <arg name="id" type="new_id"/>
+    </request>
+    <request name="create_item" since="2">
+      <arg name="id" type="new_id" interface="gold_item"/>
+      <arg name="parent" type="object" interface="gold_item" allow-null="true"/>
+      <arg name="title" type="string"/>
+      <arg name="tag" type="string" allow-null="true"/>
+      <arg name="x" type="fixed"/>
+      <arg name="mode" type="int" enum="mode"/>
+      <arg name="flags" type="uint" enum="flags"/>
+      <arg name="data" type="array"/>
+      <arg name="fd" type="fd"/>
+    </request>
+    <event name="item">
+      <arg name="item" type="new_id" interface="gold_item"/>
+      <arg name="flags" type="uint" enum="gold_manager.flags"/>
+    </event>
+    <event name="file" since="3">
+      <arg name="fd" type="fd"/>
+      <arg name="label" type="string" allow-null="true"/>
+      <arg name="type" type="int"/>
+    </event>
+  </interface>
+  <interface name="gold_item" version="1">
+    <request name="use">
+      <arg name="manager" type="object" interface="gold_manager"/>
+      <arg name="mode" type="uint" enum="gold_manager.mode"/>
+    </request>
+    <event name="done" type="destructor">
+      <arg name="data" type="uint"/>
+    </event>
+  </interface>
+  <interface name="gold_empty" version="1"/>
+</protocol>
