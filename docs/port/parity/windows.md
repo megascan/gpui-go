@@ -83,8 +83,8 @@ Go target: `platform/windows/vsync.go` (package `windows`), tests in `vsync_test
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `successful_compositor_wait_reports_native_callback` | test | 92 |  | `TestVsync_SuccessfulCompositorWaitReportsNativeCallback` | todo |
-| `failed_compositor_wait_reports_local_schedule_even_after_threshold` | test | 108 |  | `TestVsync_FailedCompositorWaitReportsLocalScheduleEvenAfterThreshold` | todo |
+| `successful_compositor_wait_reports_native_callback` | test | 92 |  | `TestVsync_SuccessfulCompositorWaitReportsNativeCallback` | done |
+| `failed_compositor_wait_reports_local_schedule_even_after_threshold` | test | 108 |  | `TestVsync_FailedCompositorWaitReportsLocalScheduleEvenAfterThreshold` | done |
 
 ## gpui_windows/src/window.rs
 
@@ -99,3 +99,12 @@ Go target: `platform/windows/window.go` (package `windows`), tests in `window_te
 | `test_double_click_interval` | test | 1695 |  | `TestWindow_DoubleClickInterval` | todo |
 | `test_double_click_spatial_tolerance` | test | 1723 |  | `TestWindow_DoubleClickSpatialTolerance` | todo |
 
+
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-WINVSYNCDIV | `retrieveDuration` returns `(time.Duration, error)`: a zero tick rate is an error (so `NewVSyncProvider` falls back to `defaultVsyncInterval`), and a tick rate under 1 MHz (the `rateRefresh` fallback passes `uiNumerator`, e.g. 60) is converted exactly as `counts*1e6/ticksPerSecond` microseconds; at 1 MHz and above upstream's formula is kept | `gpui_windows/src/vsync.rs:62-85` | upstream divides by `ticks_per_second / 1_000_000`, which is 0 on the fallback path and panics |
+| D-WINDISPFAIL | When `TrySubmitThreadpoolCallback` or `CreateThreadpoolTimer` fails, the runnable is taken back out of the handle table and run on a goroutine (`time.AfterFunc` for the timer); a failed wake `PostMessageW` resets `WakePosted` to false | `gpui_windows/src/dispatcher.rs:54-90`, `:118-132` | upstream leaks the runnable (it cannot drop a scheduled runnable) and leaves `wake_posted` set, so the task never runs and the main queue stops being woken |
+| D-WINLASTERR | `WindowsDisplayPrimaryMonitor` reads the last error captured by the `MonitorFromPoint` call itself (`win32.MonitorFromPointLastError`) | `gpui_windows/src/display.rs:85-92` | Go runtime code between the call and `GetLastError` can overwrite the thread's last error |
+| D-WINSTRNUL | `com.NewHSTRING` / `NewBSTR` encode with `utf16.Encode` and `HSTRING.String` / `BSTRToString` decode the full counted length with `utf16.Decode`, so embedded NULs round-trip | windows-rs `HSTRING::from`, `BSTR::from` | as windows-rs, which never truncates or rejects interior NULs |
