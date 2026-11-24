@@ -39,3 +39,10 @@ Go port of Zed's GPUI at zed@6501df15765d66d6c2a2b66b1eb22434ccef3f86. Target: f
 - `SetTooltip` takes ownership of the tooltip view (callers pass a clone). Element state types that own handles implement `dropElementState()`.
 - Test teardown order: release contexts, `DrainTasks`, then leak report (testing.go).
 - CI: draft PR feat/port -> dev; Actions blocked by account billing (TECH_DEBT CI-BILLING). Owner checks in docs/port/OWNER-CHECKS.md.
+
+## State after M3-exit
+- Every Linux example runs and has a checked PNG under docs/port/screenshots (native_view*, ownership_post, web, iOS excepted: owner checks / no window).
+- Linux a11y: platform/linux/{wayland,x11}/a11y.go wrap gpui.A11yCallbacks into a11y/atspi/bus.NewAdapter; the window's Close releases it.
+- Profiler journal: only the thread from `gpui.NewMainThreadID` feeds the foreground journal; dispatchers that own a main thread must allocate it with that. Linux suspend clock registered in profiler_journal_suspend_linux.go.
+- `App.Shutdown` closes the hang monitor. `Window.HandleInput` releases an unfocused handler; `dropElementState` releases element-state focus handles.
+- Profiler-only tests: run `go test -tags gpui_profiler .` in exits as well as the untagged suite.

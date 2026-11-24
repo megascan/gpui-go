@@ -1367,6 +1367,11 @@ func (cx *App) Shutdown() {
 	}
 
 	cx.quitting = false
+
+	if cx.hangMonitor != nil {
+		cx.hangMonitor.Close()
+		cx.hangMonitor = nil
+	}
 }
 
 func (cx *App) dropWindows() {

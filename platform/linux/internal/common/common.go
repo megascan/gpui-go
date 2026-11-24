@@ -137,6 +137,7 @@ type LinuxCommon struct {
 
 type lazyBus struct {
 	once sync.Once
+	mu   sync.Mutex
 	conn *godbus.Conn
 	err  error
 }
@@ -147,16 +148,28 @@ func (b *lazyBus) get(connect func() (*godbus.Conn, error)) (*godbus.Conn, error
 			b.err = errors.New("no D-Bus connection available")
 			return
 		}
-		b.conn, b.err = connect()
+		conn, err := connect()
+		b.mu.Lock()
+		b.conn, b.err = conn, err
+		b.mu.Unlock()
 	})
+	b.mu.Lock()
+	defer b.mu.Unlock()
 	return b.conn, b.err
 }
 
 func (b *lazyBus) close() {
-	b.once.Do(func() { b.err = errors.New("D-Bus connection closed") })
-	if b.conn != nil {
-		_ = b.conn.Close()
-		b.conn = nil
+	b.once.Do(func() {
+		b.mu.Lock()
+		b.err = errors.New("D-Bus connection closed")
+		b.mu.Unlock()
+	})
+	b.mu.Lock()
+	conn := b.conn
+	b.conn = nil
+	b.mu.Unlock()
+	if conn != nil {
+		_ = conn.Close()
 	}
 }
 
@@ -184,7 +197,7 @@ func NewLinuxCommon(signal LoopSignal) (*LinuxCommon, *PriorityQueueCalloopRecei
 		ConnectSessionBus:  func() (*godbus.Conn, error) { return godbus.ConnectSessionBus() },
 		ConnectSystemBus:   func() (*godbus.Conn, error) { return godbus.ConnectSystemBus() },
 		dispatcher:         dispatcher,
-		mainThread:         gpui.NewThreadID(gpui.None[string]()),
+		mainThread:         gpui.NewMainThreadID(gpui.None[string]()),
 	}
 	return common, mainReceiver, powerReceiver
 }

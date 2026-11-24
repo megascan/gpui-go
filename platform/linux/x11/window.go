@@ -807,6 +807,10 @@ func (w *X11Window) Close() {
 		state.renderer = nil
 		renderer.Destroy()
 	}
+	if state.accesskitAdapter != nil {
+		state.accesskitAdapter.Release()
+		state.accesskitAdapter = nil
+	}
 	c := w.ptr.conn.X
 	if logErr(checkReply("X11 DestroyWindow failure.", xproto.DestroyWindowChecked(c, w.ptr.xWindow).Check())) {
 		xcbFlush(c)

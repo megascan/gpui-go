@@ -9,3 +9,4 @@
 ## To M3-exit: verify block writes binaries into the repo root
 
 - The M3-examples-d Verify block runs a bare `go build ./examples/$e`, which leaves `view_example`, `testing`, `input` and `animation` binaries (about 44 MB each) in the worktree root; this stage deleted the ones its runs produced. Use `go build -o /dev/null` (same note as M3-examples-b/c).
+- Resolution (2026-11-24, M3-exit): Window.HandleInput releases an unfocused handler that implements Release(); the example workarounds are removed.

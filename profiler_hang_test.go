@@ -230,7 +230,7 @@ func TestHang_HangMonitorPollsOnItsIntervalAndOnFlush(t *testing.T) {
 	}
 	journal, guard := installTestForegroundJournal(64, 4)
 	defer guard.End()
-	thread := NewThreadID(Some("hang-test"))
+	thread := NewMainThreadID(Some("hang-test"))
 	defer ReleaseThreadTimings(thread)
 	spawnMonitor := func(journal ForegroundJournal, interval time.Duration) (*hangMonitor, chan hangMonitorReport) {
 		receiver := make(chan hangMonitorReport, 64)
@@ -319,7 +319,6 @@ func TestHang_AppFlushesItsHangMonitorOnShutdown(t *testing.T) {
 				t.Fatalf("start hang monitor: %v", err)
 			}
 		})
-		defer cx.Update(func(cx *App) { cx.hangMonitor.Close() })
 		select {
 		case reason := <-receiver:
 			t.Fatalf("unexpected poll %v", reason)
@@ -351,7 +350,6 @@ func TestHang_StartingTheHangMonitorTwiceIsRejected(t *testing.T) {
 			if err := cx.StartHangMonitor(config, func(HangMonitorPoll) {}); err != nil {
 				t.Fatalf("start hang monitor: %v", err)
 			}
-			defer cx.hangMonitor.Close()
 			var second error
 			panicked := func() (panicked bool) {
 				defer func() {
@@ -894,7 +892,7 @@ func TestHang_DetectsRandomlyPlacedForegroundHangs(t *testing.T) {
 		rng := tc.Rand()
 		journal, guard := installTestForegroundJournal(1024, 16)
 		defer guard.End()
-		thread := NewThreadID(Some("hang-test"))
+		thread := NewMainThreadID(Some("hang-test"))
 		defer ReleaseThreadTimings(thread)
 		detector := NewHangDetector(journal, hangTestThreshold, hangTestFrameBudget)
 

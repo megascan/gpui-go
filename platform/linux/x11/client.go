@@ -2554,5 +2554,5 @@ func (t ximTransport) SendClientMessage(window, messageType uint32, format uint8
 func (t ximTransport) Flush() error { return nil }
 
 func scapScreenSources(executor gpui.ForegroundExecutor) *scheduler.OneshotReceiver[scheduler.Result[[]gpui.ScreenCaptureSource]] {
-	panic("gpui: unimplemented ScapScreenSources")
+	return gpui.ScapScreenSources(executor)
 }

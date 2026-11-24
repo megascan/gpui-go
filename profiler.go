@@ -37,6 +37,21 @@ func NewThreadID(name Option[string]) ThreadID {
 	return id
 }
 
+var foregroundJournalThreads sync.Map
+
+// NewMainThreadID allocates the identity of the main dispatcher thread, whose task polls feed the
+// foreground journal.
+func NewMainThreadID(name Option[string]) ThreadID {
+	id := NewThreadID(name)
+	foregroundJournalThreads.Store(id, struct{}{})
+	return id
+}
+
+func isForegroundJournalThread(id ThreadID) bool {
+	_, ok := foregroundJournalThreads.Load(id)
+	return ok
+}
+
 func threadName(id ThreadID) Option[string] {
 	if n, ok := threadNames.Load(id); ok {
 		return Some(n.(string))
@@ -435,6 +450,7 @@ func threadTimingsFor(thread ThreadID) *GuardedTaskTimings {
 func ReleaseThreadTimings(thread ThreadID) {
 	timings, ok := threadTimingsByThread.LoadAndDelete(thread)
 	threadNames.Delete(thread)
+	foregroundJournalThreads.Delete(thread)
 	if !ok {
 		return
 	}
@@ -503,7 +519,7 @@ func (t *ThreadTimings) Release() {
 
 // UpdateRunningTask records that thread started polling a task.
 func UpdateRunningTask(thread ThreadID, spawned scheduler.SpawnTime, location scheduler.Location) {
-	if profilerFeatureEnabled {
+	if profilerFeatureEnabled && isForegroundJournalThread(thread) {
 		beginForegroundTurn()
 	}
 	timings := threadTimingsFor(thread)
@@ -517,7 +533,7 @@ func SaveTaskTiming(thread ThreadID) {
 	timings := threadTimingsFor(thread)
 	timing := timings.Lock().SaveTaskTiming(yieldedAt)
 	timings.Unlock()
-	if profilerFeatureEnabled {
+	if profilerFeatureEnabled && isForegroundJournalThread(thread) {
 		recordTaskPoll(timing)
 	}
 }

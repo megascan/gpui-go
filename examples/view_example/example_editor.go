@@ -452,9 +452,6 @@ func (t *EditorText) Paint(_ *gpui.GlobalElementID, _ *gpui.InspectorElementID, 
 	defer focusHandle.Release()
 	inputHandler := gpui.NewElementInputHandler(bounds, t.editor.Clone())
 	window.HandleInput(focusHandle, inputHandler, cx)
-	if !focusHandle.IsFocused(window) {
-		inputHandler.Release()
-	}
 
 	lineHeight := window.LineHeight()
 	for i, line := range prepaint.lines {

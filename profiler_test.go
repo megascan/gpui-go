@@ -12,7 +12,44 @@ import (
 )
 
 func TestProfiler_InterruptionsDropLatencySamplesButHidingKeepsDrawWork(t *testing.T) {
-	t.Skip("blocked:M3-profiler-journal: needs install_test_foreground_journal, record_power_transition and record_window_visibility")
+	for _, sleep := range []bool{false, true} {
+		func() {
+			_, guard := installTestForegroundJournal(64, 4)
+			defer guard.End()
+			id := WindowID(1)
+			profiler := mustWindowProfiler(t, id)
+			defer profiler.Close()
+			old := scheduler.InstantNow().Add(-time.Second)
+			recordTestDraw(profiler, old)
+			profiler.recordPresentAt(old, old, true, true)
+			profiler.firstInputAt = Some(old)
+			profiler.pendingInputCount = 1
+			profiler.BeginDraw()
+			if sleep {
+				recordPowerTransition(powerStateSuspended)
+				recordPowerTransition(powerStateAwake)
+			} else {
+				recordWindowVisibility(id, WindowVisibilityHidden)
+				recordWindowVisibility(id, WindowVisibilityVisible)
+			}
+			profiler.EndDraw(Some(old), 1)
+			now := scheduler.InstantNow()
+			profiler.recordPresentAt(now, now, true, true)
+			wantDraws := uint64(2)
+			if sleep {
+				wantDraws = 1
+			}
+			profilerAssertEq(t, profiler.drawDurationHistogram.Len(), wantDraws)
+			profilerAssertEq(t, profiler.inputLatencyHistogram.Len(), 0)
+			profilerAssertEq(t, profiler.dirtyToPresentHistogram.Len(), 1)
+			profilerAssertEq(t, profiler.presentIntervalHistogram.Len(), 0)
+			profiler.BeginDraw()
+			profiler.EndDraw(Some(scheduler.InstantNow()), 1)
+			now = scheduler.InstantNow()
+			profiler.recordPresentAt(now, now, true, true)
+			profilerAssertEq(t, profiler.dirtyToPresentHistogram.Len(), 2)
+		}()
+	}
 }
 
 func TestProfiler_FrameWorkStartsAtTheLaterOfSignalAndInvalidation(t *testing.T) {
@@ -54,6 +91,8 @@ func TestProfiler_FrameWorkStartsAtTheLaterOfSignalAndInvalidation(t *testing.T)
 }
 
 func TestProfiler_FramesAreSplitByRefreshIntervalAndClassified(t *testing.T) {
+	_, guard := installTestForegroundJournal(64, 4)
+	defer guard.End()
 	profiler := mustWindowProfiler(t, WindowID(1))
 	defer profiler.Close()
 	sixtyHertz := time.Second / 60

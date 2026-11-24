@@ -4,3 +4,4 @@
 - RESOLVED 2026-11-24: For M3-exit / M3-bench-context owner: verify line `go test -run xxx -bench FocusCleanup -benchtime 1x .` fails without `-tags gpui_release`: bench_focus_cleanup_test.go:56 calls `b.Skip("use -tags gpui_release")` inside sub-benchmarks and every `BenchmarkFocusCleanup_*` is reported `--- FAIL`. Not in this stage's files; every other verify line (build, vet, `go test .`, gofmt, paritycheck) passes.
 
 - Resolution (2026-11-24): verify.sh/STAGES.md run the FocusCleanup benches with `-tags gpui_release`; `sh docs/port/verify.sh M3-randomized-tree` exits 0.
+- Resolution (2026-11-24, M3-exit): dropElementState releases the element-state focus handle; skip helper removed; rows done.

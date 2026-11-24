@@ -165,7 +165,7 @@ Go target: `examples/web_hello_web/main.go` (package `main`, `js && wasm`)
 | `ACCENT_MAUVE` | const | 196 |  | `AccentMauve` | done |
 | `HelloWeb::render` (`Render` impl) | method | 199 |  | `(HelloWeb).Render` | done |
 | `requested_backend` | fn | 411 |  | `RequestedBackend` | done |
-| `APPLICATION` | static | 433 |  | `application` | dev:WEB-EXAMPLE-DISPATCH |
+| `APPLICATION` | thread-local-static | 433 |  | `application` | dev:WEB-EXAMPLE-DISPATCH |
 | `main` | fn | 436 |  | `main` | dev:WEB-EXAMPLE-DISPATCH |
 
 ## gpui_web/examples/hello_web/dynamic_fonts.rs

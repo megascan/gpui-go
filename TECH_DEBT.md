@@ -39,7 +39,7 @@ GitHub Actions refuses to start the ci workflow's jobs on megascan/gpui-go: ubun
 
 ## STAGE-DEBT
 
-Folded by M0-exit from docs/port/debt/<stage>.md for every stage with a docs/port/status/<stage>.done file. Later exits fold only files not listed here: M0-a11y-schema, M0-app-contexts, M0-app-core, M0-app-effects, M0-blocked-tests, M0-div-api, M0-div-paint, M0-element, M0-elements-basic, M0-elements-media, M0-entities, M0-etagere, M0-executors, M0-geometry-units, M0-geometry, M0-gestures-spring, M0-input-types, M0-keymap, M0-lyon, M0-parity-rescan, M0-platform-data, M0-platform-types, M0-profiler-core, M0-scene, M0-scheduler-core, M0-scheduler-test, M0-style, M0-sumtree, M0-taffy-compute, M0-taffy-fixtures, M0-taffy-grid-types, M0-taffy-style-grid, M0-taffy-style-mod, M0-taffy-style, M0-taffy-tree, M0-test-contexts, M0-test-platform, M0-text-system, M0-window-a11y, M0-window-core, M0-window-dispatch, M0-window-paint, M0-window-tests, M1-linux-common, M1-linux-dbus, M1-linux-platform, M1-linux-screencap, M1-wayland-client, M1-wayland-ffi, M1-wayland-window, M1-wgpu-context, M1-wgpu-renderer, M1-x11-client, M1-x11-window, M2-gotext-layout, M2-gotext-raster, M3-a11y-atspi-bus, M3-a11y-atspi-node, M3-a11y-consumer-tree, M4-apple-ffi, M4-apple-metal-atlas, M4-apple-text, M4-macos-appkit, M4-macos-platform, M4-macos-window-objc, M4-macos-window, M4-web-input, M4-web-platform, M4-web-webgl-shaders, M4-web-webgl, M4-web-wgpu-js, M4-windows-a11y-node, M4-windows-com, M4-windows-directwrite, M4-windows-directx-renderer.
+Folded by M0-exit from docs/port/debt/<stage>.md for every stage with a docs/port/status/<stage>.done file. Later exits fold only files not listed here: M0-a11y-schema, M0-app-contexts, M0-app-core, M0-app-effects, M0-blocked-tests, M0-div-api, M0-div-paint, M0-element, M0-elements-basic, M0-elements-media, M0-entities, M0-etagere, M0-executors, M0-geometry-units, M0-geometry, M0-gestures-spring, M0-input-types, M0-keymap, M0-lyon, M0-parity-rescan, M0-platform-data, M0-platform-types, M0-profiler-core, M0-scene, M0-scheduler-core, M0-scheduler-test, M0-style, M0-sumtree, M0-taffy-compute, M0-taffy-fixtures, M0-taffy-grid-types, M0-taffy-style-grid, M0-taffy-style-mod, M0-taffy-style, M0-taffy-tree, M0-test-contexts, M0-test-platform, M0-text-system, M0-window-a11y, M0-window-core, M0-window-dispatch, M0-window-paint, M0-window-tests, M1-linux-common, M1-linux-dbus, M1-linux-platform, M1-linux-screencap, M1-wayland-client, M1-wayland-ffi, M1-wayland-window, M1-wgpu-context, M1-wgpu-renderer, M1-x11-client, M1-x11-window, M2-gotext-layout, M2-gotext-raster, M3-a11y-atspi-bus, M3-a11y-atspi-node, M3-a11y-consumer-tree, M4-apple-ffi, M4-apple-metal-atlas, M4-apple-text, M4-macos-appkit, M4-macos-platform, M4-macos-window-objc, M4-macos-window, M4-web-input, M4-web-platform, M4-web-webgl-shaders, M4-web-webgl, M4-web-wgpu-js, M4-windows-a11y-node, M4-windows-com, M4-windows-directwrite, M4-windows-directx-renderer, M2-exit, M3-bench-context, M3-examples-b, M3-examples-c, M3-examples-d, M3-platform-benches, M3-profiler-hang, M3-randomized-tree, M3-root-capture, M4-web-example, M0-foundation, M1-linux-ffi, M1-x11-proto, M3-profiler-journal, M3-exit.
 
 ### M0-a11y-schema
 
@@ -630,3 +630,104 @@ Folded by M0-exit from docs/port/debt/<stage>.md for every stage with a docs/por
 - M1-EXIT-X11-ALPHA: on XWayland with the NVIDIA Vulkan driver, X11 windows (32-bit ARGB visual, as upstream) show the desktop where nothing is painted, while Wayland windows are opaque black. Same alpha-mode choice and transparent clear as upstream; owner check filed. shoot now captures the toplevel alone (`grim -T`), so unpainted areas come out transparent in the PNG instead of showing the desktop; the window is 800x600 by default, so hello_world's 500x500 root leaves a transparent margin.
 - M1-EXIT-BUILD-OUT: the M1-exit Verify block runs `go build ./examples/hello_world` without `-o /dev/null`, which writes a ~40 MB `hello_world` binary to the repo root that .gitignore does not cover; delete it after verify and never `git add -A` (fix verify.sh/STAGES.md or .gitignore in the next exit).
 - M1-EXIT-WL-LOCK: internal/linux/wl/display.go locks the OS thread around each libwayland call to read errno; paritycheck -lint flags it until its allowlist names that file.
+
+### M2-exit
+
+- examples/svg_example and examples/image_example find their asset directory with runtime.Caller (the source tree, upstream's CARGO_MANIFEST_DIR), so a copied binary only finds its assets next to the checkout. Same limitation as upstream's env!("CARGO_MANIFEST_DIR").
+- examples/internal/support.HTTPClient is the stand-in for reqwest_client (D-HTTP): net/http on a goroutine, body read into memory before the task resolves, no proxy support. Replace if a shared gpui HTTP client package lands.
+- text example on this machine: 😀, 😍, ❤️ and ❤︎ render monochrome from DejaVu Sans and the keycap from Noto Sans Symbols. Verified parity: cosmic-text 0.19.0 run offline on this machine with the same Lilex primary font picks the same faces.
+- internal/cmd/shoot with -size floats the window where Hyprland puts it, sometimes partly off-monitor (y < 0 or past the bottom), so tall captures can be cut at the monitor edge. The recorded m2 screenshots use the tiled size (no -size).
+- The image example's EXIF image lays out 256x512 instead of 256x256: taffy 0.15 block layout applies aspect_ratio over a definite height there. Checked against the Rust taffy 0.15.0 crate: identical result, so this is upstream behaviour, not a port bug.
+
+### M3-bench-context
+
+- `BenchAppContext` uses `NullHTTPClient` where upstream uses `http_client::BlockedHttpClient` (crate not vendored; same effect: every request fails).
+- Bench apps install the foreground journal themselves when `newApp` left it zero (no `gpui_profiler` tag); task polls are only journaled with `-tags gpui_profiler`, so the three foreground-work tests skip without it (upstream `bench-support` implies `profiler`).
+- `testWindowFrameWakerSchedulesFrame` (upstream cfg `bench-support`) is set by `buildBenchAppContext` and cleared by `Teardown` instead of being a compile-time feature.
+- `BenchPlatform` caches one `ThreadedDispatcher` per goroutine; RunBench runs every invocation on one persistent benchmark goroutine (`onBenchThread`) because testing.B calls the benchmark function on varying goroutines. A `b.Skip`/`b.Fatal` inside it ends that goroutine and its cached dispatcher is leaked.
+- `BenchmarkFocusCleanup_*` skip under debug assertions (`use -tags gpui_release`) where upstream asserts `!cfg!(debug_assertions)`, so `go test -bench` without the tag does not fail.
+- RunBench without inputs or rng runs in the top-level benchmark, so testing.B's repeated calls print one report per call (Criterion prints once).
+- `BenchOptions.SampleSize` (`sample_size = N`) has no testing.B equivalent and is not ported; use `-benchtime`.
+
+### M3-examples-b
+
+- (none)
+
+### M3-examples-c
+
+- examples/native_view, examples/native_view_appkit_field: the background reporter keeps its sender in a Go map keyed by the reporter object instead of an objc ivar; entries are never removed (upstream leaks the boxed sender the same way).
+- examples/gif_viewer, image_gallery, image_loading: upstream's `env_logger::init()` has no Go counterpart; the default slog handler prints the logs.
+- examples/window_positioning, layer_shell, toggle_headless: see docs/port/handoff/M3-examples-c.md (Wayland negative-size abort, shoot cannot capture layer surfaces or headless starts).
+
+### M3-examples-d
+
+- Custom elements (input `TextElement`, view_example `EditorText`) release their owned `Entity` at the end of `Paint`, the element's last use; there is no exported hook to release on frame-arena drop. An element laid out but never painted would leak its handle.
+- view_example `standardActions` and TextArea's Enter listener capture a `WeakEntity[Editor]` instead of a strong clone (listener closures have no drop hook). The editor is kept alive by its owner, so behaviour matches upstream.
+
+### M3-platform-benches
+
+- bench allocation stats use runtime/metrics (`/gc/heap/allocs:objects`, `/memory/classes/heap/objects:bytes`) instead of bench_metrics::allocation_stats; always reported, never None (D-BENCHMETRICS).
+- atlas_upload / scene_ordering / scene_finish drop bench_metrics secondary-metric printing (MetricReport.iter is unexported in root).
+- BenchmarkInspectorRender_* and BenchmarkAtlasUpload_* skip unless built with -tags gpui_release (upstream asserts release); atlas also skips off darwin (upstream requires Metal; macOS platform not ported yet, so it currently always skips).
+
+### M3-profiler-hang
+
+- (none)
+
+### M3-randomized-tree
+
+- `TestRandomizedElementTree_LocalizedRecoloringNotifiesOneEntityUntilItsSubtreeIsExhausted` uses seed 13 instead of upstream's 11: the property is seed-dependent and PCG (D-RNG) seed 11 draws a tree where localized recoloring notifies 4 boundaries vs spread's 3 (about 15% of seeds 0-99 do, the logic matches upstream).
+- Work counters are recorded only when the package variable `randomizedElementTreeRecordWork` is true (set by the test file's init), standing in for upstream's `#[cfg(test)]` fields; `resetWorkCounters`/`workCountersSnapshot` and the counter fields are unexported for the same reason.
+- `RandomizedElementTree` releases its child entity handles in `Drop(cx)`; the child entities' weak reference to the shared map is a `dropped` flag.
+- Two tests skip until the element-state focus-handle leak is fixed (handoff M3-randomized-tree.md).
+
+### M3-root-capture
+
+- `scapDefaultTargetCaptureSource.Release()` stands in for upstream dropping the source (ends a capture whose stream was never requested). `ScreenCaptureSource` has no drop method in Go, so callers must reach it through an `interface{ Release() }` assertion; a forgotten source keeps the capture goroutine and capturer alive. Consider adding `Release` to the `ScreenCaptureSource` interface (contract change, exit stage).
+- `StyledReflectionMethods` embeds styled.go and styled_gen.go and parses them once at run time to recover godoc (Go has no run-time doc strings); adds the source text to binaries that link the root package.
+
+### M4-web-example
+
+- fonts/IBMPlexSans-Regular.ttf and fonts/Lilex-Regular.ttf are copies of text/gotext/testdata/fonts (go:embed cannot reach outside the package). Replace with a shared font package when one exists.
+- test_http_client.mjs and test_canvas_fallback.mjs need headless Chrome and were not run (no browser launched); font_fallback_testing.go and http_client_testing.go need a browser window, so they run only in the browser drivers.
+- The Go wasm test drivers serve wasm_exec.js from GOROOT by hand; there is no build script for the gallery yet.
+
+### M0-foundation
+
+- refinegen Debug output (`String()`) uses Go field names, not upstream's snake_case names.
+- refineable.Eq falls back to reflect.DeepEqual for non-comparable types without an `Eq(T) bool` method; DeepEqual differs from Rust PartialEq for NaN inside slices and for func values.
+- refinegen ignores `JsonSchema` / `Deserialize` / other directive args (schemas come from internal/jsonschema, D-SCHEMA); `Serialize` emits `json:"<snake or source json name>,omitzero"` tags.
+- Nested refineable fields convert with `<Type>FromRefinement` (free function); a nested type from another package must export that function (refinegen-generated types do).
+- `TruncateToBottomNSortedBy` uses its own quickselect; on ties the kept elements may differ from Rust's `select_nth_unstable_by` (equal under compare).
+
+### M1-linux-ffi
+
+- internal/linux/xkb: Keymap.key_for_each and context include-path / logging setters of xkbcommon-rs are not bound (unused by gpui_linux). Add if a later stage needs them.
+- internal/linux/xkb/keysyms.go holds Latin-1, 0xfe00-0xffff and the eight XF86 keysyms gpui_linux uses (C names, e.g. KEY_XF86Back for xkeysym's XF86_Back), not the full header.
+
+### M1-x11-proto
+
+- xgb v1.3.1 reads every event as 32 bytes, so X Generic Events (type 35, all XInput 2 events) with a payload desync its stream, and it drops SCM_RIGHTS descriptors. `xext.Conn` wraps the socket, reframes the stream (setup, replies, errors, events), keeps full GE events in a FIFO and hands xgb only the 32-byte head with length zeroed; `Conn.WaitForEvent`/`PollForEvent` swap each `xproto.GeGenericEvent` for the decoded event. Received fds are queued FIFO and taken by `Dri3OpenCookie.Reply`.
+- Because the socket is dialled by xext, xgb's Xauthority lookup cannot see the display number; `xext.Dial` parses DISPLAY and reads the MIT-MAGIC-COOKIE-1 itself (FamilyLocal by hostname or FamilyWild). Abstract-namespace sockets (`@/tmp/.X11-unix/X<n>`, tried first by libxcb) are not tried, as xgb does not.
+- xgb's `NewEventFuncs`/`NewErrorFuncs` are process-global maps written by every extension Init while connection reader goroutines read them (inherent to xgb's generated Init). Call all `xext.Init*` before events can arrive; tests install constructors once in TestMain.
+- XKB SelectEventsAux uses three generic pair types (`XkbSelectEventsPair8/16/32`) instead of x11rb's eleven per-bitcase structs; layout and affectWhich computation (`aux bitcases | clear | selectAll`) match x11rb.
+- XInput 1 (non-XGE) events and Present/XFixes/Shape/RandR/Render are not added: upstream gpui_linux does not select XI1 events and xgb already has the others.
+- XIM_COMMIT: upstream xim-parser 0.2.2 decodes the synchronous bit backwards (chars `ty == 5`, keysym `ty == 3`, so always false) and zed-xim 0.4.0 ignores Keysym/Both commits. Fixed per review: decoder uses flag 3/5, handleCommit sends XIM_SYNC_REPLY for every synchronous commit and delivers CommitBoth's text. Behaviour differs from upstream (upstream bug); exit stage should register a deviation id if parity tracking needs one.
+
+### M3-profiler-journal
+
+- `maxJournalEntries` is 4 MiB / (sizeof slot + sizeof PresentedFrame): Go slots box entries behind an interface, so the bound approximates upstream's fixed 4 MiB ring rather than matching its slot count.
+- D-JOURNALTHREAD: one process-wide journal; `endTurn` on depth 0 returns without the debug assertion because tests share the journal earlier Apps installed. The dispatchers now journal only the thread from `NewMainThreadID` (M3-exit).
+- D-SUSPENDCLOCK: Linux reads CLOCK_BOOTTIME - CLOCK_MONOTONIC (profiler_journal_suspend_linux.go, M3-exit); Windows and macOS have no suspend clock yet (M4-ci-windows / M4-ci-macos).
+- `durationMulF64` rounds via math.Round on the fractional nanoseconds, close to but not bit-identical with Rust's `Duration::from_secs_f64`.
+
+### M3-exit
+
+- window_native_view.go: `nativeViewElement` holds the NativeView it was built from and never releases it (no element drop hook); native_view examples pass the view's own handle instead of `Clone()`. macOS-only, owner-checked.
+- window_positioning on Hyprland intermittently aborts in wgpuSurfaceConfigure: a configure size goes negative after the client inset and `UpdateDrawableSize` wraps it to u32, same arithmetic as upstream (handoff/M3-examples-c.md). Not reproduced or fixed here.
+- examples/a11y over a private a11y bus (STAGES M3-exit) was not walked with a godbus client; the adapter is wired (platform/linux/{wayland,x11}/a11y.go) and covered by a11y/atspi/bus tests only.
+- M3-examples-c verify isolation: the system_notifications verify line under `dbus-run-session` still activates xdg-desktop-portal and inherits GNOME_KEYRING_CONTROL; verify.sh not changed.
+- WaylandConnection.WindowIdentifier `wayland:` prefix has no display-gated test (M2-exit handoff).
+- `PathBuilderFromSvg` is not exported; examples/painting replays lyon events (D-EXB-SVGINTO).
+- paritycheck (M3-exit): rescan skips headings of external crates (`<crate>-<x.y.z>/...`), proptest rows and descriptive row names when checking that rows are still declared; lint exempts `_test.go` from the LockOSThread rule, allowlists internal/linux/wl/display.go and platform/macos/system_notifications.go, and allows cgo under examples/ios_ios. Revisit in M4-exit.
+- internal/cmd/shoot builds on Windows/js only as a stub that exits 1 (main_unsupported.go) so the cross-vets pass.

@@ -1,0 +1,5 @@
+# M3-profiler-hang handoff
+
+- To M3-exit (app.go): the App never closes its hang monitor. Upstream drops `HangMonitor` with the App, which disconnects its channel and ends the thread; in Go `cx.hangMonitor.Close()` is never called, so a started monitor's goroutine outlives the App (it blocks for `Interval`). Fix: call `cx.hangMonitor.Close()` where the App is dropped (after Shutdown's flush). Repro: TestHang_AppFlushesItsHangMonitorOnShutdown and TestHang_StartingTheHangMonitorTwiceIsRejected close the monitor by hand (`cx.hangMonitor.Close()`); remove those calls once the App does it.
+- Five TestHang_* tests skip without `-tags gpui_profiler` (upstream's `profiler::hang` and `journal` are `cfg(feature = "profiler")`; untagged builds have no app journal and the profiler hooks don't journal). Exit stages must run `go test -tags gpui_profiler -run 'TestHang_|TestDebugOverlay_' .` to cover them; they pass at this stage (also with -count=5).
+- Resolution (2026-11-24, M3-exit): App.Shutdown closes the hang monitor; the tests no longer close it by hand.

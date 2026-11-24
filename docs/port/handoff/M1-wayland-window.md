@@ -9,3 +9,4 @@
 - `WaylandWindow.Close()` is upstream's Drop: renderer destroyed first, wl_surface last, then `DropWindow` and a deferred `WaylandWindowStatePtr.Close`. It must run before `WaylandConnection.Close`. Idempotent.
 - `TestClient_AttachClose` (client_test.go) is gated by `GPUI_TEST_DISPLAY=1` + `WAYLAND_DISPLAY`; run it under `dbus-run-session --` (Attach wires the XDP portal source). Passed on Hyprland.
 - The owed `WindowIdentifier` test (handoff from M1-wayland-client) is not written: exporting needs a mapped toplevel, i.e. a full app with a window. Cover it with a shoot-verified example (check the identifier starts with `wayland:`).
+- Resolution (2026-11-24, M3-exit): a11y.go now wires bus.NewAdapter with the Trivial* handlers; the adapter is released in WaylandWindow.Close.

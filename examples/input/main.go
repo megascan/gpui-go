@@ -722,9 +722,6 @@ func (e *TextElement) Paint(_ *gpui.GlobalElementID, _ *gpui.InspectorElementID,
 	defer focusHandle.Release()
 	inputHandler := gpui.NewElementInputHandler(bounds, e.input.Clone())
 	window.HandleInput(focusHandle, inputHandler, cx)
-	if !focusHandle.IsFocused(window) {
-		inputHandler.Release()
-	}
 	if selection, ok := prepaint.selection.Get(); ok {
 		prepaint.selection = gpui.None[gpui.PaintQuad]()
 		window.PaintQuad(selection)

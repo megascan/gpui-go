@@ -2096,7 +2096,7 @@ type ScapPixels struct {
 	Width int32
 	// Height is the frame height in pixels.
 	Height int32
-	// Data is the packed pixel data, rows without padding.
+	// Data is the packed pixel data; rows may be padded on Wayland.
 	Data []byte
 }
 

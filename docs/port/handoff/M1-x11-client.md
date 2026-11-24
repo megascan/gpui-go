@@ -7,3 +7,4 @@
 
 ## To M3-root-capture / M3-exit
 - Wire `scapScreenSources(executor)` in stubs.go to the real scap screen source listing; `IsScreenCaptureSupported` already returns true.
+- Resolution (2026-11-24, M3-exit): scapScreenSources returns gpui.ScapScreenSources(executor).

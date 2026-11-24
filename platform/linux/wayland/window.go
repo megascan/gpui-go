@@ -638,6 +638,11 @@ func (w *WaylandWindow) Close() {
 
 	state.surface.Destroy()
 
+	if state.accesskitAdapter != nil {
+		state.accesskitAdapter.Release()
+		state.accesskitAdapter = nil
+	}
+
 	client.DropWindow(surfaceID)
 	statePtr := w.ptr
 	state.globals.Executor.Spawn(func(*scheduler.Scope) (struct{}, error) {

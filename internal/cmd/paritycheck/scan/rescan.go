@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -61,12 +62,15 @@ func Compare(res *Result, m *matrix.Matrix, styled map[string]bool, areas []stri
 				continue
 			}
 			if !res.Files[r.Heading] {
-				if strings.HasSuffix(r.Heading, ".rs") {
+				if strings.HasSuffix(r.Heading, ".rs") && !externalCrateHeading.MatchString(r.Heading) {
 					rep.NoFile = append(rep.NoFile, r)
 				}
 				continue
 			}
 			if !r.Test && !scannedKinds[r.Kind] {
+				continue
+			}
+			if r.Kind == "proptest" || strings.ContainsAny(r.Name, " (!") {
 				continue
 			}
 			if !declared(res.Decls[r.Heading], r.Name) {
@@ -267,3 +271,5 @@ func styledNames(p string) (map[string]bool, error) {
 	}
 	return out, nil
 }
+
+var externalCrateHeading = regexp.MustCompile(`^[A-Za-z0-9_-]+-[0-9]+\.[0-9]+\.[0-9]+[^/]*/`)

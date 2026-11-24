@@ -1,3 +1,5 @@
+//go:build !windows && !js
+
 // Command shoot builds an example, runs it, captures only its window with grim and terminates it.
 //
 // The windows never appear on the owner's workspaces: a Hyprland Lua hook (`hyprctl eval`,
@@ -133,7 +135,7 @@ func run(o options) error {
 	cmd.Stdout = os.Stderr
 	cmd.Stderr = os.Stderr
 	cmd.ExtraFiles = []*os.File{gateR}
-	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true, Pdeathsig: syscall.SIGKILL}
+	cmd.SysProcAttr = childProcAttr()
 	cmd.Env = os.Environ()
 	if o.x11 {
 		cmd.Env = withoutEnv(cmd.Env, "WAYLAND_DISPLAY")

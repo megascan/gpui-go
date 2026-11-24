@@ -399,8 +399,8 @@ Go target: `window.go` (package `gpui`), tests in `window_test.go`
 | `test_focus_handle_release` | gpui::test | 8434 |  | `TestWindow_FocusHandleRelease` | done |
 | `test_dropped_focus_handle_blurs_only_its_windows` | gpui::test | 8475 |  | `TestWindow_DroppedFocusHandleBlursOnlyItsWindows` | done |
 | `test_native_close_defers_app_access` | gpui::test | 8523 |  | `TestWindow_NativeCloseDefersAppAccess` | done |
-| `test_frame_requests_and_skips_are_journaled` | gpui::test | 8537 | feat:profiler | `TestWindow_FrameRequestsAndSkipsAreJournaled` | blocked:M3-profiler-journal |
-| `test_frame_demand_survives_throttling` | gpui::test | 8593 | feat:profiler | `TestWindow_FrameDemandSurvivesThrottling` | blocked:M3-profiler-journal |
+| `test_frame_requests_and_skips_are_journaled` | gpui::test | 8537 | feat:profiler | `TestWindow_FrameRequestsAndSkipsAreJournaled` | done |
+| `test_frame_demand_survives_throttling` | gpui::test | 8593 | feat:profiler | `TestWindow_FrameDemandSurvivesThrottling` | done |
 | `test_debug_state_reports_cached_and_platform_values` | gpui::test | 8700 |  | `TestWindow_DebugStateReportsCachedAndPlatformValues` | done |
 | `test_window_visibility` | gpui::test | 8729 |  | `TestWindow_WindowVisibility` | done |
 | `test_display_tracking` | gpui::test | 8774 |  | `TestWindow_DisplayTracking` | done |

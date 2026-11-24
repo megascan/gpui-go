@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M3-platform-benches exit 0 (2026-11-24); also go test -tags gpui_release -bench Inspector -benchtime 1x ./platform ok; GOOS=darwin/windows/js vet ./platform ok

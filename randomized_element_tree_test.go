@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"maps"
 	"math/rand/v2"
-	"os"
 	"reflect"
 	"slices"
 	"testing"
@@ -273,7 +272,6 @@ func TestRandomizedElementTree_RandomizedElementIDsAreUniqueAndStable(t *testing
 }
 
 func TestRandomizedElementTree_RandomizedEntitiesAndWorkCountersSupportIncrementalBenchmarks(t *testing.T) {
-	skipUntilElementStateFocusHandleRelease(t)
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
 		config := NewRandomizedElementTreeConfig(0, 16).
@@ -325,7 +323,6 @@ func randomizedTreeWorkCounters(root Entity[RandomizedElementTree], cx *TestAppC
 }
 
 func TestRandomizedElementTree_RandomizedElementTreeMatchesFullRender(t *testing.T) {
-	skipUntilElementStateFocusHandleRelease(t)
 	PropertyTest(t, func(tc *TestRun, rng *rand.Rand) {
 		cx := tc.Cx()
 		seed := rng.Uint64()
@@ -418,13 +415,6 @@ func randomizedSceneDiff(a, b randomizedSceneSnapshot) string {
 	return fmt.Sprintf(": element ids %v vs %v", a.elementIDs, b.elementIDs)
 }
 
-func skipUntilElementStateFocusHandleRelease(t *testing.T) {
-	t.Helper()
-	if os.Getenv("GPUI_RUN_HANDOFF_REPRO") != "1" {
-		t.Skip("element state focus handles leak: docs/port/handoff/M3-randomized-tree.md")
-	}
-}
-
 type randomizedTabIndexView struct{}
 
 func (v *randomizedTabIndexView) Render(_ *Window, _ *Context[randomizedTabIndexView]) IntoElement {
@@ -432,7 +422,6 @@ func (v *randomizedTabIndexView) Render(_ *Window, _ *Context[randomizedTabIndex
 }
 
 func TestRandomizedElementTree_HandoffElementStateFocusHandleIsReleased(t *testing.T) {
-	skipUntilElementStateFocusHandleRelease(t)
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
 		window := cx.OpenWindow(randomizedTreeTestWindowSize, func(_ *Window, _ *Context[randomizedTabIndexView]) *randomizedTabIndexView {

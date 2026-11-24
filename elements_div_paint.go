@@ -1358,6 +1358,10 @@ func (s *InteractiveElementState) dropElementState() {
 	if s.activeTooltip != nil {
 		s.activeTooltip.set(None[activeTooltipState]())
 	}
+	if focusHandle, ok := s.focusHandle.Get(); ok {
+		focusHandle.Release()
+		s.focusHandle = None[FocusHandle]()
+	}
 }
 
 type activeTooltipKind uint8

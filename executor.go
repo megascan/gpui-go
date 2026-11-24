@@ -20,8 +20,9 @@ type BackgroundExecutor struct {
 
 // ForegroundExecutor spawns tasks on the main thread.
 type ForegroundExecutor struct {
-	inner      scheduler.LocalExecutor
-	dispatcher PlatformDispatcher
+	inner               scheduler.LocalExecutor
+	dispatcher          PlatformDispatcher
+	foregroundRunnables Option[foregroundRunnableCounter]
 }
 
 // SendForegroundExecutor is a handle that spawns tasks on the main thread from any goroutine.
@@ -246,8 +247,9 @@ func NewForegroundExecutor(dispatcher PlatformDispatcher) ForegroundExecutor {
 	if testDispatcher == nil {
 		platformScheduler := NewPlatformScheduler(dispatcher)
 		return ForegroundExecutor{
-			inner:      platformScheduler.ForegroundExecutor(),
-			dispatcher: dispatcher,
+			inner:               platformScheduler.ForegroundExecutor(),
+			dispatcher:          dispatcher,
+			foregroundRunnables: Some(currentForegroundRunnableCounter()),
 		}
 	}
 	s := testDispatcher.Scheduler()
@@ -277,7 +279,13 @@ func (e ForegroundExecutor) SpawnWithPriority[R any](priority Priority, body fun
 // main-thread work. Elsewhere it runs at low priority and ignores timeout.
 func (e ForegroundExecutor) SpawnWhenIdle[R any](timeout Option[time.Duration], body func(s *scheduler.Scope) (R, error)) *Task[R] {
 	dispatcher := e.dispatcher
+	foregroundRunnables := e.foregroundRunnables
 	return e.inner.SpawnWithDispatch(body, func(runnable *scheduler.Runnable) {
+		if profilerFeatureEnabled {
+			if counter, ok := foregroundRunnables.Get(); ok {
+				counter.queued()
+			}
+		}
 		dispatcher.DispatchOnMainThreadWhenIdle(runnable, timeout)
 	})
 }

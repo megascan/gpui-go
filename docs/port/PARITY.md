@@ -617,55 +617,55 @@ Every program under `gpui/examples`, plus the web and iOS example crates. Linux 
 
 | Upstream | LOC | Go package | Notes | Status |
 |---|---|---|---|---|
-| `gpui/examples/a11y.rs` | 272 | `examples/a11y` | needs an a11y adapter to be observable | todo |
-| `gpui/examples/active_state_bug.rs` | 47 | `examples/active_state_bug` |  | todo |
-| `gpui/examples/anchor.rs` | 207 | `examples/anchor` |  | todo |
-| `gpui/examples/animation.rs` | 373 | `examples/animation` |  | todo |
-| `gpui/examples/data_table.rs` | 494 | `examples/data_table` |  | todo |
-| `gpui/examples/drag_drop.rs` | 158 | `examples/drag_drop` |  | todo |
-| `gpui/examples/focus_visible.rs` | 235 | `examples/focus_visible` |  | todo |
-| `gpui/examples/gif_viewer.rs` | 62 | `examples/gif_viewer` |  | todo |
-| `gpui/examples/gradient.rs` | 278 | `examples/gradient` |  | todo |
-| `gpui/examples/grid_layout.rs` | 95 | `examples/grid_layout` |  | todo |
-| `gpui/examples/hello_world.rs` | 127 | `examples/hello_world` |  | todo |
-| `gpui/examples/image_gallery.rs` | 300 | `examples/image_gallery` |  | todo |
-| `gpui/examples/image_loading.rs` | 232 | `examples/image_loading` |  | todo |
-| `gpui/examples/input.rs` | 912 | `examples/input` |  | todo |
-| `gpui/examples/layer_shell.rs` | 101 | `examples/layer_shell` | Linux Wayland only (`cfg(all(target_os = "linux", feature = "wayland"))`) | todo |
-| `gpui/examples/list_example.rs` | 176 | `examples/list_example` |  | todo |
-| `gpui/examples/mouse_pressure.rs` | 87 | `examples/mouse_pressure` |  | todo |
-| `gpui/examples/move_entity_between_windows.rs` | 160 | `examples/move_entity_between_windows` |  | todo |
-| `gpui/examples/native_view.rs` | 571 | `examples/native_view` | macOS only (`cfg(target_os = "macos")`); other OSes print and exit as upstream | todo |
-| `gpui/examples/native_view_appkit_field.rs` | 226 | `examples/native_view_appkit_field` | macOS only | todo |
-| `gpui/examples/on_window_close_quit.rs` | 103 | `examples/on_window_close_quit` |  | todo |
-| `gpui/examples/opacity.rs` | 195 | `examples/opacity` |  | todo |
-| `gpui/examples/ownership_post.rs` | 56 | `examples/ownership_post` |  | todo |
-| `gpui/examples/painting.rs` | 533 | `examples/painting` |  | todo |
-| `gpui/examples/paths_bench.rs` | 113 | `examples/paths_bench` | benchmark-style example | todo |
-| `gpui/examples/pattern.rs` | 136 | `examples/pattern` |  | todo |
-| `gpui/examples/popover.rs` | 197 | `examples/popover` |  | todo |
-| `gpui/examples/scrollable.rs` | 78 | `examples/scrollable` |  | todo |
-| `gpui/examples/set_menus.rs` | 134 | `examples/set_menus` | app menus; visible on macOS | todo |
-| `gpui/examples/shadow.rs` | 622 | `examples/shadow` |  | todo |
-| `gpui/examples/svg_animation.rs` | 222 | `examples/svg_animation` |  | todo |
-| `gpui/examples/system_notifications.rs` | 155 | `examples/system_notifications` | needs the notification back end | todo |
-| `gpui/examples/tab_stop.rs` | 220 | `examples/tab_stop` |  | todo |
-| `gpui/examples/testing.rs` | 561 | `examples/testing` | contains tests; ported with its tests | todo |
-| `gpui/examples/text.rs` | 432 | `examples/text` |  | todo |
-| `gpui/examples/text_layout.rs` | 117 | `examples/text_layout` |  | todo |
-| `gpui/examples/text_wrapper.rs` | 144 | `examples/text_wrapper` |  | todo |
-| `gpui/examples/toggle_headless.rs` | 309 | `examples/toggle_headless` | windowing-mode switch; behaviour differs per OS as upstream | todo |
-| `gpui/examples/tree.rs` | 64 | `examples/tree` |  | todo |
-| `gpui/examples/uniform_list.rs` | 71 | `examples/uniform_list` |  | todo |
-| `gpui/examples/window.rs` | 355 | `examples/window` |  | todo |
-| `gpui/examples/window_movable.rs` | 131 | `examples/window_movable` |  | todo |
-| `gpui/examples/window_positioning.rs` | 246 | `examples/window_positioning` |  | todo |
-| `gpui/examples/window_shadow.rs` | 252 | `examples/window_shadow` |  | todo |
-| `gpui/examples/image/` | 220 | `examples/image_example` | ships 5 asset files | todo |
-| `gpui/examples/svg/` | 108 | `examples/svg_example` | ships `dragon.svg` | todo |
-| `gpui/examples/view_example/` | 1090 | `examples/view_example` | 5 files, contains tests | todo |
-| `gpui/examples/example_support/fonts.rs` | 44 | `examples/internal/support` | shared helper, not a program | todo |
-| `gpui_web/examples/hello_web/` | 883 | `examples/web_hello_web` | GOOS=js; 5 Rust files plus html and js test drivers | todo |
+| `gpui/examples/a11y.rs` | 272 | `examples/a11y` | needs an a11y adapter to be observable | done |
+| `gpui/examples/active_state_bug.rs` | 47 | `examples/active_state_bug` |  | done |
+| `gpui/examples/anchor.rs` | 207 | `examples/anchor` |  | done |
+| `gpui/examples/animation.rs` | 373 | `examples/animation` |  | done |
+| `gpui/examples/data_table.rs` | 494 | `examples/data_table` |  | done |
+| `gpui/examples/drag_drop.rs` | 158 | `examples/drag_drop` |  | done |
+| `gpui/examples/focus_visible.rs` | 235 | `examples/focus_visible` |  | done |
+| `gpui/examples/gif_viewer.rs` | 62 | `examples/gif_viewer` |  | done |
+| `gpui/examples/gradient.rs` | 278 | `examples/gradient` |  | done |
+| `gpui/examples/grid_layout.rs` | 95 | `examples/grid_layout` |  | done |
+| `gpui/examples/hello_world.rs` | 127 | `examples/hello_world` |  | done |
+| `gpui/examples/image_gallery.rs` | 300 | `examples/image_gallery` |  | done |
+| `gpui/examples/image_loading.rs` | 232 | `examples/image_loading` |  | done |
+| `gpui/examples/input.rs` | 912 | `examples/input` |  | done |
+| `gpui/examples/layer_shell.rs` | 101 | `examples/layer_shell` | Linux Wayland only (`cfg(all(target_os = "linux", feature = "wayland"))`) | done |
+| `gpui/examples/list_example.rs` | 176 | `examples/list_example` |  | done |
+| `gpui/examples/mouse_pressure.rs` | 87 | `examples/mouse_pressure` |  | done |
+| `gpui/examples/move_entity_between_windows.rs` | 160 | `examples/move_entity_between_windows` |  | done |
+| `gpui/examples/native_view.rs` | 571 | `examples/native_view` | macOS only (`cfg(target_os = "macos")`); other OSes print and exit as upstream | done |
+| `gpui/examples/native_view_appkit_field.rs` | 226 | `examples/native_view_appkit_field` | macOS only | done |
+| `gpui/examples/on_window_close_quit.rs` | 103 | `examples/on_window_close_quit` |  | done |
+| `gpui/examples/opacity.rs` | 195 | `examples/opacity` |  | done |
+| `gpui/examples/ownership_post.rs` | 56 | `examples/ownership_post` |  | done |
+| `gpui/examples/painting.rs` | 533 | `examples/painting` |  | done |
+| `gpui/examples/paths_bench.rs` | 113 | `examples/paths_bench` | benchmark-style example | done |
+| `gpui/examples/pattern.rs` | 136 | `examples/pattern` |  | done |
+| `gpui/examples/popover.rs` | 197 | `examples/popover` |  | done |
+| `gpui/examples/scrollable.rs` | 78 | `examples/scrollable` |  | done |
+| `gpui/examples/set_menus.rs` | 134 | `examples/set_menus` | app menus; visible on macOS | done |
+| `gpui/examples/shadow.rs` | 622 | `examples/shadow` |  | done |
+| `gpui/examples/svg_animation.rs` | 222 | `examples/svg_animation` |  | done |
+| `gpui/examples/system_notifications.rs` | 155 | `examples/system_notifications` | needs the notification back end | done |
+| `gpui/examples/tab_stop.rs` | 220 | `examples/tab_stop` |  | done |
+| `gpui/examples/testing.rs` | 561 | `examples/testing` | contains tests; ported with its tests | done |
+| `gpui/examples/text.rs` | 432 | `examples/text` |  | done |
+| `gpui/examples/text_layout.rs` | 117 | `examples/text_layout` |  | done |
+| `gpui/examples/text_wrapper.rs` | 144 | `examples/text_wrapper` |  | done |
+| `gpui/examples/toggle_headless.rs` | 309 | `examples/toggle_headless` | windowing-mode switch; behaviour differs per OS as upstream | done |
+| `gpui/examples/tree.rs` | 64 | `examples/tree` |  | done |
+| `gpui/examples/uniform_list.rs` | 71 | `examples/uniform_list` |  | done |
+| `gpui/examples/window.rs` | 355 | `examples/window` |  | done |
+| `gpui/examples/window_movable.rs` | 131 | `examples/window_movable` |  | done |
+| `gpui/examples/window_positioning.rs` | 246 | `examples/window_positioning` |  | done |
+| `gpui/examples/window_shadow.rs` | 252 | `examples/window_shadow` |  | done |
+| `gpui/examples/image/` | 220 | `examples/image_example` | ships 5 asset files | done |
+| `gpui/examples/svg/` | 108 | `examples/svg_example` | ships `dragon.svg` | done |
+| `gpui/examples/view_example/` | 1090 | `examples/view_example` | 5 files, contains tests | done |
+| `gpui/examples/example_support/fonts.rs` | 44 | `examples/internal/support` | shared helper, not a program | done |
+| `gpui_web/examples/hello_web/` | 883 | `examples/web_hello_web` | GOOS=js; 5 Rust files plus html and js test drivers | done |
 | `gpui_ios/examples/ios.rs` | 64 | `examples/ios_ios` | GOOS=ios; Xcode wrapper in `gpui_ios/examples/ios/` | todo |
 
 47 example programs in `gpui/examples`.

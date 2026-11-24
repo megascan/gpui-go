@@ -137,7 +137,7 @@ Go target: `profiler.go` (package `gpui`), tests in `profiler_test.go`
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `interruptions_drop_latency_samples_but_hiding_keeps_draw_work` | test | 1661 | feat:profiler | `TestProfiler_InterruptionsDropLatencySamplesButHidingKeepsDrawWork` | blocked:M3-exit |
+| `interruptions_drop_latency_samples_but_hiding_keeps_draw_work` | test | 1661 | feat:profiler | `TestProfiler_InterruptionsDropLatencySamplesButHidingKeepsDrawWork` | done |
 | `frame_work_starts_at_the_later_of_signal_and_invalidation` | test | 1698 | feat:profiler | `TestProfiler_FrameWorkStartsAtTheLaterOfSignalAndInvalidation` | done |
 | `frames_are_split_by_refresh_interval_and_classified` | test | 1731 | feat:profiler | `TestProfiler_FramesAreSplitByRefreshIntervalAndClassified` | done |
 | `records_draw_events_only_while_tracing` | test | 1886 | feat:profiler | `TestProfiler_RecordsDrawEventsOnlyWhileTracing` | done |
@@ -216,8 +216,8 @@ Go target: `randomized_element_tree.go` (package `gpui`), tests in `randomized_e
 | `bounds_sample_within_range_and_reproduce_from_the_seed` | test | 1827 |  | `TestRandomizedElementTree_BoundsSampleWithinRangeAndReproduceFromTheSeed` | done |
 | `generated_topologies_include_wide_deep_narrow_and_empty_trees` | test | 1851 |  | `TestRandomizedElementTree_GeneratedTopologiesIncludeWideDeepNarrowAndEmptyTrees` | done |
 | `randomized_element_ids_are_unique_and_stable` | test | 1870 |  | `TestRandomizedElementTree_RandomizedElementIDsAreUniqueAndStable` | done |
-| `randomized_entities_and_work_counters_support_incremental_benchmarks` | gpui::test | 1915 |  | `TestRandomizedElementTree_RandomizedEntitiesAndWorkCountersSupportIncrementalBenchmarks` | blocked:M3-exit |
-| `randomized_element_tree_matches_full_render` | gpui::property_test(config = ProptestConfig { cases: 4, ..Default::default() }) | 1965 |  | `TestRandomizedElementTree_RandomizedElementTreeMatchesFullRender` | blocked:M3-exit |
+| `randomized_entities_and_work_counters_support_incremental_benchmarks` | gpui::test | 1915 |  | `TestRandomizedElementTree_RandomizedEntitiesAndWorkCountersSupportIncrementalBenchmarks` | done |
+| `randomized_element_tree_matches_full_render` | gpui::property_test(config = ProptestConfig { cases: 4, ..Default::default() }) | 1965 |  | `TestRandomizedElementTree_RandomizedElementTreeMatchesFullRender` | done |
 
 ## gpui/src/app/bench_context.rs
 

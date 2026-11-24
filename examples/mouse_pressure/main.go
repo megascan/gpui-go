@@ -14,18 +14,6 @@ type MousePressureExample struct {
 	pressureAmount float32
 }
 
-func pressureStageDebug(stage gpui.PressureStage) string {
-	switch stage {
-	case gpui.PressureStageZero:
-		return "Zero"
-	case gpui.PressureStageNormal:
-		return "Normal"
-	case gpui.PressureStageForce:
-		return "Force"
-	}
-	return fmt.Sprintf("PressureStage(%d)", uint8(stage))
-}
-
 // Render renders the view.
 func (m *MousePressureExample) Render(_ *gpui.Window, cx *gpui.Context[MousePressureExample]) gpui.IntoElement {
 	return gpui.NewDiv().
@@ -41,7 +29,7 @@ func (m *MousePressureExample) Render(_ *gpui.Window, cx *gpui.Context[MousePres
 		BorderColor(gpui.Rgb(0x0000ff)).
 		TextXl().
 		TextColor(gpui.Rgb(0xffffff)).
-		ChildText(fmt.Sprintf("Pressure stage: %s", pressureStageDebug(m.pressureStage))).
+		ChildText(fmt.Sprintf("Pressure stage: %s", m.pressureStage)).
 		ChildText(fmt.Sprintf("Pressure amount: %.2f", m.pressureAmount)).
 		OnMousePressure(cx.Listener((*MousePressureExample).onMousePressure))
 }

@@ -189,11 +189,145 @@ func TestWindow_NativeCloseDefersAppAccess(t *testing.T) {
 }
 
 func TestWindow_FrameRequestsAndSkipsAreJournaled(t *testing.T) {
-	t.Skip("blocked:M3-profiler-journal: needs journal.InstallTestForegroundJournal")
+	if !profilerFeatureEnabled {
+		t.Skip("requires -tags gpui_profiler")
+	}
+	RunTest(t, func(tc *TestRun) {
+		cx := tc.Cx()
+		cx.Update(func(cx *App) { cx.mode = gpuiModeProduction })
+		window := cx.AddWindow(func(_ *Window, _ *Context[windowTestEmptyView]) *windowTestEmptyView {
+			return &windowTestEmptyView{}
+		})
+		platformWindow := cx.testWindow(window.AnyWindowHandle)
+		platformWindow.SimulateFrameRequest(RequestFrameOptions{})
+		journal, guard := installTestForegroundJournal(64, 4)
+		defer guard.End()
+		collector := journal.Collector()
+
+		for _, c := range []struct {
+			signalAt Option[scheduler.Instant]
+			source   FrameRequestSource
+		}{
+			{Some(scheduler.InstantNow()), FrameRequestSourceNativeCallback},
+			{Some(scheduler.InstantNow()), FrameRequestSourceLocalSchedule},
+			{None[scheduler.Instant](), FrameRequestSourceNativeCallback},
+		} {
+			platformWindow.SimulateFrameRequest(RequestFrameOptions{
+				SignalAt:            c.signalAt,
+				SignalSource:        c.source,
+				RequirePresentation: true,
+			})
+			entries := collector.CollectUnseen().Entries
+			signalIndex := slices.IndexFunc(entries, func(entry ForegroundJournalEntry) bool {
+				e, ok := entry.(ForegroundJournalEntryPlatformSignal)
+				if !ok {
+					return false
+				}
+				signal := e.Signal
+				at, hasAt := c.signalAt.Get()
+				return signal.WindowID == window.WindowID() && signal.SignalAt == c.signalAt && signal.Source == c.source && (!hasAt || !signal.HandledAt.Before(at))
+			})
+			if signalIndex < 0 {
+				t.Fatal("frame request metadata")
+			}
+			skipIndex := slices.IndexFunc(entries, func(entry ForegroundJournalEntry) bool {
+				e, ok := entry.(ForegroundJournalEntryBoundary)
+				if !ok {
+					return false
+				}
+				skipped, ok := e.Boundary.(IntervalBoundaryFrameSkipped)
+				return ok && skipped.WindowID == window.WindowID() && skipped.Reason == FrameSkipReasonNoRenderNeeded
+			})
+			if skipIndex < 0 {
+				t.Fatal("completed no-render boundary")
+			}
+			if signalIndex >= skipIndex {
+				t.Fatalf("signal %d not before skip %d", signalIndex, skipIndex)
+			}
+		}
+	})
 }
 
 func TestWindow_FrameDemandSurvivesThrottling(t *testing.T) {
-	t.Skip("blocked:M3-profiler-journal: needs journal.InstallTestForegroundJournal")
+	if !profilerFeatureEnabled {
+		t.Skip("requires -tags gpui_profiler")
+	}
+	RunTest(t, func(tc *TestRun) {
+		cx := tc.Cx()
+		cx.Update(func(cx *App) { cx.mode = gpuiModeProduction })
+		journal, guard := installTestForegroundJournal(256, 4)
+		defer guard.End()
+		collector := journal.Collector()
+		for _, c := range []struct{ initiallyDirty, scheduleCallback bool }{{true, false}, {false, true}} {
+			var window WindowHandle[windowTestEmptyView]
+			cx.Update(func(cx *App) {
+				options := DefaultWindowOptions()
+				options.InactiveFrameInterval = Some(time.Hour)
+				handle, err := cx.OpenWindow(options, func(_ *Window, cx *App) Entity[windowTestEmptyView] {
+					return cx.New(func(*Context[windowTestEmptyView]) *windowTestEmptyView { return &windowTestEmptyView{} })
+				})
+				if err != nil {
+					t.Fatalf("open inactive test window: %v", err)
+				}
+				window = handle
+			})
+			platformWindow := cx.testWindow(window.AnyWindowHandle)
+			platformWindow.simulateActiveStatusChange(false)
+			platformWindow.SimulateFrameRequest(RequestFrameOptions{})
+			callbackRan := false
+			var drawsBefore uint64
+			windowTestMust(window.Update(cx, func(_ *windowTestEmptyView, window *Window, _ *Context[windowTestEmptyView]) {
+				drawsBefore = window.FrameDurationSnapshot().DrawDurationHistogram.Len()
+				if c.initiallyDirty {
+					window.Refresh()
+				}
+				if c.scheduleCallback {
+					window.OnNextFrame(func(window *Window, _ *App) {
+						callbackRan = true
+						window.Refresh()
+					})
+				}
+			}))
+			inputAt := scheduler.InstantNow()
+			recordInput(InputTiming{Kind: "test", Start: inputAt, End: inputAt, CausedInvalidation: false})
+			collector.CollectUnseen()
+			wakesBefore := platformWindow.FrameWakeCount()
+			platformWindow.SimulateFrameRequest(RequestFrameOptions{SignalAt: Some(scheduler.InstantNow())})
+			windowTestMust(window.Update(cx, func(_ *windowTestEmptyView, window *Window, _ *Context[windowTestEmptyView]) {
+				if got := window.FrameDurationSnapshot().DrawDurationHistogram.Len(); got != drawsBefore {
+					t.Fatalf("deferred frame drew: %d != %d", got, drawsBefore)
+				}
+			}))
+			if callbackRan {
+				t.Fatal("callback ran while throttled")
+			}
+			if !platformWindow.FrameScheduled() {
+				t.Fatal("frame not scheduled")
+			}
+			if platformWindow.FrameWakeCount() <= wakesBefore {
+				t.Fatal("no frame wake")
+			}
+			if !slices.ContainsFunc(collector.CollectUnseen().Entries, func(entry ForegroundJournalEntry) bool {
+				e, ok := entry.(ForegroundJournalEntryBoundary)
+				if !ok {
+					return false
+				}
+				skipped, ok := e.Boundary.(IntervalBoundaryFrameSkipped)
+				return ok && skipped.WindowID == window.WindowID() && skipped.Reason == FrameSkipReasonInactiveFrameRateLimit
+			}) {
+				t.Fatal("no inactive frame rate limit skip")
+			}
+			platformWindow.SimulateFrameRequest(RequestFrameOptions{SignalAt: Some(scheduler.InstantNow()), RequirePresentation: true})
+			windowTestMust(window.Update(cx, func(_ *windowTestEmptyView, window *Window, _ *Context[windowTestEmptyView]) {
+				if got := window.FrameDurationSnapshot().DrawDurationHistogram.Len(); got != drawsBefore+1 {
+					t.Fatalf("presented frame: %d != %d", got, drawsBefore+1)
+				}
+			}))
+			if callbackRan != c.scheduleCallback {
+				t.Fatalf("callbackRan = %v", callbackRan)
+			}
+		}
+	})
 }
 
 func TestWindow_FrameThrottleTracksDisplayRefreshes(t *testing.T) {

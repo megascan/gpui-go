@@ -89,6 +89,9 @@ func (s *PlatformScheduler) Block(sessionID *scheduler.SessionID, future schedul
 
 // ScheduleLocal dispatches runnable to the main thread.
 func (s *PlatformScheduler) ScheduleLocal(sessionID scheduler.SessionID, runnable *scheduler.Runnable) {
+	if profilerFeatureEnabled {
+		currentForegroundRunnableCounter().queued()
+	}
 	s.dispatcher.DispatchOnMainThread(runnable, scheduler.DefaultPriority())
 }
 

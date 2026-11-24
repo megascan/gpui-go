@@ -2,7 +2,7 @@
 
 Things only a person can confirm (a device, a browser, an interactive dialog, a screen reader). Folded from docs/port/owner-checks/<stage>.md by the exit stages; keep each item until the owner confirms it.
 
-Folded: M1-linux-platform, M1-linux-screencap, M1-wayland-window, M3-a11y-atspi-bus, M4-apple-text, M4-macos-appkit, M4-macos-platform, M4-web-webgl, M4-web-wgpu-js, M4-windows-a11y-node, M4-ios-app, M4-macos-a11y, M4-web-example, M4-windows-a11y, M4-windows-platform, M4-windows-screencap, M4-windows-shell, M1-exit.
+Folded: M1-linux-platform, M1-linux-screencap, M1-wayland-window, M3-a11y-atspi-bus, M4-apple-text, M4-macos-appkit, M4-macos-platform, M4-web-webgl, M4-web-wgpu-js, M4-windows-a11y-node, M4-ios-app, M4-macos-a11y, M4-web-example, M4-windows-a11y, M4-windows-platform, M4-windows-screencap, M4-windows-shell, M1-exit, M3-examples-b, M3-examples-c, M3-exit.
 
 ## M1-linux-platform
 
@@ -103,3 +103,25 @@ Folded: M1-linux-platform, M1-linux-screencap, M1-wayland-window, M3-a11y-atspi-
 ## M1-exit
 
 - YOU: on X11 / XWayland, open examples/hello_world (`go run ./examples/hello_world` with WAYLAND_DISPLAY unset) and compare with Zed upstream on the same machine: the area outside the 500px div is transparent here (Vulkan surface on a 32-bit ARGB visual offers no Opaque alpha mode, so the Inherit fallback is picked as upstream does); confirm upstream shows the same.
+
+## M3-examples-b
+
+- YOU: mouse_pressure on a macOS Force Touch trackpad: `go run ./examples/mouse_pressure`, press harder; "Pressure stage" goes Zero -> Normal -> Force and the amount changes.
+- YOU: focus_visible / tab_stop interactively: Tab and Shift-Tab move focus (green focus-visible border only on keyboard, yellow focus border on click); tab_stop cycles 1,2,2,3,Button 1,Button 2,[6,1..3],[7,1..3].
+- YOU: drag_drop: drag an item onto "Drop items here"; the preview follows the cursor and the target takes the item's color.
+- YOU: painting: drag to draw, Shift for straight lines, Dashed/Scribble/Grid/Clear buttons.
+- YOU: a11y with a screen reader (Orca on Linux, VoiceOver, Narrator): heading, spin button increment/decrement, switch, list of three tasks.
+
+## M3-examples-c
+
+- YOU: on macOS, `go run ./examples/native_view`: the WKWebView page shows next to the GPUI sidebar; cmd-shift-p opens the palette over the page edge, escape returns focus to the page field, cmd-k stays with the page, dragging the divider resizes the sidebar and the catch-up strip takes the page background color.
+- YOU: on macOS, `go run ./examples/native_view_appkit_field`: the NSTextView sits in the top right corner, typing goes into it, the top line names the view with keyboard input, and the console prints "AppKit field took keyboard input: true" then "AppKit field kept keyboard input: true".
+- YOU: on macOS, `go run ./examples/set_menus`: the menu bar shows set_menus with Services, a disabled item and submenu, a checked "List Mode", a Mode submenu whose check moves when toggled, and Quit (prints "Gracefully quitting the application...").
+- YOU: on macOS and Windows, `go run ./examples/window`: every button opens its window kind (Popup, Floating, Dialog with nested dialog, custom titlebar, invisible, unmovable, unresizable, unminimizable), Hide Application restores after 3 s, Prompt and the Chinese Prompt show native dialogs and print the clicked button.
+- YOU: on macOS, `go run ./examples/window_movable`: the two NOT movable windows cannot be dragged by the titlebar, the movable ones can.
+- YOU: on Linux outside dbus-run-session (with a notification daemon), `go run ./examples/system_notifications`: "Show or replace" posts and replaces one notification with Open and Snooze, clicking it updates the status line, Dismiss removes it.
+- YOU: on Linux, `go run ./examples/move_entity_between_windows`: clicking "Move me to a new window" opens a new window, closes the old one, and the tick lines print the new window id.
+
+## M3-exit
+
+- YOU: run `go run ./examples/a11y` on Wayland and on X11 (`WAYLAND_DISPLAY= go run ./examples/a11y`) with Orca enabled; check Orca reads the window's buttons and labels and that focus changes are announced.

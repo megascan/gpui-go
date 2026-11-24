@@ -1,5 +1,7 @@
 package gpui
 
+import "fmt"
+
 // InputEvent is an event from a platform input source.
 type InputEvent interface {
 	// ToPlatformInput converts the event into the platform input enum.
@@ -142,6 +144,19 @@ const (
 	// PressureStageForce is enough pressure to trigger a force click.
 	PressureStageForce
 )
+
+// String returns the variant name, as upstream's derived Debug.
+func (s PressureStage) String() string {
+	switch s {
+	case PressureStageZero:
+		return "Zero"
+	case PressureStageNormal:
+		return "Normal"
+	case PressureStageForce:
+		return "Force"
+	}
+	return fmt.Sprintf("PressureStage(%d)", uint8(s))
+}
 
 // MousePressureEvent is generated when a force-sensitive trackpad is pressed hard (macOS only).
 type MousePressureEvent struct {

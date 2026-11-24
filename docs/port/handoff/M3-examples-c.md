@@ -10,3 +10,4 @@
 - To M3-exit (screenshot check): native_view and native_view_appkit_field exit 0 on Linux without a window, so they have no PNG in docs/port/screenshots/examples-c/; they are owner checks (docs/port/owner-checks/M3-examples-c.md), not missing images.
 
 - Resolution (2026-11-24): verify.sh/STAGES.md build with `-o /dev/null`; layer_shell and toggle_headless run with `shoot -no-window 5s`; shoot now moves the example's windows to a hidden `special:gpui-shoot-<pid>` workspace from a Hyprland `window.open_early` Lua hook (floated, unfocused, 800x600 default) and captures the toplevel with `grim -T`, so the owner's windows and monitor layout no longer affect captures.
+- Resolution (2026-11-24, M3-exit): native_view release and window_positioning negative size recorded in TECH_DEBT (M3-exit), not fixed; verify isolation of system_notifications recorded there too.

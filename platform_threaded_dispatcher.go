@@ -216,7 +216,7 @@ func NewThreadedDispatcher() *ThreadedDispatcher {
 		timers:           timers,
 		idle:             idle,
 		mainThreadID:     goroutineID(),
-		mainProfilerID:   NewThreadID(None[string]()),
+		mainProfilerID:   NewMainThreadID(None[string]()),
 	}
 	BindPlatformDispatcherDefaults(&d.PlatformDispatcherDefaults, d)
 	return d

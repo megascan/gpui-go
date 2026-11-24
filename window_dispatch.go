@@ -140,6 +140,8 @@ func (w *Window) HandleInput(focusHandle FocusHandle, inputHandler InputHandler,
 	if focusHandle.IsFocused(w) {
 		acx := w.ToAsync(cx)
 		w.nextFrame.inputHandlers = append(w.nextFrame.inputHandlers, NewPlatformInputHandler(*acx, inputHandler).withFocus(focusHandle.id))
+	} else if releaser, ok := inputHandler.(interface{ Release() }); ok {
+		releaser.Release()
 	}
 }
 

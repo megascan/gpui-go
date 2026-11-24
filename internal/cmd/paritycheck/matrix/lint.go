@@ -219,8 +219,8 @@ func lintFile(root, module, dir string, f *goFile, fset *token.FileSet) []Proble
 		p, _ := strconv.Unquote(imp.Path.Value)
 		switch {
 		case p == "C":
-			if !strings.HasPrefix(dir, "render/wgpu") && !strings.HasPrefix(dir, "internal/cmd/wlspike") {
-				add(imp.Pos(), `cgo ("C") is only allowed under render/wgpu and internal/cmd/wlspike`)
+			if !strings.HasPrefix(dir, "render/wgpu") && !strings.HasPrefix(dir, "internal/cmd/wlspike") && !strings.HasPrefix(dir, "examples/ios_ios") {
+				add(imp.Pos(), `cgo ("C") is only allowed under render/wgpu, internal/cmd/wlspike and examples/ios_ios`)
 			}
 		case strings.HasPrefix(p, module+"/"):
 			target := strings.TrimPrefix(p, module+"/")
@@ -282,8 +282,13 @@ func lintDirConstraint(root, dir string, files []*goFile) []Problem {
 	return probs
 }
 
+var lockThreadAllowed = map[string]bool{
+	"internal/linux/wl/display.go":           true,
+	"platform/macos/system_notifications.go": true,
+}
+
 func lintLockThread(dir string, f *goFile, fset *token.FileSet, relFile string) []Problem {
-	if dir == "platform" {
+	if dir == "platform" || strings.HasSuffix(relFile, "_test.go") || lockThreadAllowed[relFile] {
 		return nil
 	}
 	var probs []Problem

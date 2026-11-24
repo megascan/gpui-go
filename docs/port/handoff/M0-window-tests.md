@@ -16,3 +16,4 @@ Not done here (file not owned): M0-text-elements' handoff asks to un-skip five t
 Other notes:
 - `TestWindow_WindowOpenedFromBoundsObserverUsesNewBounds` logs `handling active status change for window WindowId(1v1): window not found`: TestPlatform.SetActiveWindow's foreground task runs during teardown after the test-side root release (`windowTestReleaseAll`) has removed the window. Expected to disappear once teardown releases roots itself (item 1).
 - M0-div-paint handoff item 7 (frame.clear does not release tooltip views) is in window.go; this stage did not touch it. The window.go fix belongs to M0-exit (window.go has no later builder owner), which M0-blocked-tests / whoever un-skips the tooltip tests depends on.
+- Resolution (2026-11-24, M3-exit): TestWindow_FrameRequestsAndSkipsAreJournaled and TestWindow_FrameDemandSurvivesThrottling ported (profiler builds).
