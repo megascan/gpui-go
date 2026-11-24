@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-text/typesetting/segmenter"
 	gpui "github.com/megascan/gpui-go"
+	"github.com/megascan/gpui-go/text/gotext/internal/zeno"
 )
 
 // CosmicTextSystem is the Linux and web PlatformTextSystem, built on go-text/typesetting.
@@ -48,6 +49,8 @@ type cosmicTextSystemState struct {
 	fontIDsByFamilyCache map[fontKey][]gpui.FontID
 	systemFontFallback   string
 	missingGlyphSink     gpui.MissingGlyphSink
+	swashScaleContext    *swashScaleContext
+	pendingGlyphImages   map[gpui.RenderGlyphParams]swashImage
 }
 
 type loadedFont struct {
@@ -115,6 +118,8 @@ func newCosmicTextSystem(fs *fontSystem, systemFontFallback string) *CosmicTextS
 		loadedFontIDsByKey:   map[loadedFontKey]gpui.FontID{},
 		fontIDsByFamilyCache: map[fontKey][]gpui.FontID{},
 		systemFontFallback:   systemFontFallback,
+		swashScaleContext:    newSwashScaleContext(),
+		pendingGlyphImages:   map[gpui.RenderGlyphParams]swashImage{},
 	}}
 }
 
@@ -235,16 +240,18 @@ func (s *CosmicTextSystem) GlyphForChar(fontID gpui.FontID, ch rune) (gpui.Glyph
 	return s.state.glyphForChar(fontID, ch)
 }
 
-var errRasterizationUnimplemented = errors.New("gotext: glyph rasterization is ported by M2-gotext-raster")
-
 // GlyphRasterBounds returns the raster bounds of a glyph.
 func (s *CosmicTextSystem) GlyphRasterBounds(params gpui.RenderGlyphParams) (gpui.Bounds[gpui.DevicePixels], error) {
-	return gpui.Bounds[gpui.DevicePixels]{}, errRasterizationUnimplemented
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.state.rasterBounds(params)
 }
 
 // RasterizeGlyph rasterizes a glyph into its raster bounds.
 func (s *CosmicTextSystem) RasterizeGlyph(params gpui.RenderGlyphParams, rasterBounds gpui.Bounds[gpui.DevicePixels]) (gpui.Size[gpui.DevicePixels], []byte, error) {
-	return gpui.Size[gpui.DevicePixels]{}, nil, errRasterizationUnimplemented
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return s.state.rasterizeGlyph(params, rasterBounds)
 }
 
 // LayoutLine shapes one line of text.
@@ -810,4 +817,83 @@ func cosmicFontFeatures(features gpui.FontFeatures) ([]fontFeature, error) {
 
 func checkIsKnownEmojiFont(postScriptName string) bool {
 	return postScriptName == "NotoColorEmoji"
+}
+
+func (s *cosmicTextSystemState) rasterBounds(params gpui.RenderGlyphParams) (gpui.Bounds[gpui.DevicePixels], error) {
+	image, err := s.renderGlyphImage(params)
+	if err != nil {
+		return gpui.Bounds[gpui.DevicePixels]{}, err
+	}
+	bounds := gpui.NewBounds(
+		gpui.NewPoint(gpui.DevicePixels(image.placement.Left), gpui.DevicePixels(-image.placement.Top)),
+		gpui.NewSize(gpui.DevicePixels(image.placement.Width), gpui.DevicePixels(image.placement.Height)),
+	)
+	if !bounds.IsZero() {
+		s.pendingGlyphImages[params] = image
+	}
+	return bounds, nil
+}
+
+func (s *cosmicTextSystemState) rasterizeGlyph(params gpui.RenderGlyphParams, glyphBounds gpui.Bounds[gpui.DevicePixels]) (gpui.Size[gpui.DevicePixels], []byte, error) {
+	if glyphBounds.Size.Width == 0 || glyphBounds.Size.Height == 0 {
+		return gpui.Size[gpui.DevicePixels]{}, nil, errors.New("glyph bounds are empty")
+	}
+	image, ok := s.pendingGlyphImages[params]
+	if ok {
+		delete(s.pendingGlyphImages, params)
+	} else {
+		var err error
+		image, err = s.renderGlyphImage(params)
+		if err != nil {
+			return gpui.Size[gpui.DevicePixels]{}, nil, err
+		}
+	}
+	bitmapSize := glyphBounds.Size
+	switch image.content {
+	case swashContentColor, swashContentSubpixelMask:
+		for i := 0; i+4 <= len(image.data); i += 4 {
+			image.data[i], image.data[i+2] = image.data[i+2], image.data[i]
+		}
+		return bitmapSize, image.data, nil
+	default:
+		if params.SubpixelRendering {
+			expanded := make([]byte, 0, len(image.data)*4)
+			for _, a := range image.data {
+				expanded = append(expanded, a, a, a, a)
+			}
+			return bitmapSize, expanded, nil
+		}
+		return bitmapSize, image.data, nil
+	}
+}
+
+func (s *cosmicTextSystemState) renderGlyphImage(params gpui.RenderGlyphParams) (swashImage, error) {
+	loaded := &s.loadedFonts[params.FontID]
+	pixelSize := float32(params.FontSize)
+	subpixelOffset := zeno.NewVector(
+		float32(params.SubpixelVariant.X)/float32(gpui.SubpixelVariantsX)/params.ScaleFactor,
+		float32(params.SubpixelVariant.Y)/float32(gpui.SubpixelVariantsY)/params.ScaleFactor,
+	)
+	scaler := s.swashScaleContext.builder(loaded.font.face, pixelSize*params.ScaleFactor)
+	var sources []swashSource
+	if params.IsEmoji {
+		sources = []swashSource{swashSourceColorOutline, swashSourceColorBitmap, swashSourceOutline}
+	} else {
+		sources = []swashSource{swashSourceBitmap, swashSourceOutline}
+	}
+	renderer := swashRender{sources: sources}
+	if params.SubpixelRendering {
+		renderer.format = zeno.FormatSubpixelBGRA()
+	} else {
+		renderer.format = zeno.FormatAlpha
+	}
+	renderer.offset = subpixelOffset
+	if params.GlyphID > 0xFFFF {
+		return swashImage{}, fmt.Errorf("out of range integral type conversion attempted")
+	}
+	image, ok := renderer.render(scaler, uint16(params.GlyphID))
+	if !ok {
+		return swashImage{}, fmt.Errorf("unable to render glyph via swash for %+v", params)
+	}
+	return image, nil
 }
