@@ -2,10 +2,13 @@
 
 package platform
 
-import "github.com/megascan/gpui-go"
+import (
+	"github.com/megascan/gpui-go"
+	"github.com/megascan/gpui-go/platform/ios"
+)
 
 func currentPlatform(headless bool) (Platform, error) {
-	return nil, errPlatformNotPorted("iOS")
+	return ios.CurrentPlatform(headless), nil
 }
 
 func currentHeadlessRenderer() (gpui.PlatformHeadlessRenderer, error) {
