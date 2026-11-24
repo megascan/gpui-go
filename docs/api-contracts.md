@@ -91,6 +91,23 @@ Background work: `BackgroundSpawn` / `BackgroundExecutor.Spawn` take `func(s *sc
 
 `RunTest(t, fn, Seed/Seeds/Iterations/Retries/OnFailure)` runs `fn(*TestRun)` on the test goroutine per seed from `CalculateSeeds` with a fresh `TestDispatcher`. `tc.Cx()` / `tc.NewContext()` call `TestAppContextBuild(dispatcher.Clone(), Some(t.Name()))`; after `fn` each context is run until parked, quit (`ForbidParking`, `Quit`), run until parked and `drop()`ped (M0-test-contexts: GC until the live-handle count stops falling, then the leak report), then `DrainTasks` and `EndTest`. Retries apply to panics only: a `t.Fatal` / `t.Error` failure cannot be undone; `OnFailure` and the failing-seed report run for both. `tc.BlockTest(body)` runs an async test body. `PropertyTest(t, func(tc, rng), Cases(n))` draws each case's scheduler seed with `SeedStrategy` from a generator seeded with `PropertyTestRNGSeed()` (no shrinking, D-PROPTEST). `Observe(entity, cx) *Observation[struct{}]` (`Next(awaiter)`, `Close()`).
 
+### 2.4 Test contexts (app_test_context.go, app_test_app.go, app_headless_app_context.go, app_visual_test_context.go; M0-test-contexts)
+
+`TestAppContext`, `HeadlessAppContext`, `VisualTestAppContext` implement `AppContext`; `VisualTestContext` (embeds `*TestAppContext`) implements `VisualContext`. Each has the same-named generic methods (`New`, `ReserveEntity`, `InsertEntity`, `ReadWindow`, `BackgroundSpawn`, `ReadGlobal`) plus `Update(func(*App))` / `UpdateR[R]`; entity access is `entity.Update(cx, ...)` / `entity.ReadWith(cx, ...)`. `TestAppContext` adds the platform simulators (`SimulatePathPromptResponse`, `SimulateSystemNotificationResponse`, `ExpectRestart`, `SimulateWindowResize`, ...), `Notifications`, `Events[T, E]`, `Condition(awaiter, entity, pred)`, `Spawn`, `ToAsync`, and `entity.NextEvent[E](cx)`, `NextNotification`, `Condition[Evt]` futures. Every context ends with the leak report: RunTest's teardown calls `drop()`; standalone contexts (`TestAppContextSingle()`, `NewTestApp()`, `NewHeadlessAppContext(ts)`, `NewVisualTestAppContext(p)`) must be ended with `defer cx.Close()`. Tests release every entity handle and unsubscribe or detach every subscription they create; strict leak mode fails the test otherwise.
+
+Writing a headless test from another package (e.g. a text system):
+
+```go
+func TestFoo(t *testing.T) {
+	cx := gpui.NewHeadlessAppContext(mytext.NewTextSystem())
+	defer cx.Close()
+	cx.Update(func(app *gpui.App) { /* app.TextSystem()... */ })
+	cx.RunUntilParked()
+}
+```
+
+or, for a seeded run with upstream's #[gpui::test] semantics, `gpui.RunTest(t, func(tc *gpui.TestRun) { cx := gpui.TestAppContextBuildWithTextSystem(tc.Dispatcher().Clone(), gpui.Some(t.Name()), ts); defer cx.Close(); ... })` (plain `tc.Cx()` uses the NoopTextSystem). Async bodies run inside `tc.BlockTest(func(s *scheduler.Scope) { ... })` and await with `task.Await(s)` / `rx.Recv(s)`.
+
 ## 3. Mixins and elements
 
 The five fluent traits are self-typed mixins. Each stores `self S` and returns it, so chains keep the concrete type. An element embeds the mixins and binds each one in its constructor:

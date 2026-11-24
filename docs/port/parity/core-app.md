@@ -249,10 +249,10 @@ Go target: `app.go` (package `gpui`), tests in `app_test.go`
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
 | `app_borrow_diagnostics` | gpui::test | 3842 |  | `TestApp_AppBorrowDiagnostics` | done |
-| `async_app_refresh_flushes_refresh_effect` | gpui::test | 3900 |  | `TestApp_AsyncAppRefreshFlushesRefreshEffect` | blocked:M0-test-contexts |
-| `missing_glyph_callbacks_follow_subscription_lifetime` | gpui::test | 3917 |  | `TestApp_MissingGlyphCallbacksFollowSubscriptionLifetime` | blocked:M0-test-contexts |
-| `test_gpui_borrow` | test | 3976 |  | `TestApp_GpuiBorrow` | blocked:M0-test-contexts |
-| `test_restart_preserves_path_and_arguments` | gpui::test | 4007 |  | `TestApp_RestartPreservesPathAndArguments` | blocked:M0-test-contexts |
+| `async_app_refresh_flushes_refresh_effect` | gpui::test | 3900 |  | `TestApp_AsyncAppRefreshFlushesRefreshEffect` | blocked:M0-blocked-tests |
+| `missing_glyph_callbacks_follow_subscription_lifetime` | gpui::test | 3917 |  | `TestApp_MissingGlyphCallbacksFollowSubscriptionLifetime` | done |
+| `test_gpui_borrow` | test | 3976 |  | `TestApp_GpuiBorrow` | done |
+| `test_restart_preserves_path_and_arguments` | gpui::test | 4007 |  | `TestApp_RestartPreservesPathAndArguments` | done |
 
 ## gpui/src/asset_cache.rs
 
@@ -268,11 +268,11 @@ Go target: `asset_cache.go` (package `gpui`), tests in `asset_cache_test.go`
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `cached_load_caches_success_and_error` | gpui::test | 160 |  | `TestAssetCache_CachedLoadCachesSuccessAndError` | blocked:M0-test-contexts |
-| `completed_load_without_subscribers_is_cached_and_deduplicated` | gpui::test | 178 |  | `TestAssetCache_CompletedLoadWithoutSubscribersIsCachedAndDeduplicated` | blocked:M0-test-contexts |
-| `load_completion_notifies_each_observing_entity_once` | gpui::test | 201 |  | `TestAssetCache_LoadCompletionNotifiesEachObservingEntityOnce` | blocked:M0-test-contexts |
-| `removing_pending_asset_cancels_it_and_replacement_ignores_stale_completion` | gpui::test | 241 |  | `TestAssetCache_RemovingPendingAssetCancelsItAndReplacementIgnoresStaleCompletion` | blocked:M0-test-contexts |
-| `eviction_after_worker_completion_does_not_publish_into_replacement` | gpui::test | 271 |  | `TestAssetCache_EvictionAfterWorkerCompletionDoesNotPublishIntoReplacement` | blocked:M0-test-contexts |
+| `cached_load_caches_success_and_error` | gpui::test | 160 |  | `TestAssetCache_CachedLoadCachesSuccessAndError` | done |
+| `completed_load_without_subscribers_is_cached_and_deduplicated` | gpui::test | 178 |  | `TestAssetCache_CompletedLoadWithoutSubscribersIsCachedAndDeduplicated` | done |
+| `load_completion_notifies_each_observing_entity_once` | gpui::test | 201 |  | `TestAssetCache_LoadCompletionNotifiesEachObservingEntityOnce` | done |
+| `removing_pending_asset_cancels_it_and_replacement_ignores_stale_completion` | gpui::test | 241 |  | `TestAssetCache_RemovingPendingAssetCancelsItAndReplacementIgnoresStaleCompletion` | done |
+| `eviction_after_worker_completion_does_not_publish_into_replacement` | gpui::test | 271 |  | `TestAssetCache_EvictionAfterWorkerCompletionDoesNotPublishIntoReplacement` | done |
 
 ## gpui/src/assets.rs
 
@@ -444,10 +444,10 @@ Go target: `subscription.go` (package `gpui`), tests in `subscription_test.go`
 | `test_single_immediate_and_pending_insertions` | test | 345 |  | `TestSubscription_SingleImmediateAndPendingInsertions` | done |
 | `test_activation_after_drop_during_retain` | test | 370 |  | `TestSubscription_ActivationAfterDropDuringRetain` | done |
 | `test_single_activation_after_drop_during_retain` | test | 393 |  | `TestSubscription_SingleActivationAfterDropDuringRetain` | done |
-| `test_unsubscribe_during_callback_with_insert` | test | 416 |  | `TestSubscription_UnsubscribeDuringCallbackWithInsert` | blocked:M0-test-contexts |
-| `test_callback_dropped_by_earlier_callback_does_not_fire` | test | 467 |  | `TestSubscription_CallbackDroppedByEarlierCallbackDoesNotFire` | blocked:M0-test-contexts |
-| `test_self_drop_during_callback` | test | 507 |  | `TestSubscription_SelfDropDuringCallback` | blocked:M0-test-contexts |
-| `test_subscription_drop` | test | 536 |  | `TestSubscription_SubscriptionDrop` | blocked:M0-test-contexts |
+| `test_unsubscribe_during_callback_with_insert` | test | 416 |  | `TestSubscription_UnsubscribeDuringCallbackWithInsert` | blocked:M0-exit |
+| `test_callback_dropped_by_earlier_callback_does_not_fire` | test | 467 |  | `TestSubscription_CallbackDroppedByEarlierCallbackDoesNotFire` | blocked:M0-exit |
+| `test_self_drop_during_callback` | test | 507 |  | `TestSubscription_SelfDropDuringCallback` | blocked:M0-exit |
+| `test_subscription_drop` | test | 536 |  | `TestSubscription_SubscriptionDrop` | blocked:M0-exit |
 
 ## gpui/src/test.rs
 
@@ -596,22 +596,23 @@ Go target: `app_headless_app_context.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `HeadlessAppContext` | struct | 38 |  | `HeadlessAppContext` | todo |
-| `HeadlessAppContext::new` | assoc-fn | 51 |  | `NewHeadlessAppContext` | todo |
-| `HeadlessAppContext::with_asset_source` | assoc-fn | 56 |  | `HeadlessAppContextWithAssetSource` | todo |
-| `HeadlessAppContext::with_platform` | assoc-fn | 65 |  | `HeadlessAppContextWithPlatform` | todo |
-| `HeadlessAppContext::open_window` | method | 104 |  | `(HeadlessAppContext).OpenWindow` | todo |
-| `HeadlessAppContext::run_until_parked` | method | 129 |  | `(HeadlessAppContext).RunUntilParked` | todo |
-| `HeadlessAppContext::simulate_window_scale_factor_change` | method | 134 |  | `(HeadlessAppContext).SimulateWindowScaleFactorChange` | todo |
-| `HeadlessAppContext::advance_clock` | method | 143 |  | `(HeadlessAppContext).AdvanceClock` | todo |
-| `HeadlessAppContext::allow_parking` | method | 148 |  | `(HeadlessAppContext).AllowParking` | todo |
-| `HeadlessAppContext::forbid_parking` | method | 153 |  | `(HeadlessAppContext).ForbidParking` | todo |
-| `HeadlessAppContext::update` | method | 158 |  | `(HeadlessAppContext).Update` | todo |
-| `HeadlessAppContext::update_window` | method | 164 |  | `(HeadlessAppContext).UpdateWindow` | todo |
-| `HeadlessAppContext::capture_screenshot` | method | 177 |  | `(HeadlessAppContext).CaptureScreenshot` | todo |
-| `HeadlessAppContext::text_system` | method | 183 |  | `(HeadlessAppContext).TextSystem` | todo |
-| `HeadlessAppContext::background_executor` | method | 188 |  | `(HeadlessAppContext).BackgroundExecutor` | todo |
-| `HeadlessAppContext::foreground_executor` | method | 193 |  | `(HeadlessAppContext).ForegroundExecutor` | todo |
+| `HeadlessAppContext` | struct | 38 |  | `HeadlessAppContext` | done |
+| `HeadlessAppContext::new` | assoc-fn | 51 |  | `NewHeadlessAppContext` | done |
+| `HeadlessAppContext::with_asset_source` | assoc-fn | 56 |  | `HeadlessAppContextWithAssetSource` | done |
+| `HeadlessAppContext::with_platform` | assoc-fn | 65 |  | `HeadlessAppContextWithPlatform` | done |
+| `HeadlessAppContext::open_window` | method | 104 |  | `(HeadlessAppContext).OpenWindow` | done |
+| `HeadlessAppContext::run_until_parked` | method | 129 |  | `(HeadlessAppContext).RunUntilParked` | done |
+| `HeadlessAppContext::simulate_window_scale_factor_change` | method | 134 |  | `(HeadlessAppContext).SimulateWindowScaleFactorChange` | done |
+| `HeadlessAppContext::advance_clock` | method | 143 |  | `(HeadlessAppContext).AdvanceClock` | done |
+| `HeadlessAppContext::allow_parking` | method | 148 |  | `(HeadlessAppContext).AllowParking` | done |
+| `HeadlessAppContext::forbid_parking` | method | 153 |  | `(HeadlessAppContext).ForbidParking` | done |
+| `HeadlessAppContext::update` | method | 158 |  | `(HeadlessAppContext).Update` | done |
+| `HeadlessAppContext::update_window` | method | 164 |  | `(HeadlessAppContext).UpdateWindow` | done |
+| `HeadlessAppContext::capture_screenshot` | method | 177 |  | `(HeadlessAppContext).CaptureScreenshot` | done |
+| `HeadlessAppContext::text_system` | method | 183 |  | `(HeadlessAppContext).TextSystem` | done |
+| `HeadlessAppContext::background_executor` | method | 188 |  | `(HeadlessAppContext).BackgroundExecutor` | done |
+| `HeadlessAppContext::foreground_executor` | method | 193 |  | `(HeadlessAppContext).ForegroundExecutor` | done |
+| `HeadlessAppContext::drop` | impl Drop | 199 |  | `(HeadlessAppContext).Close` | dev:D-RAII |
 
 ## gpui/src/app/test_app.rs
 
@@ -619,63 +620,63 @@ Go target: `app_test_app.go` (package `gpui`), tests in `app_test_app_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `TestApp` | struct | 40 |  | `TestApp` | todo |
-| `TestApp::new` | assoc-fn | 52 |  | `NewTestApp` | todo |
-| `TestApp::with_seed` | assoc-fn | 57 |  | `TestAppWithSeed` | todo |
-| `TestApp::with_text_system` | assoc-fn | 62 |  | `TestAppWithTextSystem` | todo |
-| `TestApp::with_text_system_and_assets` | assoc-fn | 67 |  | `TestAppWithTextSystemAndAssets` | todo |
-| `TestApp::update` | method | 111 |  | `(TestApp).Update` | todo |
-| `TestApp::read` | method | 121 |  | `(TestApp).Read` | todo |
-| `TestApp::new_entity` | method | 127 |  | `(TestApp).NewEntity` | todo |
-| `TestApp::update_entity` | method | 135 |  | `(TestApp).UpdateEntity` | todo |
-| `TestApp::read_entity` | method | 144 |  | `(TestApp).ReadEntity` | todo |
-| `TestApp::open_window` | method | 153 |  | `(TestApp).OpenWindow` | todo |
-| `TestApp::open_window_with_options` | method | 178 |  | `(TestApp).OpenWindowWithOptions` | todo |
-| `TestApp::run_until_parked` | method | 197 |  | `(TestApp).RunUntilParked` | todo |
-| `TestApp::advance_clock` | method | 202 |  | `(TestApp).AdvanceClock` | todo |
-| `TestApp::spawn` | method | 207 |  | `(TestApp).Spawn` | todo |
-| `TestApp::background_spawn` | method | 216 |  | `(TestApp).BackgroundSpawn` | todo |
-| `TestApp::to_async` | method | 224 |  | `(TestApp).ToAsync` | todo |
-| `TestApp::background_executor` | method | 233 |  | `(TestApp).BackgroundExecutor` | todo |
-| `TestApp::foreground_executor` | method | 238 |  | `(TestApp).ForegroundExecutor` | todo |
-| `TestApp::text_system` | method | 243 |  | `(TestApp).TextSystem` | todo |
-| `TestApp::has_global` | method | 248 |  | `(TestApp).HasGlobal` | todo |
-| `TestApp::set_global` | method | 253 |  | `(TestApp).SetGlobal` | todo |
-| `TestApp::read_global` | method | 258 |  | `(TestApp).ReadGlobal` | todo |
-| `TestApp::update_global` | method | 263 |  | `(TestApp).UpdateGlobal` | todo |
-| `TestApp::write_to_clipboard` | method | 270 |  | `(TestApp).WriteToClipboard` | todo |
-| `TestApp::read_from_clipboard` | method | 275 |  | `(TestApp).ReadFromClipboard` | todo |
-| `TestApp::opened_url` | method | 280 |  | `(TestApp).OpenedURL` | todo |
-| `TestApp::did_prompt_for_new_path` | method | 285 |  | `(TestApp).DidPromptForNewPath` | todo |
-| `TestApp::simulate_new_path_selection` | method | 290 |  | `(TestApp).SimulateNewPathSelection` | todo |
-| `TestApp::has_pending_prompt` | method | 298 |  | `(TestApp).HasPendingPrompt` | todo |
-| `TestApp::simulate_prompt_answer` | method | 303 |  | `(TestApp).SimulatePromptAnswer` | todo |
-| `TestApp::windows` | method | 308 |  | `(TestApp).Windows` | todo |
-| `TestAppWindow` | struct | 320 |  | `TestAppWindow` | todo |
-| `TestAppWindow::handle` | method | 329 |  | `(TestAppWindow).Handle` | todo |
-| `TestAppWindow::root` | method | 334 |  | `(TestAppWindow).Root` | todo |
-| `TestAppWindow::update` | method | 344 |  | `(TestAppWindow).Update` | todo |
-| `TestAppWindow::read` | method | 359 |  | `(TestAppWindow).Read` | todo |
-| `TestAppWindow::title` | method | 374 |  | `(TestAppWindow).Title` | todo |
-| `TestAppWindow::simulate_keystroke` | method | 384 |  | `(TestAppWindow).SimulateKeystroke` | todo |
-| `TestAppWindow::simulate_keystrokes` | method | 399 |  | `(TestAppWindow).SimulateKeystrokes` | todo |
-| `TestAppWindow::simulate_input` | method | 406 |  | `(TestAppWindow).SimulateInput` | todo |
-| `TestAppWindow::simulate_mouse_move` | method | 413 |  | `(TestAppWindow).SimulateMouseMove` | todo |
-| `TestAppWindow::simulate_mouse_down` | method | 422 |  | `(TestAppWindow).SimulateMouseDown` | todo |
-| `TestAppWindow::simulate_mouse_up` | method | 433 |  | `(TestAppWindow).SimulateMouseUp` | todo |
-| `TestAppWindow::simulate_click` | method | 443 |  | `(TestAppWindow).SimulateClick` | todo |
-| `TestAppWindow::simulate_scroll` | method | 449 |  | `(TestAppWindow).SimulateScroll` | todo |
-| `TestAppWindow::simulate_event` | method | 460 |  | `(TestAppWindow).SimulateEvent` | todo |
-| `TestAppWindow::simulate_resize` | method | 474 |  | `(TestAppWindow).SimulateResize` | todo |
-| `TestAppWindow::simulate_scale_factor_change` | method | 487 |  | `(TestAppWindow).SimulateScaleFactorChange` | todo |
-| `TestAppWindow::draw` | method | 505 |  | `(TestAppWindow).Draw` | todo |
+| `TestApp` | struct | 40 |  | `TestApp` | done |
+| `TestApp::new` | assoc-fn | 52 |  | `NewTestApp` | done |
+| `TestApp::with_seed` | assoc-fn | 57 |  | `TestAppWithSeed` | done |
+| `TestApp::with_text_system` | assoc-fn | 62 |  | `TestAppWithTextSystem` | done |
+| `TestApp::with_text_system_and_assets` | assoc-fn | 67 |  | `TestAppWithTextSystemAndAssets` | done |
+| `TestApp::update` | method | 111 |  | `(TestApp).Update` | done |
+| `TestApp::read` | method | 121 |  | `(TestApp).Read` | done |
+| `TestApp::new_entity` | method | 127 |  | `(TestApp).NewEntity` | done |
+| `TestApp::update_entity` | method | 135 |  | `(TestApp).UpdateEntity` | done |
+| `TestApp::read_entity` | method | 144 |  | `(TestApp).ReadEntity` | done |
+| `TestApp::open_window` | method | 153 |  | `(TestApp).OpenWindow` | done |
+| `TestApp::open_window_with_options` | method | 178 |  | `(TestApp).OpenWindowWithOptions` | done |
+| `TestApp::run_until_parked` | method | 197 |  | `(TestApp).RunUntilParked` | done |
+| `TestApp::advance_clock` | method | 202 |  | `(TestApp).AdvanceClock` | done |
+| `TestApp::spawn` | method | 207 |  | `(TestApp).Spawn` | done |
+| `TestApp::background_spawn` | method | 216 |  | `(TestApp).BackgroundSpawn` | done |
+| `TestApp::to_async` | method | 224 |  | `(TestApp).ToAsync` | done |
+| `TestApp::background_executor` | method | 233 |  | `(TestApp).BackgroundExecutor` | done |
+| `TestApp::foreground_executor` | method | 238 |  | `(TestApp).ForegroundExecutor` | done |
+| `TestApp::text_system` | method | 243 |  | `(TestApp).TextSystem` | done |
+| `TestApp::has_global` | method | 248 |  | `(TestApp).HasGlobal` | done |
+| `TestApp::set_global` | method | 253 |  | `(TestApp).SetGlobal` | done |
+| `TestApp::read_global` | method | 258 |  | `(TestApp).ReadGlobal` | done |
+| `TestApp::update_global` | method | 263 |  | `(TestApp).UpdateGlobal` | done |
+| `TestApp::write_to_clipboard` | method | 270 |  | `(TestApp).WriteToClipboard` | done |
+| `TestApp::read_from_clipboard` | method | 275 |  | `(TestApp).ReadFromClipboard` | done |
+| `TestApp::opened_url` | method | 280 |  | `(TestApp).OpenedURL` | done |
+| `TestApp::did_prompt_for_new_path` | method | 285 |  | `(TestApp).DidPromptForNewPath` | done |
+| `TestApp::simulate_new_path_selection` | method | 290 |  | `(TestApp).SimulateNewPathSelection` | done |
+| `TestApp::has_pending_prompt` | method | 298 |  | `(TestApp).HasPendingPrompt` | done |
+| `TestApp::simulate_prompt_answer` | method | 303 |  | `(TestApp).SimulatePromptAnswer` | done |
+| `TestApp::windows` | method | 308 |  | `(TestApp).Windows` | done |
+| `TestAppWindow` | struct | 320 |  | `TestAppWindow` | done |
+| `TestAppWindow::handle` | method | 329 |  | `(TestAppWindow).Handle` | done |
+| `TestAppWindow::root` | method | 334 |  | `(TestAppWindow).Root` | done |
+| `TestAppWindow::update` | method | 344 |  | `(TestAppWindow).Update` | done |
+| `TestAppWindow::read` | method | 359 |  | `(TestAppWindow).Read` | done |
+| `TestAppWindow::title` | method | 374 |  | `(TestAppWindow).Title` | done |
+| `TestAppWindow::simulate_keystroke` | method | 384 |  | `(TestAppWindow).SimulateKeystroke` | done |
+| `TestAppWindow::simulate_keystrokes` | method | 399 |  | `(TestAppWindow).SimulateKeystrokes` | done |
+| `TestAppWindow::simulate_input` | method | 406 |  | `(TestAppWindow).SimulateInput` | done |
+| `TestAppWindow::simulate_mouse_move` | method | 413 |  | `(TestAppWindow).SimulateMouseMove` | done |
+| `TestAppWindow::simulate_mouse_down` | method | 422 |  | `(TestAppWindow).SimulateMouseDown` | done |
+| `TestAppWindow::simulate_mouse_up` | method | 433 |  | `(TestAppWindow).SimulateMouseUp` | done |
+| `TestAppWindow::simulate_click` | method | 443 |  | `(TestAppWindow).SimulateClick` | done |
+| `TestAppWindow::simulate_scroll` | method | 449 |  | `(TestAppWindow).SimulateScroll` | done |
+| `TestAppWindow::simulate_event` | method | 460 |  | `(TestAppWindow).SimulateEvent` | done |
+| `TestAppWindow::simulate_resize` | method | 474 |  | `(TestAppWindow).SimulateResize` | done |
+| `TestAppWindow::simulate_scale_factor_change` | method | 487 |  | `(TestAppWindow).SimulateScaleFactorChange` | done |
+| `TestAppWindow::draw` | method | 505 |  | `(TestAppWindow).Draw` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_basic_usage` | test | 563 |  | `TestTestApp_BasicUsage` | todo |
-| `test_simulate_scale_factor_change` | test | 581 |  | `TestTestApp_SimulateScaleFactorChange` | todo |
-| `test_entity_creation` | test | 601 |  | `TestTestApp_EntityCreation` | todo |
-| `test_globals` | test | 623 |  | `TestTestApp_Globals` | todo |
+| `test_basic_usage` | test | 563 |  | `TestTestApp_BasicUsage` | blocked:M0-blocked-tests |
+| `test_simulate_scale_factor_change` | test | 581 |  | `TestTestApp_SimulateScaleFactorChange` | blocked:M0-blocked-tests |
+| `test_entity_creation` | test | 601 |  | `TestTestApp_EntityCreation` | blocked:M0-blocked-tests |
+| `test_globals` | test | 623 |  | `TestTestApp_Globals` | done |
 
 ## gpui/src/app/test_context.rs
 
@@ -683,111 +684,111 @@ Go target: `app_test_context.go` (package `gpui`), tests in `app_test_context_te
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `TestAppContext` | struct | 35 |  | `TestAppContext` | todo |
-| `TestAppContext::set_platform_info` | method | 141 |  | `(TestAppContext).SetPlatformInfo` | todo |
-| `TestAppContext::build` | assoc-fn | 146 |  | `TestAppContextBuild` | todo |
-| `TestAppContext::build_with_text_system` | assoc-fn | 161 |  | `TestAppContextBuildWithTextSystem` | todo |
-| `TestAppContext::disable_accessibility` | method | 210 |  | `(TestAppContext).DisableAccessibility` | todo |
-| `TestAppContext::skip_drawing` | method | 215 |  | `(TestAppContext).SkipDrawing` | todo |
-| `TestAppContext::single` | assoc-fn | 220 |  | `TestAppContextSingle` | todo |
-| `TestAppContext::test_function_name` | method | 226 |  | `(TestAppContext).TestFunctionName` | todo |
-| `TestAppContext::did_prompt_for_new_path` | method | 231 |  | `(TestAppContext).DidPromptForNewPath` | todo |
-| `TestAppContext::active_idle_sleep_preventions` | method | 236 |  | `(TestAppContext).ActiveIdleSleepPreventions` | todo |
-| `TestAppContext::set_idle_sleep_prevention_delay` | method | 241 |  | `(TestAppContext).SetIdleSleepPreventionDelay` | todo |
-| `TestAppContext::set_idle_sleep_prevention_fails` | method | 246 |  | `(TestAppContext).SetIdleSleepPreventionFails` | todo |
-| `TestAppContext::new_app` | method | 251 |  | `(TestAppContext).NewApp` | todo |
-| `TestAppContext::quit` | method | 257 |  | `(TestAppContext).Quit` | todo |
-| `TestAppContext::on_quit` | method | 263 |  | `(TestAppContext).OnQuit` | todo |
-| `TestAppContext::refresh` | method | 268 |  | `(TestAppContext).Refresh` | todo |
-| `TestAppContext::executor` | method | 275 |  | `(TestAppContext).Executor` | todo |
-| `TestAppContext::foreground_executor` | method | 280 |  | `(TestAppContext).ForegroundExecutor` | todo |
-| `TestAppContext::update` | method | 285 |  | `(TestAppContext).Update` | todo |
-| `TestAppContext::read` | method | 291 |  | `(TestAppContext).Read` | todo |
-| `TestAppContext::add_window` | method | 298 |  | `(TestAppContext).AddWindow` | todo |
-| `TestAppContext::open_window` | method | 321 |  | `(TestAppContext).OpenWindow` | todo |
-| `TestAppContext::add_empty_window` | method | 345 |  | `(TestAppContext).AddEmptyWindow` | todo |
-| `TestAppContext::add_window_view` | method | 366 |  | `(TestAppContext).AddWindowView` | todo |
-| `TestAppContext::text_system` | method | 395 |  | `(TestAppContext).TextSystem` | todo |
-| `TestAppContext::write_to_clipboard` | method | 400 |  | `(TestAppContext).WriteToClipboard` | todo |
-| `TestAppContext::read_from_clipboard` | method | 406 |  | `(TestAppContext).ReadFromClipboard` | todo |
-| `TestAppContext::simulate_new_path_selection` | method | 411 |  | `(TestAppContext).SimulateNewPathSelection` | todo |
-| `TestAppContext::simulate_path_prompt_response` | method | 419 |  | `(TestAppContext).SimulatePathPromptResponse` | todo |
-| `TestAppContext::did_prompt_for_paths` | method | 428 |  | `(TestAppContext).DidPromptForPaths` | todo |
-| `TestAppContext::simulate_prompt_answer` | method | 434 |  | `(TestAppContext).SimulatePromptAnswer` | todo |
-| `TestAppContext::has_pending_prompt` | method | 439 |  | `(TestAppContext).HasPendingPrompt` | todo |
-| `TestAppContext::pending_prompt` | method | 444 |  | `(TestAppContext).PendingPrompt` | todo |
-| `TestAppContext::opened_url` | method | 449 |  | `(TestAppContext).OpenedURL` | todo |
-| `TestAppContext::app_identity` | method | 454 |  | `(TestAppContext).AppIdentity` | todo |
-| `TestAppContext::shown_system_notifications` | method | 459 |  | `(TestAppContext).ShownSystemNotifications` | todo |
-| `TestAppContext::delivered_system_notifications` | method | 464 |  | `(TestAppContext).DeliveredSystemNotifications` | todo |
-| `TestAppContext::dismissed_system_notifications` | method | 469 |  | `(TestAppContext).DismissedSystemNotifications` | todo |
-| `TestAppContext::simulate_system_notification_response` | method | 474 |  | `(TestAppContext).SimulateSystemNotificationResponse` | todo |
-| `TestAppContext::simulate_window_resize` | method | 480 |  | `(TestAppContext).SimulateWindowResize` | todo |
-| `TestAppContext::simulate_window_visibility_change` | method | 485 |  | `(TestAppContext).SimulateWindowVisibilityChange` | todo |
-| `TestAppContext::simulate_window_decorations_change` | method | 495 |  | `(TestAppContext).SimulateWindowDecorationsChange` | todo |
-| `TestAppContext::simulate_display_added` | method | 505 |  | `(TestAppContext).SimulateDisplayAdded` | todo |
-| `TestAppContext::simulate_display_removed` | method | 520 |  | `(TestAppContext).SimulateDisplayRemoved` | todo |
-| `TestAppContext::simulate_display_refresh_interval_change` | method | 525 |  | `(TestAppContext).SimulateDisplayRefreshIntervalChange` | todo |
-| `TestAppContext::simulate_window_visual_viewport_change` | method | 535 |  | `(TestAppContext).SimulateWindowVisualViewportChange` | todo |
-| `TestAppContext::simulate_window_scale_factor_change` | method | 545 |  | `(TestAppContext).SimulateWindowScaleFactorChange` | todo |
-| `TestAppContext::expect_restart` | method | 555 |  | `(TestAppContext).ExpectRestart` | todo |
-| `TestAppContext::set_screen_capture_sources` | method | 563 |  | `(TestAppContext).SetScreenCaptureSources` | todo |
-| `TestAppContext::windows` | method | 568 |  | `(TestAppContext).Windows` | todo |
-| `TestAppContext::spawn` | method | 574 |  | `(TestAppContext).Spawn` | todo |
-| `TestAppContext::has_global` | method | 583 |  | `(TestAppContext).HasGlobal` | todo |
-| `TestAppContext::read_global` | method | 590 |  | `(TestAppContext).ReadGlobal` | todo |
-| `TestAppContext::try_read_global` | method | 596 |  | `(TestAppContext).TryReadGlobal` | todo |
-| `TestAppContext::set_global` | method | 602 |  | `(TestAppContext).SetGlobal` | todo |
-| `TestAppContext::update_global` | method | 608 |  | `(TestAppContext).UpdateGlobal` | todo |
-| `TestAppContext::to_async` | method | 615 |  | `(TestAppContext).ToAsync` | todo |
-| `TestAppContext::run_until_parked` | method | 624 |  | `(TestAppContext).RunUntilParked` | todo |
-| `TestAppContext::dispatch_action` | method | 629 |  | `(TestAppContext).DispatchAction` | todo |
-| `TestAppContext::simulate_keystrokes` | method | 646 |  | `(TestAppContext).SimulateKeystrokes` | todo |
-| `TestAppContext::simulate_input` | method | 663 |  | `(TestAppContext).SimulateInput` | todo |
-| `TestAppContext::dispatch_keystroke` | method | 677 |  | `(TestAppContext).DispatchKeystroke` | todo |
-| `TestAppContext::notifications` | method | 690 |  | `(TestAppContext).Notifications` | todo |
-| `TestAppContext::events` | method | 710 |  | `(TestAppContext).Events` | todo |
-| `TestAppContext::condition` | method | 730 |  | `(TestAppContext).Condition` | todo |
-| `TestAppContext::set_name` | method | 762 | feat:test-support | `(TestAppContext).SetName` | todo |
-| `Entity::next_event` | method | 769 |  | `(Entity).NextEvent` | todo |
-| `Entity::next_notification` | method | 794 |  | `(Entity).NextNotification` | todo |
-| `Entity::condition` | method | 819 |  | `(Entity).Condition` | todo |
-| `VisualTestContext` | struct | 882 |  | `VisualTestContext` | todo |
-| `VisualTestContext::update` | method | 892 |  | `(VisualTestContext).Update` | todo |
-| `VisualTestContext::from_window` | assoc-fn | 901 |  | `VisualTestContextFromWindow` | todo |
-| `VisualTestContext::run_until_parked` | method | 909 |  | `(VisualTestContext).RunUntilParked` | todo |
-| `VisualTestContext::dispatch_action` | method | 914 |  | `(VisualTestContext).DispatchAction` | todo |
-| `VisualTestContext::window_title` | method | 922 |  | `(VisualTestContext).WindowTitle` | todo |
-| `VisualTestContext::document_path` | method | 927 |  | `(VisualTestContext).DocumentPath` | todo |
-| `VisualTestContext::simulate_keystrokes` | method | 938 |  | `(VisualTestContext).SimulateKeystrokes` | todo |
-| `VisualTestContext::simulate_input` | method | 944 |  | `(VisualTestContext).SimulateInput` | todo |
-| `VisualTestContext::simulate_mouse_move` | method | 949 |  | `(VisualTestContext).SimulateMouseMove` | todo |
-| `VisualTestContext::simulate_mouse_down` | method | 963 |  | `(VisualTestContext).SimulateMouseDown` | todo |
-| `VisualTestContext::simulate_mouse_up` | method | 979 |  | `(VisualTestContext).SimulateMouseUp` | todo |
-| `VisualTestContext::simulate_click` | method | 994 |  | `(VisualTestContext).SimulateClick` | todo |
-| `VisualTestContext::simulate_modifiers_change` | method | 1011 |  | `(VisualTestContext).SimulateModifiersChange` | todo |
-| `VisualTestContext::simulate_capslock_change` | method | 1019 |  | `(VisualTestContext).SimulateCapslockChange` | todo |
-| `VisualTestContext::simulate_resize` | method | 1027 |  | `(VisualTestContext).SimulateResize` | todo |
-| `VisualTestContext::simulate_visibility_change` | method | 1032 |  | `(VisualTestContext).SimulateVisibilityChange` | todo |
-| `VisualTestContext::simulate_scale_factor_change` | method | 1037 |  | `(VisualTestContext).SimulateScaleFactorChange` | todo |
-| `VisualTestContext::debug_bounds` | method | 1045 |  | `(VisualTestContext).DebugBounds` | todo |
-| `VisualTestContext::draw` | method | 1050 |  | `(VisualTestContext).Draw` | todo |
-| `VisualTestContext::simulate_event` | method | 1082 |  | `(VisualTestContext).SimulateEvent` | todo |
-| `VisualTestContext::deactivate_window` | method | 1089 |  | `(VisualTestContext).DeactivateWindow` | todo |
-| `VisualTestContext::simulate_close` | method | 1098 |  | `(VisualTestContext).SimulateClose` | todo |
-| `VisualTestContext::into_mut` | method | 1127 |  | `(VisualTestContext).IntoMut` | todo |
-| `AnyWindowHandle::build_entity` | method | 1290 |  | `(AnyWindowHandle).BuildEntity` | todo |
+| `TestAppContext` | struct | 35 |  | `TestAppContext` | done |
+| `TestAppContext::set_platform_info` | method | 141 |  | `(TestAppContext).SetPlatformInfo` | done |
+| `TestAppContext::build` | assoc-fn | 146 |  | `TestAppContextBuild` | done |
+| `TestAppContext::build_with_text_system` | assoc-fn | 161 |  | `TestAppContextBuildWithTextSystem` | done |
+| `TestAppContext::disable_accessibility` | method | 210 |  | `(TestAppContext).DisableAccessibility` | done |
+| `TestAppContext::skip_drawing` | method | 215 |  | `(TestAppContext).SkipDrawing` | done |
+| `TestAppContext::single` | assoc-fn | 220 |  | `TestAppContextSingle` | done |
+| `TestAppContext::test_function_name` | method | 226 |  | `(TestAppContext).TestFunctionName` | done |
+| `TestAppContext::did_prompt_for_new_path` | method | 231 |  | `(TestAppContext).DidPromptForNewPath` | done |
+| `TestAppContext::active_idle_sleep_preventions` | method | 236 |  | `(TestAppContext).ActiveIdleSleepPreventions` | done |
+| `TestAppContext::set_idle_sleep_prevention_delay` | method | 241 |  | `(TestAppContext).SetIdleSleepPreventionDelay` | done |
+| `TestAppContext::set_idle_sleep_prevention_fails` | method | 246 |  | `(TestAppContext).SetIdleSleepPreventionFails` | done |
+| `TestAppContext::new_app` | method | 251 |  | `(TestAppContext).NewApp` | done |
+| `TestAppContext::quit` | method | 257 |  | `(TestAppContext).Quit` | done |
+| `TestAppContext::on_quit` | method | 263 |  | `(TestAppContext).OnQuit` | done |
+| `TestAppContext::refresh` | method | 268 |  | `(TestAppContext).Refresh` | done |
+| `TestAppContext::executor` | method | 275 |  | `(TestAppContext).Executor` | done |
+| `TestAppContext::foreground_executor` | method | 280 |  | `(TestAppContext).ForegroundExecutor` | done |
+| `TestAppContext::update` | method | 285 |  | `(TestAppContext).Update` | done |
+| `TestAppContext::read` | method | 291 |  | `(TestAppContext).Read` | done |
+| `TestAppContext::add_window` | method | 298 |  | `(TestAppContext).AddWindow` | done |
+| `TestAppContext::open_window` | method | 321 |  | `(TestAppContext).OpenWindow` | done |
+| `TestAppContext::add_empty_window` | method | 345 |  | `(TestAppContext).AddEmptyWindow` | done |
+| `TestAppContext::add_window_view` | method | 366 |  | `(TestAppContext).AddWindowView` | done |
+| `TestAppContext::text_system` | method | 395 |  | `(TestAppContext).TextSystem` | done |
+| `TestAppContext::write_to_clipboard` | method | 400 |  | `(TestAppContext).WriteToClipboard` | done |
+| `TestAppContext::read_from_clipboard` | method | 406 |  | `(TestAppContext).ReadFromClipboard` | done |
+| `TestAppContext::simulate_new_path_selection` | method | 411 |  | `(TestAppContext).SimulateNewPathSelection` | done |
+| `TestAppContext::simulate_path_prompt_response` | method | 419 |  | `(TestAppContext).SimulatePathPromptResponse` | done |
+| `TestAppContext::did_prompt_for_paths` | method | 428 |  | `(TestAppContext).DidPromptForPaths` | done |
+| `TestAppContext::simulate_prompt_answer` | method | 434 |  | `(TestAppContext).SimulatePromptAnswer` | done |
+| `TestAppContext::has_pending_prompt` | method | 439 |  | `(TestAppContext).HasPendingPrompt` | done |
+| `TestAppContext::pending_prompt` | method | 444 |  | `(TestAppContext).PendingPrompt` | done |
+| `TestAppContext::opened_url` | method | 449 |  | `(TestAppContext).OpenedURL` | done |
+| `TestAppContext::app_identity` | method | 454 |  | `(TestAppContext).AppIdentity` | done |
+| `TestAppContext::shown_system_notifications` | method | 459 |  | `(TestAppContext).ShownSystemNotifications` | done |
+| `TestAppContext::delivered_system_notifications` | method | 464 |  | `(TestAppContext).DeliveredSystemNotifications` | done |
+| `TestAppContext::dismissed_system_notifications` | method | 469 |  | `(TestAppContext).DismissedSystemNotifications` | done |
+| `TestAppContext::simulate_system_notification_response` | method | 474 |  | `(TestAppContext).SimulateSystemNotificationResponse` | done |
+| `TestAppContext::simulate_window_resize` | method | 480 |  | `(TestAppContext).SimulateWindowResize` | done |
+| `TestAppContext::simulate_window_visibility_change` | method | 485 |  | `(TestAppContext).SimulateWindowVisibilityChange` | done |
+| `TestAppContext::simulate_window_decorations_change` | method | 495 |  | `(TestAppContext).SimulateWindowDecorationsChange` | done |
+| `TestAppContext::simulate_display_added` | method | 505 |  | `(TestAppContext).SimulateDisplayAdded` | done |
+| `TestAppContext::simulate_display_removed` | method | 520 |  | `(TestAppContext).SimulateDisplayRemoved` | done |
+| `TestAppContext::simulate_display_refresh_interval_change` | method | 525 |  | `(TestAppContext).SimulateDisplayRefreshIntervalChange` | done |
+| `TestAppContext::simulate_window_visual_viewport_change` | method | 535 |  | `(TestAppContext).SimulateWindowVisualViewportChange` | done |
+| `TestAppContext::simulate_window_scale_factor_change` | method | 545 |  | `(TestAppContext).SimulateWindowScaleFactorChange` | done |
+| `TestAppContext::expect_restart` | method | 555 |  | `(TestAppContext).ExpectRestart` | done |
+| `TestAppContext::set_screen_capture_sources` | method | 563 |  | `(TestAppContext).SetScreenCaptureSources` | done |
+| `TestAppContext::windows` | method | 568 |  | `(TestAppContext).Windows` | done |
+| `TestAppContext::spawn` | method | 574 |  | `(TestAppContext).Spawn` | done |
+| `TestAppContext::has_global` | method | 583 |  | `(TestAppContext).HasGlobal` | done |
+| `TestAppContext::read_global` | method | 590 |  | `(TestAppContext).ReadGlobal` | done |
+| `TestAppContext::try_read_global` | method | 596 |  | `(TestAppContext).TryReadGlobal` | done |
+| `TestAppContext::set_global` | method | 602 |  | `(TestAppContext).SetGlobal` | done |
+| `TestAppContext::update_global` | method | 608 |  | `(TestAppContext).UpdateGlobal` | done |
+| `TestAppContext::to_async` | method | 615 |  | `(TestAppContext).ToAsync` | done |
+| `TestAppContext::run_until_parked` | method | 624 |  | `(TestAppContext).RunUntilParked` | done |
+| `TestAppContext::dispatch_action` | method | 629 |  | `(TestAppContext).DispatchAction` | done |
+| `TestAppContext::simulate_keystrokes` | method | 646 |  | `(TestAppContext).SimulateKeystrokes` | done |
+| `TestAppContext::simulate_input` | method | 663 |  | `(TestAppContext).SimulateInput` | done |
+| `TestAppContext::dispatch_keystroke` | method | 677 |  | `(TestAppContext).DispatchKeystroke` | done |
+| `TestAppContext::notifications` | method | 690 |  | `(TestAppContext).Notifications` | done |
+| `TestAppContext::events` | method | 710 |  | `(TestAppContext).Events` | done |
+| `TestAppContext::condition` | method | 730 |  | `(TestAppContext).Condition` | done |
+| `TestAppContext::set_name` | method | 762 | feat:test-support | `(TestAppContext).SetName` | done |
+| `Entity::next_event` | method | 769 |  | `(Entity).NextEvent` | done |
+| `Entity::next_notification` | method | 794 |  | `(Entity).NextNotification` | done |
+| `Entity::condition` | method | 819 |  | `(Entity).Condition` | done |
+| `VisualTestContext` | struct | 882 |  | `VisualTestContext` | done |
+| `VisualTestContext::update` | method | 892 |  | `(VisualTestContext).Update` | done |
+| `VisualTestContext::from_window` | assoc-fn | 901 |  | `VisualTestContextFromWindow` | done |
+| `VisualTestContext::run_until_parked` | method | 909 |  | `(VisualTestContext).RunUntilParked` | done |
+| `VisualTestContext::dispatch_action` | method | 914 |  | `(VisualTestContext).DispatchAction` | done |
+| `VisualTestContext::window_title` | method | 922 |  | `(VisualTestContext).WindowTitle` | done |
+| `VisualTestContext::document_path` | method | 927 |  | `(VisualTestContext).DocumentPath` | done |
+| `VisualTestContext::simulate_keystrokes` | method | 938 |  | `(VisualTestContext).SimulateKeystrokes` | done |
+| `VisualTestContext::simulate_input` | method | 944 |  | `(VisualTestContext).SimulateInput` | done |
+| `VisualTestContext::simulate_mouse_move` | method | 949 |  | `(VisualTestContext).SimulateMouseMove` | done |
+| `VisualTestContext::simulate_mouse_down` | method | 963 |  | `(VisualTestContext).SimulateMouseDown` | done |
+| `VisualTestContext::simulate_mouse_up` | method | 979 |  | `(VisualTestContext).SimulateMouseUp` | done |
+| `VisualTestContext::simulate_click` | method | 994 |  | `(VisualTestContext).SimulateClick` | done |
+| `VisualTestContext::simulate_modifiers_change` | method | 1011 |  | `(VisualTestContext).SimulateModifiersChange` | done |
+| `VisualTestContext::simulate_capslock_change` | method | 1019 |  | `(VisualTestContext).SimulateCapslockChange` | done |
+| `VisualTestContext::simulate_resize` | method | 1027 |  | `(VisualTestContext).SimulateResize` | done |
+| `VisualTestContext::simulate_visibility_change` | method | 1032 |  | `(VisualTestContext).SimulateVisibilityChange` | done |
+| `VisualTestContext::simulate_scale_factor_change` | method | 1037 |  | `(VisualTestContext).SimulateScaleFactorChange` | done |
+| `VisualTestContext::debug_bounds` | method | 1045 |  | `(VisualTestContext).DebugBounds` | done |
+| `VisualTestContext::draw` | method | 1050 |  | `(VisualTestContext).Draw` | done |
+| `VisualTestContext::simulate_event` | method | 1082 |  | `(VisualTestContext).SimulateEvent` | done |
+| `VisualTestContext::deactivate_window` | method | 1089 |  | `(VisualTestContext).DeactivateWindow` | done |
+| `VisualTestContext::simulate_close` | method | 1098 |  | `(VisualTestContext).SimulateClose` | done |
+| `VisualTestContext::into_mut` | method | 1127 |  | `(VisualTestContext).IntoMut` | dev:D-RAII |
+| `AnyWindowHandle::build_entity` | method | 1290 |  | `(AnyWindowHandle).BuildEntity` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_mobile_lifecycle_subscriptions` | gpui::test | 1311 |  | `TestTestContext_MobileLifecycleSubscriptions` | todo |
-| `test_memory_warning_subscriptions` | gpui::test | 1356 |  | `TestTestContext_MemoryWarningSubscriptions` | todo |
-| `test_system_notifications_require_identity_and_replace_matching_tags` | gpui::test | 1379 |  | `TestTestContext_SystemNotificationsRequireIdentityAndReplaceMatchingTags` | todo |
-| `test_system_notification_body_and_action_responses` | gpui::test | 1436 |  | `TestTestContext_SystemNotificationBodyAndActionResponses` | todo |
-| `test_system_notification_response_handler_can_be_replaced` | gpui::test | 1470 |  | `TestTestContext_SystemNotificationResponseHandlerCanBeReplaced` | todo |
-| `test_system_notification_response_handler_can_reenter_app` | gpui::test | 1495 |  | `TestTestContext_SystemNotificationResponseHandlerCanReenterApp` | todo |
-| `test_simulate_path_prompt_response` | gpui::test | 1519 |  | `TestTestContext_SimulatePathPromptResponse` | todo |
-| `test_simulate_path_prompt_cancellation` | gpui::test | 1547 |  | `TestTestContext_SimulatePathPromptCancellation` | todo |
+| `test_mobile_lifecycle_subscriptions` | gpui::test | 1311 |  | `TestTestContext_MobileLifecycleSubscriptions` | done |
+| `test_memory_warning_subscriptions` | gpui::test | 1356 |  | `TestTestContext_MemoryWarningSubscriptions` | done |
+| `test_system_notifications_require_identity_and_replace_matching_tags` | gpui::test | 1379 |  | `TestTestContext_SystemNotificationsRequireIdentityAndReplaceMatchingTags` | done |
+| `test_system_notification_body_and_action_responses` | gpui::test | 1436 |  | `TestTestContext_SystemNotificationBodyAndActionResponses` | done |
+| `test_system_notification_response_handler_can_be_replaced` | gpui::test | 1470 |  | `TestTestContext_SystemNotificationResponseHandlerCanBeReplaced` | done |
+| `test_system_notification_response_handler_can_reenter_app` | gpui::test | 1495 |  | `TestTestContext_SystemNotificationResponseHandlerCanReenterApp` | done |
+| `test_simulate_path_prompt_response` | gpui::test | 1519 |  | `TestTestContext_SimulatePathPromptResponse` | done |
+| `test_simulate_path_prompt_cancellation` | gpui::test | 1547 |  | `TestTestContext_SimulatePathPromptCancellation` | done |
 
 ## gpui/src/app/visual_test_context.rs
 
@@ -795,39 +796,39 @@ Go target: `app_visual_test_context.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `VisualTestAppContext` | struct | 21 |  | `VisualTestAppContext` | todo |
-| `VisualTestAppContext::new` | assoc-fn | 45 |  | `NewVisualTestAppContext` | todo |
-| `VisualTestAppContext::with_asset_source` | assoc-fn | 53 |  | `VisualTestAppContextWithAssetSource` | todo |
-| `VisualTestAppContext::open_offscreen_window` | method | 97 |  | `(VisualTestAppContext).OpenOffscreenWindow` | todo |
-| `VisualTestAppContext::open_offscreen_window_default` | method | 122 |  | `(VisualTestAppContext).OpenOffscreenWindowDefault` | todo |
-| `VisualTestAppContext::is_screen_capture_supported` | method | 131 |  | `(VisualTestAppContext).IsScreenCaptureSupported` | todo |
-| `VisualTestAppContext::text_system` | method | 136 |  | `(VisualTestAppContext).TextSystem` | todo |
-| `VisualTestAppContext::executor` | method | 141 |  | `(VisualTestAppContext).Executor` | todo |
-| `VisualTestAppContext::foreground_executor` | method | 146 |  | `(VisualTestAppContext).ForegroundExecutor` | todo |
-| `VisualTestAppContext::run_until_parked` | method | 152 |  | `(VisualTestAppContext).RunUntilParked` | todo |
-| `VisualTestAppContext::advance_clock` | method | 159 |  | `(VisualTestAppContext).AdvanceClock` | todo |
-| `VisualTestAppContext::update` | method | 164 |  | `(VisualTestAppContext).Update` | todo |
-| `VisualTestAppContext::read` | method | 170 |  | `(VisualTestAppContext).Read` | todo |
-| `VisualTestAppContext::update_window` | method | 176 |  | `(VisualTestAppContext).UpdateWindow` | todo |
-| `VisualTestAppContext::spawn` | method | 185 |  | `(VisualTestAppContext).Spawn` | todo |
-| `VisualTestAppContext::has_global` | method | 194 |  | `(VisualTestAppContext).HasGlobal` | todo |
-| `VisualTestAppContext::read_global` | method | 200 |  | `(VisualTestAppContext).ReadGlobal` | todo |
-| `VisualTestAppContext::set_global` | method | 206 |  | `(VisualTestAppContext).SetGlobal` | todo |
-| `VisualTestAppContext::update_global` | method | 212 |  | `(VisualTestAppContext).UpdateGlobal` | todo |
-| `VisualTestAppContext::simulate_keystrokes` | method | 225 |  | `(VisualTestAppContext).SimulateKeystrokes` | todo |
-| `VisualTestAppContext::dispatch_keystroke` | method | 236 |  | `(VisualTestAppContext).DispatchKeystroke` | todo |
-| `VisualTestAppContext::simulate_input` | method | 244 |  | `(VisualTestAppContext).SimulateInput` | todo |
-| `VisualTestAppContext::simulate_mouse_move` | method | 258 |  | `(VisualTestAppContext).SimulateMouseMove` | todo |
-| `VisualTestAppContext::simulate_mouse_down` | method | 276 |  | `(VisualTestAppContext).SimulateMouseDown` | todo |
-| `VisualTestAppContext::simulate_mouse_up` | method | 296 |  | `(VisualTestAppContext).SimulateMouseUp` | todo |
-| `VisualTestAppContext::simulate_click` | method | 315 |  | `(VisualTestAppContext).SimulateClick` | todo |
-| `VisualTestAppContext::simulate_event` | method | 326 |  | `(VisualTestAppContext).SimulateEvent` | todo |
-| `VisualTestAppContext::dispatch_action` | method | 335 |  | `(VisualTestAppContext).DispatchAction` | todo |
-| `VisualTestAppContext::write_to_clipboard` | method | 344 |  | `(VisualTestAppContext).WriteToClipboard` | todo |
-| `VisualTestAppContext::read_from_clipboard` | method | 349 |  | `(VisualTestAppContext).ReadFromClipboard` | todo |
-| `VisualTestAppContext::wait_for` | method | 354 |  | `(VisualTestAppContext).WaitFor` | todo |
-| `VisualTestAppContext::capture_screenshot` | method | 385 | feat:test-support | `(VisualTestAppContext).CaptureScreenshot` | todo |
-| `VisualTestAppContext::wait_for_animations` | method | 390 |  | `(VisualTestAppContext).WaitForAnimations` | todo |
+| `VisualTestAppContext` | struct | 21 |  | `VisualTestAppContext` | done |
+| `VisualTestAppContext::new` | assoc-fn | 45 |  | `NewVisualTestAppContext` | done |
+| `VisualTestAppContext::with_asset_source` | assoc-fn | 53 |  | `VisualTestAppContextWithAssetSource` | done |
+| `VisualTestAppContext::open_offscreen_window` | method | 97 |  | `(VisualTestAppContext).OpenOffscreenWindow` | done |
+| `VisualTestAppContext::open_offscreen_window_default` | method | 122 |  | `(VisualTestAppContext).OpenOffscreenWindowDefault` | done |
+| `VisualTestAppContext::is_screen_capture_supported` | method | 131 |  | `(VisualTestAppContext).IsScreenCaptureSupported` | done |
+| `VisualTestAppContext::text_system` | method | 136 |  | `(VisualTestAppContext).TextSystem` | done |
+| `VisualTestAppContext::executor` | method | 141 |  | `(VisualTestAppContext).Executor` | done |
+| `VisualTestAppContext::foreground_executor` | method | 146 |  | `(VisualTestAppContext).ForegroundExecutor` | done |
+| `VisualTestAppContext::run_until_parked` | method | 152 |  | `(VisualTestAppContext).RunUntilParked` | done |
+| `VisualTestAppContext::advance_clock` | method | 159 |  | `(VisualTestAppContext).AdvanceClock` | done |
+| `VisualTestAppContext::update` | method | 164 |  | `(VisualTestAppContext).Update` | done |
+| `VisualTestAppContext::read` | method | 170 |  | `(VisualTestAppContext).Read` | done |
+| `VisualTestAppContext::update_window` | method | 176 |  | `(VisualTestAppContext).UpdateWindow` | done |
+| `VisualTestAppContext::spawn` | method | 185 |  | `(VisualTestAppContext).Spawn` | done |
+| `VisualTestAppContext::has_global` | method | 194 |  | `(VisualTestAppContext).HasGlobal` | done |
+| `VisualTestAppContext::read_global` | method | 200 |  | `(VisualTestAppContext).ReadGlobal` | done |
+| `VisualTestAppContext::set_global` | method | 206 |  | `(VisualTestAppContext).SetGlobal` | done |
+| `VisualTestAppContext::update_global` | method | 212 |  | `(VisualTestAppContext).UpdateGlobal` | done |
+| `VisualTestAppContext::simulate_keystrokes` | method | 225 |  | `(VisualTestAppContext).SimulateKeystrokes` | done |
+| `VisualTestAppContext::dispatch_keystroke` | method | 236 |  | `(VisualTestAppContext).DispatchKeystroke` | done |
+| `VisualTestAppContext::simulate_input` | method | 244 |  | `(VisualTestAppContext).SimulateInput` | done |
+| `VisualTestAppContext::simulate_mouse_move` | method | 258 |  | `(VisualTestAppContext).SimulateMouseMove` | done |
+| `VisualTestAppContext::simulate_mouse_down` | method | 276 |  | `(VisualTestAppContext).SimulateMouseDown` | done |
+| `VisualTestAppContext::simulate_mouse_up` | method | 296 |  | `(VisualTestAppContext).SimulateMouseUp` | done |
+| `VisualTestAppContext::simulate_click` | method | 315 |  | `(VisualTestAppContext).SimulateClick` | done |
+| `VisualTestAppContext::simulate_event` | method | 326 |  | `(VisualTestAppContext).SimulateEvent` | done |
+| `VisualTestAppContext::dispatch_action` | method | 335 |  | `(VisualTestAppContext).DispatchAction` | done |
+| `VisualTestAppContext::write_to_clipboard` | method | 344 |  | `(VisualTestAppContext).WriteToClipboard` | done |
+| `VisualTestAppContext::read_from_clipboard` | method | 349 |  | `(VisualTestAppContext).ReadFromClipboard` | done |
+| `VisualTestAppContext::wait_for` | method | 354 |  | `(VisualTestAppContext).WaitFor` | done |
+| `VisualTestAppContext::capture_screenshot` | method | 385 | feat:test-support | `(VisualTestAppContext).CaptureScreenshot` | done |
+| `VisualTestAppContext::wait_for_animations` | method | 390 |  | `(VisualTestAppContext).WaitForAnimations` | done |
 
 
 ## Notes (M0-input-types)
@@ -842,6 +843,14 @@ Go target: `app_visual_test_context.go` (package `gpui`)
 - Handles per DESIGN 5.2: `AnyEntity{h *entityHandle}`; `Release` is idempotent and a no-op on the zero value; every other method panics on a zero or released handle. `runtime.AddCleanup` on each handle runs upstream's Drop path when a handle is collected without `Release`. `==` on strong handles compares handle identity; compare `EntityID()` for upstream's Eq / Ord / Hash. `AnyWeakEntity` is a plain value (id, `reflect.Type`, `weak.Pointer[entityRefCounts]`).
 - Leak detection (`cfg(any(test, gpui_leak_detection))`) is runtime: on in test binaries and when `GPUI_LEAK_DETECTION` is non-empty and not `0`; strict when it is `strict` or unset in a test binary. Strict mode also records entity handles, subscriptions and leases collected without `Release` / `Unsubscribe` / `Detach` / `endLease`; `report` (upstream `LeakDetector::drop`) panics with "Exited with leaked handles:" listing both. `LEAK_BACKTRACE` captures `runtime.Callers`; frames from `testing.tRunner` on are stripped as upstream strips `test::run_test_in_process`.
 - subscription.rs: `subscriberSet[K comparable, C]` / `singleSubscriberSet[C]` keep one id-ordered list per emitter in a Go map (nothing iterates across emitters, so `Ord` on the key is not needed); `remove` returns an `iter.Seq[C]` that checks `Active` when iterated, as upstream's lazy `filter_map`; `retain` takes `func(*C) bool`. `Subscription` aliases one handle: `Unsubscribe` (Drop) is idempotent, `Detach` clears it, the zero value is empty. The four TestApp tests wait for `TestApp` (M0-test-contexts).
+
+## Notes (M0-test-contexts)
+
+- The test contexts keep upstream's executors and dispatcher as unexported fields (`bgExecutor`, `fgExecutor`, `dispatcher`, `app`); methods are the API. Closures returning a value use the `R` suffix (`UpdateR`, `ReadR`, `UpdateGlobalR`, `UpdateEntityR`). `VisualTestContext` embeds `*TestAppContext` (upstream's Deref) and is a pointer, so `IntoMut` returns it (D-RAII).
+- End of a run: `TestAppContext.drop` (called by RunTest's teardown) runs the OnQuit callbacks, releases the app's windows as dropping `App` does, then runs GC plus the cleanup queue and an empty update until the live-handle count is stable and calls `entityMap.report` (upstream `LeakDetector::drop`). RunTest drains the scheduler after the report, upstream drains before it (handoff to M0-exit). Standalone contexts (`TestAppContextSingle`, `TestApp`, `HeadlessAppContext`, `VisualTestAppContext`) have `Close`, which also drains their own scheduler; `HeadlessAppContext.Close` runs `Shutdown` first, as its Drop does.
+- `FakeHttpClient::with_404_response` is the unexported `fakeHTTPClient` (D-HTTP). `VisualTestContext.updateWindowContext` panics "window was unexpectedly closed" instead of returning an error (its `Result<T>` is `T`); the concrete `UpdateWindowEntity` uses the entity's current window as upstream.
+- `VisualTestContext.Draw`, `DebugBounds`, `CaptureScreenshot`, `NewVisualTestAppContext` reach window and platform symbols that are still panicking stubs (`Drawable`, `WithAbsoluteElementOffset`, `RenderToImage`, `VisualTestPlatform`); there is no element arena (D-ARENA).
+- The four subscription.rs TestApp tests live in subscription_test.go, which this stage does not own: `blocked:M0-exit` (docs/port/handoff/M0-test-contexts.md).
 
 ## Deviations registered here
 

@@ -1,6 +1,12 @@
 package gpui
 
-import "testing"
+import (
+	"errors"
+	"testing"
+	"time"
+
+	"github.com/megascan/gpui-go/scheduler"
+)
 
 func TestUtil_RoundHalfTowardZero(t *testing.T) {
 	cases := [][2]float32{
@@ -50,4 +56,33 @@ func TestUtil_RoundHalfTowardZeroF64(t *testing.T) {
 			t.Errorf("roundHalfTowardZeroF64(%v) = %v, want %v", c[0], got, c[1])
 		}
 	}
+}
+
+func TestUtil_WithTimeout(t *testing.T) {
+	RunTest(t, func(tc *TestRun) {
+		cx := tc.Cx()
+		tc.BlockTest(func(s *scheduler.Scope) {
+			ready := scheduler.Await[scheduler.Result[scheduler.Result[struct{}]]](s, FutureWithTimeout[scheduler.Result[struct{}]](scheduler.ReadyTask(struct{}{}), time.Second, cx.Executor()))
+			if ready.Err != nil {
+				t.Fatalf("Timeout should be noop: %v", ready.Err)
+			}
+
+			longDuration := 6000 * time.Second
+			shortDuration := time.Second
+			timedOut := scheduler.Await[scheduler.Result[scheduler.Result[struct{}]]](s, FutureWithTimeout[scheduler.Result[struct{}]](cx.Executor().Timer(longDuration), shortDuration, cx.Executor()))
+			if !errors.Is(timedOut.Err, Timeout{}) {
+				t.Fatalf("timeout should have triggered, got %v", timedOut.Err)
+			}
+
+			fut := FutureWithTimeout[scheduler.Result[struct{}]](cx.Executor().Timer(longDuration), shortDuration, cx.Executor())
+			cx.Executor().AdvanceClock(shortDuration * 2)
+			result, ok := fut.Poll(scheduler.NewContext(scheduler.WakerFn(func() {})))
+			if !ok {
+				panic("timeout should have triggered")
+			}
+			if result.Err == nil {
+				t.Fatal("timeout: expected an error")
+			}
+		})
+	})
 }

@@ -337,7 +337,7 @@ Go target: `util.go` (package `gpui`), tests in `util_test.go`
 | `test_round_half_toward_zero` | test | 170 |  | `TestUtil_RoundHalfTowardZero` | done |
 | `test_device_pixel_helpers` | test | 192 |  | `TestUtil_DevicePixelHelpers` | done |
 | `test_round_half_toward_zero_f64` | test | 220 |  | `TestUtil_RoundHalfTowardZeroF64` | done |
-| `test_with_timeout` | gpui::test | 229 |  | `TestUtil_WithTimeout` | blocked:M0-blocked-tests |
+| `test_with_timeout` | gpui::test | 229 |  | `TestUtil_WithTimeout` | done |
 
 
 ## Notes (M0-geometry)
@@ -375,5 +375,5 @@ Go target: `util.go` (package `gpui`), tests in `util_test.go`
 
 ## Notes (M0-input-types)
 
-- util.rs: `Fluent[S]` has `Map`, `When`, `WhenElse`, `WhenSome[T]`, `WhenNone[T]`; `WhenNone` takes `Option[T]` by value. The crate-private rounding helpers (`roundHalfTowardZero`, `...F64`, `roundToDevicePixel`, `roundStrokeToDevicePixel`, `floorToDevicePixel`, `ceilToDevicePixel`) and `atomicIncrIfNotZero` (`*atomic.Uint64`) are unexported in util.go. `TestUtil_WithTimeout` needs TestAppContext (blocked on M0-blocked-tests, which owns util_test.go).
+- util.rs: `Fluent[S]` has `Map`, `When`, `WhenElse`, `WhenSome[T]`, `WhenNone[T]`; `WhenNone` takes `Option[T]` by value. The crate-private rounding helpers (`roundHalfTowardZero`, `...F64`, `roundToDevicePixel`, `roundStrokeToDevicePixel`, `floorToDevicePixel`, `ceilToDevicePixel`) and `atomicIncrIfNotZero` (`*atomic.Uint64`) are unexported in util.go. `TestUtil_WithTimeout` was ported by M0-test-contexts; `now_or_never` is a single `Poll` with a no-op waker.
 - colors.rs: `GlobalColors` embeds `*Colors` (Deref); `DefaultColors` is an interface implemented by `(*App).DefaultColors`; `impl Default for Colors` has no Go function (the name `DefaultColors` is the trait's), `ColorsLight` is the default; `From<WindowAppearance>` is `(WindowAppearance).ToDefaultAppearance`.

@@ -2,6 +2,7 @@ package gpui
 
 import (
 	"encoding/json/jsontext"
+	"image"
 	"reflect"
 	"sync"
 	"time"
@@ -111,6 +112,7 @@ type Window struct {
 	nextFrameCallbacks *[]FrameCallback
 	needsPresent       *bool
 	refreshing         bool
+	renderedFrame      *frame
 
 	displayObservers      singleSubscriberSet[anyObserver]
 	focusListeners        singleSubscriberSet[anyWindowFocusListener]
@@ -727,28 +729,6 @@ type StrikethroughStyle struct {
 	Color Option[Hsla]
 }
 
-// TestAppContext is a test context with a TestPlatform (M0-test-contexts ports it).
-type TestAppContext struct{}
-
-// TestAppContextBuild creates a new TestAppContext on the dispatcher (M0-test-contexts ports it).
-func TestAppContextBuild(dispatcher *TestDispatcher, fnName Option[string]) *TestAppContext {
-	panic("gpui: unimplemented TestAppContextBuild")
-}
-
-// Update runs f with the App and flushes its effects (M0-test-contexts ports it).
-func (cx *TestAppContext) Update(f func(cx *App)) {
-	panic("gpui: unimplemented TestAppContext.Update")
-}
-
-// RunUntilParked runs the scheduler until no task can make progress (M0-test-contexts ports it).
-func (cx *TestAppContext) RunUntilParked() {
-	panic("gpui: unimplemented TestAppContext.RunUntilParked")
-}
-
-func (cx *TestAppContext) drop() {
-	panic("gpui: unimplemented TestAppContext.drop")
-}
-
 // IntoAnyElement converts the string into a text element (M0-text-elements ports it).
 func (s SharedString) IntoAnyElement() AnyElement {
 	panic("gpui: unimplemented SharedString.IntoAnyElement")
@@ -1026,3 +1006,71 @@ type promptBuilderCustom struct {
 }
 
 func (promptBuilderCustom) isPromptBuilder() {}
+
+type frame struct {
+	debugBounds map[string]Bounds[Pixels]
+}
+
+type drawPhase uint8
+
+const (
+	drawPhaseNone drawPhase = iota
+	drawPhasePrepaint
+	drawPhasePaint
+	drawPhaseFocus
+)
+
+func (w windowInvalidator) setPhase(phase drawPhase) {
+	panic("gpui: unimplemented windowInvalidator.setPhase")
+}
+
+// Drawable is a helper for laying out, prepainting and painting an element (M0-element ports it).
+type Drawable[RL, PP any] struct {
+	Element Element[RL, PP]
+}
+
+func newDrawable[RL, PP any](element Element[RL, PP]) *Drawable[RL, PP] {
+	panic("gpui: unimplemented newDrawable")
+}
+
+func (d *Drawable[RL, PP]) layoutAsRoot(availableSpace SizeOf[AvailableSpace], window *Window, cx *App) Size[Pixels] {
+	panic("gpui: unimplemented Drawable.layoutAsRoot")
+}
+
+func (d *Drawable[RL, PP]) prepaint(window *Window, cx *App) {
+	panic("gpui: unimplemented Drawable.prepaint")
+}
+
+func (d *Drawable[RL, PP]) paint(window *Window, cx *App) (RL, PP) {
+	panic("gpui: unimplemented Drawable.paint")
+}
+
+// WithAbsoluteElementOffset runs f with the element offset set to an absolute value (M0-window-paint ports it).
+func (w *Window) WithAbsoluteElementOffset[R any](offset Point[Pixels], f func(window *Window) R) R {
+	panic("gpui: unimplemented Window.WithAbsoluteElementOffset")
+}
+
+// RenderToImage renders the window's current scene into an image (M0-window-paint ports it).
+func (w *Window) RenderToImage() (*image.RGBA, error) {
+	panic("gpui: unimplemented Window.RenderToImage")
+}
+
+// Root returns the root view of the window (M0-window-core ports it).
+func (h WindowHandle[V]) Root(cx AppContext) (Entity[V], error) {
+	panic("gpui: unimplemented WindowHandle.Root")
+}
+
+// VisualTestPlatform combines a real platform's rendering with a TestDispatcher (M3-root-capture ports it).
+type VisualTestPlatform struct {
+	Platform
+}
+
+// NewVisualTestPlatform wraps platform with a TestDispatcher seeded with seed (M3-root-capture ports it).
+func NewVisualTestPlatform(platform Platform, seed uint64) *VisualTestPlatform {
+	panic("gpui: unimplemented NewVisualTestPlatform")
+}
+
+// Dispatcher returns the platform's test dispatcher (M3-root-capture ports it).
+func (p *VisualTestPlatform) Dispatcher() *TestDispatcher {
+	panic("gpui: unimplemented VisualTestPlatform.Dispatcher")
+}

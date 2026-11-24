@@ -2,6 +2,8 @@ package gpui
 
 import (
 	"math"
+	"sync"
+	"sync/atomic"
 	"testing"
 
 	"github.com/megascan/gpui-go/scheduler"
@@ -77,4 +79,284 @@ var _ = func(cx *App) {
 	var _ bool = cx.HasAsset[inferenceAsset](inferenceSource{})
 	cx.RemoveAsset[inferenceAsset](inferenceSource{})
 	var _, _ = cx.FetchAsset[AssetLogger[inferenceAsset, inferenceSource, int]](inferenceSource{})
+}
+
+type testLoadResult struct {
+	value int
+	err   string
+}
+
+func okLoad(value int) testLoadResult {
+	return testLoadResult{value: value}
+}
+
+func errLoad(err string) testLoadResult {
+	return testLoadResult{err: err}
+}
+
+func TestAssetCache_CachedLoadCachesSuccessAndError(t *testing.T) {
+	RunTest(t, func(tc *TestRun) {
+		cx := tc.Cx()
+		successfulLoad := cx.UpdateR(func(cx *App) *cachedLoad[testLoadResult] {
+			return newCachedLoad(func(*scheduler.Scope) testLoadResult { return okLoad(42) }, cx)
+		})
+		failedLoad := cx.UpdateR(func(cx *App) *cachedLoad[testLoadResult] {
+			return newCachedLoad(func(*scheduler.Scope) testLoadResult { return errLoad("load failed") }, cx)
+		})
+
+		if _, ok := successfulLoad.get(); ok {
+			t.Fatal("successful load is ready before running")
+		}
+		if _, ok := failedLoad.get(); ok {
+			t.Fatal("failed load is ready before running")
+		}
+
+		cx.RunUntilParked()
+
+		for range 2 {
+			if got, ok := successfulLoad.get(); !ok || got != okLoad(42) {
+				t.Fatalf("successfulLoad.get() = (%v, %v)", got, ok)
+			}
+		}
+		for range 2 {
+			if got, ok := failedLoad.get(); !ok || got != errLoad("load failed") {
+				t.Fatalf("failedLoad.get() = (%v, %v)", got, ok)
+			}
+		}
+	})
+}
+
+func TestAssetCache_CompletedLoadWithoutSubscribersIsCachedAndDeduplicated(t *testing.T) {
+	RunTest(t, func(tc *TestRun) {
+		cx := tc.Cx()
+		sender, receiver := scheduler.Oneshot[testLoadResult]()
+		source := newTestAssetSource(1, receiver)
+
+		for range 2 {
+			if got, ok := fetchTestAsset(cx, source); ok {
+				t.Fatalf("fetch before completion = %v", got)
+			}
+		}
+		if n := source.loadCount.Load(); n != 1 {
+			t.Fatalf("load count = %d, want 1", n)
+		}
+
+		if err := sender.Send(okLoad(42)); err != nil {
+			t.Fatalf("send: %v", err)
+		}
+		cx.RunUntilParked()
+
+		for range 2 {
+			if got, ok := fetchTestAsset(cx, source); !ok || got != okLoad(42) {
+				t.Fatalf("fetch after completion = (%v, %v)", got, ok)
+			}
+		}
+		if n := source.loadCount.Load(); n != 1 {
+			t.Fatalf("load count = %d, want 1", n)
+		}
+	})
+}
+
+func TestAssetCache_LoadCompletionNotifiesEachObservingEntityOnce(t *testing.T) {
+	RunTest(t, func(tc *TestRun) {
+		cx := tc.Cx()
+		sender, receiver := scheduler.Oneshot[int]()
+		load := cx.UpdateR(func(cx *App) *cachedLoad[int] {
+			return newCachedLoad(func(s *scheduler.Scope) int {
+				v, err := receiver.Recv(s)
+				if err != nil {
+					panic("test sends a result")
+				}
+				return v
+			}, cx)
+		})
+		firstNotificationCount := 0
+		secondNotificationCount := 0
+		var firstEntity, secondEntity Entity[struct{}]
+		cx.Update(func(cx *App) {
+			firstEntity = cx.New(func(*Context[struct{}]) *struct{} { return &struct{}{} })
+			secondEntity = cx.New(func(*Context[struct{}]) *struct{} { return &struct{}{} })
+			cx.Observe(firstEntity, func(Entity[struct{}], *App) { firstNotificationCount++ }).Detach()
+			cx.Observe(secondEntity, func(Entity[struct{}], *App) { secondNotificationCount++ }).Detach()
+		})
+		defer firstEntity.Release()
+		defer secondEntity.Release()
+
+		if _, ok := load.useBy(firstEntity.EntityID()); ok {
+			t.Fatal("load ready before completion")
+		}
+		if _, ok := load.useBy(firstEntity.EntityID()); ok {
+			t.Fatal("load ready before completion")
+		}
+		if _, ok := load.useBy(secondEntity.EntityID()); ok {
+			t.Fatal("load ready before completion")
+		}
+
+		if err := sender.Send(42); err != nil {
+			t.Fatalf("send: %v", err)
+		}
+		cx.RunUntilParked()
+
+		if firstNotificationCount != 1 {
+			t.Fatalf("first notification count = %d, want 1", firstNotificationCount)
+		}
+		if secondNotificationCount != 1 {
+			t.Fatalf("second notification count = %d, want 1", secondNotificationCount)
+		}
+		if got, ok := load.useBy(firstEntity.EntityID()); !ok || got != 42 {
+			t.Fatalf("useBy(first) = (%v, %v)", got, ok)
+		}
+		if got, ok := load.useBy(secondEntity.EntityID()); !ok || got != 42 {
+			t.Fatalf("useBy(second) = (%v, %v)", got, ok)
+		}
+	})
+}
+
+func TestAssetCache_RemovingPendingAssetCancelsItAndReplacementIgnoresStaleCompletion(t *testing.T) {
+	RunTest(t, func(tc *TestRun) {
+		cx := tc.Cx()
+		staleSender, staleReceiver := scheduler.Oneshot[testLoadResult]()
+		replacementSender, replacementReceiver := scheduler.Oneshot[testLoadResult]()
+		source := newTestAssetSource(2, staleReceiver, replacementReceiver)
+
+		if got, ok := fetchTestAsset(cx, source); ok {
+			t.Fatalf("fetch before completion = %v", got)
+		}
+		if n := source.loadCount.Load(); n != 1 {
+			t.Fatalf("load count = %d, want 1", n)
+		}
+		cx.RunUntilParked()
+
+		cx.Update(func(cx *App) { cx.RemoveAsset[testAsset](source) })
+		if cx.UpdateR(func(cx *App) bool { return cx.HasAsset[testAsset](source) }) {
+			t.Fatal("asset still cached after RemoveAsset")
+		}
+		cx.RunUntilParked()
+		if err := staleSender.Send(okLoad(1)); err == nil {
+			t.Fatal("stale load was not cancelled")
+		}
+
+		if got, ok := fetchTestAsset(cx, source); ok {
+			t.Fatalf("fetch of replacement before completion = %v", got)
+		}
+		if n := source.loadCount.Load(); n != 2 {
+			t.Fatalf("load count = %d, want 2", n)
+		}
+
+		if err := replacementSender.Send(errLoad("replacement failed")); err != nil {
+			t.Fatalf("send: %v", err)
+		}
+		cx.RunUntilParked()
+
+		if got, ok := fetchTestAsset(cx, source); !ok || got != errLoad("replacement failed") {
+			t.Fatalf("fetch after replacement = (%v, %v)", got, ok)
+		}
+		if n := source.loadCount.Load(); n != 2 {
+			t.Fatalf("load count = %d, want 2", n)
+		}
+	})
+}
+
+func TestAssetCache_EvictionAfterWorkerCompletionDoesNotPublishIntoReplacement(t *testing.T) {
+	RunTest(t, func(tc *TestRun) {
+		cx := tc.Cx()
+		sender, receiver := scheduler.Oneshot[testLoadResult]()
+		replacementSender, replacementReceiver := scheduler.Oneshot[testLoadResult]()
+		source := newTestAssetSource(3, receiver, replacementReceiver)
+
+		if got, ok := fetchTestAsset(cx, source); ok {
+			t.Fatalf("fetch before completion = %v", got)
+		}
+		if err := sender.Send(okLoad(1)); err != nil {
+			t.Fatalf("send: %v", err)
+		}
+		for source.completionCount.Load() == 0 {
+			if !cx.bgExecutor.Tick() {
+				t.Fatal("tick found nothing to run before the worker completed")
+			}
+		}
+		if got, ok := fetchTestAsset(cx, source); ok {
+			t.Fatalf("fetch before publication = %v", got)
+		}
+
+		cx.Update(func(cx *App) {
+			cx.RemoveAsset[testAsset](source)
+			if got, ok := cx.FetchAsset[testAsset](source); ok {
+				t.Fatalf("fetch of replacement inside the eviction update = %v", got)
+			}
+		})
+		cx.RunUntilParked()
+		if got, ok := fetchTestAsset(cx, source); ok {
+			t.Fatalf("stale completion was published into the replacement: %v", got)
+		}
+
+		if err := replacementSender.Send(okLoad(2)); err != nil {
+			t.Fatalf("send: %v", err)
+		}
+		cx.RunUntilParked()
+		if got, ok := fetchTestAsset(cx, source); !ok || got != okLoad(2) {
+			t.Fatalf("fetch after replacement = (%v, %v)", got, ok)
+		}
+		if n := source.loadCount.Load(); n != 2 {
+			t.Fatalf("load count = %d, want 2", n)
+		}
+	})
+}
+
+func fetchTestAsset(cx *TestAppContext, source testAssetSource) (testLoadResult, bool) {
+	type fetched struct {
+		result testLoadResult
+		ok     bool
+	}
+	f := cx.UpdateR(func(cx *App) fetched {
+		result, ok := cx.FetchAsset[testAsset](source)
+		return fetched{result, ok}
+	})
+	return f.result, f.ok
+}
+
+type testAsset struct{}
+
+type testAssetSource struct {
+	id              int
+	loadCount       *atomic.Int64
+	completionCount *atomic.Int64
+	mu              *sync.Mutex
+	receivers       *[]*scheduler.OneshotReceiver[testLoadResult]
+}
+
+func newTestAssetSource(id int, receivers ...*scheduler.OneshotReceiver[testLoadResult]) testAssetSource {
+	queue := append([]*scheduler.OneshotReceiver[testLoadResult](nil), receivers...)
+	return testAssetSource{
+		id:              id,
+		loadCount:       new(atomic.Int64),
+		completionCount: new(atomic.Int64),
+		mu:              new(sync.Mutex),
+		receivers:       &queue,
+	}
+}
+
+func (s testAssetSource) Hash(h *FxHasher) {
+	h.WriteUsize(uint64(s.id))
+}
+
+func (testAsset) Load(source testAssetSource, _ *App) func(s *scheduler.Scope) testLoadResult {
+	source.loadCount.Add(1)
+	source.mu.Lock()
+	if len(*source.receivers) == 0 {
+		source.mu.Unlock()
+		panic("each test load should have a receiver")
+	}
+	receiver := (*source.receivers)[0]
+	*source.receivers = (*source.receivers)[1:]
+	source.mu.Unlock()
+	return func(s *scheduler.Scope) testLoadResult {
+		defer receiver.Close()
+		result, err := receiver.Recv(s)
+		if err != nil {
+			result = errLoad("cancelled")
+		}
+		source.completionCount.Add(1)
+		return result
+	}
 }

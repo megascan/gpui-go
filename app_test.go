@@ -3,11 +3,14 @@ package gpui
 import (
 	"fmt"
 	"reflect"
+	"runtime"
+	"slices"
 	"strings"
 	"testing"
 
 	"github.com/megascan/gpui-go/collections"
 	"github.com/megascan/gpui-go/gpuiutil"
+	"github.com/megascan/gpui-go/scheduler"
 )
 
 func newBareApp() *AppCell {
@@ -214,3 +217,117 @@ type testNoopAction struct{}
 func (*testNoopAction) Name() string                { return "test::Noop" }
 func (a *testNoopAction) BoxedClone() Action        { return &testNoopAction{} }
 func (*testNoopAction) PartialEq(other Action) bool { _, ok := other.(*testNoopAction); return ok }
+
+func TestApp_AsyncAppRefreshFlushesRefreshEffect(t *testing.T) {
+	t.Skip("blocked:M0-blocked-tests: needs windows (TestAppContext.AddWindow) and the Render path")
+}
+
+func TestApp_MissingGlyphCallbacksFollowSubscriptionLifetime(t *testing.T) {
+	RunTest(t, func(tc *TestRun) {
+		cx := tc.Cx()
+		report := func(grapheme string) {
+			cx.Update(func(cx *App) {
+				cx.TextSystem().missingGlyphReporter.Report([]MissingGlyph{testMissingGlyph(grapheme)})
+			})
+			cx.RunUntilParked()
+		}
+
+		var observed []MissingGlyph
+		subscription := cx.UpdateR(func(cx *App) Subscription {
+			return cx.OnMissingGlyphs(func(missingGlyphs []MissingGlyph, _ *App) {
+				observed = append(observed, missingGlyphs...)
+			})
+		})
+		report("active")
+		if want := []MissingGlyph{testMissingGlyph("active")}; !slices.Equal(observed, want) {
+			t.Fatalf("observed = %v, want %v", observed, want)
+		}
+
+		var secondObserved []MissingGlyph
+		secondSubscription := cx.UpdateR(func(cx *App) Subscription {
+			return cx.OnMissingGlyphs(func(missingGlyphs []MissingGlyph, _ *App) {
+				secondObserved = append(secondObserved, missingGlyphs...)
+			})
+		})
+		report("replacement")
+		if want := []MissingGlyph{testMissingGlyph("active")}; !slices.Equal(observed, want) {
+			t.Fatalf("observed = %v, want %v", observed, want)
+		}
+		if want := []MissingGlyph{testMissingGlyph("replacement")}; !slices.Equal(secondObserved, want) {
+			t.Fatalf("second observed = %v, want %v", secondObserved, want)
+		}
+
+		subscription.Unsubscribe()
+		report("after old drop")
+		if want := []MissingGlyph{testMissingGlyph("replacement"), testMissingGlyph("after old drop")}; !slices.Equal(secondObserved, want) {
+			t.Fatalf("second observed = %v, want %v", secondObserved, want)
+		}
+
+		secondSubscription.Unsubscribe()
+		report("inactive")
+		if len(secondObserved) != 2 {
+			t.Fatalf("len(second observed) = %d, want 2", len(secondObserved))
+		}
+	})
+}
+
+func TestApp_GpuiBorrow(t *testing.T) {
+	cx := TestAppContextSingle()
+	defer cx.Close()
+	observationCount := 0
+
+	state := cx.UpdateR(func(cx *App) Entity[bool] {
+		state := cx.New(func(*Context[bool]) *bool { return new(bool) })
+		cx.Observe(state, func(Entity[bool], *App) {
+			observationCount++
+		}).Detach()
+		return state
+	})
+	defer state.Release()
+
+	cx.Update(func(cx *App) {
+		borrow := state.AsMut(cx)
+		*borrow.Get() = true
+		borrow.Release()
+	})
+
+	cx.Update(func(cx *App) {
+		state.Write(cx, false)
+	})
+
+	if observationCount != 2 {
+		t.Fatalf("observation count = %d, want 2", observationCount)
+	}
+}
+
+func TestApp_RestartPreservesPathAndArguments(t *testing.T) {
+	RunTest(t, func(tc *TestRun) {
+		cx := tc.Cx()
+		tc.BlockTest(func(s *scheduler.Scope) {
+			userDataDir := "/tmp/zed data/\xff"
+			if runtime.GOOS == "windows" {
+				userDataDir = "C:\\zed data"
+			}
+			arguments := []string{"--user-data-dir", userDataDir}
+			restartPath := "updated-zed"
+			_ = (&Application{app: cx.app}).WithRestartArguments(slices.Clone(arguments))
+			restart := cx.ExpectRestart()
+
+			cx.Update(func(cx *App) {
+				cx.SetRestartPath(restartPath)
+				cx.Restart()
+			})
+
+			request, err := restart.Recv(s)
+			if err != nil {
+				panic("restart was not requested")
+			}
+			if path, ok := request.BinaryPath.Get(); !ok || path != restartPath {
+				t.Fatalf("restart path = %v, want Some(%q)", request.BinaryPath, restartPath)
+			}
+			if !slices.Equal(request.Arguments, arguments) {
+				t.Fatalf("restart arguments = %q, want %q", request.Arguments, arguments)
+			}
+		})
+	})
+}
