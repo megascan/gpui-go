@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M0-window-dispatch exit 0 (go build/vet/test ., gofmt clean, paritycheck core-window 447 rows, prompts.rs done)

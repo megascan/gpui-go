@@ -1,0 +1,1 @@
+M0-profiler-core: sh docs/port/verify.sh M0-profiler-core exit 0 (build, vet, test, gofmt, paritycheck 323 rows). Extra: go test -tags gpui_profiler . pass; go test -race -tags gpui_profiler -run TestProfiler . pass (15 pass incl. ReleaseThreadTimings drop test, 1 skipped blocked:M3-profiler-journal); go vet [-tags gpui_profiler] . for darwin/arm64, windows/amd64, js/wasm pass.

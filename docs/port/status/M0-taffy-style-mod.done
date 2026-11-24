@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M0-taffy-style-mod exit 0 (build, vet, test, gofmt on internal/taffy); paritycheck -area ext-taffy -done src/style/alignment.rs,src/style/block.rs,src/style/flex.rs,src/style/float.rs passes; style/mod.rs grid trait impls blocked:M0-taffy-style-grid.

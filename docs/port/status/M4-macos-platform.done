@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M4-macos-platform exit 0 (darwin arm64+amd64 vet, test -c, gofmt); paritycheck -area macos -done platform.rs,screen_capture.rs,system_notifications.rs passes

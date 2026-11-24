@@ -1,0 +1,1 @@
+M3-a11y-consumer-text: sh docs/port/verify.sh M3-a11y-consumer-text exited 0 (2026-11-24); 96 text.rs tests pass; paritycheck -area ext-a11y-consumer -all-done passes; vet clean for js/wasm, windows, darwin.

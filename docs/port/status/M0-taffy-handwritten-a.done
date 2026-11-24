@@ -1,0 +1,1 @@
+M0-taffy-handwritten-a: verify.sh exit 0 (build, vet, test, gofmt on internal/taffy). 15 hand_written files (absolute_replaced..measure), 68 Go tests ported and passing; detailed_grid_info, fit_content_calc, flex_line_count n/a:D-TAFFY-FEATURE. No engine bugs exposed.

@@ -1,0 +1,1 @@
+M0-elements-media: sh docs/port/verify.sh M0-elements-media exit 0 (go build/vet/test ., gofmt clean); paritycheck -area core-elements,core-text passes (747 rows); 19 TestImg_/TestSvg_/TestSvgRenderer_ tests pass, 3 TestPlatformImageTests_* now run instead of skipping; CGO_ENABLED=0 go vet . passes for darwin/arm64, windows/amd64, js/wasm.

@@ -1,0 +1,11 @@
+# M4-apple-ffi debt
+
+- Profiler thread identity: the GCD trampoline maps the OS thread (pthread_threadid_np) to a gpui.ThreadID through a package-level sync.Map, naming the main thread "main" and leaving GCD worker threads unnamed (Rust's thread-local timings per std::thread). Entries are never removed because GCD owns its worker threads' lifetimes.
+- Runnables and closures cross dispatch_async_f / dispatch_after_f / pthread_create as integer keys into gcd.Handles tables, not as raw pointers, so C never holds a Go pointer. A runnable whose queue never drains (the main queue in a test binary with no run loop) stays in the table.
+- SpawnRealtime creates a real detached pthread through a purego callback (paritycheck -lint bans runtime.LockOSThread outside package platform, so a locked goroutine is not an option). A pthread_create failure panics with "failed to spawn thread: ..." like std::thread::spawn.
+- MainThreadMarker checks +[NSThread isMainThread] on every call; Go has no thread-local cache. It is only meaningful from the main goroutine once package platform has locked it to the main thread, or from a native thread.
+- The Security framework, CoreFoundation, Foundation, QuartzCore and libSystem are dlopened lazily; Keychain calls return KeychainErrorInvalidResponse{"Security framework unavailable: ..."} if Security cannot be opened (upstream links it, so this path does not exist there).
+- The display-link delegate keeps its callback in a Go map keyed by the delegate object instead of an ivar; MetalFrameSource.Close removes the entry before releasing the delegate. A source dropped without Close leaks its entry.
+- TestProcessInfo_NotificationsAreDeferredAndCancelledOnDrop skips until M0-test-contexts lands; its body (checkNotificationLifecycle) is written against ForegroundExecutor / BackgroundExecutor and a run-until-parked func and needs wiring to TestAppContext then.
+- None of these packages has run on a Mac yet: locally only darwin/arm64 and darwin/amd64 vet + go test -c pass. The first CI run (M4-ci-macos) is the first execution of every test here, including the Keychain round trip (unique *.invalid server name, deleted in cleanup).
+- GOOS=ios is covered by the darwin constraint but was not vetted locally (ios/arm64 needs external linking).

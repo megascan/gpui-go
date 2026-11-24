@@ -1,0 +1,1 @@
+M0-input-types: sh docs/port/verify.sh M0-input-types exit 0 (go build/vet/test ., gofmt, paritycheck -area core-input,core-app -done keystroke.rs,action.rs,global.rs,assets.rs: 958 rows). Also: GOOS=windows/darwin/js CGO_ENABLED=0 go vet . clean; paritycheck -area core-geometry,macros clean.

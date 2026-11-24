@@ -1,0 +1,11 @@
+M0-element: sh docs/port/verify.sh M0-element -> EXIT 0 (2026-11-24T05:58:54Z)
+
++ case "$1" in
++ go build .
++ go vet .
++ go test .
+ok  	github.com/megascan/gpui-go	0.397s
++ test -z ''
++ go run ./internal/cmd/paritycheck -area core-window,core-style -done gpui/src/view.rs,gpui/src/taffy.rs,gpui/src/inspector.rs
+paritycheck: 922 rows checked
+EXIT 0

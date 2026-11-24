@@ -1,0 +1,2 @@
+verify: sh docs/port/verify.sh M0-window-tests exit 0 (go build/vet/test ., gofmt clean, paritycheck -area core-window -done gpui/src/window.rs: 447 rows checked)
+45 window.rs tests pass; 2 feat:profiler tests blocked:M3-profiler-journal

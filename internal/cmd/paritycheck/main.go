@@ -2,6 +2,8 @@
 package main
 
 import (
+	_ "github.com/megascan/gpui-go/internal/cmd/paritycheck/scan"
+
 	"errors"
 	"flag"
 	"fmt"

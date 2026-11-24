@@ -1,0 +1,1 @@
+sh docs/port/verify.sh M0-taffy-fixtures: exit 0 (build, vet, test, gofmt on internal/taffy; go generate leaves testdata/xml.zip sha256 5117f25a3b793be01164fe1e382ffd7d0a64c2e9327c5e4c7d8d73d5400e7060 unchanged). paritycheck -area ext-taffy passes. TestXml: leaf 56 pass, 4 blocked on ComputeFlexboxLayout stub, other categories not enabled.

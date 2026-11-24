@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M0-scheduler-test exit 0 (build, vet, test, gofmt, -count=3, -race, paritycheck -area scheduler -done scheduler/: 131 rows)

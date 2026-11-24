@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M1-x11-window exit 0 (2026-11-24); GPUI_TEST_DISPLAY=1 TestClient_AttachDisplay passed against :0

@@ -1,0 +1,1 @@
+M0-taffy-handwritten-b: verify.sh exit 0 (build, vet, test internal/taffy; gofmt clean; paritycheck -area ext-taffy -all-done: 1530 rows). 66 new hand_written tests across 10 files; serde.rs n/a:D-TAFFY-FEATURE.

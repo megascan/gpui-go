@@ -1,0 +1,1 @@
+M0-actiongen: sh docs/port/verify.sh M0-actiongen exit 0 (build, vet, go test ./internal/cmd/actiongen/... with golden tests for gpui and -self output, error and argument-parser tests, gofmt clean)

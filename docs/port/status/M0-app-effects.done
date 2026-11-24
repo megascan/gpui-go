@@ -1,0 +1,1 @@
+M0-app-effects: sh docs/port/verify.sh M0-app-effects exit 0 (go build/vet/test ., gofmt clean, paritycheck -area core-app -done gpui/src/app.rs: 666 rows ok). Also CGO_ENABLED=0 go vet and go test -c for darwin/arm64, windows/amd64, js/wasm.

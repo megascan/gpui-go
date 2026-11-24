@@ -1,0 +1,1 @@
+M0-jsonschema: sh docs/port/verify.sh M0-jsonschema exit 0 (build, vet, go test ./internal/jsonschema/..., gofmt clean)

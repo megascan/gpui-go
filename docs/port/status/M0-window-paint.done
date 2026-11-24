@@ -1,0 +1,5 @@
+M0-window-paint: sh docs/port/verify.sh M0-window-paint -> EXIT 0 (2026-11-24T06:47:15Z)
+
++ go build . && go vet . && go test . && test -z "$(gofmt -l *.go)"
+ok
+EXIT 0

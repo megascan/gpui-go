@@ -1,0 +1,8 @@
+# M0-executors debt
+
+- `ForegroundExecutor` has no `foreground_runnables` counter (upstream `#[cfg(feature = "profiler")]`, executor.rs:30, :409-433, platform_scheduler.rs:32, :110): the journal's `ForegroundRunnableCounter` belongs to M3-profiler-journal. See docs/port/handoff/M0-executors.md.
+- `ThreadedDispatcher.IsMainThread` identifies the main thread by goroutine id; a task body counts as the creating goroutine only when its iter.Pull coroutine was created there (parsed from `runtime.Stack`'s "created by iter.Pull ... in goroutine N"). A foreground body first polled from another goroutine reports false. `currentThreadGoroutineID` parses a stack trace on every call.
+- `Scope`, `Scoped`, `ScopedPriority`, `BlockOn`, `BlockWithTimeout`, `BlockTest` compile on js/wasm too (upstream gates them out with `cfg(not(target_family = "wasm"))`), following scheduler's `LocalExecutor.BlockOn`. Parking there deadlocks the single wasm thread.
+- A scoped future canceled before its first poll is released by `Scope.Close` claiming it (CAS on its state) instead of by a dropped future closing its sender clone.
+- `ThreadedDispatcher` worker and timer goroutines live for the lifetime of the process, as upstream's threads do; each `NewThreadedDispatcher` in tests adds NumCPU+1 goroutines.
+- Foreground task dispatch holds the scheduler weakly, as upstream's `Arc::downgrade` does. Go frees by liveness, not scope, so the last use of a `ForegroundExecutor` or `BackgroundExecutor` over a `PlatformScheduler` can drop its pending tasks before the enclosing block ends; tests keep executors alive with `runtime.KeepAlive`, and the App must hold its executors for its lifetime.

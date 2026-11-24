@@ -1,0 +1,1 @@
+M0-a11y-geometry: sh docs/port/verify.sh M0-a11y-geometry exit 0 (go build, vet, test, gofmt on ./a11y; paritycheck -area ext-a11y: 773 rows checked)

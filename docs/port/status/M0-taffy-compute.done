@@ -1,0 +1,1 @@
+M0-taffy-compute: sh docs/port/verify.sh M0-taffy-compute exit 0 (build, vet, test, gofmt on internal/taffy); paritycheck -area ext-taffy -done src/tree/taffy_tree.rs,src/compute/mod.rs,src/compute/leaf.rs,src/compute/common passes.

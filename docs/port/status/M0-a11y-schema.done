@@ -1,0 +1,1 @@
+M0-a11y-schema: sh docs/port/verify.sh M0-a11y-schema exit 0 (go build, vet, test, gofmt on ./a11y; paritycheck -area ext-a11y: 851 rows checked, -all-done and -lint clean for a11y; go generate idempotent by sha256; CGO_ENABLED=0 vet for darwin, windows, js/wasm)

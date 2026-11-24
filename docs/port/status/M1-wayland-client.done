@@ -1,0 +1,3 @@
+M1-wayland-client: sh docs/port/verify.sh M1-wayland-client exit 0 (2026-11-24, final tree)
+go build/vet/test ./platform/linux/wayland/... ok; gofmt clean; paritycheck -area linux-wayland -done serial.rs,display.rs,cursor.rs ok; paritycheck -lint reports nothing in platform/linux/wayland.
+GPUI_TEST_DISPLAY=1 go test ./platform/linux/wayland/ (Hyprland) ok: cursor Destroy and the Wayland event-loop source run against the live compositor.

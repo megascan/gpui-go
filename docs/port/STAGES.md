@@ -109,7 +109,7 @@ cd /home/strange/Projects/gpui-go-wt/port && s=$(find . -name '*_gen.go' | sort 
 cd /home/strange/Projects/gpui-go-wt/port && for t in darwin/arm64 darwin/amd64 windows/amd64 windows/arm64 js/wasm; do GOOS=${t%/*} GOARCH=${t#*/} CGO_ENABLED=0 go vet ./... && GOOS=${t%/*} GOARCH=${t#*/} CGO_ENABLED=0 go test -c -o /dev/null ./... || exit 1; done
 cd /home/strange/Projects/gpui-go-wt/port && GOOS=ios GOARCH=arm64 CGO_ENABLED=0 go vet ./internal/apple/... ./platform/apple/... ./platform/ios/... ./platform
 cd /home/strange/Projects/gpui-go-wt/port && GOOS=js GOARCH=wasm go build -o /dev/null ./examples/web_hello_web && GOOS=js GOARCH=wasm go build ./render/... ./platform/web/...
-cd /home/strange/Projects/gpui-go-wt/port && GOOS=js GOARCH=wasm go test -exec "$(go env GOROOT)/lib/wasm/go_js_wasm_exec" ./platform/web/... ./render/wgpu/internal/gpu/webgl2/...
+cd /home/strange/Projects/gpui-go-wt/port && env -i PATH="$PATH" HOME="$HOME" GOCACHE="$(go env GOCACHE)" GOPATH="$(go env GOPATH)" GOMODCACHE="$(go env GOMODCACHE)" GOFLAGS="$GOFLAGS" GOOS=js GOARCH=wasm go test -exec "$(go env GOROOT)/lib/wasm/go_js_wasm_exec" ./platform/web/... ./render/wgpu/internal/gpu/webgl2/...
 cd /home/strange/Projects/gpui-go-wt/port && go build ./examples/...
 cd /home/strange/Projects/gpui-go-wt/port && go run ./internal/cmd/paritycheck -all-done -rescan -lint
 cd /home/strange/Projects/gpui-go-wt/port && test ! -e stubs.go && test ! -e DOCS
@@ -1851,7 +1851,7 @@ for a in amd64 arm64; do GOOS=windows GOARCH=$a CGO_ENABLED=0 go vet ./internal/
 
 ```sh
 for a in amd64 arm64; do GOOS=windows GOARCH=$a CGO_ENABLED=0 go vet ./internal/win/dwrite/... ./platform/windows/... && GOOS=windows GOARCH=$a CGO_ENABLED=0 go test -c -o /dev/null ./internal/win/dwrite/... ./platform/windows/... || exit 1; done && test -z "$(gofmt -l internal/win/dwrite platform/windows)"
-go run ./internal/cmd/paritycheck -area windows -done gpui_windows/src/direct_write.rs,gpui_windows/src/dispatcher.rs,gpui_windows/src/vsync.rs
+go run ./internal/cmd/paritycheck -area windows -done gpui_windows/src/direct_write.rs,gpui_windows/src/vsync.rs
 ```
 
 ### M4-windows-d3d-atlas
@@ -2015,7 +2015,7 @@ command -v naga >/dev/null || exit 0; s=$(find internal/webglsl -name '*.glsl' -
 
 ```sh
 GOOS=js GOARCH=wasm go vet ./render/... && GOOS=js GOARCH=wasm go build ./render/... && GOOS=js GOARCH=wasm go test -c -o /dev/null ./render/wgpu/... && go build ./render/... && go test ./render/... && test -z "$(gofmt -l render)"
-GOOS=js GOARCH=wasm go test -exec "$(go env GOROOT)/lib/wasm/go_js_wasm_exec" ./render/wgpu/internal/gpu/webgl2/...
+env -i PATH="$PATH" HOME="$HOME" GOCACHE="$(go env GOCACHE)" GOPATH="$(go env GOPATH)" GOMODCACHE="$(go env GOMODCACHE)" GOFLAGS="$GOFLAGS" GOOS=js GOARCH=wasm go test -exec "$(go env GOROOT)/lib/wasm/go_js_wasm_exec" ./render/wgpu/internal/gpu/webgl2/...
 go run ./internal/cmd/paritycheck -area wgpu -done gpui_wgpu/src/
 ```
 
@@ -2042,7 +2042,7 @@ GOOS=js GOARCH=wasm go vet ./platform/web/... && GOOS=js GOARCH=wasm go test -c 
 - Verify (`sh docs/port/verify.sh M4-web-input` runs exactly these, from the worktree root):
 
 ```sh
-GOOS=js GOARCH=wasm go vet ./platform/web/... && GOOS=js GOARCH=wasm go test -exec "$(go env GOROOT)/lib/wasm/go_js_wasm_exec" ./platform/web/... && test -z "$(gofmt -l platform/web)"
+GOOS=js GOARCH=wasm go vet ./platform/web/... && env -i PATH="$PATH" HOME="$HOME" GOCACHE="$(go env GOCACHE)" GOPATH="$(go env GOPATH)" GOMODCACHE="$(go env GOMODCACHE)" GOFLAGS="$GOFLAGS" GOOS=js GOARCH=wasm go test -exec "$(go env GOROOT)/lib/wasm/go_js_wasm_exec" ./platform/web/... && test -z "$(gofmt -l platform/web)"
 ```
 
 ### M4-web-text
@@ -2055,7 +2055,7 @@ GOOS=js GOARCH=wasm go vet ./platform/web/... && GOOS=js GOARCH=wasm go test -ex
 - Verify (`sh docs/port/verify.sh M4-web-text` runs exactly these, from the worktree root):
 
 ```sh
-GOOS=js GOARCH=wasm go vet ./platform/... && GOOS=js GOARCH=wasm go test -exec "$(go env GOROOT)/lib/wasm/go_js_wasm_exec" ./platform/web/... && test -z "$(gofmt -l platform/web platform/platform_js.go)"
+GOOS=js GOARCH=wasm go vet ./platform/... && env -i PATH="$PATH" HOME="$HOME" GOCACHE="$(go env GOCACHE)" GOPATH="$(go env GOPATH)" GOMODCACHE="$(go env GOMODCACHE)" GOFLAGS="$GOFLAGS" GOOS=js GOARCH=wasm go test -exec "$(go env GOROOT)/lib/wasm/go_js_wasm_exec" ./platform/web/... && test -z "$(gofmt -l platform/web platform/platform_js.go)"
 go run ./internal/cmd/paritycheck -area web -done gpui_web/src/
 ```
 

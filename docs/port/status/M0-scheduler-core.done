@@ -1,0 +1,2 @@
+M0-scheduler-core: sh docs/port/verify.sh M0-scheduler-core exited 0 (build, vet, test, gofmt, test -race on ./scheduler/...), re-run after the review fixes (Send waker slot, cancel-unwind guard, empty Select panic, DedicatedExecutor spawn after Close, panic isolation in dedicated and realtime loops).
+Extra: go test -race -count=3 ./scheduler/ ok; CGO_ENABLED=0 go vet + go test -c for darwin/arm64, windows/amd64, js/wasm ok; paritycheck -area scheduler -done scheduler/src/clock.rs,scheduler/src/executor.rs,scheduler/src/scheduler.rs ok (131 rows).

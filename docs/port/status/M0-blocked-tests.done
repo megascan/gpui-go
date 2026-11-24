@@ -1,0 +1,2 @@
+verify: sh docs/port/verify.sh M0-blocked-tests exit 0 (go build/vet/test ., gofmt clean, paritycheck -area core-input,core-app -done key_dispatch/interactive/input/app/test_context/test_app: 963 rows checked)
+29 rows ported: key_dispatch 20, interactive 2, input 2, app 1, test_app 3, line_wrapper 1 (darwin-gated, passes on Linux too). Leftover M0-blocked rows in unowned files listed in docs/port/handoff/M0-blocked-tests.md.

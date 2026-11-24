@@ -1,0 +1,6 @@
+# M0-elements-media handoff
+
+- api-contracts section 1 stub table: `RenderSvgParams`, `TimedTransformation`, `Transformation`, `SvgRenderer`, `ImageSource`, `ImageSourceImage`, `AnyImageCache`, `ImageCacheProvider` and the `imageSource*` helpers are now real, in elements_svg.go, svg_renderer.go, elements_img.go and elements_image_cache.go. stubs.go no longer declares them. The exit stage should drop them from the table.
+- New public shapes: `ImageCache.Load(resource, window, cx) (*RenderImage, bool, error)` (bool = loaded; error = the `ImageCacheError`), `AnyImageCacheFromEntity[I, *I](entity)`, `NewImg(ImageSource)` plus the `ImageSourceFrom*` constructors, `NewSvg().Path/ExternalPath/Data`, `SvgSize` constructors `SvgSizeSize`, `SvgSizeExactSize`, `SvgSizeScaleFactor`, and `ImageSource` methods `RemoveAsset` / `IsAssetCached`.
+- window.go (not owned): `elementStateMap.clear` / `removeEntry` drop element states without releasing them. Upstream drops `Entity` values (RetainAll's cache) and `Task` values (the img loading notify task) held there. Fix needs a release hook on element-state eviction.
+- gpuiutil.LogErr dereferences a nil error. Upstream's `.log_err()` is a no-op on Ok, so callers have to guard it with `if err != nil`.

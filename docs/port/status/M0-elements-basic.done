@@ -1,0 +1,2 @@
+verify: sh docs/port/verify.sh M0-elements-basic exit 0 (go build/vet/test ., gofmt clean, paritycheck -area core-elements -done anchored/animation/canvas/container_query/deferred/surface/uniform_list: 503 rows checked); go test -c for darwin, windows, js/wasm ok
+22 tests ported: anchored 4, animation 14, deferred 2, uniform_list 2. Rows done or dev (D-ANIMEXT, D-UNIFORMTRACK, D-UNIFORMHANDLE, D-UNIFORMDECOR, D-SURFACE registered in parity/core-elements.md). Handoffs in docs/port/handoff/M0-elements-basic.md.

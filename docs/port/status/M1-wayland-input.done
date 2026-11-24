@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M1-wayland-input exit 0 (build, vet, test, gofmt on platform/linux/wayland); paritycheck -area linux-wayland passes

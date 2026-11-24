@@ -1,0 +1,1 @@
+M0-list: sh docs/port/verify.sh M0-list exit 0 (go build/vet/test ., gofmt clean); paritycheck -area core-elements passes (503 rows); 24 TestList_* tests pass.

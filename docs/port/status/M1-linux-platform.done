@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M1-linux-platform exit 0 (2026-11-24); paritycheck 164 rows; ios vet (CGO_ENABLED=1) ok

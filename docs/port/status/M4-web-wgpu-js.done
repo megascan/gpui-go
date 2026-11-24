@@ -1,0 +1,1 @@
+verify.sh M4-web-wgpu-js: exit 0 (2026-11-24); js tests pass under node go_js_wasm_exec
