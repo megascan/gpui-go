@@ -2,7 +2,7 @@
 
 Things only a person can confirm (a device, a browser, an interactive dialog, a screen reader). Folded from docs/port/owner-checks/<stage>.md by the exit stages; keep each item until the owner confirms it.
 
-Folded: M1-linux-platform, M1-linux-screencap, M1-wayland-window, M3-a11y-atspi-bus, M4-apple-text, M4-macos-appkit, M4-macos-platform, M4-web-webgl, M4-web-wgpu-js, M4-windows-a11y-node, M4-ios-app, M4-macos-a11y, M4-web-example, M4-windows-a11y, M4-windows-platform, M4-windows-screencap, M4-windows-shell, M1-exit, M3-examples-b, M3-examples-c, M3-exit.
+Folded: M1-linux-platform, M1-linux-screencap, M1-wayland-window, M3-a11y-atspi-bus, M4-apple-text, M4-macos-appkit, M4-macos-platform, M4-web-webgl, M4-web-wgpu-js, M4-windows-a11y-node, M4-ios-app, M4-macos-a11y, M4-web-example, M4-windows-a11y, M4-windows-platform, M4-windows-screencap, M4-windows-shell, M1-exit, M3-examples-b, M3-examples-c, M3-exit, M4-ios-window, M4-ci-macos.
 
 ## M1-linux-platform
 
@@ -125,3 +125,20 @@ Folded: M1-linux-platform, M1-linux-screencap, M1-wayland-window, M3-a11y-atspi-
 ## M3-exit
 
 - YOU: run `go run ./examples/a11y` on Wayland and on X11 (`WAYLAND_DISPLAY= go run ./examples/a11y`) with Orca enabled; check Orca reads the window's buttons and labels and that focus changes are announced.
+
+## M4-ios-window
+
+- YOU: on macOS with Xcode, run `examples/ios_ios/build-simulator.sh`, install the .app with `xcrun simctl install booted target/gpui-ios-example/GPUIIosExample.app` and launch it; check the dark screen with "GPUI on iOS", that tapping "Taps: N" increments, and that the status bar content is light.
+- YOU: in the simulator app, rotate the device and check the layout resizes without stretching (drawable size and scale follow), safe-area insets are respected, and toggling light/dark appearance fires the appearance callback.
+- YOU: on iOS with a focused text input, check the software keyboard appears, typing/deleting/emoji/marked (Japanese) text work, a downward swipe of at least 24pt dismisses the keyboard, and trackpad/mouse-wheel scrolling scrolls.
+- YOU: on iOS, run the native text-input harness (`go test -c -tags ios ./platform/ios` built for the simulator with CGO_ENABLED=1, then run it in the simulator); it must print "UIKit text input native protocol smoke test passed".
+- YOU: on an iOS 26 device or simulator, check `Insets().CornerRadii` reports the display's corner radii.
+
+## M4-ci-macos
+
+- YOU: on a Mac, `go run ./examples/hello_world`: the window opens through MacPlatform, the text renders crisp and the 500px div matches upstream.
+- YOU: on a Mac, type in an example with a text input using the Japanese / Pinyin IME: marked text, candidate window placement and commit work.
+- YOU: on a Mac, `go run ./examples/native_view` and `./examples/native_view_appkit_field`: native views are placed, sized and receive input as described under M3-examples-c.
+- YOU: on a Mac with VoiceOver on, `go run ./examples/a11y`: VoiceOver reads the window, buttons and labels and announces focus changes.
+- YOU: on a Mac, `GPUI_TEST_DISPLAY=1 go test ./platform/macos/ ./platform/apple/`: window, Metal headless render and shader tests pass on real hardware.
+- YOU: GitHub Actions is blocked on the account (billing / spending limit; macos-14 also reported "configuration 'macos-14-arm64-us-xl' is not supported"). Fix billing, then re-run CI on feat/port so the macos-14 job runs.
