@@ -296,78 +296,78 @@ Go target: `window.go` (package `gpui`), tests in `window_test.go`
 | `Window::paint_surface` | method | 5649 | macos,ios | `(Window).PaintSurface` | done |
 | `Window::drop_image` | method | 5669 |  | `(Window).DropImage` | done |
 | `Window::has_image_atlas_entry` | method | 5684 | feat:test-support | `(Window).HasImageAtlasEntry` | done |
-| `Window::request_layout` | method | 5703 |  | `(Window).RequestLayout` | todo |
-| `Window::request_measured_layout` | method | 5732 |  | `(Window).RequestMeasuredLayout` | todo |
-| `Window::compute_layout` | method | 5752 |  | `(Window).ComputeLayout` | todo |
-| `Window::layout_bounds` | method | 5769 |  | `(Window).LayoutBounds` | todo |
-| `Window::insert_hitbox` | method | 5789 |  | `(Window).InsertHitbox` | todo |
-| `Window::insert_window_control_hitbox` | method | 5808 |  | `(Window).InsertWindowControlHitbox` | todo |
-| `Window::set_key_context` | method | 5817 |  | `(Window).SetKeyContext` | todo |
-| `Window::set_focus_handle` | method | 5826 |  | `(Window).SetFocusHandle` | todo |
-| `Window::set_view_id` | method | 5839 |  | `(Window).SetViewID` | todo |
-| `Window::current_view` | method | 5845 |  | `(Window).CurrentView` | todo |
-| `Window::with_image_cache` | method | 5863 |  | `(Window).WithImageCache` | todo |
-| `Window::handle_input` | method | 5885 |  | `(Window).HandleInput` | todo |
-| `Window::notify_text_input_changed` | method | 5905 |  | `(Window).NotifyTextInputChanged` | todo |
-| `Window::notify_text_selection_changed` | method | 5916 |  | `(Window).NotifyTextSelectionChanged` | todo |
-| `Window::on_mouse_event` | method | 5948 |  | `(Window).OnMouseEvent` | todo |
-| `Window::on_key_event` | method | 5971 |  | `(Window).OnKeyEvent` | todo |
-| `Window::on_modifiers_changed` | method | 5992 |  | `(Window).OnModifiersChanged` | todo |
-| `Window::on_focus_in` | method | 6008 |  | `(Window).OnFocusIn` | todo |
-| `Window::on_focus_out` | method | 6028 |  | `(Window).OnFocusOut` | todo |
-| `Window::dispatch_keystroke` | method | 6068 |  | `(Window).DispatchKeystroke` | todo |
-| `Window::keystroke_text_for` | method | 6095 |  | `(Window).KeystrokeTextFor` | todo |
-| `Window::dispatch_event` | method | 6110 |  | `(Window).DispatchEvent` | todo |
-| `Window::touch_prediction_enabled` | method | 6317 |  | `(Window).TouchPredictionEnabled` | todo |
-| `Window::set_touch_prediction_enabled` | method | 6324 |  | `(Window).SetTouchPredictionEnabled` | todo |
-| `Window::has_pending_keystrokes` | method | 6852 |  | `(Window).HasPendingKeystrokes` | todo |
-| `Window::pending_input` | method | 6869 |  | `(Window).PendingInput` | todo |
-| `Window::set_pending_input_timeout_paused` | method | 6886 |  | `(Window).SetPendingInputTimeoutPaused` | todo |
-| `Window::pending_input_keystrokes` | method | 6959 |  | `(Window).PendingInputKeystrokes` | todo |
-| `Window::observe_global` | method | 7146 |  | `(Window).ObserveGlobal` | todo |
-| `Window::activate_window` | method | 7165 |  | `(Window).ActivateWindow` | todo |
-| `Window::request_attention` | method | 7170 |  | `(Window).RequestAttention` | todo |
-| `Window::minimize_window` | method | 7175 |  | `(Window).MinimizeWindow` | todo |
-| `Window::toggle_fullscreen` | method | 7180 |  | `(Window).ToggleFullscreen` | todo |
-| `Window::toggle_simple_fullscreen` | method | 7188 |  | `(Window).ToggleSimpleFullscreen` | todo |
-| `Window::invalidate_character_coordinates` | method | 7193 |  | `(Window).InvalidateCharacterCoordinates` | todo |
-| `Window::prompt` | method | 7207 |  | `(Window).Prompt` | todo |
-| `Window::has_active_prompt` | method | 7265 |  | `(Window).HasActivePrompt` | todo |
-| `Window::context_stack` | method | 7270 |  | `(Window).ContextStack` | todo |
-| `Window::available_actions` | method | 7281 |  | `(Window).AvailableActions` | todo |
-| `Window::bindings_for_action` | method | 7297 |  | `(Window).BindingsForAction` | todo |
-| `Window::highest_precedence_binding_for_action` | method | 7305 |  | `(Window).HighestPrecedenceBindingForAction` | todo |
-| `Window::bindings_for_action_in_context` | method | 7315 |  | `(Window).BindingsForActionInContext` | todo |
-| `Window::highest_precedence_binding_for_action_in_context` | method | 7326 |  | `(Window).HighestPrecedenceBindingForActionInContext` | todo |
-| `Window::bindings_for_action_in` | method | 7338 |  | `(Window).BindingsForActionIn` | todo |
-| `Window::highest_precedence_binding_for_action_in` | method | 7353 |  | `(Window).HighestPrecedenceBindingForActionIn` | todo |
-| `Window::possible_bindings_for_input` | method | 7364 |  | `(Window).PossibleBindingsForInput` | todo |
-| `Window::listener_for` | method | 7385 |  | `(Window).ListenerFor` | todo |
-| `Window::handler_for` | assoc-fn | 7397 |  | `WindowHandlerFor` | todo |
-| `Window::on_window_should_close` | method | 7410 |  | `(Window).OnWindowShouldClose` | todo |
-| `Window::on_action` | method | 7429 |  | `(Window).OnAction` | todo |
-| `Window::on_action_when` | method | 7449 |  | `(Window).OnActionWhen` | todo |
-| `Window::gpu_specs` | method | 7466 |  | `(Window).GPUSpecs` | todo |
-| `Window::titlebar_double_click` | method | 7472 |  | `(Window).TitlebarDoubleClick` | todo |
-| `Window::window_title` | method | 7479 |  | `(Window).WindowTitle` | todo |
-| `Window::tabbed_windows` | method | 7485 |  | `(Window).TabbedWindows` | todo |
-| `Window::tab_bar_visible` | method | 7491 |  | `(Window).TabBarVisible` | todo |
-| `Window::merge_all_windows` | method | 7497 |  | `(Window).MergeAllWindows` | todo |
-| `Window::move_tab_to_new_window` | method | 7503 |  | `(Window).MoveTabToNewWindow` | todo |
-| `Window::toggle_window_tab_overview` | method | 7509 |  | `(Window).ToggleWindowTabOverview` | todo |
-| `Window::set_tabbing_identifier` | method | 7515 |  | `(Window).SetTabbingIdentifier` | todo |
-| `Window::play_system_bell` | method | 7522 |  | `(Window).PlaySystemBell` | todo |
-| `Window::is_a11y_enabled` | method | 7532 |  | `(Window).IsA11yEnabled` | todo |
-| `Window::is_a11y_active` | method | 7546 |  | `(Window).IsA11yActive` | todo |
-| `Window::debug_a11y_tree_json` | method | 7551 |  | `(Window).DebugA11yTreeJSON` | todo |
-| `Window::on_a11y_action` | method | 7560 |  | `(Window).OnA11yAction` | todo |
-| `Window::toggle_inspector` | method | 7638 | feat:inspector,debug | `(Window).ToggleInspector` | todo |
-| `Window::is_inspector_picking` | method | 7653 |  | `(Window).IsInspectorPicking` | todo |
-| `Window::with_inspector_state` | method | 7665 | feat:inspector,debug | `(Window).WithInspectorState` | todo |
-| `Window::insert_inspector_hitbox` | method | 7731 | feat:inspector,debug | `(Window).InsertInspectorHitbox` | todo |
-| `Window::set_modifiers` | method | 7834 | feat:test-support | `(Window).SetModifiers` | todo |
-| `Window::simulate_mouse_move` | method | 7842 | feat:test-support | `(Window).SimulateMouseMove` | todo |
-| `WindowId` | struct | 7888 |  | `WindowID` | todo |
+| `Window::request_layout` | method | 5703 |  | `(Window).RequestLayout` | done |
+| `Window::request_measured_layout` | method | 5732 |  | `(Window).RequestMeasuredLayout` | done |
+| `Window::compute_layout` | method | 5752 |  | `(Window).ComputeLayout` | done |
+| `Window::layout_bounds` | method | 5769 |  | `(Window).LayoutBounds` | done |
+| `Window::insert_hitbox` | method | 5789 |  | `(Window).InsertHitbox` | done |
+| `Window::insert_window_control_hitbox` | method | 5808 |  | `(Window).InsertWindowControlHitbox` | done |
+| `Window::set_key_context` | method | 5817 |  | `(Window).SetKeyContext` | done |
+| `Window::set_focus_handle` | method | 5826 |  | `(Window).SetFocusHandle` | done |
+| `Window::set_view_id` | method | 5839 |  | `(Window).SetViewID` | done |
+| `Window::current_view` | method | 5845 |  | `(Window).CurrentView` | done |
+| `Window::with_image_cache` | method | 5863 |  | `(Window).WithImageCache` | done |
+| `Window::handle_input` | method | 5885 |  | `(Window).HandleInput` | done |
+| `Window::notify_text_input_changed` | method | 5905 |  | `(Window).NotifyTextInputChanged` | done |
+| `Window::notify_text_selection_changed` | method | 5916 |  | `(Window).NotifyTextSelectionChanged` | done |
+| `Window::on_mouse_event` | method | 5948 |  | `(Window).OnMouseEvent` | done |
+| `Window::on_key_event` | method | 5971 |  | `(Window).OnKeyEvent` | done |
+| `Window::on_modifiers_changed` | method | 5992 |  | `(Window).OnModifiersChanged` | done |
+| `Window::on_focus_in` | method | 6008 |  | `(Window).OnFocusIn` | done |
+| `Window::on_focus_out` | method | 6028 |  | `(Window).OnFocusOut` | done |
+| `Window::dispatch_keystroke` | method | 6068 |  | `(Window).DispatchKeystroke` | done |
+| `Window::keystroke_text_for` | method | 6095 |  | `(Window).KeystrokeTextFor` | done |
+| `Window::dispatch_event` | method | 6110 |  | `(Window).DispatchEvent` | done |
+| `Window::touch_prediction_enabled` | method | 6317 |  | `(Window).TouchPredictionEnabled` | done |
+| `Window::set_touch_prediction_enabled` | method | 6324 |  | `(Window).SetTouchPredictionEnabled` | done |
+| `Window::has_pending_keystrokes` | method | 6852 |  | `(Window).HasPendingKeystrokes` | done |
+| `Window::pending_input` | method | 6869 |  | `(Window).PendingInput` | done |
+| `Window::set_pending_input_timeout_paused` | method | 6886 |  | `(Window).SetPendingInputTimeoutPaused` | done |
+| `Window::pending_input_keystrokes` | method | 6959 |  | `(Window).PendingInputKeystrokes` | done |
+| `Window::observe_global` | method | 7146 |  | `(Window).ObserveGlobal` | done |
+| `Window::activate_window` | method | 7165 |  | `(Window).ActivateWindow` | done |
+| `Window::request_attention` | method | 7170 |  | `(Window).RequestAttention` | done |
+| `Window::minimize_window` | method | 7175 |  | `(Window).MinimizeWindow` | done |
+| `Window::toggle_fullscreen` | method | 7180 |  | `(Window).ToggleFullscreen` | done |
+| `Window::toggle_simple_fullscreen` | method | 7188 |  | `(Window).ToggleSimpleFullscreen` | done |
+| `Window::invalidate_character_coordinates` | method | 7193 |  | `(Window).InvalidateCharacterCoordinates` | done |
+| `Window::prompt` | method | 7207 |  | `(Window).Prompt` | done |
+| `Window::has_active_prompt` | method | 7265 |  | `(Window).HasActivePrompt` | done |
+| `Window::context_stack` | method | 7270 |  | `(Window).ContextStack` | done |
+| `Window::available_actions` | method | 7281 |  | `(Window).AvailableActions` | done |
+| `Window::bindings_for_action` | method | 7297 |  | `(Window).BindingsForAction` | done |
+| `Window::highest_precedence_binding_for_action` | method | 7305 |  | `(Window).HighestPrecedenceBindingForAction` | done |
+| `Window::bindings_for_action_in_context` | method | 7315 |  | `(Window).BindingsForActionInContext` | done |
+| `Window::highest_precedence_binding_for_action_in_context` | method | 7326 |  | `(Window).HighestPrecedenceBindingForActionInContext` | done |
+| `Window::bindings_for_action_in` | method | 7338 |  | `(Window).BindingsForActionIn` | done |
+| `Window::highest_precedence_binding_for_action_in` | method | 7353 |  | `(Window).HighestPrecedenceBindingForActionIn` | done |
+| `Window::possible_bindings_for_input` | method | 7364 |  | `(Window).PossibleBindingsForInput` | done |
+| `Window::listener_for` | method | 7385 |  | `(Window).ListenerFor` | done |
+| `Window::handler_for` | method | 7397 |  | `(Window).HandlerFor` | done |
+| `Window::on_window_should_close` | method | 7410 |  | `(Window).OnWindowShouldClose` | done |
+| `Window::on_action` | method | 7429 |  | `(Window).OnAction` | done |
+| `Window::on_action_when` | method | 7449 |  | `(Window).OnActionWhen` | done |
+| `Window::gpu_specs` | method | 7466 |  | `(Window).GPUSpecs` | done |
+| `Window::titlebar_double_click` | method | 7472 |  | `(Window).TitlebarDoubleClick` | done |
+| `Window::window_title` | method | 7479 |  | `(Window).WindowTitle` | done |
+| `Window::tabbed_windows` | method | 7485 |  | `(Window).TabbedWindows` | done |
+| `Window::tab_bar_visible` | method | 7491 |  | `(Window).TabBarVisible` | done |
+| `Window::merge_all_windows` | method | 7497 |  | `(Window).MergeAllWindows` | done |
+| `Window::move_tab_to_new_window` | method | 7503 |  | `(Window).MoveTabToNewWindow` | done |
+| `Window::toggle_window_tab_overview` | method | 7509 |  | `(Window).ToggleWindowTabOverview` | done |
+| `Window::set_tabbing_identifier` | method | 7515 |  | `(Window).SetTabbingIdentifier` | done |
+| `Window::play_system_bell` | method | 7522 |  | `(Window).PlaySystemBell` | done |
+| `Window::is_a11y_enabled` | method | 7532 |  | `(Window).IsA11yEnabled` | done |
+| `Window::is_a11y_active` | method | 7546 |  | `(Window).IsA11yActive` | done |
+| `Window::debug_a11y_tree_json` | method | 7551 |  | `(Window).DebugA11yTreeJSON` | done |
+| `Window::on_a11y_action` | method | 7560 |  | `(Window).OnA11yAction` | done |
+| `Window::toggle_inspector` | method | 7638 | feat:inspector,debug | `(Window).ToggleInspector` | done |
+| `Window::is_inspector_picking` | method | 7653 |  | `(Window).IsInspectorPicking` | done |
+| `Window::with_inspector_state` | method | 7665 | feat:inspector,debug | `(Window).WithInspectorState` | done |
+| `Window::insert_inspector_hitbox` | method | 7731 | feat:inspector,debug | `(Window).InsertInspectorHitbox` | done |
+| `Window::set_modifiers` | method | 7834 | feat:test-support | `(Window).SetModifiers` | done |
+| `Window::simulate_mouse_move` | method | 7842 | feat:test-support | `(Window).SimulateMouseMove` | done |
+| `WindowId` | struct | 7888 |  | `WindowID` | done |
 | `WindowId::as_u64` | method | 7893 |  | `(WindowID).AsU64` | done |
 | `WindowHandle` | struct | 7907 |  | `WindowHandle` | done |
 | `WindowHandle::new` | assoc-fn | 7925 |  | `NewWindowHandle` | done |
@@ -504,13 +504,13 @@ Go target: `window_prompts.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `PromptResponse` | struct | 16 |  | `PromptResponse` | todo |
-| `Prompt` | trait | 19 |  | `Prompt` | todo |
-| `PromptHandle` | struct | 24 |  | `PromptHandle` | todo |
-| `PromptHandle::with_view` | method | 34 |  | `(PromptHandle).WithView` | todo |
-| `RenderablePromptHandle` | struct | 67 |  | `RenderablePromptHandle` | todo |
-| `fallback_prompt_renderer` | fn | 73 |  | `NewFallbackPromptRenderer` | todo |
-| `FallbackPromptRenderer` | struct | 94 |  | `FallbackPromptRenderer` | todo |
+| `PromptResponse` | struct | 16 |  | `PromptResponse` | done |
+| `Prompt` | trait | 19 |  | `Prompt` | done |
+| `PromptHandle` | struct | 24 |  | `PromptHandle` | done |
+| `PromptHandle::with_view` | method | 34 |  | `(PromptHandle).WithView` | done |
+| `RenderablePromptHandle` | struct | 67 |  | `RenderablePromptHandle` | done |
+| `fallback_prompt_renderer` | fn | 73 |  | `NewFallbackPromptRenderer` | done |
+| `FallbackPromptRenderer` | struct | 94 |  | `FallbackPromptRenderer` | done |
 
 
 ## Deviations registered here

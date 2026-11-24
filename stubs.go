@@ -1,7 +1,6 @@
 package gpui
 
 import (
-	"reflect"
 	"slices"
 	"sync/atomic"
 	"time"
@@ -21,21 +20,6 @@ type RenderSvgParams struct {
 
 // NativeViewID identifies a native view within its window (M0-window-a11y ports it).
 type NativeViewID uint64
-
-// OnAction registers an action listener for the next frame (M0-window-dispatch ports it).
-func (w *Window) OnAction(actionType reflect.Type, listener func(action any, phase DispatchPhase, window *Window, cx *App)) {
-	panic("gpui: unimplemented Window.OnAction")
-}
-
-// Prompt presents a platform dialog and returns the index of the clicked button (M0-window-dispatch ports it).
-func (w *Window) Prompt(level PromptLevel, message string, detail Option[string], answers []PromptButton, cx *App) *scheduler.OneshotReceiver[int] {
-	panic("gpui: unimplemented Window.Prompt")
-}
-
-// HasPendingKeystrokes reports whether a multi-stroke binding is pending (M0-window-dispatch ports it).
-func (w *Window) HasPendingKeystrokes() bool {
-	panic("gpui: unimplemented Window.HasPendingKeystrokes")
-}
 
 // SvgRenderer renders SVGs into images (M0-elements-media ports it).
 type SvgRenderer struct {
@@ -85,26 +69,6 @@ func imageSourceIsAssetCached(source ImageSource, cx *App) bool {
 	panic("gpui: unimplemented imageSourceIsAssetCached")
 }
 
-// RequestLayout adds a node to the layout tree for the current frame (M0-window-dispatch ports it).
-func (w *Window) RequestLayout(style Style, children []LayoutID, cx *App) LayoutID {
-	panic("gpui: unimplemented Window.RequestLayout")
-}
-
-// InsertHitbox registers a hitbox for the current frame (M0-window-dispatch ports it).
-func (w *Window) InsertHitbox(bounds Bounds[Pixels], behavior HitboxBehavior) Hitbox {
-	panic("gpui: unimplemented Window.InsertHitbox")
-}
-
-// DispatchKeystroke dispatches a keystroke as if it had been typed (M0-window-dispatch ports it).
-func (w *Window) DispatchKeystroke(keystroke Keystroke, cx *App) bool {
-	panic("gpui: unimplemented Window.DispatchKeystroke")
-}
-
-// DispatchEvent dispatches a platform input event (M0-window-dispatch ports it).
-func (w *Window) DispatchEvent(event PlatformInput, cx *App) DispatchEventResult {
-	panic("gpui: unimplemented Window.DispatchEvent")
-}
-
 // A11ySubtreeBuilder adds synthetic accessibility nodes below an element (M0-window-a11y ports it).
 type A11ySubtreeBuilder struct {
 	parentID a11y.NodeID
@@ -121,18 +85,39 @@ func (b A11ySubtreeBuilder) withCreator(creator nodeCreator) A11ySubtreeBuilder 
 }
 
 type windowA11y struct {
+	forceDisabled   bool
 	activeThisFrame bool
 	windowTitle     Option[SharedString]
 	nodes           a11yNodeBuilder
+	focusIDs        map[a11y.NodeID]FocusID
 	nodeBounds      map[a11y.NodeID]Bounds[Pixels]
+	actionListeners map[a11y.NodeID][]a11yActionEntry
 	viewTypeNames   map[EntityID]string
+}
+
+type a11yActionListener func(data a11y.ActionData, window *Window, cx *App)
+
+type a11yActionEntry struct {
+	action   a11y.Action
+	listener a11yActionListener
 }
 
 func newWindowA11y(activeFlag *atomic.Bool, forceDisabled bool, windowTitle Option[SharedString]) windowA11y {
 	return windowA11y{
-		nodeBounds:    make(map[a11y.NodeID]Bounds[Pixels]),
-		viewTypeNames: make(map[EntityID]string),
+		forceDisabled:   forceDisabled,
+		focusIDs:        make(map[a11y.NodeID]FocusID),
+		nodeBounds:      make(map[a11y.NodeID]Bounds[Pixels]),
+		actionListeners: make(map[a11y.NodeID][]a11yActionEntry),
+		viewTypeNames:   make(map[EntityID]string),
 	}
+}
+
+func (a *windowA11y) isEnabled() bool {
+	return !a.forceDisabled
+}
+
+func (a *windowA11y) debugTreeJSON() (string, bool) {
+	panic("gpui: unimplemented windowA11y.debugTreeJSON")
 }
 
 func (a *windowA11y) isActive() bool {
@@ -174,51 +159,11 @@ func (w *Window) endCompositionBeforeFocusingNativeView(focus FocusID, cx *App) 
 	panic("gpui: unimplemented Window.endCompositionBeforeFocusingNativeView")
 }
 
-func (w *Window) focusNodeIDInRenderedFrame(focusID Option[FocusID]) dispatchNodeID {
-	panic("gpui: unimplemented Window.focusNodeIDInRenderedFrame")
-}
-
-func (w *Window) applyTextInputConfiguration(cx *App) {
-	panic("gpui: unimplemented Window.applyTextInputConfiguration")
-}
-
-func (w *Window) resetCursorStyle(cx *App) {
-	panic("gpui: unimplemented Window.resetCursorStyle")
-}
-
-func (w *Window) prepaintInspector(inspectorWidth Pixels, cx *App) Option[AnyElement] {
-	panic("gpui: unimplemented Window.prepaintInspector")
-}
-
-func (w *Window) paintInspector(inspectorElement Option[AnyElement], cx *App) {
-	panic("gpui: unimplemented Window.paintInspector")
-}
-
-func (w *Window) paintInspectorHitbox(cx *App) {
-	panic("gpui: unimplemented Window.paintInspectorHitbox")
-}
-
-func (w *Window) takeElementState(globalID *GlobalElementID, stateType reflect.Type) (elementStateKey, elementStateBox, bool) {
-	panic("gpui: unimplemented Window.takeElementState")
-}
-
-func (w *Window) insertElementState(key elementStateKey, state elementStateBox) {
-	panic("gpui: unimplemented Window.insertElementState")
-}
-
-func observeKeyedState[S any](state Entity[S], currentView EntityID, cx *App) {
-	panic("gpui: unimplemented observeKeyedState")
-}
-
 // SmoothSvgScaleFactor is the factor SVGs are rasterized at above their device size (M0-elements-media ports svg_renderer.rs).
 const SmoothSvgScaleFactor float32 = 2.
 
 func (r SvgRenderer) renderAlphaMask(params RenderSvgParams, bytes []byte) (Size[DevicePixels], []byte, bool, error) {
 	panic("gpui: unimplemented SvgRenderer.renderAlphaMask")
-}
-
-type promptViewHandle interface {
-	anyView() AnyView
 }
 
 type a11yNodeBuilder struct{}
@@ -269,6 +214,11 @@ func BindInteractive[S InteractiveElement](m *Interactive[S], self S) {
 // OnClick registers a click listener (M0-div-api ports it).
 func (i *Interactive[S]) OnClick(listener func(event *ClickEvent, window *Window, cx *App)) S {
 	panic("gpui: unimplemented Interactive.OnClick")
+}
+
+// TrackFocus tracks handle's focus state for the element (M0-div-api ports it).
+func (i *Interactive[S]) TrackFocus(handle FocusHandle) S {
+	panic("gpui: unimplemented Interactive.TrackFocus")
 }
 
 // InteractiveID carries InteractiveElement's ID method, which cannot live on Interactive (D-IDMIXIN); bind it with BindInteractiveID (M0-div-api ports it).
@@ -483,92 +433,12 @@ func recordDraw(timing FrameTiming) {}
 
 func recordPresent(timing PresentTiming, frame Option[FrameTiming]) {}
 
-func (w *Window) clearPendingKeystrokes(cx *App) {
-	panic("gpui: unimplemented Window.clearPendingKeystrokes")
-}
-
-// PromptHandle is a handle to a prompt that the prompt renderer resolves (M0-window-dispatch ports it).
-type PromptHandle struct{}
-
-// RenderablePromptHandle is a prompt rendered as a view (M0-window-dispatch ports it).
-type RenderablePromptHandle struct {
-	view promptViewHandle
-}
-
 // NewHangDetector creates a detector over the foreground journal (M3-profiler-hang ports it).
 func NewHangDetector(journal ForegroundJournal, threshold time.Duration, frameBudget time.Duration) *HangDetector {
 	panic("gpui: unimplemented NewHangDetector")
 }
 
-// ActivateWindow brings the window to the front of the application (M0-window-dispatch ports it).
-func (w *Window) ActivateWindow() {
-	panic("gpui: unimplemented Window.ActivateWindow")
-}
-
-type promptBuilder interface {
-	isPromptBuilder()
-}
-
-type promptBuilderDefault struct{}
-
-func (promptBuilderDefault) isPromptBuilder() {}
-
-// ForegroundJournal is the foreground work journal of the app's thread (M3-profiler-journal ports it).
-type ForegroundJournal struct{}
-
-func installForegroundJournal() ForegroundJournal {
-	return ForegroundJournal{}
-}
-
 func observePower(cx *App) {}
-
-type promptBuilderCustom struct {
-	renderer func(level PromptLevel, message string, detail Option[string], actions []PromptButton, handle PromptHandle, window *Window, cx *App) RenderablePromptHandle
-}
-
-func (promptBuilderCustom) isPromptBuilder() {}
-
-// ComputeLayout computes the layout of layoutID within availableSpace (M0-window-dispatch ports it).
-func (w *Window) ComputeLayout(layoutID LayoutID, availableSpace SizeOf[AvailableSpace], cx *App) {
-	panic("gpui: unimplemented Window.ComputeLayout")
-}
-
-// LayoutBounds returns the bounds computed for layoutID relative to the window (M0-window-dispatch ports it).
-func (w *Window) LayoutBounds(layoutID LayoutID) Bounds[Pixels] {
-	panic("gpui: unimplemented Window.LayoutBounds")
-}
-
-// SetViewID sets the view id of the current element (M0-window-dispatch ports it).
-func (w *Window) SetViewID(viewID EntityID) {
-	panic("gpui: unimplemented Window.SetViewID")
-}
-
-// CurrentView returns the id of the view being rendered (M0-window-dispatch ports it).
-func (w *Window) CurrentView() EntityID {
-	panic("gpui: unimplemented Window.CurrentView")
-}
-
-func (w *Window) withRenderedView[R any](id EntityID, f func(window *Window) R) R {
-	panic("gpui: unimplemented Window.withRenderedView")
-}
-
-// IsInspectorPicking reports whether the window's inspector is picking (M0-window-dispatch ports it).
-func (w *Window) IsInspectorPicking(cx *App) bool {
-	panic("gpui: unimplemented Window.IsInspectorPicking")
-}
-
-func (w *Window) inspectorEnabled() bool {
-	panic("gpui: unimplemented Window.inspectorEnabled")
-}
-
-func (w *Window) buildInspectorElementID(path InspectorElementPath) InspectorElementID {
-	panic("gpui: unimplemented Window.buildInspectorElementID")
-}
-
-// VisualTestPlatform combines a real platform's rendering with a TestDispatcher (M3-root-capture ports it).
-type VisualTestPlatform struct {
-	Platform
-}
 
 // NewVisualTestPlatform wraps platform with a TestDispatcher seeded with seed (M3-root-capture ports it).
 func NewVisualTestPlatform(platform Platform, seed uint64) *VisualTestPlatform {
@@ -578,14 +448,6 @@ func NewVisualTestPlatform(platform Platform, seed uint64) *VisualTestPlatform {
 // Dispatcher returns the platform's test dispatcher (M3-root-capture ports it).
 func (p *VisualTestPlatform) Dispatcher() *TestDispatcher {
 	panic("gpui: unimplemented VisualTestPlatform.Dispatcher")
-}
-
-func (w *Window) dispatchActionOnNode(nodeID dispatchNodeID, action Action, cx *App) {
-	panic("gpui: unimplemented Window.dispatchActionOnNode")
-}
-
-func (w *Window) handleA11yAction(request a11y.ActionRequest, cx *App) {
-	panic("gpui: unimplemented Window.handleA11yAction")
 }
 
 const rootNodeID a11y.NodeID = 0
@@ -667,3 +529,15 @@ func recordPlatformSignal(signal PlatformSignal) {}
 func recordReentrantFrameSkipped(windowID WindowID, at scheduler.Instant) {}
 
 func recordFrameSkipped(windowID WindowID, at scheduler.Instant, reason FrameSkipReason) {}
+
+// ForegroundJournal is the foreground work journal of the app's thread (M3-profiler-journal ports it).
+type ForegroundJournal struct{}
+
+func installForegroundJournal() ForegroundJournal {
+	return ForegroundJournal{}
+}
+
+// VisualTestPlatform combines a real platform's rendering with a TestDispatcher (M3-root-capture ports it).
+type VisualTestPlatform struct {
+	Platform
+}
