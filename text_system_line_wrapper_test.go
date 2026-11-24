@@ -2,6 +2,7 @@ package gpui
 
 import (
 	"fmt"
+	"runtime"
 	"slices"
 	"strings"
 	"testing"
@@ -319,7 +320,47 @@ func TestLineWrapper_UpdateRunAfterTruncationEnd(t *testing.T) {
 }
 
 func TestLineWrapper_WrapShapedLine(t *testing.T) {
-	t.Skip("blocked:M0-blocked-tests: needs TestAppContext and the macOS text system (upstream gates it on target_os = \"macos\")")
+	if runtime.GOOS != "darwin" {
+		t.Skip("upstream gates this test on target_os = \"macos\"")
+	}
+	RunTest(t, func(tc *TestRun) {
+		tc.Cx().Update(func(cx *App) {
+			textSystem := NewWindowTextSystem(cx.TextSystem())
+
+			normal := TextRun{Len: 0, Font: NewFont("Helvetica")}
+			bold := TextRun{Len: 0, Font: NewFont("Helvetica").Bold()}
+			withLen := func(run TextRun, n int) TextRun {
+				run.Len = n
+				return run
+			}
+
+			lines, err := textSystem.ShapeText(
+				"aa bbb cccc ddddd eeee",
+				Px(16.),
+				[]TextRun{
+					withLen(normal, 4),
+					withLen(bold, 5),
+					withLen(normal, 6),
+					withLen(bold, 1),
+					withLen(normal, 7),
+				},
+				Some(Px(72.)),
+				None[int](),
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			want := []WrapBoundary{
+				{RunIx: 0, GlyphIx: 7},
+				{RunIx: 0, GlyphIx: 12},
+				{RunIx: 0, GlyphIx: 18},
+			}
+			if got := lines[0].WrapBoundaries; !slices.Equal(got, want) {
+				t.Fatalf("wrap boundaries = %v, want %v", got, want)
+			}
+		})
+	})
 }
 
 func wrapCount(wrapper *LineWrapper, text SharedString, wrapWidth Pixels) int {

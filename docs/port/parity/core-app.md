@@ -249,7 +249,7 @@ Go target: `app.go` (package `gpui`), tests in `app_test.go`
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
 | `app_borrow_diagnostics` | gpui::test | 3842 |  | `TestApp_AppBorrowDiagnostics` | done |
-| `async_app_refresh_flushes_refresh_effect` | gpui::test | 3900 |  | `TestApp_AsyncAppRefreshFlushesRefreshEffect` | blocked:M0-blocked-tests |
+| `async_app_refresh_flushes_refresh_effect` | gpui::test | 3900 |  | `TestApp_AsyncAppRefreshFlushesRefreshEffect` | done |
 | `missing_glyph_callbacks_follow_subscription_lifetime` | gpui::test | 3917 |  | `TestApp_MissingGlyphCallbacksFollowSubscriptionLifetime` | done |
 | `test_gpui_borrow` | test | 3976 |  | `TestApp_GpuiBorrow` | done |
 | `test_restart_preserves_path_and_arguments` | gpui::test | 4007 |  | `TestApp_RestartPreservesPathAndArguments` | done |
@@ -673,9 +673,9 @@ Go target: `app_test_app.go` (package `gpui`), tests in `app_test_app_test.go`
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_basic_usage` | test | 563 |  | `TestTestApp_BasicUsage` | blocked:M0-blocked-tests |
-| `test_simulate_scale_factor_change` | test | 581 |  | `TestTestApp_SimulateScaleFactorChange` | blocked:M0-blocked-tests |
-| `test_entity_creation` | test | 601 |  | `TestTestApp_EntityCreation` | blocked:M0-blocked-tests |
+| `test_basic_usage` | test | 563 |  | `TestTestApp_BasicUsage` | done |
+| `test_simulate_scale_factor_change` | test | 581 |  | `TestTestApp_SimulateScaleFactorChange` | done |
+| `test_entity_creation` | test | 601 |  | `TestTestApp_EntityCreation` | done |
 | `test_globals` | test | 623 |  | `TestTestApp_Globals` | done |
 
 ## gpui/src/app/test_context.rs

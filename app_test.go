@@ -218,8 +218,34 @@ func (*testNoopAction) Name() string                { return "test::Noop" }
 func (a *testNoopAction) BoxedClone() Action        { return &testNoopAction{} }
 func (*testNoopAction) PartialEq(other Action) bool { _, ok := other.(*testNoopAction); return ok }
 
+type appTestRenderCounter struct {
+	count *int
+}
+
+func (r *appTestRenderCounter) Render(_ *Window, _ *Context[appTestRenderCounter]) IntoElement {
+	*r.count++
+	return Empty{}
+}
+
 func TestApp_AsyncAppRefreshFlushesRefreshEffect(t *testing.T) {
-	t.Skip("blocked:M0-blocked-tests: needs windows (TestAppContext.AddWindow) and the Render path")
+	RunTest(t, func(tc *TestRun) {
+		cx := tc.Cx()
+		defer windowTestReleaseAll(cx)
+		renderCount := 0
+
+		_ = cx.AddWindow(func(_ *Window, _ *Context[appTestRenderCounter]) *appTestRenderCounter {
+			return &appTestRenderCounter{count: &renderCount}
+		})
+
+		cx.RunUntilParked()
+		renderCountBeforeRefresh := renderCount
+
+		cx.ToAsync().Refresh()
+
+		if renderCount != renderCountBeforeRefresh+1 {
+			t.Fatalf("render count = %d, want %d", renderCount, renderCountBeforeRefresh+1)
+		}
+	})
 }
 
 func TestApp_MissingGlyphCallbacksFollowSubscriptionLifetime(t *testing.T) {

@@ -286,7 +286,7 @@ Go target: `text_system_line_wrapper.go` (package `gpui`), tests in `text_system
 | `test_truncate_multiple_runs_end` | test | 1240 |  | `TestLineWrapper_TruncateMultipleRunsEnd` | done |
 | `test_truncate_multiple_runs_start` | test | 1299 |  | `TestLineWrapper_TruncateMultipleRunsStart` | done |
 | `test_update_run_after_truncation_end` | test | 1364 |  | `TestLineWrapper_UpdateRunAfterTruncationEnd` | done |
-| `test_wrap_shaped_line` | crate::test | 1404 | macos | `TestLineWrapper_WrapShapedLine` | blocked:M0-blocked-tests |
+| `test_wrap_shaped_line` | crate::test | 1404 | macos | `TestLineWrapper_WrapShapedLine` | done |
 | `test_multiline_truncation_fits_within_wrapped_lines` | test | 1459 |  | `TestLineWrapper_MultilineTruncationFitsWithinWrappedLines` | done |
 | `test_multiline_truncation_no_truncation_needed` | test | 1513 |  | `TestLineWrapper_MultilineTruncationNoTruncationNeeded` | done |
 | `test_multiline_truncation_three_lines` | test | 1540 |  | `TestLineWrapper_MultilineTruncationThreeLines` | done |

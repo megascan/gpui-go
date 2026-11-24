@@ -95,8 +95,8 @@ Go target: `input.go` (package `gpui`), tests in `input_test.go`
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `text_input_configuration_and_focus_state_are_forwarded_on_change` | gpui::test | 331 |  | `TestInput_TextInputConfigurationAndFocusStateAreForwardedOnChange` | blocked:M0-blocked-tests |
-| `text_notifications_require_a_focused_input_and_track_field_changes` | gpui::test | 421 |  | `TestInput_TextNotificationsRequireAFocusedInputAndTrackFieldChanges` | blocked:M0-blocked-tests |
+| `text_input_configuration_and_focus_state_are_forwarded_on_change` | gpui::test | 331 |  | `TestInput_TextInputConfigurationAndFocusStateAreForwardedOnChange` | done |
+| `text_notifications_require_a_focused_input_and_track_field_changes` | gpui::test | 421 |  | `TestInput_TextNotificationsRequireAFocusedInputAndTrackFieldChanges` | done |
 
 ## gpui/src/interactive.rs
 
@@ -163,8 +163,8 @@ Go target: `interactive.go` (package `gpui`), tests in `interactive_test.go`
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_on_events` | gpui::test | 937 |  | `TestInteractive_OnEvents` | blocked:M0-blocked-tests |
-| `test_multi_modifier_gesture_does_not_dispatch_standalone_modifier_binding` | gpui::test | 972 |  | `TestInteractive_MultiModifierGestureDoesNotDispatchStandaloneModifierBinding` | blocked:M0-blocked-tests |
+| `test_on_events` | gpui::test | 937 |  | `TestInteractive_OnEvents` | done |
+| `test_multi_modifier_gesture_does_not_dispatch_standalone_modifier_binding` | gpui::test | 972 |  | `TestInteractive_MultiModifierGestureDoesNotDispatchStandaloneModifierBinding` | done |
 
 ## gpui/src/key_dispatch.rs
 
@@ -177,26 +177,26 @@ Go target: `key_dispatch.go` (package `gpui`), tests in `key_dispatch_test.go`
 | `test_bindings_for_action_keeps_targeted_binding_outside_unbind_context` | test | 1011 |  | `TestKeyDispatch_BindingsForActionKeepsTargetedBindingOutsideUnbindContext` | done |
 | `test_overlay_after_base_restores_shadowed_picker_binding` | test | 1048 |  | `TestKeyDispatch_OverlayAfterBaseRestoresShadowedPickerBinding` | done |
 | `test_pending_has_binding_state` | test | 1100 |  | `TestKeyDispatch_PendingHasBindingState` | done |
-| `test_pending_input_observers_notified_on_focus_change_and_blur` | crate::test | 1140 |  | `TestKeyDispatch_PendingInputObserversNotifiedOnFocusChangeAndBlur` | blocked:M0-blocked-tests |
-| `test_standalone_modifier_dispatch` | crate::test | 1385 |  | `TestKeyDispatch_StandaloneModifierDispatch` | blocked:M0-blocked-tests |
-| `test_unbound_standalone_modifier_observation` | crate::test | 1445 |  | `TestKeyDispatch_UnboundStandaloneModifierObservation` | blocked:M0-blocked-tests |
-| `test_raw_modifier_handler_can_suppress_observation` | crate::test | 1476 |  | `TestKeyDispatch_RawModifierHandlerCanSuppressObservation` | blocked:M0-blocked-tests |
-| `test_pending_modifier_observed_when_binding_resolves` | crate::test | 1539 |  | `TestKeyDispatch_PendingModifierObservedWhenBindingResolves` | blocked:M0-blocked-tests |
-| `test_combined_shortcut_has_no_standalone_modifier` | crate::test | 1582 |  | `TestKeyDispatch_CombinedShortcutHasNoStandaloneModifier` | blocked:M0-blocked-tests |
-| `test_keystroke_input_preference` | crate::test | 1626 |  | `TestKeyDispatch_KeystrokeInputPreference` | blocked:M0-blocked-tests |
-| `test_input_preference_rechecked_after_interception` | crate::test | 1686 |  | `TestKeyDispatch_InputPreferenceRecheckedAfterInterception` | blocked:M0-blocked-tests |
-| `test_keystroke_interceptors_can_consume_preferred_character_input` | crate::test | 1736 |  | `TestKeyDispatch_KeystrokeInterceptorsCanConsumePreferredCharacterInput` | blocked:M0-blocked-tests |
-| `test_consumed_modifier_preserves_pending_input` | crate::test | 1757 |  | `TestKeyDispatch_ConsumedModifierPreservesPendingInput` | blocked:M0-blocked-tests |
-| `test_printable_pending_input_replays_on_timeout` | crate::test | 1817 |  | `TestKeyDispatch_PrintablePendingInputReplaysOnTimeout` | blocked:M0-blocked-tests |
-| `test_pending_input_timeout_dispatches_shorter_binding` | crate::test | 1851 |  | `TestKeyDispatch_PendingInputTimeoutDispatchesShorterBinding` | blocked:M0-blocked-tests |
-| `test_running_pending_input_timeout_resets_when_binding_advances` | crate::test | 1885 |  | `TestKeyDispatch_RunningPendingInputTimeoutResetsWhenBindingAdvances` | blocked:M0-blocked-tests |
-| `test_pending_input_timeout_starts_when_binding_becomes_ambiguous` | crate::test | 1919 |  | `TestKeyDispatch_PendingInputTimeoutStartsWhenBindingBecomesAmbiguous` | blocked:M0-blocked-tests |
-| `test_invalid_continuation_while_timeout_paused_replays_pending_input` | crate::test | 1952 |  | `TestKeyDispatch_InvalidContinuationWhileTimeoutPausedReplaysPendingInput` | blocked:M0-blocked-tests |
-| `test_pending_input_timeout_pauses_and_resumes` | crate::test | 1989 |  | `TestKeyDispatch_PendingInputTimeoutPausesAndResumes` | blocked:M0-blocked-tests |
-| `test_pending_input_timeout_resumes_when_owner_is_released` | crate::test | 2043 |  | `TestKeyDispatch_PendingInputTimeoutResumesWhenOwnerIsReleased` | blocked:M0-blocked-tests |
-| `test_pending_input_timeout_resets_when_binding_advances` | crate::test | 2079 |  | `TestKeyDispatch_PendingInputTimeoutResetsWhenBindingAdvances` | blocked:M0-blocked-tests |
-| `test_clearing_pending_input_invalidates_timeout_pause` | crate::test | 2128 |  | `TestKeyDispatch_ClearingPendingInputInvalidatesTimeoutPause` | blocked:M0-blocked-tests |
-| `test_input_handler_pending` | crate::test | 2150 |  | `TestKeyDispatch_InputHandlerPending` | blocked:M0-blocked-tests |
+| `test_pending_input_observers_notified_on_focus_change_and_blur` | crate::test | 1140 |  | `TestKeyDispatch_PendingInputObserversNotifiedOnFocusChangeAndBlur` | done |
+| `test_standalone_modifier_dispatch` | crate::test | 1385 |  | `TestKeyDispatch_StandaloneModifierDispatch` | done |
+| `test_unbound_standalone_modifier_observation` | crate::test | 1445 |  | `TestKeyDispatch_UnboundStandaloneModifierObservation` | done |
+| `test_raw_modifier_handler_can_suppress_observation` | crate::test | 1476 |  | `TestKeyDispatch_RawModifierHandlerCanSuppressObservation` | done |
+| `test_pending_modifier_observed_when_binding_resolves` | crate::test | 1539 |  | `TestKeyDispatch_PendingModifierObservedWhenBindingResolves` | done |
+| `test_combined_shortcut_has_no_standalone_modifier` | crate::test | 1582 |  | `TestKeyDispatch_CombinedShortcutHasNoStandaloneModifier` | done |
+| `test_keystroke_input_preference` | crate::test | 1626 |  | `TestKeyDispatch_KeystrokeInputPreference` | done |
+| `test_input_preference_rechecked_after_interception` | crate::test | 1686 |  | `TestKeyDispatch_InputPreferenceRecheckedAfterInterception` | done |
+| `test_keystroke_interceptors_can_consume_preferred_character_input` | crate::test | 1736 |  | `TestKeyDispatch_KeystrokeInterceptorsCanConsumePreferredCharacterInput` | done |
+| `test_consumed_modifier_preserves_pending_input` | crate::test | 1757 |  | `TestKeyDispatch_ConsumedModifierPreservesPendingInput` | done |
+| `test_printable_pending_input_replays_on_timeout` | crate::test | 1817 |  | `TestKeyDispatch_PrintablePendingInputReplaysOnTimeout` | done |
+| `test_pending_input_timeout_dispatches_shorter_binding` | crate::test | 1851 |  | `TestKeyDispatch_PendingInputTimeoutDispatchesShorterBinding` | done |
+| `test_running_pending_input_timeout_resets_when_binding_advances` | crate::test | 1885 |  | `TestKeyDispatch_RunningPendingInputTimeoutResetsWhenBindingAdvances` | done |
+| `test_pending_input_timeout_starts_when_binding_becomes_ambiguous` | crate::test | 1919 |  | `TestKeyDispatch_PendingInputTimeoutStartsWhenBindingBecomesAmbiguous` | done |
+| `test_invalid_continuation_while_timeout_paused_replays_pending_input` | crate::test | 1952 |  | `TestKeyDispatch_InvalidContinuationWhileTimeoutPausedReplaysPendingInput` | done |
+| `test_pending_input_timeout_pauses_and_resumes` | crate::test | 1989 |  | `TestKeyDispatch_PendingInputTimeoutPausesAndResumes` | done |
+| `test_pending_input_timeout_resumes_when_owner_is_released` | crate::test | 2043 |  | `TestKeyDispatch_PendingInputTimeoutResumesWhenOwnerIsReleased` | done |
+| `test_pending_input_timeout_resets_when_binding_advances` | crate::test | 2079 |  | `TestKeyDispatch_PendingInputTimeoutResetsWhenBindingAdvances` | done |
+| `test_clearing_pending_input_invalidates_timeout_pause` | crate::test | 2128 |  | `TestKeyDispatch_ClearingPendingInputInvalidatesTimeoutPause` | done |
+| `test_input_handler_pending` | crate::test | 2150 |  | `TestKeyDispatch_InputHandlerPending` | done |
 
 ## gpui/src/keymap.rs
 
