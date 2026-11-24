@@ -302,54 +302,55 @@ Go target: `executor.go` (package `gpui`), tests in `executor_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `BackgroundExecutor` | struct | 19 |  | `BackgroundExecutor` | todo |
-| `ForegroundExecutor` | struct | 27 |  | `ForegroundExecutor` | todo |
-| `SendForegroundExecutor` | struct | 37 |  | `SendForegroundExecutor` | todo |
-| `SendForegroundExecutor::spawn` | method | 44 |  | `(SendForegroundExecutor).Spawn` | todo |
-| `TaskExt` | trait | 55 |  | `TaskExt` | todo |
-| `TaskExt::detach_and_log_err` | trait-method | 57 |  | `TaskExt.DetachAndLogErr` | todo |
-| `TaskExt::detach_and_log_err_with_backtrace` | trait-method | 60 |  | `TaskExt.DetachAndLogErrWithBacktrace` | todo |
-| `BackgroundExecutor::new` | assoc-fn | 87 |  | `NewBackgroundExecutor` | todo |
-| `BackgroundExecutor::scheduler_executor` | method | 107 |  | `(BackgroundExecutor).SchedulerExecutor` | todo |
-| `BackgroundExecutor::prevent_app_nap` | method | 114 |  | `(BackgroundExecutor).PreventAppNap` | todo |
-| `BackgroundExecutor::spawn` | method | 120 |  | `(BackgroundExecutor).Spawn` | todo |
-| `BackgroundExecutor::spawn_with_priority` | method | 132 |  | `(BackgroundExecutor).SpawnWithPriority` | todo |
-| `BackgroundExecutor::scoped` | method | 152 | wasm | `(BackgroundExecutor).Scoped` | todo |
-| `BackgroundExecutor::scoped_priority` | method | 173 | wasm | `(BackgroundExecutor).ScopedPriority` | todo |
-| `BackgroundExecutor::now` | method | 192 |  | `(BackgroundExecutor).Now` | todo |
-| `BackgroundExecutor::timer` | method | 200 |  | `(BackgroundExecutor).Timer` | todo |
-| `BackgroundExecutor::simulate_random_delay` | method | 209 | feat:test-support | `(BackgroundExecutor).SimulateRandomDelay` | todo |
-| `BackgroundExecutor::advance_clock` | method | 215 | feat:test-support | `(BackgroundExecutor).AdvanceClock` | todo |
-| `BackgroundExecutor::tick` | method | 221 | feat:test-support | `(BackgroundExecutor).Tick` | todo |
-| `BackgroundExecutor::run_until_parked` | method | 232 | feat:test-support | `(BackgroundExecutor).RunUntilParked` | todo |
-| `BackgroundExecutor::allow_parking` | method | 239 | feat:test-support | `(BackgroundExecutor).AllowParking` | todo |
-| `BackgroundExecutor::set_block_on_ticks` | method | 253 | feat:test-support | `(BackgroundExecutor).SetBlockOnTicks` | todo |
-| `BackgroundExecutor::forbid_parking` | method | 263 | feat:test-support | `(BackgroundExecutor).ForbidParking` | todo |
-| `BackgroundExecutor::rng` | method | 273 | feat:test-support | `(BackgroundExecutor).Rng` | todo |
-| `BackgroundExecutor::num_cpus` | method | 278 |  | `(BackgroundExecutor).NumCPUs` | todo |
-| `BackgroundExecutor::set_num_cpus` | method | 289 | feat:test-support | `(BackgroundExecutor).SetNumCPUs` | todo |
-| `BackgroundExecutor::is_main_thread` | method | 297 |  | `(BackgroundExecutor).IsMainThread` | todo |
-| `BackgroundExecutor::is_test` | method | 306 |  | `(BackgroundExecutor).IsTest` | todo |
-| `BackgroundExecutor::dispatcher` | method | 311 |  | `(BackgroundExecutor).Dispatcher` | todo |
-| `ForegroundExecutor::to_send` | method | 318 |  | `(ForegroundExecutor).ToSend` | todo |
-| `ForegroundExecutor::new` | assoc-fn | 325 |  | `NewForegroundExecutor` | todo |
-| `ForegroundExecutor::spawn` | method | 378 |  | `(ForegroundExecutor).Spawn` | todo |
-| `ForegroundExecutor::spawn_with_priority` | method | 387 |  | `(ForegroundExecutor).SpawnWithPriority` | todo |
-| `ForegroundExecutor::spawn_when_idle` | method | 409 |  | `(ForegroundExecutor).SpawnWhenIdle` | todo |
-| `ForegroundExecutor::idle_time_remaining` | method | 435 |  | `(ForegroundExecutor).IdleTimeRemaining` | todo |
-| `ForegroundExecutor::block_test` | method | 442 | wasm,feat:test-support | `(ForegroundExecutor).BlockTest` | todo |
-| `ForegroundExecutor::block_on` | method | 464 | wasm | `(ForegroundExecutor).BlockOn` | todo |
-| `ForegroundExecutor::block_with_timeout` | method | 470 | wasm | `(ForegroundExecutor).BlockWithTimeout` | todo |
-| `ForegroundExecutor::dispatcher` | method | 479 |  | `(ForegroundExecutor).Dispatcher` | todo |
-| `ForegroundExecutor::scheduler_executor` | method | 484 |  | `(ForegroundExecutor).SchedulerExecutor` | todo |
-| `Scope` | struct | 491 | wasm | `Scope` | todo |
-| `Scope::num_cpus` | method | 515 | wasm | `(Scope).NumCPUs` | todo |
-| `Scope::spawn` | method | 521 | wasm | `(Scope).Spawn` | todo |
+| `BackgroundExecutor` | struct | 19 |  | `BackgroundExecutor` | done |
+| `ForegroundExecutor` | struct | 27 |  | `ForegroundExecutor` | done |
+| `SendForegroundExecutor` | struct | 37 |  | `SendForegroundExecutor` | done |
+| `SendForegroundExecutor::spawn` | method | 44 |  | `(SendForegroundExecutor).Spawn` | done |
+| `TaskExt` | trait | 55 |  | `TaskDetachAndLogErr`, `TaskDetachAndLogErrWithBacktrace` (funcs) | dev:D-TASKEXT |
+| `TaskExt::detach_and_log_err` | trait-method | 57 |  | `TaskDetachAndLogErr` | dev:D-TASKEXT |
+| `TaskExt::detach_and_log_err_with_backtrace` | trait-method | 60 |  | `TaskDetachAndLogErrWithBacktrace` | dev:D-TASKEXT |
+| `BackgroundExecutor::new` | assoc-fn | 87 |  | `NewBackgroundExecutor` | done |
+| `BackgroundExecutor::scheduler_executor` | method | 107 |  | `(BackgroundExecutor).SchedulerExecutor` | done |
+| `BackgroundExecutor::prevent_app_nap` | method | 114 |  | `(BackgroundExecutor).PreventAppNap` | done |
+| `BackgroundExecutor::spawn` | method | 120 |  | `(BackgroundExecutor).Spawn` | done |
+| `BackgroundExecutor::spawn_with_priority` | method | 132 |  | `(BackgroundExecutor).SpawnWithPriority` | done |
+| `BackgroundExecutor::scoped` | method | 152 | wasm | `(BackgroundExecutor).Scoped` | done |
+| `BackgroundExecutor::scoped_priority` | method | 173 | wasm | `(BackgroundExecutor).ScopedPriority` | done |
+| `BackgroundExecutor::now` | method | 192 |  | `(BackgroundExecutor).Now` | done |
+| `BackgroundExecutor::timer` | method | 200 |  | `(BackgroundExecutor).Timer` | done |
+| `BackgroundExecutor::simulate_random_delay` | method | 209 | feat:test-support | `(BackgroundExecutor).SimulateRandomDelay` | done |
+| `BackgroundExecutor::advance_clock` | method | 215 | feat:test-support | `(BackgroundExecutor).AdvanceClock` | done |
+| `BackgroundExecutor::tick` | method | 221 | feat:test-support | `(BackgroundExecutor).Tick` | done |
+| `BackgroundExecutor::run_until_parked` | method | 232 | feat:test-support | `(BackgroundExecutor).RunUntilParked` | done |
+| `BackgroundExecutor::allow_parking` | method | 239 | feat:test-support | `(BackgroundExecutor).AllowParking` | done |
+| `BackgroundExecutor::set_block_on_ticks` | method | 253 | feat:test-support | `(BackgroundExecutor).SetBlockOnTicks` | done |
+| `BackgroundExecutor::forbid_parking` | method | 263 | feat:test-support | `(BackgroundExecutor).ForbidParking` | done |
+| `BackgroundExecutor::rng` | method | 273 | feat:test-support | `(BackgroundExecutor).Rng` | done |
+| `BackgroundExecutor::num_cpus` | method | 278 |  | `(BackgroundExecutor).NumCPUs` | done |
+| `BackgroundExecutor::set_num_cpus` | method | 289 | feat:test-support | `(BackgroundExecutor).SetNumCPUs` | done |
+| `BackgroundExecutor::is_main_thread` | method | 297 |  | `(BackgroundExecutor).IsMainThread` | done |
+| `BackgroundExecutor::is_test` | method | 306 |  | `(BackgroundExecutor).IsTest` | done |
+| `BackgroundExecutor::dispatcher` | method | 311 |  | `(BackgroundExecutor).Dispatcher` | done |
+| `ForegroundExecutor::to_send` | method | 318 |  | `(ForegroundExecutor).ToSend` | done |
+| `ForegroundExecutor::new` | assoc-fn | 325 |  | `NewForegroundExecutor` | done |
+| `ForegroundExecutor::spawn` | method | 378 |  | `(ForegroundExecutor).Spawn` | done |
+| `ForegroundExecutor::spawn_with_priority` | method | 387 |  | `(ForegroundExecutor).SpawnWithPriority` | done |
+| `ForegroundExecutor::spawn_when_idle` | method | 409 |  | `(ForegroundExecutor).SpawnWhenIdle` | done |
+| `ForegroundExecutor::idle_time_remaining` | method | 435 |  | `(ForegroundExecutor).IdleTimeRemaining` | done |
+| `ForegroundExecutor::block_test` | method | 442 | wasm,feat:test-support | `(ForegroundExecutor).BlockTest` | done |
+| `ForegroundExecutor::block_on` | method | 464 | wasm | `(ForegroundExecutor).BlockOn` | done |
+| `ForegroundExecutor::block_with_timeout` | method | 470 | wasm | `(ForegroundExecutor).BlockWithTimeout` | done |
+| `ForegroundExecutor::dispatcher` | method | 479 |  | `(ForegroundExecutor).Dispatcher` | done |
+| `ForegroundExecutor::scheduler_executor` | method | 484 |  | `(ForegroundExecutor).SchedulerExecutor` | done |
+| `Scope` | struct | 491 | wasm | `Scope` | done |
+| `Scope::num_cpus` | method | 515 | wasm | `(Scope).NumCPUs` | done |
+| `Scope::spawn` | method | 521 | wasm | `(Scope).Spawn` | done |
+| `Drop for Scope` | impl | 543 | wasm | `(Scope).Close` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `send_foreground_executor_submits_from_worker` | test | 583 |  | `TestExecutor_SendForegroundExecutorSubmitsFromWorker` | todo |
-| `sanity_test_tasks_run` | test | 602 |  | `TestExecutor_SanityTestTasksRun` | todo |
+| `send_foreground_executor_submits_from_worker` | test | 583 |  | `TestExecutor_SendForegroundExecutorSubmitsFromWorker` | done |
+| `sanity_test_tasks_run` | test | 602 |  | `TestExecutor_SanityTestTasksRun` | blocked:M0-test-platform |
 
 ## gpui/src/global.rs
 
@@ -370,18 +371,18 @@ Go target: `platform_scheduler.go` (package `gpui`), tests in `platform_schedule
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `PlatformScheduler` | struct | 27 |  | `PlatformScheduler` | todo |
-| `PlatformScheduler::new` | assoc-fn | 36 |  | `NewPlatformScheduler` | todo |
-| `PlatformScheduler::foreground_executor` | method | 46 |  | `(PlatformScheduler).ForegroundExecutor` | todo |
+| `PlatformScheduler` | struct | 27 |  | `PlatformScheduler` | done |
+| `PlatformScheduler::new` | assoc-fn | 36 |  | `NewPlatformScheduler` | done |
+| `PlatformScheduler::foreground_executor` | method | 46 |  | `(PlatformScheduler).ForegroundExecutor` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `dedicated_executor_tasks_share_one_thread` | test | 222 | wasm | `TestPlatformScheduler_DedicatedExecutorTasksShareOneThread` | todo |
-| `spawn_dedicated_runs_on_a_real_separate_thread` | test | 242 | wasm | `TestPlatformScheduler_SpawnDedicatedRunsOnARealSeparateThread` | todo |
-| `spawn_dedicated_returns_not_send_future_output` | test | 272 | wasm | `TestPlatformScheduler_SpawnDedicatedReturnsNotSendFutureOutput` | todo |
-| `spawn_dedicated_dropping_task_cancels_future` | test | 293 | wasm | `TestPlatformScheduler_SpawnDedicatedDroppingTaskCancelsFuture` | todo |
-| `spawn_dedicated_thread_tears_down_after_work_completes` | test | 344 | wasm | `TestPlatformScheduler_SpawnDedicatedThreadTearsDownAfterWorkCompletes` | todo |
-| `spawn_dedicated_detached_child_outlives_root` | test | 402 | wasm | `TestPlatformScheduler_SpawnDedicatedDetachedChildOutlivesRoot` | todo |
+| `dedicated_executor_tasks_share_one_thread` | test | 222 | wasm | `TestPlatformScheduler_DedicatedExecutorTasksShareOneThread` | done |
+| `spawn_dedicated_runs_on_a_real_separate_thread` | test | 242 | wasm | `TestPlatformScheduler_SpawnDedicatedRunsOnARealSeparateThread` | done |
+| `spawn_dedicated_returns_not_send_future_output` | test | 272 | wasm | `TestPlatformScheduler_SpawnDedicatedReturnsNotSendFutureOutput` | done |
+| `spawn_dedicated_dropping_task_cancels_future` | test | 293 | wasm | `TestPlatformScheduler_SpawnDedicatedDroppingTaskCancelsFuture` | done |
+| `spawn_dedicated_thread_tears_down_after_work_completes` | test | 344 | wasm | `TestPlatformScheduler_SpawnDedicatedThreadTearsDownAfterWorkCompletes` | done |
+| `spawn_dedicated_detached_child_outlives_root` | test | 402 | wasm | `TestPlatformScheduler_SpawnDedicatedDetachedChildOutlivesRoot` | done |
 
 ## gpui/src/queue.rs
 
@@ -389,27 +390,30 @@ Go target: `queue.go` (package `gpui`), tests in `queue_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `PriorityQueueSender` | struct | 144 |  | `PriorityQueueSender` | todo |
-| `PriorityQueueSender::send` | method | 162 |  | `(PriorityQueueSender).Send` | todo |
-| `PriorityQueueSender::spin_send` | method | 176 |  | `(PriorityQueueSender).SpinSend` | todo |
-| `PriorityQueueReceiver` | struct | 206 |  | `PriorityQueueReceiver` | todo |
-| `SendError` | struct | 226 |  | `SendError` | todo |
-| `RecvError` | struct | 236 |  | `RecvError` | todo |
-| `PriorityQueueReceiver::new` | assoc-fn | 251 |  | `NewPriorityQueueReceiver` | todo |
-| `PriorityQueueReceiver::is_empty` | method | 276 |  | `(PriorityQueueReceiver).IsEmpty` | todo |
-| `PriorityQueueReceiver::try_pop` | method | 304 |  | `(PriorityQueueReceiver).TryPop` | todo |
-| `PriorityQueueReceiver::spin_try_pop` | method | 316 |  | `(PriorityQueueReceiver).SpinTryPop` | todo |
-| `PriorityQueueReceiver::pop` | method | 362 |  | `(PriorityQueueReceiver).Pop` | todo |
-| `PriorityQueueReceiver::try_iter` | method | 368 |  | `(PriorityQueueReceiver).TryIter` | todo |
-| `PriorityQueueReceiver::iter` | method | 377 |  | `(PriorityQueueReceiver).Iter` | todo |
-| `Iter` | struct | 437 |  | `Iter` | todo |
-| `TryIter` | struct | 448 |  | `TryIter` | todo |
+| `PriorityQueueSender` | struct | 144 |  | `PriorityQueueSender` | done |
+| `PriorityQueueSender::send` | method | 162 |  | `(PriorityQueueSender).Send` | done |
+| `PriorityQueueSender::spin_send` | method | 176 |  | `(PriorityQueueSender).SpinSend` | done |
+| `PriorityQueueReceiver` | struct | 206 |  | `PriorityQueueReceiver` | done |
+| `SendError` | struct | 226 |  | `SendError` | done |
+| `RecvError` | struct | 236 |  | `RecvError` | done |
+| `PriorityQueueReceiver::new` | assoc-fn | 251 |  | `NewPriorityQueueReceiver` | done |
+| `PriorityQueueReceiver::is_empty` | method | 276 |  | `(PriorityQueueReceiver).IsEmpty` | done |
+| `PriorityQueueReceiver::try_pop` | method | 304 |  | `(PriorityQueueReceiver).TryPop` | done |
+| `PriorityQueueReceiver::spin_try_pop` | method | 316 |  | `(PriorityQueueReceiver).SpinTryPop` | done |
+| `PriorityQueueReceiver::pop` | method | 362 |  | `(PriorityQueueReceiver).Pop` | done |
+| `PriorityQueueReceiver::try_iter` | method | 368 |  | `(PriorityQueueReceiver).TryIter` | done |
+| `PriorityQueueReceiver::iter` | method | 377 |  | `(PriorityQueueReceiver).Iter` | done |
+| `Iter` | struct | 437 |  | `Iter` | done |
+| `TryIter` | struct | 448 |  | `TryIter` | done |
+| `Drop for PriorityQueueSender` | impl | 182 |  | `(PriorityQueueSender).Close` | done |
+| `Clone for PriorityQueueReceiver` | impl | 212 |  | `(PriorityQueueReceiver).Clone` | done |
+| `Drop for PriorityQueueReceiver` | impl | 428 |  | `(PriorityQueueReceiver).Close` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `blocked_receivers_end_when_the_sender_drops` | test | 475 |  | `TestQueue_BlockedReceiversEndWhenTheSenderDrops` | todo |
-| `all_tasks_get_yielded` | test | 513 |  | `TestQueue_AllTasksGetYielded` | todo |
-| `new_high_prio_task_get_scheduled_quickly` | test | 530 |  | `TestQueue_NewHighPrioTaskGetScheduledQuickly` | todo |
+| `blocked_receivers_end_when_the_sender_drops` | test | 475 |  | `TestQueue_BlockedReceiversEndWhenTheSenderDrops` | done |
+| `all_tasks_get_yielded` | test | 513 |  | `TestQueue_AllTasksGetYielded` | done |
+| `new_high_prio_task_get_scheduled_quickly` | test | 530 |  | `TestQueue_NewHighPrioTaskGetScheduledQuickly` | done |
 
 ## gpui/src/seeds.rs
 
@@ -845,3 +849,4 @@ Go target: `app_visual_test_context.go` (package `gpui`)
 |---|---|---|---|
 | D-ACTIONDATA | The `Self: Sized` associated functions of `Action` (`name_for_type`, `build`, `action_json_schema`, `deprecated_aliases`, `deprecation_message`, `documentation`) are fields of the `ActionData` registration record (upstream's `MacroActionData`); `MacroActionBuilder` / `inventory` are `RegisterAction` from `init`; `as_any` is a Go type assertion | `gpui/src/action.rs:117-190`, `:267-290` | Go interfaces have no static methods; DESIGN 6.4 |
 | D-GLOBAL | global.rs's blanket traits are free generic functions: `ReadGlobal::global` is `Global[G](cx)`, `UpdateGlobal::update_global` / `set_global` are gpui.go's `UpdateGlobal` / `UpdateGlobalR` / `SetGlobal`; the `Global` marker trait is dropped (any type can be a global) | `gpui/src/global.rs:22-75` | marker traits are dropped (DESIGN 5.4); blanket impls cannot be expressed |
+| D-TASKEXT | `TaskExt`, an extension trait on `Task<Result<T, E>>`, is a pair of free generic functions `TaskDetachAndLogErr(task, cx)` / `TaskDetachAndLogErrWithBacktrace(task, cx)`, because `Task` is an alias of scheduler.Task and gets no methods in package gpui | `gpui/src/executor.rs:55-82` | executor.go |

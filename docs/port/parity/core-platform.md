@@ -578,23 +578,23 @@ Go target: `platform_threaded_dispatcher.go` (package `gpui`), tests in `platfor
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `ThreadedDispatcher` | struct | 28 |  | `ThreadedDispatcher` | todo |
-| `ThreadedDispatcher::new` | assoc-fn | 125 |  | `NewThreadedDispatcher` | todo |
-| `ThreadedDispatcher::run_until_idle` | method | 220 |  | `(ThreadedDispatcher).RunUntilIdle` | todo |
-| `ThreadedDispatcher::run_ready_main_tasks` | method | 307 |  | `(ThreadedDispatcher).RunReadyMainTasks` | todo |
-| `ThreadedDispatcher::cancel_pending_timers` | method | 373 |  | `(ThreadedDispatcher).CancelPendingTimers` | todo |
-| `ThreadedDispatcher::debug_state` | method | 387 |  | `(ThreadedDispatcher).DebugState` | todo |
+| `ThreadedDispatcher` | struct | 28 |  | `ThreadedDispatcher` | done |
+| `ThreadedDispatcher::new` | assoc-fn | 125 |  | `NewThreadedDispatcher` | done |
+| `ThreadedDispatcher::run_until_idle` | method | 220 |  | `(ThreadedDispatcher).RunUntilIdle` | done |
+| `ThreadedDispatcher::run_ready_main_tasks` | method | 307 |  | `(ThreadedDispatcher).RunReadyMainTasks` | done |
+| `ThreadedDispatcher::cancel_pending_timers` | method | 373 |  | `(ThreadedDispatcher).CancelPendingTimers` | done |
+| `ThreadedDispatcher::debug_state` | method | 387 |  | `(ThreadedDispatcher).DebugState` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `is_idle_tracks_queued_work_but_ignores_undue_timers` | test | 498 |  | `TestThreadedDispatcher_IsIdleTracksQueuedWorkButIgnoresUndueTimers` | todo |
-| `run_ready_main_tasks_does_not_wait_for_background_handoffs` | test | 524 |  | `TestThreadedDispatcher_RunReadyMainTasksDoesNotWaitForBackgroundHandoffs` | todo |
-| `run_until_idle_completes_background_to_main_handoffs` | test | 556 |  | `TestThreadedDispatcher_RunUntilIdleCompletesBackgroundToMainHandoffs` | todo |
-| `run_until_waits_for_untracked_external_wakes` | test | 585 |  | `TestThreadedDispatcher_RunUntilWaitsForUntrackedExternalWakes` | todo |
-| `run_until_returns_at_readiness_despite_requeuing_main_work` | test | 615 |  | `TestThreadedDispatcher_RunUntilReturnsAtReadinessDespiteRequeuingMainWork` | todo |
-| `run_ready_main_tasks_advances_requeuing_work_one_batch_per_call` | test | 671 |  | `TestThreadedDispatcher_RunReadyMainTasksAdvancesRequeuingWorkOneBatchPerCall` | todo |
-| `timers_fire_in_real_time` | test | 697 |  | `TestThreadedDispatcher_TimersFireInRealTime` | todo |
-| `cancel_pending_timers_wakes_waiters_without_waiting_for_deadline` | test | 721 |  | `TestThreadedDispatcher_CancelPendingTimersWakesWaitersWithoutWaitingForDeadline` | todo |
+| `is_idle_tracks_queued_work_but_ignores_undue_timers` | test | 498 |  | `TestThreadedDispatcher_IsIdleTracksQueuedWorkButIgnoresUndueTimers` | done |
+| `run_ready_main_tasks_does_not_wait_for_background_handoffs` | test | 524 |  | `TestThreadedDispatcher_RunReadyMainTasksDoesNotWaitForBackgroundHandoffs` | done |
+| `run_until_idle_completes_background_to_main_handoffs` | test | 556 |  | `TestThreadedDispatcher_RunUntilIdleCompletesBackgroundToMainHandoffs` | done |
+| `run_until_waits_for_untracked_external_wakes` | test | 585 |  | `TestThreadedDispatcher_RunUntilWaitsForUntrackedExternalWakes` | done |
+| `run_until_returns_at_readiness_despite_requeuing_main_work` | test | 615 |  | `TestThreadedDispatcher_RunUntilReturnsAtReadinessDespiteRequeuingMainWork` | done |
+| `run_ready_main_tasks_advances_requeuing_work_one_batch_per_call` | test | 671 |  | `TestThreadedDispatcher_RunReadyMainTasksAdvancesRequeuingWorkOneBatchPerCall` | done |
+| `timers_fire_in_real_time` | test | 697 |  | `TestThreadedDispatcher_TimersFireInRealTime` | done |
+| `cancel_pending_timers_wakes_waiters_without_waiting_for_deadline` | test | 721 |  | `TestThreadedDispatcher_CancelPendingTimersWakesWaitersWithoutWaitingForDeadline` | done |
 
 ## gpui/src/platform/visual_test.rs
 
@@ -612,21 +612,22 @@ Go target: `platform_testing_dispatcher.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `TestDispatcher` | struct | 17 |  | `TestDispatcher` | todo |
-| `TestDispatcher::new` | assoc-fn | 24 |  | `NewTestDispatcher` | todo |
-| `TestDispatcher::from_scheduler` | assoc-fn | 36 |  | `TestDispatcherFromScheduler` | todo |
-| `TestDispatcher::scheduler` | method | 44 |  | `(TestDispatcher).Scheduler` | todo |
-| `TestDispatcher::session_id` | method | 48 |  | `(TestDispatcher).SessionID` | todo |
-| `TestDispatcher::drain_tasks` | method | 52 |  | `(TestDispatcher).DrainTasks` | todo |
-| `TestDispatcher::advance_clock` | method | 56 |  | `(TestDispatcher).AdvanceClock` | todo |
-| `TestDispatcher::advance_clock_to_next_timer` | method | 60 |  | `(TestDispatcher).AdvanceClockToNextTimer` | todo |
-| `TestDispatcher::simulate_random_delay` | method | 64 |  | `(TestDispatcher).SimulateRandomDelay` | todo |
-| `TestDispatcher::tick` | method | 68 |  | `(TestDispatcher).Tick` | todo |
-| `TestDispatcher::run_until_parked` | method | 76 |  | `(TestDispatcher).RunUntilParked` | todo |
-| `TestDispatcher::allow_parking` | method | 80 |  | `(TestDispatcher).AllowParking` | todo |
-| `TestDispatcher::forbid_parking` | method | 84 |  | `(TestDispatcher).ForbidParking` | todo |
-| `TestDispatcher::set_num_cpus` | method | 90 |  | `(TestDispatcher).SetNumCPUs` | todo |
-| `TestDispatcher::num_cpus_override` | method | 95 |  | `(TestDispatcher).NumCPUsOverride` | todo |
+| `TestDispatcher` | struct | 17 |  | `TestDispatcher` | done |
+| `TestDispatcher::new` | assoc-fn | 24 |  | `NewTestDispatcher` | done |
+| `TestDispatcher::from_scheduler` | assoc-fn | 36 |  | `TestDispatcherFromScheduler` | done |
+| `TestDispatcher::scheduler` | method | 44 |  | `(TestDispatcher).Scheduler` | done |
+| `TestDispatcher::session_id` | method | 48 |  | `(TestDispatcher).SessionID` | done |
+| `TestDispatcher::drain_tasks` | method | 52 |  | `(TestDispatcher).DrainTasks` | done |
+| `TestDispatcher::advance_clock` | method | 56 |  | `(TestDispatcher).AdvanceClock` | done |
+| `TestDispatcher::advance_clock_to_next_timer` | method | 60 |  | `(TestDispatcher).AdvanceClockToNextTimer` | done |
+| `TestDispatcher::simulate_random_delay` | method | 64 |  | `(TestDispatcher).SimulateRandomDelay` | done |
+| `TestDispatcher::tick` | method | 68 |  | `(TestDispatcher).Tick` | done |
+| `TestDispatcher::run_until_parked` | method | 76 |  | `(TestDispatcher).RunUntilParked` | done |
+| `TestDispatcher::allow_parking` | method | 80 |  | `(TestDispatcher).AllowParking` | done |
+| `TestDispatcher::forbid_parking` | method | 84 |  | `(TestDispatcher).ForbidParking` | done |
+| `TestDispatcher::set_num_cpus` | method | 90 |  | `(TestDispatcher).SetNumCPUs` | done |
+| `TestDispatcher::num_cpus_override` | method | 95 |  | `(TestDispatcher).NumCPUsOverride` | done |
+| `Clone for TestDispatcher` | impl | 103 |  | `(TestDispatcher).Clone` | done |
 
 ## gpui/src/platform/test/platform.rs
 

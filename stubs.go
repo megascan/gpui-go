@@ -139,6 +139,11 @@ func (cx *App) readWindow(window AnyWindowHandle, read func(root AnyView, cx *Ap
 	panic("gpui: unimplemented App.readWindow")
 }
 
+// ForegroundExecutor returns the main-thread executor (M0-app-core ports it).
+func (cx *App) ForegroundExecutor() ForegroundExecutor {
+	panic("gpui: unimplemented App.ForegroundExecutor")
+}
+
 func (cx *App) backgroundExecutor() BackgroundExecutor {
 	panic("gpui: unimplemented App.backgroundExecutor")
 }
@@ -249,12 +254,6 @@ type RenderSvgParams struct {
 // SystemWindowTab is a window tab of the system tab bar (M0-app-core ports it).
 type SystemWindowTab struct{}
 
-// TestDispatcher is the deterministic test dispatcher (M0-executors ports it).
-type TestDispatcher struct{}
-
-// ThreadedDispatcher is the threaded test dispatcher (M0-executors ports it).
-type ThreadedDispatcher struct{}
-
 // TestWindow is the test platform's window (M0-test-platform ports it).
 type TestWindow struct{}
 
@@ -278,26 +277,6 @@ type NativeViewID uint64
 // IntoAnyElement renders the entity as a view; *T must implement Render[T] (M0-element ports it).
 func (e Entity[T]) IntoAnyElement() AnyElement {
 	panic("gpui: unimplemented Entity.IntoAnyElement")
-}
-
-// BackgroundExecutor spawns tasks on background threads (M0-executors ports it).
-type BackgroundExecutor struct {
-	inner scheduler.BackgroundExecutor
-}
-
-// Spawn spawns a future on a background thread (M0-executors ports it).
-func (e BackgroundExecutor) Spawn[R any](future func(s *scheduler.Scope) (R, error)) *Task[R] {
-	panic("gpui: unimplemented BackgroundExecutor.Spawn")
-}
-
-// ForegroundExecutor spawns tasks on the main thread (M0-executors ports it).
-type ForegroundExecutor struct {
-	inner scheduler.LocalExecutor
-}
-
-// Spawn spawns a future on the main thread (M0-executors ports it).
-func (e ForegroundExecutor) Spawn[R any](future func(s *scheduler.Scope) (R, error)) *Task[R] {
-	panic("gpui: unimplemented ForegroundExecutor.Spawn")
 }
 
 // Context is the context of an entity update: the App plus the entity being updated (M0-app-contexts ports it).
@@ -1125,11 +1104,6 @@ type Empty struct{}
 // IntoAnyElement converts the element into an AnyElement (M0-element ports it).
 func (Empty) IntoAnyElement() AnyElement {
 	panic("gpui: unimplemented Empty.IntoAnyElement")
-}
-
-// Timer returns a task that completes after duration (M0-executors ports it).
-func (e BackgroundExecutor) Timer(duration time.Duration) *Task[struct{}] {
-	panic("gpui: unimplemented BackgroundExecutor.Timer")
 }
 
 // LongPressEvent is a long-press gesture recognized from touch input (M0-gestures-spring ports it).
