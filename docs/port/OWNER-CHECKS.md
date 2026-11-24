@@ -142,3 +142,12 @@ Folded: M1-linux-platform, M1-linux-screencap, M1-wayland-window, M3-a11y-atspi-
 - YOU: on a Mac with VoiceOver on, `go run ./examples/a11y`: VoiceOver reads the window, buttons and labels and announces focus changes.
 - YOU: on a Mac, `GPUI_TEST_DISPLAY=1 go test ./platform/macos/ ./platform/apple/`: window, Metal headless render and shader tests pass on real hardware.
 - YOU: GitHub Actions is blocked on the account (billing / spending limit; macos-14 also reported "configuration 'macos-14-arm64-us-xl' is not supported"). Fix billing, then re-run CI on feat/port so the macos-14 job runs.
+
+## M4-ci-windows
+
+- YOU: on Windows, `go run ./examples/hello_world`: the window opens through WindowsPlatform, text renders crisp through DirectWrite and the 500px div matches upstream.
+- YOU: on Windows, type in an example with a text input using the Japanese / Pinyin IME: composition text, candidate window placement and commit work.
+- YOU: on Windows, move a running example between monitors with different scale factors (or change display scaling in Settings): the window rescales without blur or wrong size.
+- YOU: on Windows with Narrator on, `go run ./examples/a11y`: Narrator reads the window, buttons and labels and announces focus changes.
+- YOU: on Windows, `GPUI_TEST_DISPLAY=1 go test ./platform/windows/ ./internal/win/...`: window, DirectX/HLSL and screen-capture tests pass on real hardware.
+- YOU: GitHub Actions is blocked on the account (billing / spending limit). Fix billing, then re-run CI on feat/port so the windows-latest job runs; the Windows packages still need to be committed and pushed by the next exit/CI stage.

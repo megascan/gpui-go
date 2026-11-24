@@ -66,8 +66,8 @@ jobs:
         if: runner.os != 'Linux'
         run: go test ./...
 
-      - name: example builds (macOS)
-        if: runner.os == 'macOS'
+      - name: example builds (macOS, Windows)
+        if: runner.os == 'macOS' || runner.os == 'Windows'
         run: go build -o /dev/null ./examples/...
 
       - name: go test (Linux, Xvfb, private bus)
@@ -79,7 +79,7 @@ jobs:
       - name: Cross vet and test build
         if: runner.os == 'Linux'
         run: |
-          for t in darwin/arm64 windows/amd64 js/wasm; do
+          for t in darwin/arm64 windows/amd64 windows/arm64 js/wasm; do
             echo "== $t"
             GOOS=${t%/*} GOARCH=${t#*/} CGO_ENABLED=0 go vet ./...
             GOOS=${t%/*} GOARCH=${t#*/} CGO_ENABLED=0 go test -c -o /dev/null ./...
