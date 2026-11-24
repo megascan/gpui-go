@@ -1,11 +1,11 @@
 package gpui
 
 import (
-	"encoding/json/jsontext"
-	"image"
 	"reflect"
+	"slices"
 	"sync/atomic"
 	"time"
+	"weak"
 
 	"github.com/megascan/gpui-go/a11y"
 	"github.com/megascan/gpui-go/scheduler"
@@ -22,24 +22,9 @@ type RenderSvgParams struct {
 // NativeViewID identifies a native view within its window (M0-window-a11y ports it).
 type NativeViewID uint64
 
-// Focus moves focus to the given handle (M0-window-paint ports it).
-func (w *Window) Focus(handle FocusHandle, cx *App) {
-	panic("gpui: unimplemented Window.Focus")
-}
-
 // OnAction registers an action listener for the next frame (M0-window-dispatch ports it).
 func (w *Window) OnAction(actionType reflect.Type, listener func(action any, phase DispatchPhase, window *Window, cx *App)) {
 	panic("gpui: unimplemented Window.OnAction")
-}
-
-// Spawn spawns f on the main thread with an AsyncWindowContext for this window (M0-window-paint ports it).
-func (w *Window) Spawn[R any](cx *App, f func(cx *AsyncWindowContext) (R, error)) *Task[R] {
-	panic("gpui: unimplemented Window.Spawn")
-}
-
-// SpawnWithPriority spawns f on the main thread with the given priority (M0-window-paint ports it).
-func (w *Window) SpawnWithPriority[R any](priority Priority, cx *App, f func(cx *AsyncWindowContext) (R, error)) *Task[R] {
-	panic("gpui: unimplemented Window.SpawnWithPriority")
 }
 
 // Prompt presents a platform dialog and returns the index of the clicked button (M0-window-dispatch ports it).
@@ -100,39 +85,9 @@ func imageSourceIsAssetCached(source ImageSource, cx *App) bool {
 	panic("gpui: unimplemented imageSourceIsAssetCached")
 }
 
-// RemSize returns the window's rem size (M0-window-paint ports it).
-func (w *Window) RemSize() Pixels {
-	panic("gpui: unimplemented Window.RemSize")
-}
-
-// Draw renders the window's root views into the next frame (M0-window-paint ports it).
-func (w *Window) Draw(cx *App) ArenaClearNeeded {
-	panic("gpui: unimplemented Window.Draw")
-}
-
 // RequestLayout adds a node to the layout tree for the current frame (M0-window-dispatch ports it).
 func (w *Window) RequestLayout(style Style, children []LayoutID, cx *App) LayoutID {
 	panic("gpui: unimplemented Window.RequestLayout")
-}
-
-// WithElementState gives f the element state of type S stored under id (M0-window-paint ports it).
-func (w *Window) WithElementState[S, R any](id *GlobalElementID, f func(state Option[S], window *Window) (R, S)) R {
-	panic("gpui: unimplemented Window.WithElementState")
-}
-
-// PaintDropShadows paints the outer shadows of an element (M0-window-paint ports it).
-func (w *Window) PaintDropShadows(bounds Bounds[Pixels], cornerRadii Corners[Pixels], shadows []BoxShadow) {
-	panic("gpui: unimplemented Window.PaintDropShadows")
-}
-
-// PaintInsetShadows paints the inset shadows of an element (M0-window-paint ports it).
-func (w *Window) PaintInsetShadows(bounds Bounds[Pixels], cornerRadii Corners[Pixels], shadows []BoxShadow) {
-	panic("gpui: unimplemented Window.PaintInsetShadows")
-}
-
-// PaintQuad paints a quad into the scene for the next frame (M0-window-paint ports it).
-func (w *Window) PaintQuad(quad PaintQuad) {
-	panic("gpui: unimplemented Window.PaintQuad")
 }
 
 // InsertHitbox registers a hitbox for the current frame (M0-window-dispatch ports it).
@@ -148,26 +103,6 @@ func (w *Window) DispatchKeystroke(keystroke Keystroke, cx *App) bool {
 // DispatchEvent dispatches a platform input event (M0-window-dispatch ports it).
 func (w *Window) DispatchEvent(event PlatformInput, cx *App) DispatchEventResult {
 	panic("gpui: unimplemented Window.DispatchEvent")
-}
-
-// Refresh schedules a redraw of the window (M0-window-paint ports it).
-func (w *Window) Refresh() {
-	panic("gpui: unimplemented Window.Refresh")
-}
-
-// OnNextFrame schedules f to run before the next frame (M0-window-paint ports it).
-func (w *Window) OnNextFrame(f func(window *Window, cx *App)) {
-	panic("gpui: unimplemented Window.OnNextFrame")
-}
-
-// RequestAnimationFrame schedules a redraw for the next frame (M0-window-paint ports it).
-func (w *Window) RequestAnimationFrame() {
-	panic("gpui: unimplemented Window.RequestAnimationFrame")
-}
-
-// ReplaceRoot replaces the window's root view; *V must implement Render[V] (M0-window-paint ports it).
-func (w *Window) ReplaceRoot[V any](cx *App, buildView func(window *Window, cx *Context[V]) *V) Entity[V] {
-	panic("gpui: unimplemented Window.ReplaceRoot")
 }
 
 // A11ySubtreeBuilder adds synthetic accessibility nodes below an element (M0-window-a11y ports it).
@@ -187,6 +122,7 @@ func (b A11ySubtreeBuilder) withCreator(creator nodeCreator) A11ySubtreeBuilder 
 
 type windowA11y struct {
 	activeThisFrame bool
+	windowTitle     Option[SharedString]
 	nodes           a11yNodeBuilder
 	nodeBounds      map[a11y.NodeID]Bounds[Pixels]
 	viewTypeNames   map[EntityID]string
@@ -201,6 +137,88 @@ func newWindowA11y(activeFlag *atomic.Bool, forceDisabled bool, windowTitle Opti
 
 func (a *windowA11y) isActive() bool {
 	return a.activeThisFrame
+}
+
+func (a *windowA11y) setWindowTitle(title SharedString) {
+	a.windowTitle = Some(title)
+}
+
+func (a *windowA11y) syncActiveFlag() {}
+
+func (a *windowA11y) beginFrame() {
+	panic("gpui: unimplemented windowA11y.beginFrame")
+}
+
+func (a *windowA11y) endFrame(frame frameDebugInfo) a11y.TreeUpdate {
+	panic("gpui: unimplemented windowA11y.endFrame")
+}
+
+type frameDebugInfo struct {
+	viewportSize Size[Pixels]
+	scaleFactor  float32
+	tabStopCount int
+}
+
+func (w *Window) syncNativeViewFocus() {
+	w.nativeViews = slices.DeleteFunc(w.nativeViews, func(view weak.Pointer[nativeViewState]) bool { return view.Value() == nil })
+	if len(w.nativeViews) == 0 {
+		return
+	}
+	panic("gpui: unimplemented Window.syncNativeViewFocus")
+}
+
+func (w *Window) endCompositionBeforeFocusingNativeView(focus FocusID, cx *App) {
+	if len(w.nativeViews) == 0 {
+		return
+	}
+	panic("gpui: unimplemented Window.endCompositionBeforeFocusingNativeView")
+}
+
+func (w *Window) focusNodeIDInRenderedFrame(focusID Option[FocusID]) dispatchNodeID {
+	panic("gpui: unimplemented Window.focusNodeIDInRenderedFrame")
+}
+
+func (w *Window) applyTextInputConfiguration(cx *App) {
+	panic("gpui: unimplemented Window.applyTextInputConfiguration")
+}
+
+func (w *Window) resetCursorStyle(cx *App) {
+	panic("gpui: unimplemented Window.resetCursorStyle")
+}
+
+func (w *Window) prepaintInspector(inspectorWidth Pixels, cx *App) Option[AnyElement] {
+	panic("gpui: unimplemented Window.prepaintInspector")
+}
+
+func (w *Window) paintInspector(inspectorElement Option[AnyElement], cx *App) {
+	panic("gpui: unimplemented Window.paintInspector")
+}
+
+func (w *Window) paintInspectorHitbox(cx *App) {
+	panic("gpui: unimplemented Window.paintInspectorHitbox")
+}
+
+func (w *Window) takeElementState(globalID *GlobalElementID, stateType reflect.Type) (elementStateKey, elementStateBox, bool) {
+	panic("gpui: unimplemented Window.takeElementState")
+}
+
+func (w *Window) insertElementState(key elementStateKey, state elementStateBox) {
+	panic("gpui: unimplemented Window.insertElementState")
+}
+
+func observeKeyedState[S any](state Entity[S], currentView EntityID, cx *App) {
+	panic("gpui: unimplemented observeKeyedState")
+}
+
+// SmoothSvgScaleFactor is the factor SVGs are rasterized at above their device size (M0-elements-media ports svg_renderer.rs).
+const SmoothSvgScaleFactor float32 = 2.
+
+func (r SvgRenderer) renderAlphaMask(params RenderSvgParams, bytes []byte) (Size[DevicePixels], []byte, bool, error) {
+	panic("gpui: unimplemented SvgRenderer.renderAlphaMask")
+}
+
+type promptViewHandle interface {
+	anyView() AnyView
 }
 
 type a11yNodeBuilder struct{}
@@ -408,11 +426,6 @@ func (s SharedString) IntoAnyElement() AnyElement {
 	panic("gpui: unimplemented SharedString.IntoAnyElement")
 }
 
-// Appearance returns the window's appearance (M0-window-paint ports it).
-func (w *Window) Appearance() WindowAppearance {
-	panic("gpui: unimplemented Window.Appearance")
-}
-
 // HangDetector detects hangs from the foreground journal (M3-profiler-hang ports it).
 type HangDetector struct{}
 
@@ -470,31 +483,6 @@ func recordDraw(timing FrameTiming) {}
 
 func recordPresent(timing PresentTiming, frame Option[FrameTiming]) {}
 
-// WindowHandle returns a handle to the window (M0-window-paint ports it).
-func (w *Window) WindowHandle() AnyWindowHandle {
-	panic("gpui: unimplemented Window.WindowHandle")
-}
-
-// Blur removes focus from the window's focused element (M0-window-paint ports it).
-func (w *Window) Blur(cx *App) {
-	panic("gpui: unimplemented Window.Blur")
-}
-
-// DispatchAction dispatches an action to the focused element of the window (M0-window-paint ports it).
-func (w *Window) DispatchAction(action Action, cx *App) {
-	panic("gpui: unimplemented Window.DispatchAction")
-}
-
-// IsActionAvailable reports whether the action has a handler in the window's focus path (M0-window-paint ports it).
-func (w *Window) IsActionAvailable(action Action, cx *App) bool {
-	panic("gpui: unimplemented Window.IsActionAvailable")
-}
-
-// DropImage removes an image from the window's sprite atlas (M0-window-paint ports it).
-func (w *Window) DropImage(data *RenderImage) error {
-	panic("gpui: unimplemented Window.DropImage")
-}
-
 func (w *Window) clearPendingKeystrokes(cx *App) {
 	panic("gpui: unimplemented Window.clearPendingKeystrokes")
 }
@@ -503,28 +491,13 @@ func (w *Window) clearPendingKeystrokes(cx *App) {
 type PromptHandle struct{}
 
 // RenderablePromptHandle is a prompt rendered as a view (M0-window-dispatch ports it).
-type RenderablePromptHandle struct{}
+type RenderablePromptHandle struct {
+	view promptViewHandle
+}
 
 // NewHangDetector creates a detector over the foreground journal (M3-profiler-hang ports it).
 func NewHangDetector(journal ForegroundJournal, threshold time.Duration, frameBudget time.Duration) *HangDetector {
 	panic("gpui: unimplemented NewHangDetector")
-}
-
-// Defer schedules f to run at the end of the current effect cycle with this window (M0-window-paint ports it).
-func (w *Window) Defer(cx *App, f func(window *Window, cx *App)) {
-	panic("gpui: unimplemented Window.Defer")
-}
-
-func (w *Window) appearanceChanged(cx *App) {
-	panic("gpui: unimplemented Window.appearanceChanged")
-}
-
-func (w *Window) notifyDisplayObservers(cx *App) {
-	panic("gpui: unimplemented Window.notifyDisplayObservers")
-}
-
-func (w *Window) debugState() jsontext.Value {
-	panic("gpui: unimplemented Window.debugState")
 }
 
 // ActivateWindow brings the window to the front of the application (M0-window-dispatch ports it).
@@ -554,46 +527,6 @@ type promptBuilderCustom struct {
 }
 
 func (promptBuilderCustom) isPromptBuilder() {}
-
-// ScaleFactor returns the window's scale factor (M0-window-paint ports it).
-func (w *Window) ScaleFactor() float32 {
-	panic("gpui: unimplemented Window.ScaleFactor")
-}
-
-// TextStyle returns the current text style (M0-window-paint ports it).
-func (w *Window) TextStyle() TextStyle {
-	panic("gpui: unimplemented Window.TextStyle")
-}
-
-// WithID calls f with elementID pushed on the element id stack (M0-window-paint ports it).
-func (w *Window) WithID[R any](elementID ElementID, f func(window *Window) R) R {
-	panic("gpui: unimplemented Window.WithID")
-}
-
-func (w *Window) prepaintIndex() prepaintStateIndex {
-	panic("gpui: unimplemented Window.prepaintIndex")
-}
-
-func (w *Window) reusePrepaint(start, end prepaintStateIndex) {
-	panic("gpui: unimplemented Window.reusePrepaint")
-}
-
-func (w *Window) paintIndex() paintIndex {
-	panic("gpui: unimplemented Window.paintIndex")
-}
-
-func (w *Window) reusePaint(start, end paintIndex) {
-	panic("gpui: unimplemented Window.reusePaint")
-}
-
-func (w *Window) elementOpacity() float32 {
-	panic("gpui: unimplemented Window.elementOpacity")
-}
-
-// ContentMask returns the current content mask (M0-window-paint ports it).
-func (w *Window) ContentMask() ContentMask[Pixels] {
-	panic("gpui: unimplemented Window.ContentMask")
-}
 
 // ComputeLayout computes the layout of layoutID within availableSpace (M0-window-dispatch ports it).
 func (w *Window) ComputeLayout(layoutID LayoutID, availableSpace SizeOf[AvailableSpace], cx *App) {
@@ -632,16 +565,6 @@ func (w *Window) buildInspectorElementID(path InspectorElementPath) InspectorEle
 	panic("gpui: unimplemented Window.buildInspectorElementID")
 }
 
-// WithAbsoluteElementOffset runs f with the element offset set to an absolute value (M0-window-paint ports it).
-func (w *Window) WithAbsoluteElementOffset[R any](offset Point[Pixels], f func(window *Window) R) R {
-	panic("gpui: unimplemented Window.WithAbsoluteElementOffset")
-}
-
-// RenderToImage renders the window's current scene into an image (M0-window-paint ports it).
-func (w *Window) RenderToImage() (*image.RGBA, error) {
-	panic("gpui: unimplemented Window.RenderToImage")
-}
-
 // VisualTestPlatform combines a real platform's rendering with a TestDispatcher (M3-root-capture ports it).
 type VisualTestPlatform struct {
 	Platform
@@ -655,56 +578,6 @@ func NewVisualTestPlatform(platform Platform, seed uint64) *VisualTestPlatform {
 // Dispatcher returns the platform's test dispatcher (M3-root-capture ports it).
 func (p *VisualTestPlatform) Dispatcher() *TestDispatcher {
 	panic("gpui: unimplemented VisualTestPlatform.Dispatcher")
-}
-
-// Focused returns the currently focused handle, which the caller releases (M0-window-paint ports it).
-func (w *Window) Focused(cx *App) (FocusHandle, bool) {
-	panic("gpui: unimplemented Window.Focused")
-}
-
-// RemoveWindow closes the window at the end of the current update (M0-window-paint ports it).
-func (w *Window) RemoveWindow() {
-	panic("gpui: unimplemented Window.RemoveWindow")
-}
-
-// BoundsChanged handles a change of the window's bounds (M0-window-paint ports it).
-func (w *Window) BoundsChanged(cx *App) {
-	panic("gpui: unimplemented Window.BoundsChanged")
-}
-
-func windowDisplayChanged(handle AnyWindowHandle, cx *App) {
-	panic("gpui: unimplemented windowDisplayChanged")
-}
-
-func (w *Window) buttonLayoutChanged(cx *App) {
-	panic("gpui: unimplemented Window.buttonLayoutChanged")
-}
-
-func (w *Window) refreshVisibility(cx *App) {
-	panic("gpui: unimplemented Window.refreshVisibility")
-}
-
-func (w *Window) advanceSceneAnimations(cx *App) {
-	panic("gpui: unimplemented Window.advanceSceneAnimations")
-}
-
-func (w *Window) present() {
-	panic("gpui: unimplemented Window.present")
-}
-
-// IsWindowActive reports whether the window is active (M0-window-paint ports it).
-func (w *Window) IsWindowActive() bool {
-	panic("gpui: unimplemented Window.IsWindowActive")
-}
-
-// MousePosition returns the mouse position relative to the window (M0-window-paint ports it).
-func (w *Window) MousePosition() Point[Pixels] {
-	panic("gpui: unimplemented Window.MousePosition")
-}
-
-// LastInputWasKeyboard reports whether the last input came from the keyboard (M0-window-paint ports it).
-func (w *Window) LastInputWasKeyboard() bool {
-	panic("gpui: unimplemented Window.LastInputWasKeyboard")
 }
 
 func (w *Window) dispatchActionOnNode(nodeID dispatchNodeID, action Action, cx *App) {
@@ -738,6 +611,26 @@ type DebugFrameOverlay struct{}
 func NewDebugFrameOverlay() DebugFrameOverlay {
 	return DebugFrameOverlay{}
 }
+
+// DebugFrameOverlayMode is what the debug frame overlay shows (M3-profiler-hang ports it).
+type DebugFrameOverlayMode uint8
+
+// Next returns the next mode in the cycle (M3-profiler-hang ports it).
+func (m DebugFrameOverlayMode) Next() DebugFrameOverlayMode {
+	panic("gpui: unimplemented DebugFrameOverlayMode.Next")
+}
+
+func (o *DebugFrameOverlay) mode() DebugFrameOverlayMode {
+	return 0
+}
+
+func (o *DebugFrameOverlay) setMode(mode DebugFrameOverlayMode) {}
+
+func (o *DebugFrameOverlay) resetStats() {}
+
+func (o *DebugFrameOverlay) recordFrame(drawDuration time.Duration) {}
+
+func (o *DebugFrameOverlay) paint(scene *Scene, viewportSize Size[Pixels], scaleFactor float32) {}
 
 // PlatformSignal is a platform frame callback recorded in the foreground journal (M3-profiler-journal ports it).
 type PlatformSignal struct {

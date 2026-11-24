@@ -147,155 +147,155 @@ Go target: `window.go` (package `gpui`), tests in `window_test.go`
 | `ContentMask` | struct | 2542 |  | `ContentMask` | done |
 | `ContentMask<Pixels>::scale` | method | 2549 |  | `(ContentMask).Scale` | done |
 | `ContentMask<Pixels>::intersect` | method | 2556 |  | `(ContentMask).Intersect` | done |
-| `Window::visibility` | method | 2654 |  | `(Window).Visibility` | todo |
-| `Window::is_visible` | method | 2663 |  | `(Window).IsVisible` | todo |
-| `Window::observe_window_visibility` | method | 2668 |  | `(Window).ObserveWindowVisibility` | todo |
-| `Window::observe_window_appearance` | method | 2680 |  | `(Window).ObserveWindowAppearance` | todo |
-| `Window::observe_button_layout_changed` | method | 2692 |  | `(Window).ObserveButtonLayoutChanged` | todo |
-| `Window::replace_root` | method | 2704 |  | `(Window).ReplaceRoot` | todo |
-| `Window::root` | method | 2719 |  | `(Window).Root` | todo |
-| `Window::window_handle` | method | 2729 |  | `(Window).WindowHandle` | todo |
-| `Window::refresh` | method | 2734 |  | `(Window).Refresh` | todo |
-| `Window::remove_window` | method | 2742 |  | `(Window).RemoveWindow` | todo |
-| `Window::focused` | method | 2747 |  | `(Window).Focused` | todo |
-| `Window::focus_lost_restore_target` | method | 2755 |  | `(Window).FocusLostRestoreTarget` | todo |
-| `Window::focus` | method | 2764 |  | `(Window).Focus` | todo |
-| `Window::blur` | method | 2779 |  | `(Window).Blur` | todo |
-| `Window::disable_focus` | method | 2795 |  | `(Window).DisableFocus` | todo |
-| `Window::focus_next` | method | 2801 |  | `(Window).FocusNext` | todo |
-| `Window::focus_prev` | method | 2812 |  | `(Window).FocusPrev` | todo |
-| `Window::text_system` | method | 2823 |  | `(Window).TextSystem` | todo |
-| `Window::text_style` | method | 2828 |  | `(Window).TextStyle` | todo |
-| `Window::is_maximized` | method | 2839 |  | `(Window).IsMaximized` | todo |
-| `Window::request_decorations` | method | 2844 |  | `(Window).RequestDecorations` | todo |
-| `Window::set_exclusive_zone` | method | 2853 |  | `(Window).SetExclusiveZone` | todo |
-| `Window::set_exclusive_edge` | method | 2862 | linux,feat:wayland | `(Window).SetExclusiveEdge` | todo |
-| `Window::start_window_resize` | method | 2867 |  | `(Window).StartWindowResize` | todo |
-| `Window::set_input_region` | method | 2879 |  | `(Window).SetInputRegion` | todo |
-| `Window::window_bounds` | method | 2885 |  | `(Window).WindowBounds` | todo |
-| `Window::inner_window_bounds` | method | 2898 |  | `(Window).InnerWindowBounds` | todo |
-| `Window::native_window_state` | method | 2904 |  | `(Window).NativeWindowState` | todo |
-| `Window::restore_native_window_state` | method | 2910 |  | `(Window).RestoreNativeWindowState` | todo |
-| `Window::dispatch_action` | method | 2915 |  | `(Window).DispatchAction` | todo |
-| `Window::defer` | method | 2975 |  | `(Window).Defer` | todo |
-| `Window::observe` | method | 2985 |  | `(Window).Observe` | todo |
-| `Window::subscribe` | method | 3014 |  | `(Window).Subscribe` | todo |
-| `Window::observe_release` | method | 3049 |  | `(Window).ObserveRelease` | todo |
-| `Window::to_async` | method | 3071 |  | `(Window).ToAsync` | todo |
-| `Window::on_next_frame` | method | 3076 |  | `(Window).OnNextFrame` | todo |
-| `Window::request_animation_frame` | method | 3096 |  | `(Window).RequestAnimationFrame` | todo |
-| `Window::simulate_next_frame` | method | 3111 | feat:test-support | `(Window).SimulateNextFrame` | todo |
-| `Window::spawn` | method | 3124 |  | `(Window).Spawn` | todo |
-| `Window::spawn_with_priority` | method | 3140 |  | `(Window).SpawnWithPriority` | todo |
-| `Window::bounds_changed` | method | 3162 |  | `(Window).BoundsChanged` | todo |
-| `Window::refresh_interval` | method | 3224 |  | `(Window).RefreshInterval` | todo |
-| `Window::observe_window_display` | method | 3232 |  | `(Window).ObserveWindowDisplay` | todo |
-| `Window::bounds` | method | 3243 |  | `(Window).Bounds` | todo |
-| `Window::insets` | method | 3248 |  | `(Window).Insets` | todo |
-| `Window::render_to_image` | method | 3256 | feat:test-support | `(Window).RenderToImage` | todo |
-| `Window::rendered_scene` | method | 3264 | feat:bench-support | `(Window).RenderedScene` | todo |
-| `Window::painted_quads` | method | 3273 | feat:test-support | `(Window).PaintedQuads` | todo |
-| `Window::painted_underlines` | method | 3279 | feat:test-support | `(Window).PaintedUnderlines` | todo |
-| `Window::resize` | method | 3284 |  | `(Window).Resize` | todo |
-| `Window::is_fullscreen` | method | 3289 |  | `(Window).IsFullscreen` | todo |
-| `Window::is_simple_fullscreen` | method | 3296 |  | `(Window).IsSimpleFullscreen` | todo |
-| `Window::appearance` | method | 3315 |  | `(Window).Appearance` | todo |
-| `Window::viewport_size` | method | 3320 |  | `(Window).ViewportSize` | todo |
-| `Window::visual_viewport_bounds` | method | 3329 |  | `(Window).VisualViewportBounds` | todo |
-| `Window::fully_visible_bounds` | method | 3337 |  | `(Window).FullyVisibleBounds` | todo |
-| `Window::request_virtual_keyboard` | method | 3355 |  | `(Window).RequestVirtualKeyboard` | todo |
-| `Window::dismiss_virtual_keyboard` | method | 3360 |  | `(Window).DismissVirtualKeyboard` | todo |
-| `Window::is_window_active` | method | 3365 |  | `(Window).IsWindowActive` | todo |
-| `Window::is_window_hovered` | method | 3372 |  | `(Window).IsWindowHovered` | todo |
-| `Window::zoom_window` | method | 3385 |  | `(Window).ZoomWindow` | todo |
-| `Window::show_window_menu` | method | 3390 |  | `(Window).ShowWindowMenu` | todo |
-| `Window::start_window_move` | method | 3398 |  | `(Window).StartWindowMove` | todo |
-| `Window::set_client_inset` | method | 3403 |  | `(Window).SetClientInset` | todo |
-| `Window::set_client_corner_radii` | method | 3409 |  | `(Window).SetClientCornerRadii` | todo |
-| `Window::client_inset` | method | 3414 |  | `(Window).ClientInset` | todo |
-| `Window::window_decorations` | method | 3419 |  | `(Window).WindowDecorations` | todo |
-| `Window::is_resizable` | method | 3424 |  | `(Window).IsResizable` | todo |
-| `Window::is_minimizable` | method | 3429 |  | `(Window).IsMinimizable` | todo |
-| `Window::window_controls` | method | 3434 |  | `(Window).WindowControls` | todo |
-| `Window::set_window_title` | method | 3439 |  | `(Window).SetWindowTitle` | todo |
-| `Window::set_traffic_light_position` | method | 3446 | macos | `(Window).SetTrafficLightPosition` | todo |
-| `Window::set_native_titlebar_visibility` | method | 3452 | macos | `(Window).SetNativeTitlebarVisibility` | todo |
-| `Window::set_app_id` | method | 3457 |  | `(Window).SetAppID` | todo |
-| `Window::set_background_appearance` | method | 3462 |  | `(Window).SetBackgroundAppearance` | todo |
-| `Window::set_window_edited` | method | 3468 |  | `(Window).SetWindowEdited` | todo |
-| `Window::set_document_path` | method | 3474 |  | `(Window).SetDocumentPath` | todo |
-| `Window::display` | method | 3479 |  | `(Window).Display` | todo |
-| `Window::show_character_palette` | method | 3487 |  | `(Window).ShowCharacterPalette` | todo |
-| `Window::scale_factor` | method | 3494 |  | `(Window).ScaleFactor` | todo |
-| `Window::set_scale_factor` | method | 3500 | feat:test-support | `(Window).SetScaleFactor` | todo |
-| `Window::rem_size` | method | 3507 |  | `(Window).RemSize` | todo |
-| `Window::set_rem_size` | method | 3516 |  | `(Window).SetRemSize` | todo |
-| `Window::with_global_id` | method | 3522 |  | `(Window).WithGlobalID` | todo |
-| `Window::with_id` | method | 3536 |  | `(Window).WithID` | todo |
-| `Window::with_rem_size` | method | 3553 |  | `(Window).WithRemSize` | todo |
-| `Window::line_height` | method | 3570 |  | `(Window).LineHeight` | todo |
-| `Window::pixel_snap` | method | 3576 |  | `(Window).PixelSnap` | todo |
-| `Window::pixel_snap_f64` | method | 3582 |  | `(Window).PixelSnapF64` | todo |
-| `Window::pixel_snap_bounds` | method | 3589 |  | `(Window).PixelSnapBounds` | todo |
-| `Window::pixel_snap_point` | method | 3595 |  | `(Window).PixelSnapPoint` | todo |
-| `Window::underline_bounds` | method | 3600 |  | `(Window).UnderlineBounds` | todo |
-| `Window::paint_underline_with_exclusions` | method | 3620 |  | `(Window).PaintUnderlineWithExclusions` | todo |
-| `Window::prevent_default` | method | 3748 |  | `(Window).PreventDefault` | todo |
-| `Window::default_prevented` | method | 3753 |  | `(Window).DefaultPrevented` | todo |
-| `Window::is_action_available` | method | 3758 |  | `(Window).IsActionAvailable` | todo |
-| `Window::is_action_available_in` | method | 3767 |  | `(Window).IsActionAvailableIn` | todo |
-| `Window::mouse_position` | method | 3775 |  | `(Window).MousePosition` | todo |
-| `Window::capture_pointer` | method | 3785 |  | `(Window).CapturePointer` | todo |
-| `Window::release_pointer` | method | 3790 |  | `(Window).ReleasePointer` | todo |
-| `Window::captured_hitbox` | method | 3795 |  | `(Window).CapturedHitbox` | todo |
-| `Window::capture_long_press` | method | 3804 |  | `(Window).CaptureLongPress` | todo |
-| `Window::has_long_press_capture` | method | 3809 |  | `(Window).HasLongPressCapture` | todo |
-| `Window::modifiers` | method | 3814 |  | `(Window).Modifiers` | todo |
-| `Window::last_input_was_keyboard` | method | 3820 |  | `(Window).LastInputWasKeyboard` | todo |
-| `Window::last_input_was_touch` | method | 3825 |  | `(Window).LastInputWasTouch` | todo |
-| `Window::capslock` | method | 3830 |  | `(Window).Capslock` | todo |
-| `Window::draw` | method | 3837 |  | `(Window).Draw` | todo |
-| `Window::input_latency_snapshot` | method | 4045 | feat:profiler | `(Window).InputLatencySnapshot` | todo |
-| `Window::frame_duration_snapshot` | method | 4051 | feat:profiler | `(Window).FrameDurationSnapshot` | todo |
-| `Window::debug_frame_overlay_mode` | method | 4057 | feat:profiler | `(Window).DebugFrameOverlayMode` | todo |
-| `Window::set_debug_frame_overlay_mode` | method | 4063 | feat:profiler | `(Window).SetDebugFrameOverlayMode` | todo |
-| `Window::cycle_debug_frame_overlay_mode` | method | 4071 | feat:profiler | `(Window).CycleDebugFrameOverlayMode` | todo |
-| `Window::reset_debug_frame_overlay_stats` | method | 4078 | feat:profiler | `(Window).ResetDebugFrameOverlayStats` | todo |
-| `Window::with_text_style` | method | 4538 |  | `(Window).WithTextStyle` | todo |
-| `Window::set_cursor_style` | method | 4555 |  | `(Window).SetCursorStyle` | todo |
-| `Window::set_window_cursor_style` | method | 4567 |  | `(Window).SetWindowCursorStyle` | todo |
-| `Window::set_tooltip` | method | 4577 |  | `(Window).SetTooltip` | todo |
-| `Window::with_content_mask` | method | 4591 |  | `(Window).WithContentMask` | todo |
-| `Window::with_element_offset` | method | 4610 |  | `(Window).WithElementOffset` | todo |
-| `Window::with_absolute_element_offset` | method | 4628 |  | `(Window).WithAbsoluteElementOffset` | todo |
-| `Window::transact` | method | 4663 |  | `(Window).Transact` | todo |
-| `Window::request_autoscroll` | method | 4691 |  | `(Window).RequestAutoscroll` | todo |
-| `Window::take_autoscroll` | method | 4698 |  | `(Window).TakeAutoscroll` | todo |
-| `Window::use_asset` | method | 4708 |  | `(Window).UseAsset` | todo |
-| `Window::get_asset` | method | 4717 |  | `(Window).GetAsset` | todo |
-| `Window::element_offset` | method | 4722 |  | `(Window).ElementOffset` | todo |
-| `Window::content_mask` | method | 4739 |  | `(Window).ContentMask` | todo |
-| `Window::with_element_namespace` | method | 4754 |  | `(Window).WithElementNamespace` | todo |
-| `Window::use_keyed_state` | method | 4766 |  | `(Window).UseKeyedState` | todo |
-| `Window::use_state` | method | 4792 |  | `(Window).UseState` | todo |
-| `Window::with_element_state` | method | 4809 |  | `(Window).WithElementState` | todo |
-| `Window::with_optional_element_state` | method | 4884 |  | `(Window).WithOptionalElementState` | todo |
-| `Window::with_tab_group` | method | 4913 |  | `(Window).WithTabGroup` | todo |
-| `Window::defer_draw` | method | 4932 |  | `(Window).DeferDraw` | todo |
-| `Window::paint_layer` | method | 4965 |  | `(Window).PaintLayer` | todo |
-| `Window::paint_drop_shadows` | method | 4979 |  | `(Window).PaintDropShadows` | todo |
-| `Window::paint_inset_shadows` | method | 5019 |  | `(Window).PaintInsetShadows` | todo |
-| `Window::paint_quad` | method | 5112 |  | `(Window).PaintQuad` | todo |
-| `Window::paint_path` | method | 5224 |  | `(Window).PaintPath` | todo |
-| `Window::paint_underline` | method | 5242 |  | `(Window).PaintUnderline` | todo |
-| `Window::paint_strikethrough` | method | 5256 |  | `(Window).PaintStrikethrough` | todo |
-| `Window::paint_glyph` | method | 5291 |  | `(Window).PaintGlyph` | todo |
-| `Window::paint_emoji` | method | 5398 |  | `(Window).PaintEmoji` | todo |
-| `Window::paint_svg` | method | 5455 |  | `(Window).PaintSvg` | todo |
-| `Window::paint_image` | method | 5547 |  | `(Window).PaintImage` | todo |
-| `Window::paint_surface` | method | 5649 | macos,ios | `(Window).PaintSurface` | todo |
-| `Window::drop_image` | method | 5669 |  | `(Window).DropImage` | todo |
-| `Window::has_image_atlas_entry` | method | 5684 | feat:test-support | `(Window).HasImageAtlasEntry` | todo |
+| `Window::visibility` | method | 2654 |  | `(Window).Visibility` | done |
+| `Window::is_visible` | method | 2663 |  | `(Window).IsVisible` | done |
+| `Window::observe_window_visibility` | method | 2668 |  | `(Window).ObserveWindowVisibility` | done |
+| `Window::observe_window_appearance` | method | 2680 |  | `(Window).ObserveWindowAppearance` | done |
+| `Window::observe_button_layout_changed` | method | 2692 |  | `(Window).ObserveButtonLayoutChanged` | done |
+| `Window::replace_root` | method | 2704 |  | `(Window).ReplaceRoot` | done |
+| `Window::root` | method | 2719 |  | `(Window).Root` | done |
+| `Window::window_handle` | method | 2729 |  | `(Window).WindowHandle` | done |
+| `Window::refresh` | method | 2734 |  | `(Window).Refresh` | done |
+| `Window::remove_window` | method | 2742 |  | `(Window).RemoveWindow` | done |
+| `Window::focused` | method | 2747 |  | `(Window).Focused` | done |
+| `Window::focus_lost_restore_target` | method | 2755 |  | `(Window).FocusLostRestoreTarget` | done |
+| `Window::focus` | method | 2764 |  | `(Window).Focus` | done |
+| `Window::blur` | method | 2779 |  | `(Window).Blur` | done |
+| `Window::disable_focus` | method | 2795 |  | `(Window).DisableFocus` | done |
+| `Window::focus_next` | method | 2801 |  | `(Window).FocusNext` | done |
+| `Window::focus_prev` | method | 2812 |  | `(Window).FocusPrev` | done |
+| `Window::text_system` | method | 2823 |  | `(Window).TextSystem` | done |
+| `Window::text_style` | method | 2828 |  | `(Window).TextStyle` | done |
+| `Window::is_maximized` | method | 2839 |  | `(Window).IsMaximized` | done |
+| `Window::request_decorations` | method | 2844 |  | `(Window).RequestDecorations` | done |
+| `Window::set_exclusive_zone` | method | 2853 |  | `(Window).SetExclusiveZone` | done |
+| `Window::set_exclusive_edge` | method | 2862 | linux,feat:wayland | `(Window).SetExclusiveEdge` | done |
+| `Window::start_window_resize` | method | 2867 |  | `(Window).StartWindowResize` | done |
+| `Window::set_input_region` | method | 2879 |  | `(Window).SetInputRegion` | done |
+| `Window::window_bounds` | method | 2885 |  | `(Window).WindowBounds` | done |
+| `Window::inner_window_bounds` | method | 2898 |  | `(Window).InnerWindowBounds` | done |
+| `Window::native_window_state` | method | 2904 |  | `(Window).NativeWindowState` | done |
+| `Window::restore_native_window_state` | method | 2910 |  | `(Window).RestoreNativeWindowState` | done |
+| `Window::dispatch_action` | method | 2915 |  | `(Window).DispatchAction` | done |
+| `Window::defer` | method | 2975 |  | `(Window).Defer` | done |
+| `Window::observe` | method | 2985 |  | `(Window).Observe` | done |
+| `Window::subscribe` | method | 3014 |  | `(Window).Subscribe` | done |
+| `Window::observe_release` | method | 3049 |  | `(Window).ObserveRelease` | done |
+| `Window::to_async` | method | 3071 |  | `(Window).ToAsync` | done |
+| `Window::on_next_frame` | method | 3076 |  | `(Window).OnNextFrame` | done |
+| `Window::request_animation_frame` | method | 3096 |  | `(Window).RequestAnimationFrame` | done |
+| `Window::simulate_next_frame` | method | 3111 | feat:test-support | `(Window).SimulateNextFrame` | done |
+| `Window::spawn` | method | 3124 |  | `(Window).Spawn` | done |
+| `Window::spawn_with_priority` | method | 3140 |  | `(Window).SpawnWithPriority` | done |
+| `Window::bounds_changed` | method | 3162 |  | `(Window).BoundsChanged` | done |
+| `Window::refresh_interval` | method | 3224 |  | `(Window).RefreshInterval` | done |
+| `Window::observe_window_display` | method | 3232 |  | `(Window).ObserveWindowDisplay` | done |
+| `Window::bounds` | method | 3243 |  | `(Window).Bounds` | done |
+| `Window::insets` | method | 3248 |  | `(Window).Insets` | done |
+| `Window::render_to_image` | method | 3256 | feat:test-support | `(Window).RenderToImage` | done |
+| `Window::rendered_scene` | method | 3264 | feat:bench-support | `(Window).RenderedScene` | done |
+| `Window::painted_quads` | method | 3273 | feat:test-support | `(Window).PaintedQuads` | done |
+| `Window::painted_underlines` | method | 3279 | feat:test-support | `(Window).PaintedUnderlines` | done |
+| `Window::resize` | method | 3284 |  | `(Window).Resize` | done |
+| `Window::is_fullscreen` | method | 3289 |  | `(Window).IsFullscreen` | done |
+| `Window::is_simple_fullscreen` | method | 3296 |  | `(Window).IsSimpleFullscreen` | done |
+| `Window::appearance` | method | 3315 |  | `(Window).Appearance` | done |
+| `Window::viewport_size` | method | 3320 |  | `(Window).ViewportSize` | done |
+| `Window::visual_viewport_bounds` | method | 3329 |  | `(Window).VisualViewportBounds` | done |
+| `Window::fully_visible_bounds` | method | 3337 |  | `(Window).FullyVisibleBounds` | done |
+| `Window::request_virtual_keyboard` | method | 3355 |  | `(Window).RequestVirtualKeyboard` | done |
+| `Window::dismiss_virtual_keyboard` | method | 3360 |  | `(Window).DismissVirtualKeyboard` | done |
+| `Window::is_window_active` | method | 3365 |  | `(Window).IsWindowActive` | done |
+| `Window::is_window_hovered` | method | 3372 |  | `(Window).IsWindowHovered` | done |
+| `Window::zoom_window` | method | 3385 |  | `(Window).ZoomWindow` | done |
+| `Window::show_window_menu` | method | 3390 |  | `(Window).ShowWindowMenu` | done |
+| `Window::start_window_move` | method | 3398 |  | `(Window).StartWindowMove` | done |
+| `Window::set_client_inset` | method | 3403 |  | `(Window).SetClientInset` | done |
+| `Window::set_client_corner_radii` | method | 3409 |  | `(Window).SetClientCornerRadii` | done |
+| `Window::client_inset` | method | 3414 |  | `(Window).ClientInset` | done |
+| `Window::window_decorations` | method | 3419 |  | `(Window).WindowDecorations` | done |
+| `Window::is_resizable` | method | 3424 |  | `(Window).IsResizable` | done |
+| `Window::is_minimizable` | method | 3429 |  | `(Window).IsMinimizable` | done |
+| `Window::window_controls` | method | 3434 |  | `(Window).WindowControls` | done |
+| `Window::set_window_title` | method | 3439 |  | `(Window).SetWindowTitle` | done |
+| `Window::set_traffic_light_position` | method | 3446 | macos | `(Window).SetTrafficLightPosition` | done |
+| `Window::set_native_titlebar_visibility` | method | 3452 | macos | `(Window).SetNativeTitlebarVisibility` | done |
+| `Window::set_app_id` | method | 3457 |  | `(Window).SetAppID` | done |
+| `Window::set_background_appearance` | method | 3462 |  | `(Window).SetBackgroundAppearance` | done |
+| `Window::set_window_edited` | method | 3468 |  | `(Window).SetWindowEdited` | done |
+| `Window::set_document_path` | method | 3474 |  | `(Window).SetDocumentPath` | done |
+| `Window::display` | method | 3479 |  | `(Window).Display` | done |
+| `Window::show_character_palette` | method | 3487 |  | `(Window).ShowCharacterPalette` | done |
+| `Window::scale_factor` | method | 3494 |  | `(Window).ScaleFactor` | done |
+| `Window::set_scale_factor` | method | 3500 | feat:test-support | `(Window).SetScaleFactor` | done |
+| `Window::rem_size` | method | 3507 |  | `(Window).RemSize` | done |
+| `Window::set_rem_size` | method | 3516 |  | `(Window).SetRemSize` | done |
+| `Window::with_global_id` | method | 3522 |  | `(Window).WithGlobalID` | done |
+| `Window::with_id` | method | 3536 |  | `(Window).WithID` | done |
+| `Window::with_rem_size` | method | 3553 |  | `(Window).WithRemSize` | done |
+| `Window::line_height` | method | 3570 |  | `(Window).LineHeight` | done |
+| `Window::pixel_snap` | method | 3576 |  | `(Window).PixelSnap` | done |
+| `Window::pixel_snap_f64` | method | 3582 |  | `(Window).PixelSnapF64` | done |
+| `Window::pixel_snap_bounds` | method | 3589 |  | `(Window).PixelSnapBounds` | done |
+| `Window::pixel_snap_point` | method | 3595 |  | `(Window).PixelSnapPoint` | done |
+| `Window::underline_bounds` | method | 3600 |  | `(Window).UnderlineBounds` | done |
+| `Window::paint_underline_with_exclusions` | method | 3620 |  | `(Window).PaintUnderlineWithExclusions` | dev:D-SPRANGE |
+| `Window::prevent_default` | method | 3748 |  | `(Window).PreventDefault` | done |
+| `Window::default_prevented` | method | 3753 |  | `(Window).DefaultPrevented` | done |
+| `Window::is_action_available` | method | 3758 |  | `(Window).IsActionAvailable` | done |
+| `Window::is_action_available_in` | method | 3767 |  | `(Window).IsActionAvailableIn` | done |
+| `Window::mouse_position` | method | 3775 |  | `(Window).MousePosition` | done |
+| `Window::capture_pointer` | method | 3785 |  | `(Window).CapturePointer` | done |
+| `Window::release_pointer` | method | 3790 |  | `(Window).ReleasePointer` | done |
+| `Window::captured_hitbox` | method | 3795 |  | `(Window).CapturedHitbox` | done |
+| `Window::capture_long_press` | method | 3804 |  | `(Window).CaptureLongPress` | done |
+| `Window::has_long_press_capture` | method | 3809 |  | `(Window).HasLongPressCapture` | done |
+| `Window::modifiers` | method | 3814 |  | `(Window).Modifiers` | done |
+| `Window::last_input_was_keyboard` | method | 3820 |  | `(Window).LastInputWasKeyboard` | done |
+| `Window::last_input_was_touch` | method | 3825 |  | `(Window).LastInputWasTouch` | done |
+| `Window::capslock` | method | 3830 |  | `(Window).Capslock` | done |
+| `Window::draw` | method | 3837 |  | `(Window).Draw` | done |
+| `Window::input_latency_snapshot` | method | 4045 | feat:profiler | `(Window).InputLatencySnapshot` | done |
+| `Window::frame_duration_snapshot` | method | 4051 | feat:profiler | `(Window).FrameDurationSnapshot` | done |
+| `Window::debug_frame_overlay_mode` | method | 4057 | feat:profiler | `(Window).DebugFrameOverlayMode` | done |
+| `Window::set_debug_frame_overlay_mode` | method | 4063 | feat:profiler | `(Window).SetDebugFrameOverlayMode` | done |
+| `Window::cycle_debug_frame_overlay_mode` | method | 4071 | feat:profiler | `(Window).CycleDebugFrameOverlayMode` | done |
+| `Window::reset_debug_frame_overlay_stats` | method | 4078 | feat:profiler | `(Window).ResetDebugFrameOverlayStats` | done |
+| `Window::with_text_style` | method | 4538 |  | `(Window).WithTextStyle` | done |
+| `Window::set_cursor_style` | method | 4555 |  | `(Window).SetCursorStyle` | done |
+| `Window::set_window_cursor_style` | method | 4567 |  | `(Window).SetWindowCursorStyle` | done |
+| `Window::set_tooltip` | method | 4577 |  | `(Window).SetTooltip` | done |
+| `Window::with_content_mask` | method | 4591 |  | `(Window).WithContentMask` | done |
+| `Window::with_element_offset` | method | 4610 |  | `(Window).WithElementOffset` | done |
+| `Window::with_absolute_element_offset` | method | 4628 |  | `(Window).WithAbsoluteElementOffset` | done |
+| `Window::transact` | method | 4663 |  | `(Window).Transact` | done |
+| `Window::request_autoscroll` | method | 4691 |  | `(Window).RequestAutoscroll` | done |
+| `Window::take_autoscroll` | method | 4698 |  | `(Window).TakeAutoscroll` | done |
+| `Window::use_asset` | method | 4708 |  | `(Window).UseAsset` | done |
+| `Window::get_asset` | method | 4717 |  | `(Window).GetAsset` | done |
+| `Window::element_offset` | method | 4722 |  | `(Window).ElementOffset` | done |
+| `Window::content_mask` | method | 4739 |  | `(Window).ContentMask` | done |
+| `Window::with_element_namespace` | method | 4754 |  | `(Window).WithElementNamespace` | done |
+| `Window::use_keyed_state` | method | 4766 |  | `(Window).UseKeyedState` | done |
+| `Window::use_state` | method | 4792 |  | `(Window).UseState` | dev:D-SRCLOC |
+| `Window::with_element_state` | method | 4809 |  | `(Window).WithElementState` | done |
+| `Window::with_optional_element_state` | method | 4884 |  | `(Window).WithOptionalElementState` | done |
+| `Window::with_tab_group` | method | 4913 |  | `(Window).WithTabGroup` | done |
+| `Window::defer_draw` | method | 4932 |  | `(Window).DeferDraw` | done |
+| `Window::paint_layer` | method | 4965 |  | `(Window).PaintLayer` | done |
+| `Window::paint_drop_shadows` | method | 4979 |  | `(Window).PaintDropShadows` | done |
+| `Window::paint_inset_shadows` | method | 5019 |  | `(Window).PaintInsetShadows` | done |
+| `Window::paint_quad` | method | 5112 |  | `(Window).PaintQuad` | done |
+| `Window::paint_path` | method | 5224 |  | `(Window).PaintPath` | done |
+| `Window::paint_underline` | method | 5242 |  | `(Window).PaintUnderline` | done |
+| `Window::paint_strikethrough` | method | 5256 |  | `(Window).PaintStrikethrough` | done |
+| `Window::paint_glyph` | method | 5291 |  | `(Window).PaintGlyph` | done |
+| `Window::paint_emoji` | method | 5398 |  | `(Window).PaintEmoji` | done |
+| `Window::paint_svg` | method | 5455 |  | `(Window).PaintSvg` | done |
+| `Window::paint_image` | method | 5547 |  | `(Window).PaintImage` | done |
+| `Window::paint_surface` | method | 5649 | macos,ios | `(Window).PaintSurface` | done |
+| `Window::drop_image` | method | 5669 |  | `(Window).DropImage` | done |
+| `Window::has_image_atlas_entry` | method | 5684 | feat:test-support | `(Window).HasImageAtlasEntry` | done |
 | `Window::request_layout` | method | 5703 |  | `(Window).RequestLayout` | todo |
 | `Window::request_measured_layout` | method | 5732 |  | `(Window).RequestMeasuredLayout` | todo |
 | `Window::compute_layout` | method | 5752 |  | `(Window).ComputeLayout` | todo |
@@ -522,3 +522,4 @@ Go target: `window_prompts.go` (package `gpui`)
 | D-VIEWADAPT | `Entity[T]`, `AnyView` and `RenderOnce` components are not `View` values themselves: unexported adapters (`entityView[T]`, `anyViewView`, `componentView[C]`) implement `View` for them, and `ViewElement` is a non-generic struct holding a `View` plus the type name upstream takes from `type_name::<V>()`. `IntoAnyElement`, `Cached` and `NewComponent` build it. `Entity::into_any_element` (and `AnyView`'s) moves the handle into the element, which releases it after rendering or, when the view was never rendered (a cache hit), at the window's arena clear (`Window.deferArenaDrop`) | `gpui/src/view.rs:93-120`, `:208-258`, `:266-320` | `Entity[T].EntityID() EntityID` and `AnyView.EntityID() EntityID` clash with `View.EntityID() (EntityID, bool)`, and `RenderOnce.Render` has `View.Render`'s signature |
 | D-INSPECTORORDER | `Inspector.RenderInspectorStates` renders the active element's states in the order they were first stored; upstream iterates a `TypeIdHashMap` | `gpui/src/inspector.rs:158-196` | Go map iteration is randomized per run; insertion order is the deterministic choice |
 | D-SRCLOC | `SourceLocation.Column` is 0: Go's runtime reports file and line only. `CallerSourceLocation(skip)` replaces `#[track_caller]` + `Location::caller()` and interns one value per call site | `gpui/src/element.rs:70`, `gpui/src/view.rs:297` | `runtime.Frame` has no column |
+| D-SPRANGE | `Window.PaintUnderlineWithExclusions` takes `[]ScaledPixelsRange{Start, End ScaledPixels}` for upstream's `&[Range<ScaledPixels>]` | `gpui/src/window.rs:3620-3626` | D-RANGE covers `Range<usize>` only; Go has no generic std range type |
