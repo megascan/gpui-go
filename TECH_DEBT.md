@@ -741,3 +741,6 @@ Folded by M0-exit from docs/port/debt/<stage>.md for every stage with a docs/por
 - `PathBuilderFromSvg` is not exported; examples/painting replays lyon events (D-EXB-SVGINTO).
 - paritycheck (M3-exit): rescan skips headings of external crates (`<crate>-<x.y.z>/...`), proptest rows and descriptive row names when checking that rows are still declared; lint exempts `_test.go` from the LockOSThread rule, allowlists internal/linux/wl/display.go and platform/macos/system_notifications.go, and allows cgo under examples/ios_ios. Revisit in M4-exit.
 - internal/cmd/shoot builds on Windows/js only as a stub that exits 1 (main_unsupported.go) so the cross-vets pass.
+
+## PENDING-REAL-OS-TESTS
+M4-ci-macos, M4-ci-windows, M4-exit not run: GitHub Actions blocked by account billing (2026-11-24). macOS/iOS/Windows verified only by cross vet + `go test -c`; Windows also under Wine (see WINE-TEST). Resume: fix billing or provide Mac/Windows hosts, re-run CI on feat/port, then the three stages.
