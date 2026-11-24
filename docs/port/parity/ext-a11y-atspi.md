@@ -1,6 +1,6 @@
 # Parity: ext-a11y-atspi
 
-Scope: accesskit_atspi_common 0.19.1 (`src/*.rs`) and the atspi-common 0.13.0 types it re-exports; accesskit_unix 0.22.1 sections are added by the stage that ports it. Milestone: M3. Index and rules: [../PARITY.md](../PARITY.md). External crate: section 7 of PARITY.md. Upstream sources are read from `~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_atspi_common-0.19.1/`.
+Scope: accesskit_atspi_common 0.19.1 (`src/*.rs`) and the atspi-common 0.13.0 types it re-exports; accesskit_unix 0.22.1 sections (M3-a11y-atspi-bus, package `a11y/atspi/bus`) follow lib.rs. Milestone: M3. Index and rules: [../PARITY.md](../PARITY.md). External crate: section 7 of PARITY.md. Upstream sources are read from `~/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/accesskit_atspi_common-0.19.1/`.
 
 Status values: `todo`, `done`, `dev:<id>`, `n/a:<id>`, `blocked:<stage>`. M3-a11y-atspi-node ports node.rs, util.rs, rect.rs, text_attributes.rs, action.rs, error.rs, callback.rs and filters.rs into package `a11y/atspi` (one Go file per upstream file, tests in `node_test.go`); M3-a11y-atspi-adapter ports adapter.rs, simplified.rs, context.rs, events.rs and lib.rs and deletes `stubs.go`.
 
@@ -498,6 +498,386 @@ Go target: `a11y/atspi/`
 | `pub use adapter::{Adapter, next_adapter_id}` | use | 26 |  | `NextAdapterID` | done |
 | `pub use context::{ActionHandlerNoMut, ActionHandlerWrapper, AppContext}` | use | 28 |  | `ActionHandlerWrapper` | done |
 | `mod simplified` (`simplified-api` feature) | mod | 16 | feature = "simplified-api" | `simplified` | dev:D-ATSPISIMPLIFIED |
+## accesskit_unix-0.22.1/src/lib.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `compile_error!(neither async-io nor tokio)` | macro | 14 | not(feature = "async-io"), not(feature = "tokio") | `-` | n/a:D-ATSPIBUSEXEC |
+| `compile_error!(both async-io and tokio)` | macro | 17 | feature = "async-io", feature = "tokio" | `-` | n/a:D-ATSPIBUSEXEC |
+| `mod adapter, atspi, context, executor, util` | mod | 21 |  | `bus` | dev:D-ATSPIBUSPKG |
+| `pub use adapter::Adapter` | use | 27 |  | `Adapter` | done |
+
+## accesskit_unix-0.22.1/src/adapter.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Callback` | struct | 21 |  | `callback` | done |
+| `Callback::new` | method | 26 |  | `newCallback` | done |
+| `Callback::send_message` | method | 31 |  | `(callback).sendMessage` | done |
+| `impl AdapterCallback for Callback::register_interfaces` | method | 40 |  | `(callback).RegisterInterfaces` | done |
+| `impl AdapterCallback for Callback::unregister_interfaces` | method | 45 |  | `(callback).UnregisterInterfaces` | done |
+| `impl AdapterCallback for Callback::emit_event` | method | 53 |  | `(callback).EmitEvent` | done |
+| `AdapterState` | enum | 75 |  | `adapterState` | dev:D-ATSPIBUSSTATE |
+| `impl Debug for AdapterState` | impl | 89 |  | `(*adapterState).String` | done |
+| `Adapter` | struct | 118 |  | `Adapter` | done |
+| `Adapter::new` | method | 128 |  | `NewAdapter` | done |
+| `Adapter::send_message` | method | 154 |  | `(*Adapter).sendMessage` | done |
+| `Adapter::set_root_window_bounds` | method | 168 |  | `(*Adapter).SetRootWindowBounds` | done |
+| `Adapter::update_if_active` | method | 191 |  | `(*Adapter).UpdateIfActive` | done |
+| `Adapter::update_window_focus_state` | method | 217 |  | `(*Adapter).UpdateWindowFocusState` | done |
+| `impl Drop for Adapter` | impl | 235 |  | `(*Adapter).Release` | done |
+| `Message` | enum | 241 |  | `message` | done |
+| `use tokio::sync::mpsc::UnboundedSender as Sender` | use | 16 | feature = "tokio" | `-` | n/a:D-ATSPIBUSEXEC |
+
+## accesskit_unix-0.22.1/src/context.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `APP_CONTEXT` | static | 33 |  | `appContext` | done |
+| `MESSAGES` | static | 34 |  | `messages` | done |
+| `app_name` | fn | 36 |  | `appName` | done |
+| `get_or_init_app_context` | fn | 43 |  | `getOrInitAppContext` | done |
+| `get_or_init_messages` | fn | 47 |  | `getOrInitMessages` | dev:D-ATSPIBUSEXEC |
+| `AdapterEntry` | struct | 76 |  | `adapterEntry` | done |
+| `activate_adapter` | fn | 83 |  | `activateAdapter` | done |
+| `deactivate_adapter` | fn | 113 |  | `deactivateAdapter` | done |
+| `bus_after_status_change` | fn | 142 |  | `busAfterStatusChange` | done |
+| `sync_adapters` | fn | 158 |  | `syncAdapters` | done |
+| `run_event_loop` | fn | 169 |  | `runEventLoop` | dev:D-ATSPIBUSEXEC |
+| `process_adapter_message` | fn | 213 |  | `processAdapterMessage` | done |
+| `panic!("Accessibility event loop failed: {error}")` | macro | 63 |  | `getOrInitMessages` | dev:D-ATSPIBUSPANIC |
+| `tokio imports (pin, select, UnboundedReceiver, UnboundedReceiverStream)` | use | 17 | feature = "tokio" | `-` | n/a:D-ATSPIBUSEXEC |
+
+## accesskit_unix-0.22.1/src/executor.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Executor` | struct | 35 | not(feature = "tokio") | `runEventLoop` | dev:D-ATSPIBUSEXEC |
+| `Executor (tokio)` | struct | 40 | feature = "tokio" | `-` | n/a:D-ATSPIBUSEXEC |
+| `Executor::spawn` | method | 46 |  | `-` | n/a:D-ATSPIBUSEXEC |
+| `Executor::new` | method | 63 |  | `-` | n/a:D-ATSPIBUSEXEC |
+| `Executor::run` | method | 82 |  | `-` | n/a:D-ATSPIBUSEXEC |
+| `Task` | struct | 103 | not(feature = "tokio") | `-` | n/a:D-ATSPIBUSEXEC |
+| `Task (tokio)` | struct | 106 | feature = "tokio" | `-` | n/a:D-ATSPIBUSEXEC |
+| `Task::detach` | method | 112 |  | `-` | n/a:D-ATSPIBUSEXEC |
+| `impl Drop for Task` | impl | 125 |  | `(*Bus).close` | dev:D-ATSPIBUSEXEC |
+| `impl Future for Task` | impl | 136 |  | `-` | n/a:D-ATSPIBUSEXEC |
+
+## accesskit_unix-0.22.1/src/util.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `block_on` | fn | 12 | not(feature = "tokio") | `-` | n/a:D-ATSPIBUSEXEC |
+| `block_on (tokio)` | fn | 17 | feature = "tokio" | `-` | n/a:D-ATSPIBUSEXEC |
+| `map_error` | fn | 26 |  | `mapError` | done |
+| `map_error_from_node` | fn | 40 |  | `mapErrorFromNode` | done |
+
+## accesskit_unix-0.22.1/src/atspi/mod.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `mod bus, interfaces, object_address, object_id` | mod | 6 |  | `bus` | dev:D-ATSPIBUSPKG |
+| `pub(crate) use bus::*, OwnedObjectAddress, ObjectId, cache_path` | use | 11 |  | `Bus` | dev:D-ATSPIBUSPKG |
+
+## accesskit_unix-0.22.1/src/atspi/bus.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Bus` | struct | 30 |  | `Bus` | done |
+| `Bus::new` | method | 38 |  | `newBus` | done |
+| `Bus::unique_name` | method | 71 |  | `(*Bus).uniqueName` | done |
+| `Bus::register_root_node` | method | 75 |  | `(*Bus).registerRootNode` | done |
+| `Bus::register_interfaces` | method | 119 |  | `(*Bus).registerInterfaces` | done |
+| `Bus::register_interface` | method | 170 |  | `(*Bus).registerInterface` | dev:D-ATSPIBUSSERVER |
+| `Bus::unregister_interfaces` | method | 181 |  | `(*Bus).unregisterInterfaces` | done |
+| `Bus::unregister_interface` | method | 221 |  | `(*Bus).unregisterInterface` | dev:D-ATSPIBUSSERVER |
+| `Bus::emit_object_event` | method | 232 |  | `(*Bus).emitObjectEvent` | done |
+| `Bus::emit_window_event` | method | 374 |  | `(*Bus).emitWindowEvent` | done |
+| `Bus::emit_cache_add` | method | 395 |  | `(*Bus).emitCacheAdd` | done |
+| `Bus::emit_cache_remove` | method | 402 |  | `(*Bus).emitCacheRemove` | done |
+| `Bus::emit_cache_signal` | method | 413 |  | `(*Bus).emitCacheSignal` | dev:D-ATSPIBUSWIRE |
+| `Bus::emit_event` | method | 432 |  | `(*Bus).emitEvent` | done |
+| `zbus_error_is_unrecoverable` | fn | 455 |  | `zbusErrorIsUnrecoverable` | done |
+| `map_or_ignoring_recoverable_error` | fn | 462 |  | `mapOrIgnoringRecoverableError` | done |
+
+## accesskit_unix-0.22.1/src/atspi/object_address.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `NULL_PATH` | const | 14 |  | `nullPath` | done |
+| `OwnedObjectAddress` | struct | 17 |  | `ownedObjectAddress` | dev:D-ATSPIBUSWIRE |
+| `OwnedObjectAddress::new` | method | 23 |  | `newOwnedObjectAddress` | done |
+| `OwnedObjectAddress::null` | method | 30 |  | `ownedObjectAddressNull` | done |
+| `impl From<ObjectRef> for OwnedObjectAddress` | impl | 38 |  | `ownedObjectAddress` | dev:D-ATSPIBUSWIRE |
+
+## accesskit_unix-0.22.1/src/atspi/object_id.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `ACCESSIBLE_PATH_PREFIX` | const | 14 |  | `accessiblePathPrefix` | done |
+| `ROOT_PATH` | const | 15 |  | `rootPath` | done |
+| `CACHE_PATH` | const | 16 |  | `cachePathStr` | done |
+| `cache_path` | fn | 18 |  | `cachePath` | done |
+| `ObjectId` | enum | 23 |  | `objectID` | done |
+| `ObjectId::to_address` | method | 29 |  | `(objectID).toAddress` | done |
+| `ObjectId::path` | method | 33 |  | `(objectID).path` | done |
+| `impl Serialize for ObjectId` | impl | 47 |  | `(objectID).serialize` | done |
+| `impl Type for ObjectId` | impl | 59 |  | `(objectID).serialize` | dev:D-ATSPIBUSWIRE |
+| `impl From<ObjectId> for Structure` | impl | 63 |  | `(objectID).serialize` | dev:D-ATSPIBUSWIRE |
+| `impl From<&PlatformNode> for ObjectId` | impl | 72 |  | `objectIDFromPlatformNode` | done |
+
+## accesskit_unix-0.22.1/src/atspi/interfaces/mod.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `mod accessible, action, application, cache, component, hyperlink, selection, text, value` | mod | 6 |  | `bus` | dev:D-ATSPIBUSPKG |
+| `map_root_error` | fn | 19 |  | `mapRootError` | done |
+| `optional_object_address` | fn | 23 |  | `optionalObjectAddress` | done |
+| `pub(crate) use accessible::* ... value::*` | use | 33 |  | `bus` | dev:D-ATSPIBUSPKG |
+
+## accesskit_unix-0.22.1/src/atspi/interfaces/accessible.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `NodeAccessibleInterface` | struct | 18 |  | `nodeAccessibleInterface` | done |
+| `NodeAccessibleInterface::new` | method | 24 |  | `newNodeAccessibleInterface` | done |
+| `NodeAccessibleInterface::map_error` | method | 28 |  | `(*nodeAccessibleInterface).mapError` | done |
+| `#[interface(name = "org.a11y.atspi.Accessible")] impl NodeAccessibleInterface` | impl | 34 |  | `(*nodeAccessibleInterface).dbusInterface` | dev:D-ATSPIBUSSERVER |
+| `NodeAccessibleInterface::name` | method | 36 |  | `(*nodeAccessibleInterface).name` | done |
+| `NodeAccessibleInterface::description` | method | 41 |  | `(*nodeAccessibleInterface).description` | done |
+| `NodeAccessibleInterface::parent` | method | 46 |  | `(*nodeAccessibleInterface).parent` | done |
+| `NodeAccessibleInterface::child_count` | method | 60 |  | `(*nodeAccessibleInterface).childCount` | done |
+| `NodeAccessibleInterface::locale` | method | 65 |  | `(*nodeAccessibleInterface).locale` | done |
+| `NodeAccessibleInterface::accessible_id` | method | 70 |  | `(*nodeAccessibleInterface).accessibleID` | done |
+| `NodeAccessibleInterface::get_child_at_index` | method | 74 |  | `(*nodeAccessibleInterface).getChildAtIndex` | done |
+| `NodeAccessibleInterface::get_children` | method | 89 |  | `(*nodeAccessibleInterface).getChildren` | done |
+| `NodeAccessibleInterface::get_index_in_parent` | method | 101 |  | `(*nodeAccessibleInterface).getIndexInParent` | done |
+| `NodeAccessibleInterface::get_relation_set` | method | 105 |  | `(*nodeAccessibleInterface).getRelationSet` | dev:D-ATSPIBUSWIRE |
+| `NodeAccessibleInterface::get_role` | method | 121 |  | `(*nodeAccessibleInterface).getRole` | done |
+| `NodeAccessibleInterface::get_localized_role_name` | method | 125 |  | `(*nodeAccessibleInterface).getLocalizedRoleName` | done |
+| `NodeAccessibleInterface::get_state` | method | 129 |  | `(*nodeAccessibleInterface).getState` | done |
+| `NodeAccessibleInterface::get_attributes` | method | 133 |  | `(*nodeAccessibleInterface).getAttributes` | done |
+| `NodeAccessibleInterface::get_application` | method | 137 |  | `(*nodeAccessibleInterface).getApplication` | done |
+| `NodeAccessibleInterface::get_interfaces` | method | 141 |  | `(*nodeAccessibleInterface).getInterfaces` | done |
+| `RootAccessibleInterface` | struct | 146 |  | `rootAccessibleInterface` | done |
+| `RootAccessibleInterface::new` | method | 153 |  | `newRootAccessibleInterface` | done |
+| `#[interface(name = "org.a11y.atspi.Accessible")] impl RootAccessibleInterface` | impl | 167 |  | `(*rootAccessibleInterface).dbusInterface` | dev:D-ATSPIBUSSERVER |
+| `RootAccessibleInterface::name` | method | 169 |  | `(*rootAccessibleInterface).name` | done |
+| `RootAccessibleInterface::description` | method | 174 |  | `(*rootAccessibleInterface).description` | done |
+| `RootAccessibleInterface::parent` | method | 179 |  | `(*rootAccessibleInterface).parent` | done |
+| `RootAccessibleInterface::child_count` | method | 189 |  | `(*rootAccessibleInterface).childCount` | done |
+| `RootAccessibleInterface::locale` | method | 194 |  | `(*rootAccessibleInterface).locale` | done |
+| `RootAccessibleInterface::accessible_id` | method | 199 |  | `(*rootAccessibleInterface).accessibleID` | done |
+| `RootAccessibleInterface::get_child_at_index` | method | 203 |  | `(*rootAccessibleInterface).getChildAtIndex` | done |
+| `RootAccessibleInterface::get_children` | method | 215 |  | `(*rootAccessibleInterface).getChildren` | done |
+| `RootAccessibleInterface::get_index_in_parent` | method | 223 |  | `(*rootAccessibleInterface).getIndexInParent` | done |
+| `RootAccessibleInterface::get_relation_set` | method | 227 |  | `(*rootAccessibleInterface).getRelationSet` | done |
+| `RootAccessibleInterface::get_role` | method | 231 |  | `(*rootAccessibleInterface).getRole` | done |
+| `RootAccessibleInterface::get_state` | method | 235 |  | `(*rootAccessibleInterface).getState` | done |
+| `RootAccessibleInterface::get_application` | method | 239 |  | `(*rootAccessibleInterface).getApplication` | done |
+| `RootAccessibleInterface::get_interfaces` | method | 243 |  | `(*rootAccessibleInterface).getInterfaces` | done |
+
+## accesskit_unix-0.22.1/src/atspi/interfaces/action.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `ActionInterface` | struct | 9 |  | `actionInterface` | done |
+| `ActionInterface::new` | method | 12 |  | `newActionInterface` | done |
+| `ActionInterface::map_error` | method | 16 |  | `(*actionInterface).mapError` | done |
+| `#[interface] impl ActionInterface` | impl | 22 |  | `(*actionInterface).dbusInterface` | dev:D-ATSPIBUSSERVER |
+| `ActionInterface::n_actions` | method | 24 |  | `(*actionInterface).nActions` | done |
+| `ActionInterface::get_description` | method | 28 |  | `(*actionInterface).getDescription` | done |
+| `ActionInterface::get_name` | method | 32 |  | `(*actionInterface).getName` | done |
+| `ActionInterface::get_localized_name` | method | 36 |  | `(*actionInterface).getLocalizedName` | done |
+| `ActionInterface::get_key_binding` | method | 40 |  | `(*actionInterface).getKeyBinding` | done |
+| `ActionInterface::get_actions` | method | 44 |  | `(*actionInterface).getActions` | done |
+| `ActionInterface::do_action` | method | 48 |  | `(*actionInterface).doAction` | done |
+
+## accesskit_unix-0.22.1/src/atspi/interfaces/application.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `ApplicationInterface` | struct | 11 |  | `applicationInterface` | done |
+| `#[interface] impl ApplicationInterface` | impl | 14 |  | `(*applicationInterface).dbusInterface` | dev:D-ATSPIBUSSERVER |
+| `ApplicationInterface::toolkit_name` | method | 16 |  | `(*applicationInterface).toolkitName` | done |
+| `ApplicationInterface::version` | method | 21 |  | `(*applicationInterface).version` | done |
+| `ApplicationInterface::atspi_version` | method | 26 |  | `(*applicationInterface).atspiVersion` | done |
+| `ApplicationInterface::id` | method | 31 |  | `(*applicationInterface).id` | done |
+| `ApplicationInterface::set_id` | method | 36 |  | `(*applicationInterface).setID` | done |
+
+## accesskit_unix-0.22.1/src/atspi/interfaces/cache.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `object_ref` | fn | 17 |  | `objectRef` | dev:D-ATSPIBUSWIRE |
+| `cache_item_for_node` | fn | 21 |  | `cacheItemForNode` | done |
+| `cache_item` | fn | 28 |  | `newCacheItem` | done |
+| `application_cache_item` | fn | 56 |  | `applicationCacheItem` | done |
+| `CacheItem (atspi-common)` | struct | 13 |  | `cacheItem` | dev:D-ATSPIBUSWIRE |
+| `CacheInterface` | struct | 75 |  | `cacheInterface` | done |
+| `CacheInterface::new` | method | 82 |  | `newCacheInterface` | done |
+| `CacheInterface::items` | method | 94 |  | `(*cacheInterface).items` | done |
+| `#[interface] impl CacheInterface` | impl | 109 |  | `(*cacheInterface).dbusInterface` | dev:D-ATSPIBUSSERVER |
+| `CacheInterface::get_items` | method | 110 |  | `(*cacheInterface).getItems` | done |
+| `tests::NoOpActionHandler` | struct | 129 | test | `noOpActionHandler` | dev:D-ATSPITESTHELPERS |
+| `tests::NoOpCallback` | struct | 134 | test | `noOpCallback` | dev:D-ATSPITESTHELPERS |
+| `tests::with_children` | fn | 140 | test | `withChildren` | dev:D-ATSPITESTHELPERS |
+| `tests::BUS_NAME` | const | 147 | test | `testBusName` | dev:D-ATSPITESTHELPERS |
+| `tests::root_for` | fn | 149 | test | `rootFor` | dev:D-ATSPITESTHELPERS |
+| `tests::bus_name` | fn | 163 | test | `testBusName` | dev:D-ATSPITESTHELPERS |
+| `tests::cache` | fn | 167 | test | `cache` | dev:D-ATSPITESTHELPERS |
+| `tests::window_with_button` | fn | 174 | test | `windowWithButton` | dev:D-ATSPITESTHELPERS |
+| `tests::root_ref` | fn | 188 | test | `rootRef` | dev:D-ATSPITESTHELPERS |
+| `tests::desktop_ref` | fn | 195 | test | `desktopRef` | dev:D-ATSPITESTHELPERS |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `tests::get_items_prepends_application_root` | test | 201 | test | `TestCache_GetItemsPrependsApplicationRoot` | done |
+| `tests::top_window_parent_is_application_root` | test | 217 | test | `TestCache_TopWindowParentIsApplicationRoot` | done |
+| `tests::filtered_child_excluded_from_items_and_counts` | test | 235 | test | `TestCache_FilteredChildExcludedFromItemsAndCounts` | done |
+| `tests::object_ref_encodes_bus_name_and_node_path` | test | 261 | test | `TestCache_ObjectRefEncodesBusNameAndNodePath` | done |
+| `tests::multi_adapter_windows_have_distinct_indices` | test | 281 | test | `TestCache_MultiAdapterWindowsHaveDistinctIndices` | done |
+
+## accesskit_unix-0.22.1/src/atspi/interfaces/component.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `ComponentInterface` | struct | 12 |  | `componentInterface` | done |
+| `ComponentInterface::new` | method | 18 |  | `newComponentInterface` | done |
+| `ComponentInterface::map_error` | method | 22 |  | `(*componentInterface).mapError` | done |
+| `#[interface] impl ComponentInterface` | impl | 28 |  | `(*componentInterface).dbusInterface` | dev:D-ATSPIBUSSERVER |
+| `ComponentInterface::contains` | method | 29 |  | `(*componentInterface).contains` | done |
+| `ComponentInterface::get_accessible_at_point` | method | 35 |  | `(*componentInterface).getAccessibleAtPoint` | done |
+| `ComponentInterface::get_extents` | method | 52 |  | `(*componentInterface).getExtents` | done |
+| `ComponentInterface::get_layer` | method | 59 |  | `(*componentInterface).getLayer` | done |
+| `ComponentInterface::grab_focus` | method | 63 |  | `(*componentInterface).grabFocus` | done |
+| `ComponentInterface::scroll_to` | method | 67 |  | `(*componentInterface).scrollTo` | done |
+| `ComponentInterface::scroll_to_point` | method | 71 |  | `(*componentInterface).scrollToPoint` | done |
+
+## accesskit_unix-0.22.1/src/atspi/interfaces/hyperlink.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `HyperlinkInterface` | struct | 11 |  | `hyperlinkInterface` | done |
+| `HyperlinkInterface::new` | method | 17 |  | `newHyperlinkInterface` | done |
+| `HyperlinkInterface::map_error` | method | 21 |  | `(*hyperlinkInterface).mapError` | done |
+| `#[interface] impl HyperlinkInterface` | impl | 27 |  | `(*hyperlinkInterface).dbusInterface` | dev:D-ATSPIBUSSERVER |
+| `HyperlinkInterface::n_anchors` | method | 29 |  | `(*hyperlinkInterface).nAnchors` | done |
+| `HyperlinkInterface::start_index` | method | 34 |  | `(*hyperlinkInterface).startIndex` | done |
+| `HyperlinkInterface::end_index` | method | 39 |  | `(*hyperlinkInterface).endIndex` | done |
+| `HyperlinkInterface::get_object` | method | 43 |  | `(*hyperlinkInterface).getObject` | done |
+| `HyperlinkInterface::get_uri` | method | 56 |  | `(*hyperlinkInterface).getURI` | done |
+| `HyperlinkInterface::is_valid` | method | 60 |  | `(*hyperlinkInterface).isValid` | done |
+
+## accesskit_unix-0.22.1/src/atspi/interfaces/selection.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `SelectionInterface` | struct | 11 |  | `selectionInterface` | done |
+| `SelectionInterface::new` | method | 17 |  | `newSelectionInterface` | done |
+| `SelectionInterface::map_error` | method | 21 |  | `(*selectionInterface).mapError` | done |
+| `#[interface] impl SelectionInterface` | impl | 27 |  | `(*selectionInterface).dbusInterface` | dev:D-ATSPIBUSSERVER |
+| `SelectionInterface::n_selected_children` | method | 29 |  | `(*selectionInterface).nSelectedChildren` | done |
+| `SelectionInterface::get_selected_child` | method | 33 |  | `(*selectionInterface).getSelectedChild` | done |
+| `SelectionInterface::select_child` | method | 45 |  | `(*selectionInterface).selectChild` | done |
+| `SelectionInterface::deselect_selected_child` | method | 51 |  | `(*selectionInterface).deselectSelectedChild` | done |
+| `SelectionInterface::is_child_selected` | method | 57 |  | `(*selectionInterface).isChildSelected` | done |
+| `SelectionInterface::select_all` | method | 63 |  | `(*selectionInterface).selectAll` | done |
+| `SelectionInterface::clear_selection` | method | 67 |  | `(*selectionInterface).clearSelection` | done |
+| `SelectionInterface::deselect_child` | method | 71 |  | `(*selectionInterface).deselectChild` | done |
+| `map_child_index` | fn | 78 |  | `mapChildIndex` | done |
+
+## accesskit_unix-0.22.1/src/atspi/interfaces/text.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `TextInterface` | struct | 11 |  | `textInterface` | done |
+| `TextInterface::new` | method | 16 |  | `newTextInterface` | done |
+| `TextInterface::map_error` | method | 20 |  | `(*textInterface).mapError` | done |
+| `#[interface] impl TextInterface` | impl | 25 |  | `(*textInterface).dbusInterface` | dev:D-ATSPIBUSSERVER |
+| `TextInterface::character_count` | method | 28 |  | `(*textInterface).characterCount` | done |
+| `TextInterface::caret_offset` | method | 33 |  | `(*textInterface).caretOffset` | done |
+| `TextInterface::get_string_at_offset` | method | 37 |  | `(*textInterface).getStringAtOffset` | done |
+| `TextInterface::get_text` | method | 47 |  | `(*textInterface).getText` | done |
+| `TextInterface::set_caret_offset` | method | 53 |  | `(*textInterface).setCaretOffset` | done |
+| `TextInterface::get_attribute_value` | method | 57 |  | `(*textInterface).getAttributeValue` | done |
+| `TextInterface::get_attributes` | method | 63 |  | `(*textInterface).getAttributes` | done |
+| `TextInterface::get_default_attributes` | method | 70 |  | `(*textInterface).getDefaultAttributes` | done |
+| `TextInterface::get_character_extents` | method | 76 |  | `(*textInterface).getCharacterExtents` | done |
+| `TextInterface::get_offset_at_point` | method | 82 |  | `(*textInterface).getOffsetAtPoint` | done |
+| `TextInterface::get_n_selections` | method | 88 |  | `(*textInterface).getNSelections` | done |
+| `TextInterface::get_selection` | method | 92 |  | `(*textInterface).getSelection` | done |
+| `TextInterface::add_selection` | method | 96 |  | `(*textInterface).addSelection` | done |
+| `TextInterface::remove_selection` | method | 102 |  | `(*textInterface).removeSelection` | done |
+| `TextInterface::set_selection` | method | 108 |  | `(*textInterface).setSelection` | done |
+| `TextInterface::get_range_extents` | method | 119 |  | `(*textInterface).getRangeExtents` | done |
+| `TextInterface::get_attribute_run` | method | 130 |  | `(*textInterface).getAttributeRun` | done |
+| `TextInterface::scroll_substring_to` | method | 140 |  | `(*textInterface).scrollSubstringTo` | done |
+| `TextInterface::scroll_substring_to_point` | method | 151 |  | `(*textInterface).scrollSubstringToPoint` | done |
+
+## accesskit_unix-0.22.1/src/atspi/interfaces/value.rs
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `ValueInterface` | struct | 9 |  | `valueInterface` | done |
+| `ValueInterface::new` | method | 14 |  | `newValueInterface` | done |
+| `ValueInterface::map_error` | method | 18 |  | `mapErrorFromNode` | done |
+| `#[interface] impl ValueInterface` | impl | 24 |  | `(*valueInterface).dbusInterface` | dev:D-ATSPIBUSSERVER |
+| `ValueInterface::minimum_value` | method | 26 |  | `(*valueInterface).minimumValue` | done |
+| `ValueInterface::maximum_value` | method | 31 |  | `(*valueInterface).maximumValue` | done |
+| `ValueInterface::minimum_increment` | method | 36 |  | `(*valueInterface).minimumIncrement` | done |
+| `ValueInterface::current_value` | method | 41 |  | `(*valueInterface).currentValue` | done |
+| `ValueInterface::set_current_value` | method | 46 |  | `(*valueInterface).setCurrentValue` | done |
+
+## atspi-proxies-0.13.0 (proxies used by accesskit_unix)
+
+Go target: `a11y/atspi/bus/`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `src/socket.rs Socket (SocketProxy)` | trait | 20 |  | `socketProxy` | done |
+| `src/socket.rs Socket::embed` | method | 34 |  | `(socketProxy).embed` | done |
+| `src/bus.rs Bus::get_address (BusProxy)` | method | 48 |  | `busAddress` | done |
+| `src/bus.rs Status::is_enabled (StatusProxy, receive_is_enabled_changed)` | method | 30 |  | `newStatusStream` | dev:D-ATSPIBUSSERVER |
+
 ## Deviations registered here
 
 | Id | Meaning | Owner |
@@ -507,3 +887,9 @@ Go target: `a11y/atspi/`
 | `D-ATSPIWEAK` | `Weak` upgrades use `weak.Pointer`, which only fails after garbage collection, so `Context` also carries a `released` flag the adapter sets where upstream drops its `Arc<Context>`; `PlatformNode` equality is `Equal` / `Key` (adapter ID and node ID) because Go `==` would also compare the weak pointer. | M3-a11y-atspi-node |
 | `D-ATSPISIMPLIFIED` | The `simplified-api` feature module is the always-built package `a11y/atspi/simplified`; a separate package keeps its `Event` struct apart from events.rs `Event`. `Accessible` is a struct with `AccessibleNode` / `AccessibleRoot` constructors and `Equal`; `Option<Accessible>` returns are `(Accessible, bool, error)`. | M3-a11y-atspi-adapter |
 | `D-ATSPITESTHELPERS` | Helper fns and trait impls inside upstream `mod tests` live in `_test.go` files (`adapter_test.go`, `simplified/simplified_test.go`) rather than in the package, so they have no production symbol. | M3-a11y-atspi-adapter |
+| `D-ATSPIBUSPKG` | accesskit_unix is package `a11y/atspi/bus`, because its public `Adapter` would collide with accesskit_atspi_common's `atspi.Adapter`; the `atspi/` and `atspi/interfaces/` submodules are flattened into the same package (one Go file per upstream file, `interfaces/mod.rs` is `interfaces.go`). | M3-a11y-atspi-bus |
+| `D-ATSPIBUSEXEC` | The async executor (`executor.rs`, `util::block_on`, the zbus `tick` tasks, the `tokio` / `async-io` features) is one goroutine that owns the event loop and selects over an unbounded mutex-guarded message queue and the session-bus signal channel; godbus runs its own reader goroutines. `Task` drop is `(*Bus).close`. | M3-a11y-atspi-bus |
+| `D-ATSPIBUSSERVER` | zbus's `ObjectServer` and `#[interface]` macro are `objectServer` in `object_server.go`: per-path godbus method tables, an `org.freedesktop.DBus.Properties` handler (live getters, `Set` for `Application.Id` and `Value.CurrentValue` with a `PropertiesChanged` signal, zbus's fdo error names) and an `Introspectable` handler on each exported path whose XML lists the same interfaces, members and child nodes as zbus's but is not byte-identical; paths with no exported object (`/`, `/org/a11y/atspi/accessible`, `/org/a11y/atspi/accessible/<adapter>`) answer `UnknownObject` where zbus would list child nodes. The `IsEnabled` property stream is `statusStream` (initial `Get`, then `PropertiesChanged` and `NameOwnerChanged`, as zbus's caching proxy does). | M3-a11y-atspi-bus |
+| `D-ATSPIBUSWIRE` | zvariant serde impls are explicit wire structs with exported fields: `ownedObjectAddress` (also used for `ObjectRefOwned`, same `(so)` encoding), `cacheItem`, `relation`; `StateSet` is `[]uint32{lo, hi}`, `InterfaceSet` is `[]string` in bit order; the relation set (a `HashMap` upstream) is sorted by relation type. Bodies are flattened exactly as zbus flattens a struct body (`GetCharacterExtents` is `iiii`, `GetExtents` is `(iiii)`, `AddAccessible` / `RemoveAccessible` carry the item's fields as top-level args). | M3-a11y-atspi-bus |
+| `D-ATSPIBUSPANIC` | An unrecoverable event-loop error is printed to stderr with upstream's message and ends the loop goroutine; upstream panics its own thread, which does not end the process, whereas a goroutine panic would. | M3-a11y-atspi-bus |
+| `D-ATSPIBUSSTATE` | `Arc<Mutex<AdapterState>>` shared by `Adapter` and the loop's `AdapterEntry` is `*adapterState` with a reference count of two; the inner `atspi.Adapter` is released where upstream drops it (on deactivation, or when the last of the two references goes). | M3-a11y-atspi-bus |
