@@ -92,12 +92,33 @@ Go target: `platform/windows/window.go` (package `windows`), tests in `window_te
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `WindowsWindowState` | struct | 45 |  | `WindowsWindowState` | todo |
+| `WindowsWindow` | struct | 35 |  | `WindowsWindow` | done |
+| `WindowsWindowState` | struct | 45 |  | `WindowsWindowState` | done |
+| `WindowsWindowInner` | struct | 94 |  | `WindowsWindowInner` | done |
+| `Callbacks` | struct | 377 |  | `Callbacks` | done |
+| `WindowsWindow::new` | fn | 418 |  | `NewWindowsWindow` | done |
+| `Drop for WindowsWindow` | impl | 600 |  | `WindowsWindow.Close` | done |
+| `PlatformWindow for WindowsWindow` | impl | 621 |  | `WindowsWindow` | done |
+| `A11yState` | struct | 1123 |  | `A11yState` | done |
+| `WindowsDragDropHandler` | struct | 1145 |  | `windowsDragDropHandler` | done |
+| `ClickState` | struct | 1281 |  | `ClickState` | done |
+| `WindowBorderOffset` | struct | 1386 |  | `WindowBorderOffset` | done |
+| `register_window_class` | fn | 1435 |  | `registerWindowClass` | done |
+| `window_procedure` | fn | 1451 |  | `windowProcedure` | done |
+| `window_from_hwnd` | fn | 1494 |  | `windowFromHwnd` | done |
+| `get_module_handle` | fn | 1508 |  | `getModuleHandle` | done |
+| `register_drag_drop` | fn | 1522 |  | `registerDragDrop` | done |
+| `calculate_window_rect` | fn | 1536 |  | `calculateWindowRect` | done |
+| `calculate_client_rect` | fn | 1562 |  | `calculateClientRect` | done |
+| `retrieve_window_placement` | fn | 1582 |  | `retrieveWindowPlacement` | done |
+| `dwm_set_window_composition_attribute` | fn | 1610 |  | `dwmSetWindowCompositionAttribute` | done |
+| `set_window_composition_attribute` | fn | 1634 |  | `setWindowCompositionAttribute` | done |
+| `set_non_rude_hwnd` | fn | 1682 |  | `setNonRudeHwnd` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_double_click_interval` | test | 1695 |  | `TestWindow_DoubleClickInterval` | todo |
-| `test_double_click_spatial_tolerance` | test | 1723 |  | `TestWindow_DoubleClickSpatialTolerance` | todo |
+| `test_double_click_interval` | test | 1695 |  | `TestWindow_DoubleClickInterval` | done |
+| `test_double_click_spatial_tolerance` | test | 1723 |  | `TestWindow_DoubleClickSpatialTolerance` | done |
 
 
 ## Deviations registered here
