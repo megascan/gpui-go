@@ -48,12 +48,12 @@ Go target: `platform/web/events.go` (package `web`), tests in `events_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `WebEventListeners` | struct | 15 |  | `WebEventListeners` | todo |
+| `WebEventListeners` | struct | 15 |  | `WebEventListeners` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `browser_pointer_id_reuse_gets_a_new_touch_id` | test | 1488 |  | `TestEvents_BrowserPointerIDReuseGetsANewTouchID` | todo |
-| `shift_is_dropped_only_from_symbol_keys` | test | 1504 |  | `TestEvents_ShiftIsDroppedOnlyFromSymbolKeys` | todo |
+| `browser_pointer_id_reuse_gets_a_new_touch_id` | test | 1488 |  | `TestEvents_BrowserPointerIDReuseGetsANewTouchID` | done |
+| `shift_is_dropped_only_from_symbol_keys` | test | 1504 |  | `TestEvents_ShiftIsDroppedOnlyFromSymbolKeys` | done |
 
 ## gpui_web/src/glyph_cache.rs
 
@@ -138,6 +138,12 @@ Go target: `platform/web/window.go` (package `web`)
 - viewport.rs and gpui_web.rs have no public items; ported into viewport.go and gpui_web.go (gpui_web.go also holds the syscall/js helpers: exception recovery, self-releasing once funcs, promise await through scheduler.Oneshot).
 - events.rs, ime_mirror.rs, text_system.rs and canvas_fallback.rs symbols used here are package-local stubs in stubs.go until M4-web-input / M4-web-text; `EventListenerHandle` is implemented there already.
 - Auto backend: `wgpu::util::is_browser_webgpu_supported` is ported locally (navigator.gpu + requestAdapter non-null).
+
+## Notes (M4-web-input)
+
+- events.rs → events.go, ime_mirror.rs → ime_mirror.go (no public items). Event handlers read DOM events through syscall/js; the IME mirror's value/selection logic runs against the `mirrorTextArea` / `mirrorInputHandler` interfaces so sync, window and diff logic is tested under node without a DOM (ime_mirror_test.go, events_test.go).
+- The input-diff of `register_input` is factored into `diffImeEdit`; pasted-image reads chain `arrayBuffer` promises instead of `spawn_local` (same order, same handler-at-resolution semantics).
+- `sync` takes the input handler once for the whole sync rather than per call; nothing re-enters the window between the calls, so behaviour is the same.
 
 ## Deviations registered here
 
