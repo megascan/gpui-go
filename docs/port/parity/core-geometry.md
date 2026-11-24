@@ -279,33 +279,33 @@ Go target: `gpui.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Sealed` | trait | 169 |  | `Sealed` | todo |
-| `AppContext` | trait | 174 |  | `AppContext` | todo |
-| `AppContext::new` | trait-method | 180 |  | `AppContext.New` | todo |
-| `AppContext::reserve_entity` | trait-method | 184 |  | `AppContext.ReserveEntity` | todo |
-| `AppContext::insert_entity` | trait-method | 189 |  | `AppContext.InsertEntity` | todo |
-| `AppContext::update_entity` | trait-method | 196 |  | `AppContext.UpdateEntity` | todo |
-| `AppContext::as_mut` | trait-method | 205 |  | `AppContext.AsMut` | todo |
-| `AppContext::read_entity` | trait-method | 210 |  | `AppContext.ReadEntity` | todo |
-| `AppContext::update_window` | trait-method | 216 |  | `AppContext.UpdateWindow` | todo |
-| `AppContext::with_window` | trait-method | 224 |  | `AppContext.WithWindow` | todo |
-| `AppContext::read_window` | trait-method | 231 |  | `AppContext.ReadWindow` | todo |
-| `AppContext::background_spawn` | trait-method | 240 |  | `AppContext.BackgroundSpawn` | todo |
-| `AppContext::read_global` | trait-method | 245 |  | `AppContext.ReadGlobal` | todo |
-| `Reservation` | struct | 252 |  | `Reservation` | todo |
-| `Reservation::entity_id` | method | 256 |  | `(Reservation).EntityID` | todo |
-| `VisualContext` | trait | 263 |  | `VisualContext` | todo |
-| `VisualContext::window_handle` | trait-method | 268 |  | `VisualContext.WindowHandle` | todo |
-| `VisualContext::update_window_entity` | trait-method | 271 |  | `VisualContext.UpdateWindowEntity` | todo |
-| `VisualContext::new_window_entity` | trait-method | 278 |  | `VisualContext.NewWindowEntity` | todo |
-| `VisualContext::replace_root_view` | trait-method | 284 |  | `VisualContext.ReplaceRootView` | todo |
-| `VisualContext::focus` | trait-method | 292 |  | `VisualContext.Focus` | todo |
-| `EventEmitter` | trait | 299 |  | `EventEmitter` | todo |
-| `BorrowAppContext` | trait | 303 |  | `BorrowAppContext` | todo |
-| `BorrowAppContext::set_global` | trait-method | 305 |  | `BorrowAppContext.SetGlobal` | todo |
-| `BorrowAppContext::update_global` | trait-method | 307 |  | `BorrowAppContext.UpdateGlobal` | todo |
-| `BorrowAppContext::update_default_global` | trait-method | 311 |  | `BorrowAppContext.UpdateDefaultGlobal` | todo |
-| `GpuSpecs` | struct | 346 |  | `GPUSpecs` | todo |
+| `Sealed` | trait | 169 |  | `-` | n/a:D-CTX |
+| `AppContext` | trait | 174 |  | `AppContext` | done |
+| `AppContext::new` | trait-method | 180 |  | `AppContextNew` | dev:D-CTX |
+| `AppContext::reserve_entity` | trait-method | 184 |  | `AppContextReserveEntity` | dev:D-CTX |
+| `AppContext::insert_entity` | trait-method | 189 |  | `AppContextInsertEntity` | dev:D-CTX |
+| `AppContext::update_entity` | trait-method | 196 |  | `AppContextUpdateEntity` | dev:D-CTX |
+| `AppContext::as_mut` | trait-method | 205 |  | `AppContextAsMut` | dev:D-CTX |
+| `AppContext::read_entity` | trait-method | 210 |  | `AppContextReadEntity` | dev:D-CTX |
+| `AppContext::update_window` | trait-method | 216 |  | `AppContextUpdateWindow` | dev:D-CTX |
+| `AppContext::with_window` | trait-method | 224 |  | `AppContextWithWindow` | dev:D-CTX |
+| `AppContext::read_window` | trait-method | 231 |  | `AppContextReadWindow` | dev:D-CTX |
+| `AppContext::background_spawn` | trait-method | 240 |  | `AppContextBackgroundSpawn` | dev:D-CTX |
+| `AppContext::read_global` | trait-method | 245 |  | `AppContextReadGlobal` | dev:D-CTX |
+| `Reservation` | struct | 252 |  | `Reservation` | done |
+| `Reservation::entity_id` | method | 256 |  | `(Reservation).EntityID` | done |
+| `VisualContext` | trait | 263 |  | `VisualContext` | done |
+| `VisualContext::window_handle` | trait-method | 268 |  | `VisualContext.WindowHandle` | done |
+| `VisualContext::update_window_entity` | trait-method | 271 |  | `VisualContextUpdateWindowEntity` | dev:D-CTX |
+| `VisualContext::new_window_entity` | trait-method | 278 |  | `VisualContextNewWindowEntity` | dev:D-CTX |
+| `VisualContext::replace_root_view` | trait-method | 284 |  | `VisualContextReplaceRootView` | dev:D-CTX |
+| `VisualContext::focus` | trait-method | 292 |  | `VisualContextFocus` | dev:D-CTX |
+| `EventEmitter` | trait | 299 |  | `-` | n/a:D-EMIT |
+| `BorrowAppContext` | trait | 303 |  | `BorrowAppContext` | done |
+| `BorrowAppContext::set_global` | trait-method | 305 |  | `SetGlobal` | dev:D-CTX |
+| `BorrowAppContext::update_global` | trait-method | 307 |  | `UpdateGlobal`, `UpdateGlobalR` | dev:D-CTX |
+| `BorrowAppContext::update_default_global` | trait-method | 311 |  | `UpdateDefaultGlobal`, `UpdateDefaultGlobalR` | dev:D-CTX |
+| `GpuSpecs` | struct | 346 |  | `GPUSpecs` | done |
 
 ## gpui/src/shared_uri.rs
 
@@ -356,3 +356,18 @@ Go target: `util.go` (package `gpui`), tests in `util_test.go`
 - BackgroundTag and ColorSpace are `uint32` (repr(C) enums are 4 bytes in the GPU struct). Background is 72 bytes, fields unexported as upstream's pub(crate).
 - `Range<GridPlacement>` is `GridPlacementRange{Start, End}`.
 - Edges / EdgesOf got their serde json tags (`top`, ...) which M0-geometry left out.
+
+## Notes (M0-contracts)
+
+- gpui.rs re-exports: `Task`, `FallibleTask`, `Priority`, `DedicatedExecutor`, `SchedulerLocalExecutor` (aliases of package scheduler, executor.rs's `pub use`), `AccessibleAction`, `Orientation`, `Role`, `Toggled` (aliases of package a11y). `anyhow::Result`, `ArcCow`, `pollster::block_on` and the macro re-exports have no Go alias (D-OPT, D-STRING, D-MACRO).
+- AppContext primitives (unexported, in upstream's trait order plus `newEntity`, because `App::new` pushes `EntityCreated` and `insert_entity` does not): `newEntity`, `reserveEntity`, `insertEntity`, `updateEntity`, `asMut`, `readEntity`, `updateWindow`, `withWindow`, `readWindow`, `backgroundExecutor`, `readGlobal`. Return types follow upstream's trait at this commit: only `update_window` / `read_window` return `Result`, `with_window` returns `Option` (`(R, bool)`); `with_window` takes an `EntityID` as upstream (DESIGN 6.2 sketched a window handle).
+- `background_spawn` takes `func(*scheduler.Scope) (R, error)` (the scheduler's task body) instead of DESIGN 6.2's `func() R`, so the body can await.
+- VisualContext's associated `Result<T>` is `error` / `(R, error)` for every Go implementation (STAGES decision 11); its primitive is `updateWindowContext`.
+- BorrowAppContext's `&mut Self` callback parameter is the context's own type through a type parameter `C BorrowAppContext`; D-VOID gives `UpdateGlobal` / `UpdateGlobalR` and `UpdateDefaultGlobal` / `UpdateDefaultGlobalR`.
+
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-CTX | Generic methods of the context traits (`AppContext`, `VisualContext`, `BorrowAppContext`) become free generic functions over a sealed interface of unexported, type-erased primitives (`AppContextNew`, `VisualContextFocus`, `SetGlobal`, ...); each concrete context also has the upstream-named generic methods as delegates. The `Sealed` marker has no Go symbol: the unexported primitives seal the interface | `gpui/src/gpui.rs:169-339` | A Go interface cannot declare generic methods (DESIGN 5.4, 6.2) |
+| D-IDMIXIN | `InteractiveElement::id` lives on its own mixin `InteractiveID[S]` (bound with `BindInteractiveID`), which `Div` and the other interactive elements embed and `Stateful[E]` does not; `Stateful<E>::id` (re-wrapping) is absent | `gpui/src/elements/div.rs:803` | `Interactive[S].ID` returning `*Stateful[S]` while `Stateful[E]` embeds `Interactive[*Stateful[E]]` is an instantiation cycle the Go type checker rejects; re-wrapping a Stateful only re-sets the id on the shared Interactivity |
