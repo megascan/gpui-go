@@ -248,6 +248,26 @@ func (w *Window) WithElementState[S, R any](id *GlobalElementID, f func(state Op
 	panic("gpui: unimplemented Window.WithElementState")
 }
 
+// NewQuad creates a quad with the given parameters (M0-window-core ports it).
+func NewQuad(bounds Bounds[Pixels], cornerRadii Corners[Pixels], background Background, borderWidths Edges[Pixels], borderColor Hsla, borderStyle BorderStyle) PaintQuad {
+	panic("gpui: unimplemented NewQuad")
+}
+
+// Outline creates a quad that only paints a border of the given color (M0-window-core ports it).
+func Outline(bounds Bounds[Pixels], borderColor Hsla, borderStyle BorderStyle) PaintQuad {
+	panic("gpui: unimplemented Outline")
+}
+
+// PaintDropShadows paints the outer shadows of an element (M0-window-paint ports it).
+func (w *Window) PaintDropShadows(bounds Bounds[Pixels], cornerRadii Corners[Pixels], shadows []BoxShadow) {
+	panic("gpui: unimplemented Window.PaintDropShadows")
+}
+
+// PaintInsetShadows paints the inset shadows of an element (M0-window-paint ports it).
+func (w *Window) PaintInsetShadows(bounds Bounds[Pixels], cornerRadii Corners[Pixels], shadows []BoxShadow) {
+	panic("gpui: unimplemented Window.PaintInsetShadows")
+}
+
 // PaintQuad paints a quad into the scene for the next frame (M0-window-paint ports it).
 func (w *Window) PaintQuad(quad PaintQuad) {
 	panic("gpui: unimplemented Window.PaintQuad")
@@ -458,37 +478,6 @@ type AvailableSpace struct {
 	definite Pixels
 }
 
-// Style is the computed style of an element (M0-style ports it).
-type Style struct{}
-
-// StyleRefinement is a partial Style (M0-style ports it).
-type StyleRefinement struct{}
-
-// Styler is implemented by elements that embed Styled (M0-style ports it).
-type Styler interface {
-	Style() *StyleRefinement
-}
-
-// Styled is the fluent styling mixin; bind it with BindStyled (M0-style ports it).
-type Styled[S Styler] struct {
-	self S
-}
-
-// BindStyled binds a Styled mixin to the element that embeds it.
-func BindStyled[S Styler](m *Styled[S], self S) {
-	m.self = self
-}
-
-// Flex sets the element to display flex (M0-style ports it).
-func (s *Styled[S]) Flex() S {
-	panic("gpui: unimplemented Styled.Flex")
-}
-
-// SizeFull sets the element's width and height to 100% (M0-style ports it).
-func (s *Styled[S]) SizeFull() S {
-	panic("gpui: unimplemented Styled.SizeFull")
-}
-
 // Interactivity holds the listeners and interactive style of an element (M0-div-api ports it).
 type Interactivity struct{}
 
@@ -693,24 +682,6 @@ type DecorationRun struct {
 	Underline Option[UnderlineStyle]
 	// Strikethrough is the strikethrough style of the run.
 	Strikethrough Option[StrikethroughStyle]
-}
-
-// UnderlineStyle is the properties of an underline (M0-style ports it).
-type UnderlineStyle struct {
-	// Thickness is the thickness of the underline.
-	Thickness Pixels
-	// Color is the color of the underline.
-	Color Option[Hsla]
-	// Wavy reports whether the underline is wavy, like in a spell checker.
-	Wavy bool
-}
-
-// StrikethroughStyle is the properties of a strikethrough (M0-style ports it).
-type StrikethroughStyle struct {
-	// Thickness is the thickness of the strikethrough.
-	Thickness Pixels
-	// Color is the color of the strikethrough.
-	Color Option[Hsla]
 }
 
 // IntoAnyElement converts the string into a text element (M0-text-elements ports it).

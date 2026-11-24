@@ -16,15 +16,15 @@ Go target: `internal/cmd/(index)` (package `-`)
 | `Render` | proc-macro-derive | 41 |  | `see DESIGN §9 (Render)` | todo |
 | `AppContext` | proc-macro-derive | 59 |  | `see DESIGN §9 (AppContext)` | dev:D-MACRO |
 | `VisualContext` | proc-macro-derive | 92 |  | `see DESIGN §9 (VisualContext)` | dev:D-MACRO |
-| `style_helpers` | proc-macro | 99 |  | `see DESIGN §9 (style_helpers)` | todo |
-| `visibility_style_methods` | proc-macro | 105 |  | `see DESIGN §9 (visibility_style_methods)` | todo |
-| `margin_style_methods` | proc-macro | 111 |  | `see DESIGN §9 (margin_style_methods)` | todo |
-| `padding_style_methods` | proc-macro | 117 |  | `see DESIGN §9 (padding_style_methods)` | todo |
-| `position_style_methods` | proc-macro | 123 |  | `see DESIGN §9 (position_style_methods)` | todo |
-| `overflow_style_methods` | proc-macro | 129 |  | `see DESIGN §9 (overflow_style_methods)` | todo |
-| `cursor_style_methods` | proc-macro | 135 |  | `see DESIGN §9 (cursor_style_methods)` | todo |
-| `border_style_methods` | proc-macro | 141 |  | `see DESIGN §9 (border_style_methods)` | todo |
-| `box_shadow_style_methods` | proc-macro | 147 |  | `see DESIGN §9 (box_shadow_style_methods)` | todo |
+| `style_helpers` | proc-macro | 99 |  | `internal/cmd/stylegen` -> `styled_gen.go` (`Styled[S]` methods, see DESIGN §9) | dev:D-MACRO |
+| `visibility_style_methods` | proc-macro | 105 |  | `internal/cmd/stylegen` -> `styled_gen.go` (`Styled[S]` methods, see DESIGN §9) | dev:D-MACRO |
+| `margin_style_methods` | proc-macro | 111 |  | `internal/cmd/stylegen` -> `styled_gen.go` (`Styled[S]` methods, see DESIGN §9) | dev:D-MACRO |
+| `padding_style_methods` | proc-macro | 117 |  | `internal/cmd/stylegen` -> `styled_gen.go` (`Styled[S]` methods, see DESIGN §9) | dev:D-MACRO |
+| `position_style_methods` | proc-macro | 123 |  | `internal/cmd/stylegen` -> `styled_gen.go` (`Styled[S]` methods, see DESIGN §9) | dev:D-MACRO |
+| `overflow_style_methods` | proc-macro | 129 |  | `internal/cmd/stylegen` -> `styled_gen.go` (`Styled[S]` methods, see DESIGN §9) | dev:D-MACRO |
+| `cursor_style_methods` | proc-macro | 135 |  | `internal/cmd/stylegen` -> `styled_gen.go` (`Styled[S]` methods, see DESIGN §9) | dev:D-MACRO |
+| `border_style_methods` | proc-macro | 141 |  | `internal/cmd/stylegen` -> `styled_gen.go` (`Styled[S]` methods, see DESIGN §9) | dev:D-MACRO |
+| `box_shadow_style_methods` | proc-macro | 147 |  | `internal/cmd/stylegen` -> `styled_gen.go` (`Styled[S]` methods, see DESIGN §9) | dev:D-MACRO |
 | `test` | proc-macro-attribute | 189 |  | `see DESIGN §9 (test)` | dev:D-MACRO |
 | `bench` | proc-macro-attribute | 222 |  | `see DESIGN §9 (bench)` | todo |
 | `property_test` | proc-macro-attribute | 295 |  | `see DESIGN §9 (property_test)` | dev:D-MACRO |

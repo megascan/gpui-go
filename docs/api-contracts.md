@@ -28,17 +28,15 @@ Stub owners (the stage that replaces the symbol):
 | `TextSystem`, `WindowTextSystem`, `Font`, `FontRun`, `TextRun`, `FontMetrics`, `LineLayout`, `ShapedRun`, `ShapedGlyph`, `WrappedLineLayout`, `LineLayoutCache`, `FontID`, `GlyphID`, `RenderGlyphParams`, `MissingGlyphSink`, `MissingGlyph` | M0-text-system |
 | `LineWrapper`, `Boundary`, `charWidthCache`, `defaultCharWidthCache`, `newLineWrapper`, `intoCharWidths`, `lineWrapperBreakIndices` (real bodies, see section 8) | M0-line-wrapper |
 | `ShapedLine`, `WrappedLine`, `DecorationRun` | M0-text-elements |
-| `UnderlineStyle`, `StrikethroughStyle` | M0-style |
 | `BackgroundExecutor`, `ForegroundExecutor` | M0-executors |
 | `App` (type; the stub carries the final field `entities *entityMap`, which `Entity.Read` uses), `AppCell`, `AppRef`, `AppRefMut`, `(App).FindDisplay`, `PrimaryDisplay`, `Spawn`, `OpenWindow`, `WithWindow` | M0-app-core |
 | `GpuiBorrow`, `newGpuiBorrow`, `globalLease`, `(App).SetGlobal`, `DefaultGlobal`, `leaseGlobal`, `endGlobalLease`, `Observe`, `Defer`, the unexported `App` primitives | M0-app-effects |
 | `TestAppContext`, `TestAppContextBuild`, `(TestAppContext).Update`, `RunUntilParked`, unexported `drop` | M0-test-contexts |
 | `FocusOutEvent`, `WeakFocusHandle`, `newWeakFocusHandle`, `windowFocusEvent` (`isFocusIn`, `isFocusOut`), `anyObserver`, `anyWindowFocusListener`, `FocusHandle.id`, the `Window` fields `displayObservers`, `focusListeners`, `focusLostListeners`, `boundsObservers`, `appearanceObservers`, `buttonLayoutObservers`, `visibilityObservers`, `activationObservers`, `pendingInputObservers`, `(Window).newFocusListener`, `Focus`, `Spawn`, `SpawnWithPriority`, `Prompt` | M0-window-core |
 | `(Window).OnAction` | M0-window-dispatch |
-| `Styler`, `Styled`, `BindStyled`, `(Styled).Flex`, `SizeFull`, `Style`, `StyleRefinement` | M0-style |
 | `Element`, `ElementA11y`, `ElementA11ySyntheticChildren`, `IntoElement`, `AnyElement`, `NewAnyElement`, `Render`, `RenderOnce`, `View`, `AnyView`, `anyViewDowncast`, `ParentElement`, `Parent`, `BindParent`, `GlobalElementID`, `InspectorElementID`, `SourceLocation`, `LayoutID`, `AvailableSpace`, `(Entity).IntoAnyElement` | M0-element |
-| `HitboxID` (final type `uint64`, so tests build ids directly), `Window` (type), `WindowID`, `AnyWindowHandle`, `WindowHandle`, `ArenaClearNeeded`, `DispatchPhase`, `FocusHandle`, `Focusable`, `ContentMask`, `ElementID`, `ElementIDSource`, `Hitbox`, `HitboxBehavior`, `PaintQuad`, `DefaultWindowSize`, `WindowControlArea` | M0-window-core |
-| `(Window).RemSize`, `Draw`, `WithElementState`, `PaintQuad`, `Refresh`, `OnNextFrame`, `RequestAnimationFrame`, `ReplaceRoot` | M0-window-paint |
+| `HitboxID` (final type `uint64`, so tests build ids directly), `Window` (type), `WindowID`, `AnyWindowHandle`, `WindowHandle`, `ArenaClearNeeded`, `DispatchPhase`, `FocusHandle`, `Focusable`, `ContentMask`, `ElementID`, `ElementIDSource`, `Hitbox`, `HitboxBehavior`, `PaintQuad`, `NewQuad`, `Outline`, `DefaultWindowSize`, `WindowControlArea` | M0-window-core |
+| `(Window).RemSize`, `PaintDropShadows`, `PaintInsetShadows`, `Draw`, `WithElementState`, `PaintQuad`, `Refresh`, `OnNextFrame`, `RequestAnimationFrame`, `ReplaceRoot` | M0-window-paint |
 | `(Window).RequestLayout`, `InsertHitbox`, `DispatchKeystroke`, `DispatchEvent`, `DispatchEventResult` | M0-window-dispatch |
 | `Interactivity`, `InteractiveElement`, `Interactive`, `BindInteractive`, `InteractiveID`, `BindInteractiveID`, `StatefulInteractiveElement`, `StatefulInteractive`, `BindStatefulInteractive`, `Div`, `NewDiv` and its methods except `IntoAnyElement` | M0-div-api |
 | `(Div).IntoAnyElement`, `Stateful` and its methods | M0-div-paint |
@@ -145,6 +143,20 @@ func NewDiv() *Div {
 - `IntoElement` is `IntoAnyElement() AnyElement`. `AnyElement`, `SharedString`, `*Div`, `*Stateful[E]` and `Entity[T]` (panics unless `*T` implements `Render[T]`, D-COND) implement it; plain strings go through `Parent.ChildText`.
 - `Render[T]` is implemented by `*T` (`Render(w *Window, cx *Context[T]) IntoElement`); `RenderOnce` by component values.
 
+### 3.1 Style (style.go, styled.go; M0-style)
+
+- `Style` fields are upstream's, in upstream's order; `StyleRefinement`, `TextStyleRefinement`, `GridTemplateRefinement`, `UnderlineStyleRefinement`, `StrikethroughStyleRefinement` are generated into `style_gen.go` by refinegen. Non-numeric geometry fields use the D-GEOM `Of` family (`PointOf[Overflow]`, `EdgesOf[Length]`, `SizeOf[Length]`, `CornersOf[AbsoluteLength]`).
+- Defaults: `DefaultStyle()`, `DefaultTextStyle()`, `DefaultFill()`. A zero `Style` is not upstream's default (`StyleFromRefinement` fills unset fields with Go zero values, so an unset `FontWeight` is 0, not 400); callers that need upstream's `Default` refine `DefaultStyle()`.
+- Field-less enums are `uint8` with `<Type><Variant>` constants; `Display`'s zero value is `DisplayFlex` (upstream's `#[default]`), `DisplayBlock` is 1. JSON uses the variant names. `JustifyItems`, `AlignSelf`, `JustifySelf` alias `AlignItems`; `JustifyContent` aliases `AlignContent`.
+- `TextOverflow` is a comparable tagged struct: `TextOverflowTruncate(s)`, `TextOverflowTruncateStart(s)`, `TextOverflowTruncateMiddle(s)`, read with `AsTruncate`, `AsTruncateStart`, `AsTruncateMiddle`.
+- `Fill` is a sealed interface whose only variant is `FillColor` (`type FillColor Background`); `(Fill).Color() (Background, bool)`. `IntoFill{ToFill() Fill}` is implemented by `Hsla`, `Rgba`, `Background` and `Fill`.
+- `IntoHighlightStyle{ToHighlightStyle() HighlightStyle}` is implemented by `HighlightStyle`, `TextStyle`, `Hsla`, `Rgba`, `FontWeight`, `FontStyle`. `HighlightStyleColor(c)` is upstream's `HighlightStyle::color`.
+- `CombineHighlights(a, b iter.Seq2[Range, HighlightStyle]) iter.Seq2[Range, HighlightStyle]`; active highlights fold in ascending insertion order.
+- `BoxShadow{Color, Offset, Blur, Spread, IsInset}`: the fields are renamed because the builder methods `BlurRadius`, `SpreadRadius`, `Inset` keep upstream's names; JSON keys stay `blur_radius`, `spread_radius`, `inset`.
+- `(*Style).Paint(bounds, window, cx, continuation func(*Window, *App))`, `(*Style).OverflowMask(bounds, remSize) (ContentMask[Pixels], bool)`, `(*Style).TextStyle() *TextStyleRefinement` (nil when unset).
+- `Styled[S]` carries the 115 hand-written methods of styled.rs and the 3099 generated ones (`styled_gen.go`, stylegen); `Styled.TextStyle()` returns `*TextStyleRefinement`. `Style()` is never a mixin method: the element declares it. `*StyleRefinement` implements `Styler` (upstream's `impl Styled for StyleRefinement`), so `Styled[*StyleRefinement]` styles a bare refinement.
+- `(*StyleRefinement).GridLocationMut() *GridLocation` inserts the default location first.
+
 ## 4. Handles and Drop (D-RAII)
 
 - A handle value aliases one counted handle: copying an `Entity[T]`, `AnyEntity`, `FocusHandle` is a Rust move or borrow. `Clone()` makes a new counted handle; `Release()` is the explicit drop, idempotent per handle; use after release panics. `Entity[T]` embeds `AnyEntity` (upstream's `Deref`); `IntoAny()` returns the same counted handle, so release one of the two, not both. The free functions pass `e.IntoAny()` to primitives as a borrow and never release it.
@@ -224,4 +236,4 @@ Built by M0-text-system.
 - Returned options: `(LineLayout).IndexForX`, `FontIDForIndex`, `(WrappedLineLayout).PositionForIndex` return `(T, bool)`; `IndexForPosition` / `ClosestIndexForPosition` return `(int, bool)` where `false` carries upstream's `Err` index. `ShapeText`'s `line_clamp` is `Option[int]`; `force_width` / `wrap_width` are `Option[Pixels]`.
 - Offsets are UTF-8 byte offsets throughout (`TextRun.Len`, `FontRun.Len`, `ShapedGlyph.Index`).
 - Drop: `MissingGlyphReceiver.Close` closes and drains the channel; `LineWrapperHandle.Release` returns the wrapper's character widths to the pool (idempotent; the embedded `*LineWrapper` is nil afterwards). `MissingGlyphReceiver.Recv(cx scheduler.Awaiter)` returns `scheduler.ErrClosed` when the channel is closed.
-- Forward stubs for M0-line-wrapper in stubs.go: `LineWrapper` (`textSystem`, `fontID`, `fontSize`, `charWidths`), `charWidthCache`, `defaultCharWidthCache`, `newLineWrapper`, `intoCharWidths` and a working `lineWrapperBreakIndices(text) iter.Seq[int]` (go-text segmenter, yields 0, each break offset and `len(text)`, as ICU's `segment_str`). For M0-text-elements: `DecorationRun`; for M0-style: `UnderlineStyle`, `StrikethroughStyle` with upstream's fields.
+- Forward stubs for M0-line-wrapper in stubs.go: `LineWrapper` (`textSystem`, `fontID`, `fontSize`, `charWidths`), `charWidthCache`, `defaultCharWidthCache`, `newLineWrapper`, `intoCharWidths` and a working `lineWrapperBreakIndices(text) iter.Seq[int]` (go-text segmenter, yields 0, each break offset and `len(text)`, as ICU's `segment_str`). For M0-text-elements: `DecorationRun`; `UnderlineStyle`, `StrikethroughStyle` now live in style.go (M0-style).
