@@ -3,7 +3,7 @@ HARNESS=${HARNESS:-$PROJ/internal/securityharness}
 SWEEP_GOMODCACHE=${SWEEP_GOMODCACHE:-/home/strange/go/pkg/mod}
 SWEEP_GOCACHE=${SWEEP_GOCACHE:-/home/strange/.cache/security-sweep/gpui-go/gocache}
 mkdir -p "$SWEEP_GOCACHE"
-T=$(mktemp -d /tmp/sweep.XXXXXX); S="$T/stubs"; mkdir -p "$S" "$T/home" "$T/run" "$T/tmp"; : >"$T/canary.log"; : >"$T/calls.log"
+T=$(mktemp -d "${SWEEP_TMPROOT:-/tmp}/sweep.XXXXXX"); S="$T/stubs"; mkdir -p "$S" "$T/home" "$T/run" "$T/tmp"; : >"$T/canary.log"; : >"$T/calls.log"
 for c in xdg-open gio gnome-open kde-open kde-open5 kde-open6 hyprctl grim notify-send systemctl systemd-run busctl gdbus dbus-send dbus-launch loginctl avahi-browse avahi-resolve; do
   printf '#!/bin/sh\necho "%s $*" >>"%s/calls.log"\n' "$c" "$T" >"$S/$c"; chmod +x "$S/$c"; done
 sbx() { bwrap --ro-bind /usr /usr --symlink usr/bin /bin --symlink usr/lib /lib --symlink usr/lib64 /lib64 \
