@@ -68,7 +68,7 @@ Go target: `platform/macos/display_link.go` (package `macos`), tests in `display
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
 | `metal_frames_pause_only_when_gpui_neither_draws_nor_asks_again` | test | 617 |  | `TestDisplayLink_MetalFramesPauseOnlyWhenGpuiNeitherDrawsNorAsksAgain` | done |
-| `a_renderer_draws_normally_after_its_display_link_is_invalidated` | test | 645 |  | `TestDisplayLink_ARendererDrawsNormallyAfterItsDisplayLinkIsInvalidated` | blocked:M4-apple-metal-renderer |
+| `a_renderer_draws_normally_after_its_display_link_is_invalidated` | test | 645 |  | `TestDisplayLink_ARendererDrawsNormallyAfterItsDisplayLinkIsInvalidated` | done |
 | `host_timestamp_preserves_request_age_at_different_clock_rates` | test | 665 |  | `TestDisplayLink_HostTimestampPreservesRequestAgeAtDifferentClockRates` | done |
 | `invalid_host_timestamps_fall_back_to_receipt_time` | test | 680 |  | `TestDisplayLink_InvalidHostTimestampsFallBackToReceiptTime` | done |
 
@@ -92,9 +92,9 @@ Go target: `platform/macos/gpui_macos.go` (package `macos`), tests in `gpui_maco
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `metal_renderer::SurfaceBounds` | re-export | 20 |  | `SurfaceBounds` | blocked:M4-apple-metal-renderer |
-| `metal_renderer::MetalHeadlessRenderer` | re-export | 23 |  | `MetalHeadlessRenderer` | blocked:M4-apple-metal-renderer |
-| `MacPlatform` | re-export | 45 |  | `MacPlatform` | blocked:M4-macos-platform |
+| `metal_renderer::SurfaceBounds` | re-export | 20 |  | `SurfaceBounds` | done |
+| `metal_renderer::MetalHeadlessRenderer` | re-export | 23 |  | `MetalHeadlessRenderer` | done |
+| `MacPlatform` | re-export | 45 |  | `MacPlatform` | done |
 | `BoolExt` | trait | 47 |  | - | n/a:D-MACOS-OBJCBOOL |
 | `NSStringExt::to_str` | method | 62 |  | `nsStringToStr` | done |
 | `NSRange` | struct | 79 |  | `NSRange` | done |
@@ -150,7 +150,7 @@ Go target: `platform/macos/pasteboard.go` (package `macos`), tests in `pasteboar
 | `test_read_external_path` | test | 367 |  | `TestPasteboard_ReadExternalPath` | done |
 | `test_read_external_paths_with_spaces` | test | 397 |  | `TestPasteboard_ReadExternalPathsWithSpaces` | done |
 | `test_read_multiple_external_paths` | test | 416 |  | `TestPasteboard_ReadMultipleExternalPaths` | done |
-| `test_read_image` | test | 448 |  | `TestPasteboard_ReadImage` | blocked:M0-app-contexts |
+| `test_read_image` | test | 448 |  | `TestPasteboard_ReadImage` | done |
 
 ## gpui_macos/src/platform.rs
 
@@ -217,12 +217,12 @@ Go target: `platform/macos/window_native_views.go` (package `macos`), tests in `
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `placement_clips_a_view_to_its_content_mask` | test | 1441 |  | `TestNativeViews_PlacementClipsAViewToItsContentMask` | todo |
-| `keyboard_input_follows_gpui_focus_except_from_views_gpui_did_not_attach` | test | 1476 |  | `TestNativeViews_KeyboardInputFollowsGpuiFocusExceptFromViewsGpuiDidNotAttach` | todo |
-| `views_take_keyboard_input_only_when_gpui_focus_a_click_or_voice_over_allows` | test | 1508 |  | `TestNativeViews_ViewsTakeKeyboardInputOnlyWhenGpuiFocusAClickOrVoiceOverAllows` | todo |
-| `a_view_that_declines_keyboard_input_leaves_it_with_the_gpui_view` | test | 1540 |  | `TestNativeViews_AViewThatDeclinesKeyboardInputLeavesItWithTheGpuiView` | todo |
-| `gpui_is_owed_the_release_of_each_button_pressed_in_a_native_view` | test | 1565 |  | `TestNativeViews_GpuiIsOwedTheReleaseOfEachButtonPressedInANativeView` | todo |
-| `stacking_puts_shown_views_between_the_gpui_view_and_everything_else` | test | 1578 |  | `TestNativeViews_StackingPutsShownViewsBetweenTheGpuiViewAndEverythingElse` | todo |
+| `placement_clips_a_view_to_its_content_mask` | test | 1441 |  | `TestNativeViews_PlacementClipsAViewToItsContentMask` | done |
+| `keyboard_input_follows_gpui_focus_except_from_views_gpui_did_not_attach` | test | 1476 |  | `TestNativeViews_KeyboardInputFollowsGpuiFocusExceptFromViewsGpuiDidNotAttach` | done |
+| `views_take_keyboard_input_only_when_gpui_focus_a_click_or_voice_over_allows` | test | 1508 |  | `TestNativeViews_ViewsTakeKeyboardInputOnlyWhenGpuiFocusAClickOrVoiceOverAllows` | done |
+| `a_view_that_declines_keyboard_input_leaves_it_with_the_gpui_view` | test | 1540 |  | `TestNativeViews_AViewThatDeclinesKeyboardInputLeavesItWithTheGpuiView` | done |
+| `gpui_is_owed_the_release_of_each_button_pressed_in_a_native_view` | test | 1565 |  | `TestNativeViews_GpuiIsOwedTheReleaseOfEachButtonPressedInANativeView` | done |
+| `stacking_puts_shown_views_between_the_gpui_view_and_everything_else` | test | 1578 |  | `TestNativeViews_StackingPutsShownViewsBetweenTheGpuiViewAndEverythingElse` | done |
 
 
 ## Deviations registered here

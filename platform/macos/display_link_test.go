@@ -7,6 +7,9 @@ import (
 	"testing"
 	"time"
 
+	gpui "github.com/megascan/gpui-go"
+	"github.com/megascan/gpui-go/internal/apple/objc"
+	"github.com/megascan/gpui-go/platform/apple"
 	"github.com/megascan/gpui-go/scheduler"
 )
 
@@ -37,7 +40,27 @@ func TestDisplayLink_MetalFramesPauseOnlyWhenGpuiNeitherDrawsNorAsksAgain(t *tes
 }
 
 func TestDisplayLink_ARendererDrawsNormallyAfterItsDisplayLinkIsInvalidated(t *testing.T) {
-	t.Skip("blocked:M4-apple-metal-renderer: needs MetalRenderer")
+	if !apple.MetalFrameSourceIsAvailable() {
+		return
+	}
+	renderer, err := apple.NewMetalRenderer(apple.NewInstanceBufferPool(), false, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer renderer.Destroy()
+	renderer.UpdateDrawableSize(gpui.NewSize(gpui.DevicePixels(64), gpui.DevicePixels(64)))
+	layer, ok := renderer.Layer()
+	if !ok {
+		t.Fatal("window renderer has a layer")
+	}
+	link := objc.Send[objc.ID](objc.Alloc(objc.GetClass("CAMetalDisplayLink")), objc.Sel("initWithMetalLayer:"), layer.ID())
+	defer objc.Release(link)
+	renderer.SetDisplayLinkAttached(true)
+	renderer.Draw(&gpui.Scene{})
+
+	objc.SendVoid(link, objc.Sel("invalidate"))
+	renderer.SetDisplayLinkAttached(false)
+	renderer.Draw(&gpui.Scene{})
 }
 
 func TestDisplayLink_HostTimestampPreservesRequestAgeAtDifferentClockRates(t *testing.T) {

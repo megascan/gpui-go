@@ -11,6 +11,7 @@ import (
 
 	gpui "github.com/megascan/gpui-go"
 	"github.com/megascan/gpui-go/internal/apple/objc"
+	"github.com/megascan/gpui-go/platform/apple"
 )
 
 func nsStringToStr(str objc.ID) string {
@@ -62,3 +63,9 @@ func (r NSRange) toObjc() objc.NSRange {
 func nsString(s string) objc.ID {
 	return objc.Autorelease(objc.NSStringFromGo(s))
 }
+
+// SurfaceBounds is the Metal renderer's per-surface bounds, re-exported from platform/apple.
+type SurfaceBounds = apple.SurfaceBounds
+
+// MetalHeadlessRenderer renders scenes offscreen with Metal, re-exported from platform/apple.
+type MetalHeadlessRenderer = apple.MetalHeadlessRenderer
