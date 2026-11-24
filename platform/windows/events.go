@@ -339,6 +339,10 @@ func (w *WindowsWindowInner) handleDestroyMsg(handle HWND) msgResult {
 	if callback != nil {
 		callback()
 	}
+	if cell := &w.state.a11y; !cell.borrowed && cell.value != nil {
+		cell.value.release()
+		cell.value = nil
+	}
 	logIfErr(win32.PostMessageW(w.platformWindowHandle, WM_GPUI_CLOSE_ONE_WINDOW, win32.WPARAM(w.validationNumber), win32.LPARAM(handle)))
 	return handled(0)
 }

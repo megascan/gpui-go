@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M4-windows-shell exit 0 (windows amd64+arm64 vet, test -c, gofmt); paritycheck -area windows ok (26 rows, 6 dialog rows done)

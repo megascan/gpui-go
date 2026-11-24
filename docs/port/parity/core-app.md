@@ -350,7 +350,7 @@ Go target: `executor.go` (package `gpui`), tests in `executor_test.go`
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
 | `send_foreground_executor_submits_from_worker` | test | 583 |  | `TestExecutor_SendForegroundExecutorSubmitsFromWorker` | done |
-| `sanity_test_tasks_run` | test | 602 |  | `TestExecutor_SanityTestTasksRun` | blocked:M0-test-platform |
+| `sanity_test_tasks_run` | test | 602 |  | `TestExecutor_SanityTestTasksRun` | done |
 
 ## gpui/src/global.rs
 
@@ -444,10 +444,10 @@ Go target: `subscription.go` (package `gpui`), tests in `subscription_test.go`
 | `test_single_immediate_and_pending_insertions` | test | 345 |  | `TestSubscription_SingleImmediateAndPendingInsertions` | done |
 | `test_activation_after_drop_during_retain` | test | 370 |  | `TestSubscription_ActivationAfterDropDuringRetain` | done |
 | `test_single_activation_after_drop_during_retain` | test | 393 |  | `TestSubscription_SingleActivationAfterDropDuringRetain` | done |
-| `test_unsubscribe_during_callback_with_insert` | test | 416 |  | `TestSubscription_UnsubscribeDuringCallbackWithInsert` | blocked:M0-exit |
-| `test_callback_dropped_by_earlier_callback_does_not_fire` | test | 467 |  | `TestSubscription_CallbackDroppedByEarlierCallbackDoesNotFire` | blocked:M0-exit |
-| `test_self_drop_during_callback` | test | 507 |  | `TestSubscription_SelfDropDuringCallback` | blocked:M0-exit |
-| `test_subscription_drop` | test | 536 |  | `TestSubscription_SubscriptionDrop` | blocked:M0-exit |
+| `test_unsubscribe_during_callback_with_insert` | test | 416 |  | `TestSubscription_UnsubscribeDuringCallbackWithInsert` | done |
+| `test_callback_dropped_by_earlier_callback_does_not_fire` | test | 467 |  | `TestSubscription_CallbackDroppedByEarlierCallbackDoesNotFire` | done |
+| `test_self_drop_during_callback` | test | 507 |  | `TestSubscription_SelfDropDuringCallback` | done |
+| `test_subscription_drop` | test | 536 |  | `TestSubscription_SubscriptionDrop` | done |
 
 ## gpui/src/test.rs
 

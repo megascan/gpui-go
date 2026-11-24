@@ -444,7 +444,7 @@ Go target: `platform.go` (package `gpui`), tests in `platform_test.go`
 | `decode_animated_frames` | fn | 3489 |  | `decodeAnimatedFrames` | done |
 | `decode_gif_image` | fn | 3517 |  | `decodeGifImage` | dev:D-IMGDECODE |
 | `decode_webp_image` | fn | 3522 |  | `decodeWebpImage` | dev:D-IMGDECODE |
-| `image::Frame` (decoded frame) | struct | 57 |  | `ImageFrame` | dev:D-IMAGEFRAME |
+| `image::Frame` (decoded frame) | extern | 57 |  | `ImageFrame` | dev:D-IMAGEFRAME |
 | `PlatformInputHandler::with_focus` | method | 2150 |  | `(PlatformInputHandler).withFocus` | done |
 | `PlatformInputHandler::unmark_text_during_update` | method | 2263 |  | `(PlatformInputHandler).unmarkTextDuringUpdate` | done |
 | `impl From<&str> for PromptButton` | impl | 3099 |  | `PromptButtonFromStr` | done |
@@ -464,13 +464,13 @@ Go target: `platform.go` (package `gpui`), tests in `platform_test.go`
 | `ImageFormat` EnumIter derive | impl | 3374 |  | `ImageFormatIter` | done |
 | `InputHandler` provided methods | impl | 2432 |  | `InputHandlerDefaults` | dev:D-DEFAULTS |
 | `InputHandler` provided methods (binding) | impl | 2432 |  | `BindInputHandlerDefaults` | dev:D-DEFAULTS |
-| `std::ops::Range<usize>` in input handler signatures | struct | 2174 |  | `Range` | dev:D-RANGE |
+| `std::ops::Range<usize>` in input handler signatures | extern | 2174 |  | `Range` | dev:D-RANGE |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_image_to_image_data_applies_exif_orientation` | test | 3694 |  | `TestPlatformImageTests_ImageToImageDataAppliesExifOrientation` | blocked:M0-elements-media |
-| `test_svg_image_to_image_data_converts_to_bgra` | test | 3710 |  | `TestPlatformImageTests_SvgImageToImageDataConvertsToBgra` | blocked:M0-elements-media |
-| `test_animated_webp_image_to_image_data_decodes_frames` | test | 3728 |  | `TestPlatformImageTests_AnimatedWebpImageToImageDataDecodesFrames` | blocked:M0-elements-media |
+| `test_image_to_image_data_applies_exif_orientation` | test | 3694 |  | `TestPlatformImageTests_ImageToImageDataAppliesExifOrientation` | done |
+| `test_svg_image_to_image_data_converts_to_bgra` | test | 3710 |  | `TestPlatformImageTests_SvgImageToImageDataConvertsToBgra` | done |
+| `test_animated_webp_image_to_image_data_decodes_frames` | test | 3728 |  | `TestPlatformImageTests_AnimatedWebpImageToImageDataDecodesFrames` | done |
 | `only_successful_inserts_are_cached` | test | 3813 |  | `TestPlatformAtlasTests_OnlySuccessfulInsertsAreCached` | done |
 | `remove_and_clear_invalidate_keys` | test | 3850 |  | `TestPlatformAtlasTests_RemoveAndClearInvalidateKeys` | done |
 | `coalesced_signals_retain_the_earliest_until_drained` | test | 3882 | feat:profiler | `TestPlatformFrameSignalTests_CoalescedSignalsRetainTheEarliestUntilDrained` | done |
@@ -570,7 +570,7 @@ Go target: `platform_scap_screen_capture.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `scap_screen_sources` | fn | 18 |  | `ScapScreenSources` | todo |
+| `scap_screen_sources` | fn | 18 |  | `ScapScreenSources` | blocked:M3-root-capture |
 
 ## gpui/src/platform/threaded_dispatcher.rs
 
@@ -602,9 +602,9 @@ Go target: `platform_visual_testing.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `VisualTestPlatform` | struct | 31 |  | `VisualTestPlatform` | todo |
-| `VisualTestPlatform::new` | assoc-fn | 44 |  | `NewVisualTestPlatform` | todo |
-| `VisualTestPlatform::dispatcher` | method | 62 |  | `(VisualTestPlatform).Dispatcher` | todo |
+| `VisualTestPlatform` | struct | 31 |  | `VisualTestPlatform` | blocked:M3-root-capture |
+| `VisualTestPlatform::new` | assoc-fn | 44 |  | `NewVisualTestPlatform` | blocked:M3-root-capture |
+| `VisualTestPlatform::dispatcher` | method | 62 |  | `(VisualTestPlatform).Dispatcher` | blocked:M3-root-capture |
 
 ## gpui/src/platform/test/dispatcher.rs
 

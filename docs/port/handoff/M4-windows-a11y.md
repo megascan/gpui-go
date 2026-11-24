@@ -1,0 +1,5 @@
+# M4-windows-a11y handoff
+
+- For an exit / CI stage (fix authority over platform/windows/window.go, events.go): upstream drops `A11yState` (and with it the accessibility adapter and its `Arc<Context>`) when the window state drops. Call `(*A11yState).release()` (platform/windows/a11y.go) where the window's state is torn down (WM_NCDESTROY / WM_DESTROY path that releases the window's other resources) and set `w.inner.state.a11y.value = nil`. Until then a destroyed window's platform nodes stay referenced by its context.
+- For an exit stage: DESIGN 5.2's Drop table needs rows for `accesskit_windows::Adapter` (Go: `Adapter.Release`, implicit drop when the window state drops) and `SubclassingAdapter` (Go: `SubclassingAdapter.Release`, restores the original window procedure).
+- The TestSimple_* / TestSubclassed_* tests create real (hidden, then shown for the focus and ElementFromPoint tests) Win32 windows and a UIA client; they run only on the Windows CI runner. `TestSimple_ElementFromPointAndRangeValueSetValue` drives the D-WINFLOAT trampolines on amd64 as M4-windows-a11y-node asked; it skips on arm64.

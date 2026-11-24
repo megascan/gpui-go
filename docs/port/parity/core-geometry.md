@@ -10,25 +10,25 @@ Go target: `arena.go` (package `gpui`), tests in `arena_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Arena` | struct | 81 |  | `Arena` | todo |
-| `Arena::new` | assoc-fn | 97 |  | `NewArena` | todo |
-| `Arena::capacity` | method | 109 |  | `(Arena).Capacity` | todo |
-| `Arena::begin_scope` | method | 116 |  | `(Arena).BeginScope` | todo |
-| `Arena::end_scope` | method | 126 |  | `(Arena).EndScope` | todo |
-| `Arena::clear` | method | 139 |  | `(Arena).Clear` | todo |
-| `Arena::alloc` | method | 161 |  | `(Arena).Alloc` | todo |
-| `ArenaBox` | struct | 218 |  | `ArenaBox` | todo |
-| `ArenaBox::map` | method | 225 |  | `(ArenaBox).Map` | todo |
+| `Arena` | struct | 81 |  | `Arena` | n/a:D-ARENA |
+| `Arena::new` | assoc-fn | 97 |  | `NewArena` | n/a:D-ARENA |
+| `Arena::capacity` | method | 109 |  | `(Arena).Capacity` | n/a:D-ARENA |
+| `Arena::begin_scope` | method | 116 |  | `(Arena).BeginScope` | n/a:D-ARENA |
+| `Arena::end_scope` | method | 126 |  | `(Arena).EndScope` | n/a:D-ARENA |
+| `Arena::clear` | method | 139 |  | `(Arena).Clear` | n/a:D-ARENA |
+| `Arena::alloc` | method | 161 |  | `(Arena).Alloc` | n/a:D-ARENA |
+| `ArenaBox` | struct | 218 |  | `ArenaBox` | n/a:D-ARENA |
+| `ArenaBox::map` | method | 225 |  | `(ArenaBox).Map` | n/a:D-ARENA |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_arena` | test | 266 |  | `TestArena_Arena` | todo |
-| `test_arena_grow` | test | 301 |  | `TestArena_ArenaGrow` | todo |
-| `test_arena_alignment` | test | 315 |  | `TestArena_ArenaAlignment` | todo |
-| `test_arena_use_after_clear` | test | 335 |  | `TestArena_ArenaUseAfterClear` | todo |
-| `test_clear_deferred_while_scope_active` | test | 344 |  | `TestArena_ClearDeferredWhileScopeActive` | todo |
-| `test_clear_without_scope_is_immediate` | test | 385 |  | `TestArena_ClearWithoutScopeIsImmediate` | todo |
-| `test_unbalanced_end_scope_panics` | test | 395 |  | `TestArena_UnbalancedEndScopePanics` | todo |
+| `test_arena` | test | 266 |  | `TestArena_Arena` | n/a:D-ARENA |
+| `test_arena_grow` | test | 301 |  | `TestArena_ArenaGrow` | n/a:D-ARENA |
+| `test_arena_alignment` | test | 315 |  | `TestArena_ArenaAlignment` | n/a:D-ARENA |
+| `test_arena_use_after_clear` | test | 335 |  | `TestArena_ArenaUseAfterClear` | n/a:D-ARENA |
+| `test_clear_deferred_while_scope_active` | test | 344 |  | `TestArena_ClearDeferredWhileScopeActive` | n/a:D-ARENA |
+| `test_clear_without_scope_is_immediate` | test | 385 |  | `TestArena_ClearWithoutScopeIsImmediate` | n/a:D-ARENA |
+| `test_unbalanced_end_scope_panics` | test | 395 |  | `TestArena_UnbalancedEndScopePanics` | n/a:D-ARENA |
 
 ## gpui/src/bounds_tree.rs
 

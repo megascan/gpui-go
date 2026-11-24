@@ -12,8 +12,8 @@ Go target: `internal/cmd/(index)` (package `-`)
 |---|---|---|---|---|---|
 | `Action` | proc-macro-derive | 20 |  | `see DESIGN §9 (Action)` | dev:D-MACRO |
 | `register_action` | proc-macro | 28 |  | `see DESIGN §9 (register_action)` | dev:D-MACRO |
-| `IntoElement` | proc-macro-derive | 35 |  | `see DESIGN §9 (IntoElement)` | todo |
-| `Render` | proc-macro-derive | 41 |  | `see DESIGN §9 (Render)` | todo |
+| `IntoElement` | proc-macro-derive | 35 |  | `see DESIGN §9 (IntoElement)` | dev:D-MACRO |
+| `Render` | proc-macro-derive | 41 |  | `see DESIGN §9 (Render)` | dev:D-MACRO |
 | `AppContext` | proc-macro-derive | 59 |  | `see DESIGN §9 (AppContext)` | dev:D-MACRO |
 | `VisualContext` | proc-macro-derive | 92 |  | `see DESIGN §9 (VisualContext)` | dev:D-MACRO |
 | `style_helpers` | proc-macro | 99 |  | `internal/cmd/stylegen` -> `styled_gen.go` (`Styled[S]` methods, see DESIGN §9) | dev:D-MACRO |
@@ -26,9 +26,9 @@ Go target: `internal/cmd/(index)` (package `-`)
 | `border_style_methods` | proc-macro | 141 |  | `internal/cmd/stylegen` -> `styled_gen.go` (`Styled[S]` methods, see DESIGN §9) | dev:D-MACRO |
 | `box_shadow_style_methods` | proc-macro | 147 |  | `internal/cmd/stylegen` -> `styled_gen.go` (`Styled[S]` methods, see DESIGN §9) | dev:D-MACRO |
 | `test` | proc-macro-attribute | 189 |  | `see DESIGN §9 (test)` | dev:D-MACRO |
-| `bench` | proc-macro-attribute | 222 |  | `see DESIGN §9 (bench)` | todo |
+| `bench` | proc-macro-attribute | 222 |  | `see DESIGN §9 (bench)` | blocked:M3-bench-context |
 | `property_test` | proc-macro-attribute | 295 |  | `see DESIGN §9 (property_test)` | dev:D-MACRO |
-| `derive_inspector_reflection` | proc-macro-attribute | 317 | feat:inspector,debug | `see DESIGN §9 (derive_inspector_reflection)` | todo |
+| `derive_inspector_reflection` | proc-macro-attribute | 317 | feat:inspector,debug | `see DESIGN §9 (derive_inspector_reflection)` | blocked:M3-root-capture |
 
 ## gpui_macros/tests/derive_context.rs
 
@@ -36,7 +36,7 @@ Go target: `macros_derive_context_test.go` (package `gpui_test`), tests in `macr
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_derive_context` | test | 2 |  | `TestDeriveContext_DeriveContext` | todo |
+| `test_derive_context` | test | 2 |  | `TestDeriveContext_DeriveContext` | done |
 
 ## gpui_macros/tests/derive_inspector_reflection.rs
 
@@ -44,7 +44,7 @@ Go target: `macros_derive_inspector_reflection_test.go` (package `gpui_test`), t
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_derive_inspector_reflection` | test | 68 |  | `TestDeriveInspectorReflection_DeriveInspectorReflection` | todo |
+| `test_derive_inspector_reflection` | test | 68 |  | `TestDeriveInspectorReflection_DeriveInspectorReflection` | blocked:M3-root-capture |
 
 ## gpui_macros/tests/render_test.rs
 
@@ -52,5 +52,5 @@ Go target: `macros_render_test_test.go` (package `gpui_test`), tests in `macros_
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_derive_render` | test | 2 |  | `TestRenderTest_DeriveRender` | todo |
+| `test_derive_render` | test | 2 |  | `TestRenderTest_DeriveRender` | done |
 

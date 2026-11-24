@@ -29,7 +29,7 @@ var constrainedDirs = []osRule{
 	{"internal/apple", []string{"darwin", "ios"}},
 	{"platform/apple", []string{"darwin", "ios"}},
 	{"platform/macos", []string{"darwin"}},
-	{"platform/ios", []string{"ios"}},
+	{"platform/ios", []string{"ios", "darwin"}},
 	{"internal/win", []string{"windows"}},
 	{"platform/windows", []string{"windows"}},
 	{"platform/web", []string{"js"}},

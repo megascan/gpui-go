@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M4-windows-platform exit 0 (cross vet + test -c windows amd64/arm64, gofmt, paritycheck -area windows -all-done: 47 rows)

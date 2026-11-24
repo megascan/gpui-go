@@ -22,7 +22,7 @@ Go target: `svg_renderer.go` (package `gpui`), tests in `svg_renderer_test.go`
 | `SvgRenderer::render_parsed` | method | 253 |  | `(SvgRenderer).RenderParsed` | done |
 | `SvgRenderer::render_single_frame` | method | 280 |  | `(SvgRenderer).RenderSingleFrame` | done |
 | `impl From<f32> for SvgSize` | impl | 132 |  | `SvgSizeScaleFactor` | dev:D-INTO |
-| `FontDatabase`, `owned_face`, `cached_fallback_face`, `underline_width`, `load_bundled_fonts`, `fix_generic_font_families` (text and embedded images in SVG through okage) | struct | 371 |  | `fontDatabase` | dev:L-SVGTEXT |
+| `FontDatabase`, `owned_face`, `cached_fallback_face`, `underline_width`, `load_bundled_fonts`, `fix_generic_font_families` (text and embedded images in SVG through okage) | extern | 371 |  | `fontDatabase` | dev:L-SVGTEXT |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
@@ -135,7 +135,7 @@ Go target: `text_system.go` (package `gpui`), tests in `text_system_test.go`
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
 | `caches_resolved_font_fallbacks` | test | 1302 |  | `TestTextSystemFontResolutionTests_CachesResolvedFontFallbacks` | done |
-| `pooled_line_wrappers_do_not_retain_text_system` | test | 1329 |  | `TestTextSystemLineWrapperPoolTests_PooledLineWrappersDoNotRetainTextSystem` | blocked:M0-line-wrapper |
+| `pooled_line_wrappers_do_not_retain_text_system` | test | 1329 |  | `TestTextSystemLineWrapperPoolTests_PooledLineWrappersDoNotRetainTextSystem` | done |
 | `bounds_retained_missing_glyphs` | test | 1351 |  | `TestTextSystemMissingGlyphTests_BoundsRetainedMissingGlyphs` | done |
 | `dropping_receiver_closes_and_clears_reports` | test | 1373 |  | `TestTextSystemMissingGlyphTests_DroppingReceiverClosesAndClearsReports` | done |
 

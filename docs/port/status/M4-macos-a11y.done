@@ -1,0 +1,1 @@
+M4-macos-a11y: sh docs/port/verify.sh M4-macos-a11y exit 0 (darwin arm64+amd64 vet and test -c for a11y/macos and platform/macos, gofmt clean, paritycheck ext-a11y-macos -all-done: 173 rows)

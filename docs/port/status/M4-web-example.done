@@ -1,0 +1,1 @@
+M4-web-example: sh docs/port/verify.sh M4-web-example exit 0 (wasm vet and build of ./examples/web_hello_web, gofmt clean, paritycheck -area web -all-done -allow-blocked 96 rows). Node: test_queue.mjs PASS (8 workers, 524288 items). Not run: font-fallback and http drivers (need a browser window, see owner-checks).

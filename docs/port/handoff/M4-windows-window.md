@@ -1,0 +1,5 @@
+# M4-windows-window handoffs
+
+- M4-windows-platform: stubs.go now holds only `WindowCreationInfo` (platform.rs fields, unexported); move it into platform.go and delete stubs.go. Create windows with `NewWindowsWindow(handle, params, creationInfo)`; `dropTargetHelper` is `*IDropTargetHelper` (CoCreateInstance CLSID_DragDropHelper, window.go declares the wrapper; each window AddRefs it). `mainReceiver` is cloned per window and closed in `WindowsWindow.Close`. `windowFromHwnd(hwnd) (*WindowsWindowInner, bool)` is upstream's `window_from_hwnd`. `WindowsWindow.Close` is upstream's Drop.
+- M4-windows-a11y: a11y.go is the seam: `newA11yAdapter(hwnd, isFocused, *A11yActionHandler) *a11ywin.Adapter` returns nil; fill it and `A11yState.updateIfActive`, `updateWindowFocusState`, `handleWMGetObject`, `raiseA11yEvents`. `A11yState{adapter, activationHandler}`, `A11yActivationHandler.RequestInitialTree` and `A11yActionHandler.DoAction` are in window.go.
+- M4-ci-windows: run `TestWindow_DoubleClickInterval` / `TestWindow_DoubleClickSpatialTolerance` on the runner.

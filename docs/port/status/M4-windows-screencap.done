@@ -1,0 +1,4 @@
+M4-windows-screencap: sh docs/port/verify.sh M4-windows-screencap exited 0 (2026-11-24).
+- windows amd64 + arm64: go vet and go test -c on ./internal/win/wgc/... ./internal/win/screencap/... clean; gofmt clean.
+- paritycheck -area ext-scap-windows -all-done: 227 rows checked.
+Tests run only on the Windows runner (M4-ci-windows).

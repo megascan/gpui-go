@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M4-windows-directx-renderer exit 0; paritycheck -area windows -done gpui_windows/src/directx_renderer.rs ok

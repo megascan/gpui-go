@@ -10,9 +10,9 @@ Go target: `bench_focus_cleanup_test.go` (package `gpui_test`), tests in `bench_
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `no_drops` | gpui::bench(inputs = [0, 100, 1_000, 10_000], input_name = "handles", group = "focus_cleanup_no_drops_10000_effects", fps = 120) | 13 |  | `BenchmarkFocusCleanup_NoDrops` | todo |
-| `final_drops` | gpui::bench(inputs = [10_000], input_name = "handles", group = "focus_cleanup_final_drops_10000_effects", fps = 120) | 23 |  | `BenchmarkFocusCleanup_FinalDrops` | todo |
-| `final_drops_with_windows` | gpui::bench(inputs = [1, 10], input_name = "windows", group = "focus_cleanup_final_drops_with_windows_10000_handles_10000_effects", fps = 120) | 33 |  | `BenchmarkFocusCleanup_FinalDropsWithWindows` | todo |
+| `no_drops` | gpui::bench(inputs = [0, 100, 1_000, 10_000], input_name = "handles", group = "focus_cleanup_no_drops_10000_effects", fps = 120) | 13 |  | `BenchmarkFocusCleanup_NoDrops` | blocked:M3-bench-context |
+| `final_drops` | gpui::bench(inputs = [10_000], input_name = "handles", group = "focus_cleanup_final_drops_10000_effects", fps = 120) | 23 |  | `BenchmarkFocusCleanup_FinalDrops` | blocked:M3-bench-context |
+| `final_drops_with_windows` | gpui::bench(inputs = [1, 10], input_name = "windows", group = "focus_cleanup_final_drops_with_windows_10000_handles_10000_effects", fps = 120) | 33 |  | `BenchmarkFocusCleanup_FinalDropsWithWindows` | blocked:M3-bench-context |
 
 ## gpui/tests/action_macros.rs
 
@@ -20,7 +20,7 @@ Go target: `integration_action_macros_test.go` (package `gpui_test`), tests in `
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_action_macros` | test | 7 |  | `TestActionMacros_ActionMacros` | todo |
+| `test_action_macros` | test | 7 |  | `TestActionMacros_ActionMacros` | done |
 
 ## gpui/tests/eq_hash.rs
 
@@ -28,6 +28,6 @@ Go target: `integration_eq_hash_test.go` (package `gpui_test`), tests in `integr
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `pixels_hash_agrees_with_equality_on_signed_zero` | test | 6 |  | `TestEqHash_PixelsHashAgreesWithEqualityOnSignedZero` | todo |
-| `render_glyph_params_hash_agrees_with_equality_on_signed_zero` | test | 15 |  | `TestEqHash_RenderGlyphParamsHashAgreesWithEqualityOnSignedZero` | todo |
+| `pixels_hash_agrees_with_equality_on_signed_zero` | test | 6 |  | `TestEqHash_PixelsHashAgreesWithEqualityOnSignedZero` | done |
+| `render_glyph_params_hash_agrees_with_equality_on_signed_zero` | test | 15 |  | `TestEqHash_RenderGlyphParamsHashAgreesWithEqualityOnSignedZero` | done |
 

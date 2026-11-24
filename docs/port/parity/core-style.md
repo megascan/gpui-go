@@ -32,15 +32,15 @@ Go target: `path_builder.go` (package `gpui`)
 | `PathBuilder::rotate` | method | 274 |  | `(PathBuilder).Rotate` | done |
 | `PathBuilder::build` | method | 284 |  | `(PathBuilder).Build` | done |
 | `Path` | struct | 387 |  | `Path` | done |
-| `pub use lyon_path::math::Transform` | type | 8 |  | `Transform` | done |
-| `pub use lyon_path::FillRule` | type | 9 |  | `FillRule` | done |
+| `pub use lyon_path::math::Transform` | re-export | 8 |  | `Transform` | done |
+| `pub use lyon_path::FillRule` | re-export | 9 |  | `FillRule` | done |
 | `FillRule::EvenOdd` (re-export) | variant | 9 |  | `FillRuleEvenOdd` | done |
 | `FillRule::NonZero` (re-export) | variant | 9 |  | `FillRuleNonZero` | done |
-| `pub use lyon_path::LineCap` | type | 9 |  | `LineCap` | done |
+| `pub use lyon_path::LineCap` | re-export | 9 |  | `LineCap` | done |
 | `LineCap::Butt` (re-export) | variant | 9 |  | `LineCapButt` | done |
 | `LineCap::Square` (re-export) | variant | 9 |  | `LineCapSquare` | done |
 | `LineCap::Round` (re-export) | variant | 9 |  | `LineCapRound` | done |
-| `pub use lyon_path::LineJoin` | type | 9 |  | `LineJoin` | done |
+| `pub use lyon_path::LineJoin` | re-export | 9 |  | `LineJoin` | done |
 | `LineJoin::Miter` (re-export) | variant | 9 |  | `LineJoinMiter` | done |
 | `LineJoin::MiterClip` (re-export) | variant | 9 |  | `LineJoinMiterClip` | done |
 | `LineJoin::Round` (re-export) | variant | 9 |  | `LineJoinRound` | done |

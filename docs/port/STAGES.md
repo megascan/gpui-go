@@ -1807,7 +1807,7 @@ go run ./internal/cmd/paritycheck -area ext-a11y-macos -all-done
 - Verify (`sh docs/port/verify.sh M4-ios-app` runs exactly these, from the worktree root):
 
 ```sh
-GOOS=ios GOARCH=arm64 CGO_ENABLED=0 go vet ./internal/apple/... ./platform/ios/... ./platform && GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go test -c -o /dev/null ./platform/ios/... && test -z "$(gofmt -l platform/ios internal/apple/uikit)"
+sh docs/port/ios-vet.sh ./internal/apple/... ./platform/ios/... ./platform && GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go test -c -o /dev/null ./platform/ios/... && test -z "$(gofmt -l platform/ios internal/apple/uikit)"
 go run ./internal/cmd/paritycheck -area ios -done gpui_ios/src/ios/application.rs,gpui_ios/src/ios/events.rs,gpui_ios/src/ios/platform.rs
 ```
 
@@ -1821,7 +1821,7 @@ go run ./internal/cmd/paritycheck -area ios -done gpui_ios/src/ios/application.r
 - Verify (`sh docs/port/verify.sh M4-ios-window` runs exactly these, from the worktree root):
 
 ```sh
-GOOS=ios GOARCH=arm64 CGO_ENABLED=0 go vet ./internal/apple/... ./platform/ios/... ./platform && GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go test -c -o /dev/null ./platform/ios/... && test -z "$(gofmt -l platform/ios examples/ios_ios)"
+sh docs/port/ios-vet.sh ./internal/apple/... ./platform/ios/... ./platform && GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go test -c -o /dev/null ./platform/ios/... && test -z "$(gofmt -l platform/ios examples/ios_ios)"
 go run ./internal/cmd/paritycheck -area ios -all-done -allow-blocked
 ```
 
