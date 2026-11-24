@@ -89,66 +89,97 @@ Go target: `platform/linux/wayland/serial.go` (package `wayland`), tests in `ser
 | `test_selection_serial_is_unavailable_without_eligible_input` | test | 150 |  | `TestSerial_SelectionSerialIsUnavailableWithoutEligibleInput` | done |
 | `test_zero_is_a_valid_selection_serial` | test | 163 |  | `TestSerial_ZeroIsAValidSelectionSerial` | done |
 
+## gpui_linux/src/linux/wayland/clipboard.rs
+
+Go target: `platform/linux/wayland/clipboard.go` (package `wayland`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Clipboard` | struct | 23 |  | `Clipboard` | done |
+| `ReceiveData` | trait | 39 |  | `ReceiveData` | done |
+| `DataOffer` | struct | 57 |  | `DataOffer` | done |
+| `Clipboard::send_bytes` | method | 235 |  | `(Clipboard).SendBytes` | done |
+
+## gpui_linux/src/linux/wayland/layer_shell.rs
+
+Go target: `platform/linux/wayland/layer_shell.go` (package `wayland`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `wayland_layer` | fn | 5 |  | `waylandLayer` | done |
+| `wayland_anchor` | fn | 14 |  | `layerShellWaylandAnchor` | dev:D-SUBMOD |
+| `wayland_keyboard_interactivity` | fn | 18 |  | `waylandKeyboardInteractivity` | done |
+
+## gpui_linux/src/linux/wayland/popup.rs
+
+Go target: `platform/linux/wayland/popup.go` (package `wayland`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `wayland_anchor` | fn | 5 |  | `popupWaylandAnchor` | dev:D-SUBMOD |
+| `wayland_gravity` | fn | 19 |  | `waylandGravity` | done |
+| `wayland_constraint_adjustment` | fn | 33 |  | `waylandConstraintAdjustment` | done |
+
 ## gpui_linux/src/linux/wayland/window.rs
 
 Go target: `platform/linux/wayland/window.go` (package `wayland`), tests in `window_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `WaylandWindowState` | struct | 103 |  | `WaylandWindowState` | todo |
-| `WaylandSurfaceState` | enum | 148 |  | `WaylandSurfaceState` | todo |
-| `WaylandXdgSurfaceState` | struct | 307 |  | `WaylandXdgSurfaceState` | todo |
-| `WaylandLayerSurfaceState` | struct | 314 |  | `WaylandLayerSurfaceState` | todo |
-| `WaylandPopupSurfaceState` | struct | 319 |  | `WaylandPopupSurfaceState` | todo |
-| `WaylandWindowStatePtr` | struct | 549 |  | `WaylandWindowStatePtr` | todo |
-| `WaylandWindowState::is_transparent` | method | 651 |  | `(WaylandWindowState).IsTransparent` | todo |
-| `WaylandWindowState::primary_output_scale` | method | 668 |  | `(WaylandWindowState).PrimaryOutputScale` | todo |
-| `WaylandWindowState::inset` | method | 690 |  | `(WaylandWindowState).Inset` | todo |
-| `ImeInput` | enum | 768 |  | `IMEInput` | todo |
-| `WaylandWindowStatePtr::handle` | method | 901 |  | `(WaylandWindowStatePtr).Handle` | todo |
-| `WaylandWindowStatePtr::surface` | method | 905 |  | `(WaylandWindowStatePtr).Surface` | todo |
-| `WaylandWindowStatePtr::toplevel` | method | 909 |  | `(WaylandWindowStatePtr).Toplevel` | todo |
-| `WaylandWindowStatePtr::xdg_surface` | method | 914 |  | `(WaylandWindowStatePtr).XdgSurface` | todo |
-| `WaylandWindowStatePtr::layer_surface` | method | 919 |  | `(WaylandWindowStatePtr).LayerSurface` | todo |
-| `WaylandWindowStatePtr::window_geometry` | method | 925 |  | `(WaylandWindowStatePtr).WindowGeometry` | todo |
-| `WaylandWindowStatePtr::ptr_eq` | method | 934 |  | `(WaylandWindowStatePtr).PtrEq` | todo |
-| `WaylandWindowStatePtr::add_child` | method | 938 |  | `(WaylandWindowStatePtr).AddChild` | todo |
-| `WaylandWindowStatePtr::is_blocked` | method | 943 |  | `(WaylandWindowStatePtr).IsBlocked` | todo |
-| `WaylandWindowStatePtr::frame` | method | 948 |  | `(WaylandWindowStatePtr).Frame` | todo |
-| `WaylandWindowStatePtr::frame_callback_fired` | method | 1019 |  | `(WaylandWindowStatePtr).FrameCallbackFired` | todo |
-| `WaylandWindowStatePtr::scheduled_frame_fired` | method | 1028 |  | `(WaylandWindowStatePtr).ScheduledFrameFired` | todo |
-| `WaylandWindowStatePtr::retry_timer_fired` | method | 1037 |  | `(WaylandWindowStatePtr).RetryTimerFired` | todo |
-| `WaylandWindowStatePtr::is_configured` | method | 1046 |  | `(WaylandWindowStatePtr).IsConfigured` | todo |
-| `WaylandWindowStatePtr::schedule_frame` | method | 1050 |  | `(WaylandWindowStatePtr).ScheduleFrame` | todo |
-| `WaylandWindowStatePtr::handle_xdg_surface_event` | method | 1098 |  | `(WaylandWindowStatePtr).HandleXdgSurfaceEvent` | todo |
-| `WaylandWindowStatePtr::handle_toplevel_decoration_event` | method | 1198 |  | `(WaylandWindowStatePtr).HandleToplevelDecorationEvent` | todo |
-| `WaylandWindowStatePtr::handle_fractional_scale_event` | method | 1232 |  | `(WaylandWindowStatePtr).HandleFractionalScaleEvent` | todo |
-| `WaylandWindowStatePtr::handle_toplevel_event` | method | 1239 |  | `(WaylandWindowStatePtr).HandleToplevelEvent` | todo |
-| `WaylandWindowStatePtr::handle_layersurface_event` | method | 1354 |  | `(WaylandWindowStatePtr).HandleLayersurfaceEvent` | todo |
-| `WaylandWindowStatePtr::handle_popup_event` | method | 1392 |  | `(WaylandWindowStatePtr).HandlePopupEvent` | todo |
-| `WaylandWindowStatePtr::handle_surface_event` | method | 1422 |  | `(WaylandWindowStatePtr).HandleSurfaceEvent` | todo |
-| `WaylandWindowStatePtr::handle_ime` | method | 1493 |  | `(WaylandWindowStatePtr).HandleIME` | todo |
-| `WaylandWindowStatePtr::get_ime_area` | method | 1520 |  | `(WaylandWindowStatePtr).GetIMEArea` | todo |
-| `WaylandWindowStatePtr::set_size_and_scale` | method | 1531 |  | `(WaylandWindowStatePtr).SetSizeAndScale` | todo |
-| `WaylandWindowStatePtr::resize` | method | 1577 |  | `(WaylandWindowStatePtr).Resize` | todo |
-| `WaylandWindowStatePtr::rescale` | method | 1581 |  | `(WaylandWindowStatePtr).Rescale` | todo |
-| `WaylandWindowStatePtr::close` | method | 1585 |  | `(WaylandWindowStatePtr).Close` | todo |
-| `WaylandWindowStatePtr::handle_input` | method | 1610 |  | `(WaylandWindowStatePtr).HandleInput` | todo |
-| `WaylandWindowStatePtr::set_focused` | method | 1635 |  | `(WaylandWindowStatePtr).SetFocused` | todo |
-| `WaylandWindowStatePtr::set_hovered` | method | 1647 |  | `(WaylandWindowStatePtr).SetHovered` | todo |
-| `WaylandWindowStatePtr::handle_output_changed` | method | 1665 |  | `(WaylandWindowStatePtr).HandleOutputChanged` | todo |
-| `WaylandWindowStatePtr::set_appearance` | method | 1686 |  | `(WaylandWindowStatePtr).SetAppearance` | todo |
-| `WaylandWindowStatePtr::set_button_layout` | method | 1696 |  | `(WaylandWindowStatePtr).SetButtonLayout` | todo |
-| `WaylandWindowStatePtr::primary_output_scale` | method | 1704 |  | `(WaylandWindowStatePtr).PrimaryOutputScale` | todo |
+| `WaylandWindowState` | struct | 103 |  | `WaylandWindowState` | done |
+| `WaylandSurfaceState` | enum | 148 |  | `WaylandSurfaceState` | done |
+| `WaylandXdgSurfaceState` | struct | 307 |  | `WaylandXdgSurfaceState` | done |
+| `WaylandLayerSurfaceState` | struct | 314 |  | `WaylandLayerSurfaceState` | done |
+| `WaylandPopupSurfaceState` | struct | 319 |  | `WaylandPopupSurfaceState` | done |
+| `WaylandWindowStatePtr` | struct | 549 |  | `WaylandWindowStatePtr` | done |
+| `WaylandWindowState::is_transparent` | method | 651 |  | `(WaylandWindowState).IsTransparent` | done |
+| `WaylandWindowState::primary_output_scale` | method | 668 |  | `(WaylandWindowState).PrimaryOutputScale` | done |
+| `WaylandWindowState::inset` | method | 690 |  | `(WaylandWindowState).Inset` | done |
+| `ImeInput` | enum | 768 |  | `IMEInput` | done |
+| `WaylandWindowStatePtr::handle` | method | 901 |  | `(WaylandWindowStatePtr).Handle` | done |
+| `WaylandWindowStatePtr::surface` | method | 905 |  | `(WaylandWindowStatePtr).Surface` | done |
+| `WaylandWindowStatePtr::toplevel` | method | 909 |  | `(WaylandWindowStatePtr).Toplevel` | done |
+| `WaylandWindowStatePtr::xdg_surface` | method | 914 |  | `(WaylandWindowStatePtr).XdgSurface` | done |
+| `WaylandWindowStatePtr::layer_surface` | method | 919 |  | `(WaylandWindowStatePtr).LayerSurface` | done |
+| `WaylandWindowStatePtr::window_geometry` | method | 925 |  | `(WaylandWindowStatePtr).WindowGeometry` | done |
+| `WaylandWindowStatePtr::ptr_eq` | method | 934 |  | `(WaylandWindowStatePtr).PtrEq` | done |
+| `WaylandWindowStatePtr::add_child` | method | 938 |  | `(WaylandWindowStatePtr).AddChild` | done |
+| `WaylandWindowStatePtr::is_blocked` | method | 943 |  | `(WaylandWindowStatePtr).IsBlocked` | done |
+| `WaylandWindowStatePtr::frame` | method | 948 |  | `(WaylandWindowStatePtr).Frame` | done |
+| `WaylandWindowStatePtr::frame_callback_fired` | method | 1019 |  | `(WaylandWindowStatePtr).FrameCallbackFired` | done |
+| `WaylandWindowStatePtr::scheduled_frame_fired` | method | 1028 |  | `(WaylandWindowStatePtr).ScheduledFrameFired` | done |
+| `WaylandWindowStatePtr::retry_timer_fired` | method | 1037 |  | `(WaylandWindowStatePtr).RetryTimerFired` | done |
+| `WaylandWindowStatePtr::is_configured` | method | 1046 |  | `(WaylandWindowStatePtr).IsConfigured` | done |
+| `WaylandWindowStatePtr::schedule_frame` | method | 1050 |  | `(WaylandWindowStatePtr).ScheduleFrame` | done |
+| `WaylandWindowStatePtr::handle_xdg_surface_event` | method | 1098 |  | `(WaylandWindowStatePtr).HandleXdgSurfaceEvent` | done |
+| `WaylandWindowStatePtr::handle_toplevel_decoration_event` | method | 1198 |  | `(WaylandWindowStatePtr).HandleToplevelDecorationEvent` | done |
+| `WaylandWindowStatePtr::handle_fractional_scale_event` | method | 1232 |  | `(WaylandWindowStatePtr).HandleFractionalScaleEvent` | done |
+| `WaylandWindowStatePtr::handle_toplevel_event` | method | 1239 |  | `(WaylandWindowStatePtr).HandleToplevelEvent` | done |
+| `WaylandWindowStatePtr::handle_layersurface_event` | method | 1354 |  | `(WaylandWindowStatePtr).HandleLayersurfaceEvent` | done |
+| `WaylandWindowStatePtr::handle_popup_event` | method | 1392 |  | `(WaylandWindowStatePtr).HandlePopupEvent` | done |
+| `WaylandWindowStatePtr::handle_surface_event` | method | 1422 |  | `(WaylandWindowStatePtr).HandleSurfaceEvent` | done |
+| `WaylandWindowStatePtr::handle_ime` | method | 1493 |  | `(WaylandWindowStatePtr).HandleIME` | done |
+| `WaylandWindowStatePtr::get_ime_area` | method | 1520 |  | `(WaylandWindowStatePtr).GetIMEArea` | done |
+| `WaylandWindowStatePtr::set_size_and_scale` | method | 1531 |  | `(WaylandWindowStatePtr).SetSizeAndScale` | done |
+| `WaylandWindowStatePtr::resize` | method | 1577 |  | `(WaylandWindowStatePtr).Resize` | done |
+| `WaylandWindowStatePtr::rescale` | method | 1581 |  | `(WaylandWindowStatePtr).Rescale` | done |
+| `WaylandWindowStatePtr::close` | method | 1585 |  | `(WaylandWindowStatePtr).Close` | done |
+| `WaylandWindowStatePtr::handle_input` | method | 1610 |  | `(WaylandWindowStatePtr).HandleInput` | done |
+| `WaylandWindowStatePtr::set_focused` | method | 1635 |  | `(WaylandWindowStatePtr).SetFocused` | done |
+| `WaylandWindowStatePtr::set_hovered` | method | 1647 |  | `(WaylandWindowStatePtr).SetHovered` | done |
+| `WaylandWindowStatePtr::handle_output_changed` | method | 1665 |  | `(WaylandWindowStatePtr).HandleOutputChanged` | done |
+| `WaylandWindowStatePtr::set_appearance` | method | 1686 |  | `(WaylandWindowStatePtr).SetAppearance` | done |
+| `WaylandWindowStatePtr::set_button_layout` | method | 1696 |  | `(WaylandWindowStatePtr).SetButtonLayout` | done |
+| `WaylandWindowStatePtr::primary_output_scale` | method | 1704 |  | `(WaylandWindowStatePtr).PrimaryOutputScale` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `failure_tracks_whether_the_surface_has_presented` | test | 727 |  | `TestWindowPresentationStateTests_FailureTracksWhetherTheSurfaceHasPresented` | todo |
-| `only_retry_states_require_presentation` | test | 747 |  | `TestWindowPresentationStateTests_OnlyRetryStatesRequirePresentation` | todo |
-| `square_corners` | test | 2414 |  | `TestWindowRoundedRectTests_SquareCorners` | todo |
-| `independent_corners` | test | 2420 |  | `TestWindowRoundedRectTests_IndependentCorners` | todo |
-| `clamps_radii` | test | 2444 |  | `TestWindowRoundedRectTests_ClampsRadii` | todo |
-| `empty_area` | test | 2457 |  | `TestWindowRoundedRectTests_EmptyArea` | todo |
+| `failure_tracks_whether_the_surface_has_presented` | test | 727 |  | `TestWindowPresentationStateTests_FailureTracksWhetherTheSurfaceHasPresented` | done |
+| `only_retry_states_require_presentation` | test | 747 |  | `TestWindowPresentationStateTests_OnlyRetryStatesRequirePresentation` | done |
+| `square_corners` | test | 2414 |  | `TestWindowRoundedRectTests_SquareCorners` | done |
+| `independent_corners` | test | 2420 |  | `TestWindowRoundedRectTests_IndependentCorners` | done |
+| `clamps_radii` | test | 2444 |  | `TestWindowRoundedRectTests_ClampsRadii` | done |
+| `empty_area` | test | 2457 |  | `TestWindowRoundedRectTests_EmptyArea` | done |
 
 ## Deviations registered here
 

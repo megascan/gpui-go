@@ -3,10 +3,12 @@
 package wayland
 
 import (
+	"os"
 	"slices"
 	"testing"
 
 	gpui "github.com/megascan/gpui-go"
+	"github.com/megascan/gpui-go/platform/linux/internal/common"
 )
 
 func TestClient_RejectsRequiredGlobalsBelowSupportedVersions(t *testing.T) {
@@ -203,4 +205,33 @@ func TestClientFileURLFromPathMatchesRustURL(t *testing.T) {
 			t.Errorf("fileURLFromPath(%q) = %q, want %q", path, got, want)
 		}
 	}
+}
+
+func TestClient_AttachClose(t *testing.T) {
+	if os.Getenv("GPUI_TEST_DISPLAY") != "1" || os.Getenv("WAYLAND_DISPLAY") == "" {
+		t.Skip("needs WAYLAND_DISPLAY and GPUI_TEST_DISPLAY=1; run under dbus-run-session")
+	}
+	loop, err := common.NewEventLoop()
+	if err != nil {
+		t.Fatal(err)
+	}
+	linuxCommon, _, _ := common.NewLinuxCommon(loop.GetSignal())
+	defer linuxCommon.Close()
+	conn, err := Attach(loop.Handle(), linuxCommon, gpui.GraphicalEnvironmentDetect(), gpui.None[int](), gpui.None[string]())
+	if err != nil {
+		t.Fatal(err)
+	}
+	ptr := conn.ptr()
+	state := conn.state()
+	if len(state.registrations) == 0 {
+		t.Fatal("Attach registered no event sources")
+	}
+	conn.Close()
+	if _, ok := ptr.TryGetClient(); ok {
+		t.Fatal("client state outlived Close")
+	}
+	if state.registrations != nil {
+		t.Fatal("event sources still registered after Close")
+	}
+	conn.Close()
 }
