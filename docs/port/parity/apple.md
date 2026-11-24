@@ -10,7 +10,7 @@ Go target: `-` (package `-`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `run` | fn | 19 | macos,ios | `Run` | todo |
+| `run` | fn | 19 | macos,ios | `internal/cmd/metalhdr`, `stitchedShaderSource` | dev:D-APPLE-METALHDR |
 
 ## gpui_apple/src/dispatcher.rs
 
@@ -73,16 +73,16 @@ Go target: `platform/apple/metal_atlas.go` (package `apple`), tests in `metal_at
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `MetalAtlas` | struct | 15 |  | `MetalAtlas` | todo |
+| `MetalAtlas` | struct | 15 |  | `MetalAtlas` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_remove_clears_stale_keys_from_tiles_by_key` | test | 348 |  | `TestMetalAtlas_RemoveClearsStaleKeysFromTilesByKey` | todo |
-| `test_metal_texture_is_none_after_last_tile_removed` | test | 389 |  | `TestMetalAtlas_MetalTextureIsNoneAfterLastTileRemoved` | todo |
-| `test_remove_deallocates_tile_space_for_reuse` | test | 412 |  | `TestMetalAtlas_RemoveDeallocatesTileSpaceForReuse` | todo |
-| `test_remove_nonexistent_key_is_noop` | test | 440 |  | `TestMetalAtlas_RemoveNonexistentKeyIsNoop` | todo |
-| `test_invalid_upload_does_not_allocate` | test | 449 |  | `TestMetalAtlas_InvalidUploadDoesNotAllocate` | todo |
-| `test_texture_upload_preserves_pixel_layout` | test | 492 |  | `TestMetalAtlas_TextureUploadPreservesPixelLayout` | todo |
+| `test_remove_clears_stale_keys_from_tiles_by_key` | test | 348 |  | `TestMetalAtlas_RemoveClearsStaleKeysFromTilesByKey` | done |
+| `test_metal_texture_is_none_after_last_tile_removed` | test | 389 |  | `TestMetalAtlas_MetalTextureIsNoneAfterLastTileRemoved` | done |
+| `test_remove_deallocates_tile_space_for_reuse` | test | 412 |  | `TestMetalAtlas_RemoveDeallocatesTileSpaceForReuse` | done |
+| `test_remove_nonexistent_key_is_noop` | test | 440 |  | `TestMetalAtlas_RemoveNonexistentKeyIsNoop` | done |
+| `test_invalid_upload_does_not_allocate` | test | 449 |  | `TestMetalAtlas_InvalidUploadDoesNotAllocate` | done |
+| `test_texture_upload_preserves_pixel_layout` | test | 492 |  | `TestMetalAtlas_TextureUploadPreservesPixelLayout` | done |
 
 ## gpui_apple/src/metal_renderer.rs
 
@@ -166,3 +166,8 @@ Go target: `platform/apple/text_system.go` (package `apple`), tests in `text_sys
 | `test_layout_line_zwnj_insertion` | test | 978 |  | `TestTextSystem_LayoutLineZwnjInsertion` | done |
 | `test_layout_line_zwnj_edge_cases` | test | 1029 |  | `TestTextSystem_LayoutLineZwnjEdgeCases` | done |
 
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-APPLE-METALHDR | The build script becomes `internal/cmd/metalhdr` (go:generate in platform/apple/shaders.go, output committed as shaders_scene_gen.go) plus the runtime_shaders path (`stitchedShaderSource` compiled with newLibraryWithSource at start); the prebuilt metallib path is not ported. cbindgen gets the six sources concatenated into one file with inner attributes stripped, where build.rs passes them through Builder::with_src | `gpui_apple/build.rs:19-120`, `gpui_apple/src/metal_renderer.rs:37-40` | Go has no build scripts and cannot run the Metal compiler at build time; DESIGN 8.3 |

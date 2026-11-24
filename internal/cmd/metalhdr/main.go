@@ -1,0 +1,193 @@
+// Command metalhdr generates platform/apple/shaders_scene_gen.go, the scene.h header the Metal
+// shaders are compiled against, by running cbindgen 0.28.0 with the configuration of
+// gpui_apple/build.rs over the upstream scene types in _ref. When cbindgen or _ref is missing it
+// prints a message and exits 0, keeping the committed output.
+package main
+
+import (
+	"bytes"
+	"errors"
+	"flag"
+	"fmt"
+	"go/format"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"regexp"
+	"strconv"
+	"strings"
+)
+
+const cbindgenVersion = "cbindgen 0.28.0"
+
+var sourceFiles = []string{
+	"gpui/src/scene.rs",
+	"gpui/src/geometry.rs",
+	"gpui/src/color.rs",
+	"gpui/src/window.rs",
+	"gpui/src/platform.rs",
+	"gpui_apple/src/metal_renderer.rs",
+}
+
+var exportInclude = []string{
+	"Bounds",
+	"Corners",
+	"Edges",
+	"Size",
+	"Pixels",
+	"Hsla",
+	"ContentMask",
+	"Uniforms",
+	"AtlasTile",
+	"GlobalInputIndex",
+	"PathTileInputIndex",
+	"PathTile",
+	"PathCurve",
+	"PathPaint",
+	"ShadowInputIndex",
+	"Shadow",
+	"QuadInputIndex",
+	"Underline",
+	"UnderlineInputIndex",
+	"Quad",
+	"BorderStyle",
+	"SpriteInputIndex",
+	"MonochromeSprite",
+	"PolychromeSprite",
+	"SurfaceInputIndex",
+	"SurfaceBounds",
+	"TransformationMatrix",
+}
+
+var innerAttribute = regexp.MustCompile(`^\s*(#!\[|//!)`)
+
+var errSkip = errors.New("skipped")
+
+func main() {
+	ref := flag.String("ref", "../../_ref", "upstream zed checkout")
+	out := flag.String("out", "shaders_scene_gen.go", "generated Go file")
+	bin := flag.String("cbindgen", "", "cbindgen binary (default: PATH, then ~/.cargo/bin/cbindgen)")
+	flag.Parse()
+	header, err := generate(*bin, *ref)
+	if errors.Is(err, errSkip) {
+		fmt.Fprintf(os.Stderr, "metalhdr: %v; keeping %s\n", err, *out)
+		return
+	}
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "metalhdr: %v\n", err)
+		os.Exit(1)
+	}
+	src, err := render(header)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "metalhdr: %v\n", err)
+		os.Exit(1)
+	}
+	if err := os.WriteFile(*out, src, 0o644); err != nil {
+		fmt.Fprintf(os.Stderr, "metalhdr: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+func findCbindgen(bin string) (string, error) {
+	var candidates []string
+	if bin != "" {
+		candidates = append(candidates, bin)
+	} else {
+		if path, err := exec.LookPath("cbindgen"); err == nil {
+			candidates = append(candidates, path)
+		}
+		if home, err := os.UserHomeDir(); err == nil {
+			candidates = append(candidates, filepath.Join(home, ".cargo", "bin", "cbindgen"))
+		}
+	}
+	var problems []string
+	for _, path := range candidates {
+		version, err := exec.Command(path, "--version").Output()
+		if err != nil {
+			problems = append(problems, fmt.Sprintf("%s: %v", path, err))
+			continue
+		}
+		if got := strings.TrimSpace(string(version)); got != cbindgenVersion {
+			problems = append(problems, fmt.Sprintf("%s is %q, want %q", path, got, cbindgenVersion))
+			continue
+		}
+		return path, nil
+	}
+	if len(problems) == 0 {
+		return "", fmt.Errorf("cbindgen not found: %w", errSkip)
+	}
+	return "", fmt.Errorf("no usable cbindgen (%s): %w", strings.Join(problems, "; "), errSkip)
+}
+
+func generate(bin, ref string) (string, error) {
+	for _, f := range sourceFiles {
+		if _, err := os.Stat(filepath.Join(ref, f)); err != nil {
+			return "", fmt.Errorf("%s missing: %w", filepath.Join(ref, f), errSkip)
+		}
+	}
+	path, err := findCbindgen(bin)
+	if err != nil {
+		return "", err
+	}
+	dir, err := os.MkdirTemp("", "metalhdr")
+	if err != nil {
+		return "", err
+	}
+	defer os.RemoveAll(dir)
+	var source bytes.Buffer
+	for _, f := range sourceFiles {
+		data, err := os.ReadFile(filepath.Join(ref, f))
+		if err != nil {
+			return "", err
+		}
+		for line := range strings.SplitAfterSeq(string(data), "\n") {
+			if !innerAttribute.MatchString(line) {
+				source.WriteString(line)
+			}
+		}
+		source.WriteString("\n")
+	}
+	srcPath := filepath.Join(dir, "scene.rs")
+	if err := os.WriteFile(srcPath, source.Bytes(), 0o644); err != nil {
+		return "", err
+	}
+	cfgPath := filepath.Join(dir, "cbindgen.toml")
+	if err := os.WriteFile(cfgPath, []byte(config()), 0o644); err != nil {
+		return "", err
+	}
+	outPath := filepath.Join(dir, "scene.h")
+	cmd := exec.Command(path, "-q", "-c", cfgPath, "-o", outPath, srcPath)
+	cmd.Dir = dir
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+	if err := cmd.Run(); err != nil {
+		return "", fmt.Errorf("cbindgen: %w: %s", err, stderr.String())
+	}
+	header, err := os.ReadFile(outPath)
+	if err != nil {
+		return "", err
+	}
+	return string(header), nil
+}
+
+func config() string {
+	var b strings.Builder
+	b.WriteString("language = \"C\"\ninclude_guard = \"SCENE_H\"\nno_includes = true\n\n[export]\ninclude = [")
+	for i, name := range exportInclude {
+		if i > 0 {
+			b.WriteString(", ")
+		}
+		b.WriteString(strconv.Quote(name))
+	}
+	b.WriteString("]\n\n[enum]\nprefix_with_name = true\n")
+	return b.String()
+}
+
+func render(header string) ([]byte, error) {
+	var b bytes.Buffer
+	b.WriteString("// Code generated by metalhdr; DO NOT EDIT.\n\n//go:build darwin\n\npackage apple\n\n")
+	b.WriteString("const sceneHeader = ")
+	b.WriteString(strconv.Quote(header))
+	b.WriteString("\n")
+	return format.Source(b.Bytes())
+}
