@@ -129,7 +129,7 @@ Go target: `platform/apple/open_type.go` (package `apple`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `apply_features_and_fallbacks` | fn | 28 |  | `ApplyFeaturesAndFallbacks` | todo |
+| `apply_features_and_fallbacks` | fn | 28 |  | `ApplyFeaturesAndFallbacks` | done |
 
 ## gpui_apple/src/process_info.rs
 
@@ -153,16 +153,16 @@ Go target: `platform/apple/text_system.go` (package `apple`), tests in `text_sys
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `AppleTextSystem` | struct | 63 |  | `AppleTextSystem` | todo |
-| `AppleTextSystem::new` | assoc-fn | 84 |  | `NewAppleTextSystem` | todo |
-| `family_name` | fn | 752 |  | `FamilyName` | todo |
+| `AppleTextSystem` | struct | 63 |  | `AppleTextSystem` | done |
+| `AppleTextSystem::new` | assoc-fn | 84 |  | `NewAppleTextSystem` | done |
+| `family_name` | fn | 752 |  | `FamilyName` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_reload_family_with_features_and_fallbacks` | test | 791 |  | `TestTextSystem_ReloadFamilyWithFeaturesAndFallbacks` | todo |
-| `test_layout_line_sets_a_lone_run_at_its_exact_size` | test | 814 |  | `TestTextSystem_LayoutLineSetsALoneRunAtItsExactSize` | todo |
-| `test_layout_line_breaks_ligatures_between_runs` | test | 867 |  | `TestTextSystem_LayoutLineBreaksLigaturesBetweenRuns` | todo |
-| `test_layout_line_bom_char` | test | 934 |  | `TestTextSystem_LayoutLineBomChar` | todo |
-| `test_layout_line_zwnj_insertion` | test | 978 |  | `TestTextSystem_LayoutLineZwnjInsertion` | todo |
-| `test_layout_line_zwnj_edge_cases` | test | 1029 |  | `TestTextSystem_LayoutLineZwnjEdgeCases` | todo |
+| `test_reload_family_with_features_and_fallbacks` | test | 791 |  | `TestTextSystem_ReloadFamilyWithFeaturesAndFallbacks` | done |
+| `test_layout_line_sets_a_lone_run_at_its_exact_size` | test | 814 |  | `TestTextSystem_LayoutLineSetsALoneRunAtItsExactSize` | done |
+| `test_layout_line_breaks_ligatures_between_runs` | test | 867 |  | `TestTextSystem_LayoutLineBreaksLigaturesBetweenRuns` | done |
+| `test_layout_line_bom_char` | test | 934 |  | `TestTextSystem_LayoutLineBomChar` | done |
+| `test_layout_line_zwnj_insertion` | test | 978 |  | `TestTextSystem_LayoutLineZwnjInsertion` | done |
+| `test_layout_line_zwnj_edge_cases` | test | 1029 |  | `TestTextSystem_LayoutLineZwnjEdgeCases` | done |
 
