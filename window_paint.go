@@ -1766,6 +1766,7 @@ func (w *Window) drop() {
 	if inputHandler := w.platformWindow.TakeInputHandler(); inputHandler != nil {
 		inputHandler.release()
 	}
+	w.platformWindow.Close()
 }
 
 // SetTooltip sets a tooltip to be rendered for the upcoming frame; call it only during prepaint.

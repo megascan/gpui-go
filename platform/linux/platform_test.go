@@ -65,7 +65,37 @@ func TestPlatformDisplayModeTests_FailedWaylandAttachPreservesHeadlessAppAndAllo
 }
 
 func TestPlatformDisplayModeTests_HeadlessWindowsBlockSwitchingToADisplayServer(t *testing.T) {
-	t.Skip("blocked:M0-window-paint: needs App.OpenWindow, WindowHandle.Update and Window.RemoveWindow")
+	runScenario(t, "HeadlessWindowsBlockSwitchingToADisplayServer", windowingModesAll, func(cx *gpui.AsyncApp) {
+		window, err := cx.OpenWindow(gpui.WindowOptions{}, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[Blank] {
+			return cx.New(func(*gpui.Context[Blank]) *Blank { return &Blank{} })
+		})
+		if err != nil {
+			panic(fmt.Sprintf("headless mode opens headless windows: %v", err))
+		}
+		var attach *gpui.Task[struct{}]
+		cx.Update(func(cx *gpui.App) {
+			attach = cx.RequestWindowing(gpui.WindowingRequestWindowed{Environment: gpui.GraphicalEnvironmentDetect()})
+		})
+		_, err = attach.Await(cx)
+		assertErrorContains(err, "while windows are open")
+
+		if err := window.Update(cx, func(_ *Blank, window *gpui.Window, _ *gpui.Context[Blank]) {
+			window.RemoveWindow()
+		}); err != nil {
+			panic(fmt.Sprintf("close the headless window: %v", err))
+		}
+		cx.Update(func(cx *gpui.App) {
+			attach = cx.RequestWindowing(gpui.WindowingRequestWindowed{Environment: gpui.GraphicalEnvironmentDetect()})
+		})
+		_, err = attach.Await(cx)
+		assertErrorContains(err, "failed to connect to Wayland compositor")
+	})
+}
+
+type Blank struct{}
+
+func (*Blank) Render(*gpui.Window, *gpui.Context[Blank]) gpui.IntoElement {
+	return gpui.Empty{}
 }
 
 func TestPlatformDisplayModeTests_DisplayModesLimitSwitching(t *testing.T) {

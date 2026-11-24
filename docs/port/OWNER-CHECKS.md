@@ -2,7 +2,7 @@
 
 Things only a person can confirm (a device, a browser, an interactive dialog, a screen reader). Folded from docs/port/owner-checks/<stage>.md by the exit stages; keep each item until the owner confirms it.
 
-Folded: M1-linux-platform, M1-linux-screencap, M1-wayland-window, M3-a11y-atspi-bus, M4-apple-text, M4-macos-appkit, M4-macos-platform, M4-web-webgl, M4-web-wgpu-js, M4-windows-a11y-node.
+Folded: M1-linux-platform, M1-linux-screencap, M1-wayland-window, M3-a11y-atspi-bus, M4-apple-text, M4-macos-appkit, M4-macos-platform, M4-web-webgl, M4-web-wgpu-js, M4-windows-a11y-node, M4-ios-app, M4-macos-a11y, M4-web-example, M4-windows-a11y, M4-windows-platform, M4-windows-screencap, M4-windows-shell, M1-exit.
 
 ## M1-linux-platform
 
@@ -57,3 +57,49 @@ Folded: M1-linux-platform, M1-linux-screencap, M1-wayland-window, M3-a11y-atspi-
 ## M0-exit
 
 - YOU: fix GitHub Actions billing / spending limit for megascan/gpui-go (see TECH_DEBT CI-BILLING), then confirm the ci workflow on the draft PR feat/port -> dev is green on ubuntu, macos-14 and windows.
+
+## M4-ios-app
+
+- YOU: on an iOS simulator or device (after M4-ios-window), launch the iOS example; check the launch callback runs once the scene connects, background/foreground/active lifecycle callbacks fire, and the display link pauses in background.
+- YOU: on iOS, open an https URL via `OpenURL` (Safari view controller appears, `Activate` dismisses it) and a custom-scheme URL; open the app from a universal link and a URL scheme and check `OnOpenURLs` gets the full URL with query and fragment.
+- YOU: on iOS, check clipboard read/write, keychain credentials, `Displays`/`PrimaryDisplay` bounds and refresh interval, and that connecting an external display fires `OnDisplaysChanged`.
+
+## M4-macos-a11y
+
+- YOU: on macOS, run any GPUI app window (the hello_world example once it exists) with VoiceOver on (Cmd+F5); check that VoiceOver reads the window's elements, follows focus changes, and that VO+Space activates a button.
+- YOU: on macOS, open Accessibility Inspector (Xcode > Open Developer Tool) on a GPUI window; check that roles, titles, values and frames are correct and that the frames line up with what is on screen on both Retina and non-Retina displays.
+
+## M4-web-example
+
+- YOU: serve examples/web_hello_web as the gallery root (index.html, gallery.js, wasm_exec.js copied from `$(go env GOROOT)/lib/wasm/`, gpui-web-examples.wasm built with `GOOS=js GOARCH=wasm go build -o <dir>/gpui-web-examples.wasm ./examples/web_hello_web`), open `/prime-sieve` in Chrome with WebGPU, check the window renders the prime sieve UI and "Count Primes" runs to completion with the history line.
+- YOU: same page with `?backend=webgl` (WebGL2 fallback), check it renders and runs.
+- YOU: open `/dynamic-fonts` with the network throttled or blocked, check the Devanagari sample falls back and the status line changes to "Font loaded" after the download, and "Font loading failed" when blocked.
+- YOU: run `node test_canvas_fallback.mjs http://127.0.0.1:8080` (needs Chrome, not run here), check it passes.
+- YOU: run `node test_http_client.mjs http://127.0.0.1:8080` (needs Chrome, not run here), check it passes.
+
+## M4-windows-a11y
+
+- YOU: on Windows x64, run a gpui example with a text input under Narrator (or Accessibility Insights' Text pattern explorer) and check reading by character / word / line, caret position and selection (ITextProvider / ITextRangeProvider in a11y/windows/text.go).
+- YOU: on Windows x64, open a gpui example, start Inspect.exe before and after the window appears, and check the tree, focus events and live-region announcements in Narrator (Adapter placeholder/active paths, QueuedEvents.Raise).
+- YOU: on an ARM64 Windows device, repeat the above plus TestSimple_ElementFromPointAndRangeValueSetValue's checks by hand (it skips on arm64).
+
+## M4-windows-platform
+
+- YOU: on Windows, run an example and check the open / save file dialogs, Reveal in Explorer, Open URL, jump list tasks and battery-saver power mode notifications behave like Zed.
+
+## M4-windows-screencap
+
+- YOU: on Windows 10 1903+ or 11, run a gpui example that shares the screen (or `GPUI_TEST_DISPLAY=1 go test -run 'TestCapture_PrimaryMonitor|TestCapturer_MainDisplay' ./internal/win/wgc/ ./internal/win/screencap/`) and check that frames arrive, the yellow capture border appears and disappears on stop, and the cursor shows only when requested.
+- YOU: on a multi-monitor Windows machine, check that the display list shows each monitor's friendly name and that capturing a window target works.
+
+## M4-windows-shell
+
+- YOU: on Windows, run an example that posts a system notification (after App::set_app_identity): the toast appears silently with title, body and action buttons; clicking a button reports its action id, clicking the body reports none; posting the same tag replaces the old toast, dismiss hides it.
+- YOU: on Windows, an app that sets a dock menu and recent workspaces shows them in the taskbar jump list ("Recent Folders" category and Tasks); removing a recent entry from the jump list is reported back on the next update.
+- YOU: on a Windows precision touchpad, two-finger pan scrolls with Started/Moved/Ended phases and inertia, pinch zooms; a new gesture during inertia ends the old one.
+- YOU: on Windows, open a file dialog / prompt, then close its owner window: the dialog closes and the window is destroyed only after it exits; a prompt without a Cancel button ignores Esc and the X button.
+- YOU: on Windows, copy text with metadata, an image (PNG, JPEG, GIF, SVG) and files between gpui and another app (Notepad, Paint, Explorer): CRLF/LF round-trips, metadata survives a gpui-to-gpui copy, a pasted screenshot (CF_DIB) arrives as BMP.
+
+## M1-exit
+
+- YOU: on X11 / XWayland, open examples/hello_world (`go run ./examples/hello_world` with WAYLAND_DISPLAY unset) and compare with Zed upstream on the same machine: the area outside the 500px div is transparent here (Vulkan surface on a 32-bit ARGB visual offers no Opaque alpha mode, so the Inherit fallback is picked as upstream does); confirm upstream shows the same.

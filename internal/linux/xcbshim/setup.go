@@ -2,7 +2,6 @@
 
 package xcbshim
 
-// Byte sizes from xcb/xproto.h: xcb_setup_t, xcb_format_t, xcb_screen_t, xcb_depth_t, xcb_visualtype_t.
 const (
 	setupSize       uintptr = 40
 	formatSize      uintptr = 8

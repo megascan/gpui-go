@@ -622,3 +622,9 @@ Folded by M0-exit from docs/port/debt/<stage>.md for every stage with a docs/por
 
 - `tryToRecoverFromDeviceLost` (directx_devices.go, M4-windows-d3d-atlas) sleeps with time.Sleep between retries as upstream's thread::sleep; HandleDeviceLost inherits it on the main thread.
 - No end-to-end test creates a DirectXRenderer (needs an HWND); first real coverage comes with M4-windows-window and the Windows CI runner.
+
+### M1-exit
+
+- M1-EXIT-X11-ALPHA: on XWayland with the NVIDIA Vulkan driver, X11 windows (32-bit ARGB visual, as upstream) show the desktop where nothing is painted, while Wayland windows are opaque black. Same alpha-mode choice and transparent clear as upstream; owner check filed. The committed docs/port/screenshots/m1/hello_world_x11.png was taken with `-size 500x500`; the M1-exit Verify block still runs shoot without `-size`, so a re-run captures the tiled window and whatever is behind it.
+- M1-EXIT-BUILD-OUT: the M1-exit Verify block runs `go build ./examples/hello_world` without `-o /dev/null`, which writes a ~40 MB `hello_world` binary to the repo root that .gitignore does not cover; delete it after verify and never `git add -A` (fix verify.sh/STAGES.md or .gitignore in the next exit).
+- M1-EXIT-WL-LOCK: internal/linux/wl/display.go locks the OS thread around each libwayland call to read errno; paritycheck -lint flags it until its allowlist names that file.
