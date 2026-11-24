@@ -172,31 +172,31 @@ Go target: `key_dispatch.go` (package `gpui`), tests in `key_dispatch_test.go`
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_keybinding_for_action_bounds` | test | 961 |  | `TestKeyDispatch_KeybindingForActionBounds` | todo |
-| `test_bindings_for_action_hides_targeted_unbind_in_active_context` | test | 979 |  | `TestKeyDispatch_BindingsForActionHidesTargetedUnbindInActiveContext` | todo |
-| `test_bindings_for_action_keeps_targeted_binding_outside_unbind_context` | test | 1011 |  | `TestKeyDispatch_BindingsForActionKeepsTargetedBindingOutsideUnbindContext` | todo |
-| `test_overlay_after_base_restores_shadowed_picker_binding` | test | 1048 |  | `TestKeyDispatch_OverlayAfterBaseRestoresShadowedPickerBinding` | todo |
-| `test_pending_has_binding_state` | test | 1100 |  | `TestKeyDispatch_PendingHasBindingState` | todo |
-| `test_pending_input_observers_notified_on_focus_change_and_blur` | crate::test | 1140 |  | `TestKeyDispatch_PendingInputObserversNotifiedOnFocusChangeAndBlur` | todo |
-| `test_standalone_modifier_dispatch` | crate::test | 1385 |  | `TestKeyDispatch_StandaloneModifierDispatch` | todo |
-| `test_unbound_standalone_modifier_observation` | crate::test | 1445 |  | `TestKeyDispatch_UnboundStandaloneModifierObservation` | todo |
-| `test_raw_modifier_handler_can_suppress_observation` | crate::test | 1476 |  | `TestKeyDispatch_RawModifierHandlerCanSuppressObservation` | todo |
-| `test_pending_modifier_observed_when_binding_resolves` | crate::test | 1539 |  | `TestKeyDispatch_PendingModifierObservedWhenBindingResolves` | todo |
-| `test_combined_shortcut_has_no_standalone_modifier` | crate::test | 1582 |  | `TestKeyDispatch_CombinedShortcutHasNoStandaloneModifier` | todo |
-| `test_keystroke_input_preference` | crate::test | 1626 |  | `TestKeyDispatch_KeystrokeInputPreference` | todo |
-| `test_input_preference_rechecked_after_interception` | crate::test | 1686 |  | `TestKeyDispatch_InputPreferenceRecheckedAfterInterception` | todo |
-| `test_keystroke_interceptors_can_consume_preferred_character_input` | crate::test | 1736 |  | `TestKeyDispatch_KeystrokeInterceptorsCanConsumePreferredCharacterInput` | todo |
-| `test_consumed_modifier_preserves_pending_input` | crate::test | 1757 |  | `TestKeyDispatch_ConsumedModifierPreservesPendingInput` | todo |
-| `test_printable_pending_input_replays_on_timeout` | crate::test | 1817 |  | `TestKeyDispatch_PrintablePendingInputReplaysOnTimeout` | todo |
-| `test_pending_input_timeout_dispatches_shorter_binding` | crate::test | 1851 |  | `TestKeyDispatch_PendingInputTimeoutDispatchesShorterBinding` | todo |
-| `test_running_pending_input_timeout_resets_when_binding_advances` | crate::test | 1885 |  | `TestKeyDispatch_RunningPendingInputTimeoutResetsWhenBindingAdvances` | todo |
-| `test_pending_input_timeout_starts_when_binding_becomes_ambiguous` | crate::test | 1919 |  | `TestKeyDispatch_PendingInputTimeoutStartsWhenBindingBecomesAmbiguous` | todo |
-| `test_invalid_continuation_while_timeout_paused_replays_pending_input` | crate::test | 1952 |  | `TestKeyDispatch_InvalidContinuationWhileTimeoutPausedReplaysPendingInput` | todo |
-| `test_pending_input_timeout_pauses_and_resumes` | crate::test | 1989 |  | `TestKeyDispatch_PendingInputTimeoutPausesAndResumes` | todo |
-| `test_pending_input_timeout_resumes_when_owner_is_released` | crate::test | 2043 |  | `TestKeyDispatch_PendingInputTimeoutResumesWhenOwnerIsReleased` | todo |
-| `test_pending_input_timeout_resets_when_binding_advances` | crate::test | 2079 |  | `TestKeyDispatch_PendingInputTimeoutResetsWhenBindingAdvances` | todo |
-| `test_clearing_pending_input_invalidates_timeout_pause` | crate::test | 2128 |  | `TestKeyDispatch_ClearingPendingInputInvalidatesTimeoutPause` | todo |
-| `test_input_handler_pending` | crate::test | 2150 |  | `TestKeyDispatch_InputHandlerPending` | todo |
+| `test_keybinding_for_action_bounds` | test | 961 |  | `TestKeyDispatch_KeybindingForActionBounds` | done |
+| `test_bindings_for_action_hides_targeted_unbind_in_active_context` | test | 979 |  | `TestKeyDispatch_BindingsForActionHidesTargetedUnbindInActiveContext` | done |
+| `test_bindings_for_action_keeps_targeted_binding_outside_unbind_context` | test | 1011 |  | `TestKeyDispatch_BindingsForActionKeepsTargetedBindingOutsideUnbindContext` | done |
+| `test_overlay_after_base_restores_shadowed_picker_binding` | test | 1048 |  | `TestKeyDispatch_OverlayAfterBaseRestoresShadowedPickerBinding` | done |
+| `test_pending_has_binding_state` | test | 1100 |  | `TestKeyDispatch_PendingHasBindingState` | done |
+| `test_pending_input_observers_notified_on_focus_change_and_blur` | crate::test | 1140 |  | `TestKeyDispatch_PendingInputObserversNotifiedOnFocusChangeAndBlur` | blocked:M0-blocked-tests |
+| `test_standalone_modifier_dispatch` | crate::test | 1385 |  | `TestKeyDispatch_StandaloneModifierDispatch` | blocked:M0-blocked-tests |
+| `test_unbound_standalone_modifier_observation` | crate::test | 1445 |  | `TestKeyDispatch_UnboundStandaloneModifierObservation` | blocked:M0-blocked-tests |
+| `test_raw_modifier_handler_can_suppress_observation` | crate::test | 1476 |  | `TestKeyDispatch_RawModifierHandlerCanSuppressObservation` | blocked:M0-blocked-tests |
+| `test_pending_modifier_observed_when_binding_resolves` | crate::test | 1539 |  | `TestKeyDispatch_PendingModifierObservedWhenBindingResolves` | blocked:M0-blocked-tests |
+| `test_combined_shortcut_has_no_standalone_modifier` | crate::test | 1582 |  | `TestKeyDispatch_CombinedShortcutHasNoStandaloneModifier` | blocked:M0-blocked-tests |
+| `test_keystroke_input_preference` | crate::test | 1626 |  | `TestKeyDispatch_KeystrokeInputPreference` | blocked:M0-blocked-tests |
+| `test_input_preference_rechecked_after_interception` | crate::test | 1686 |  | `TestKeyDispatch_InputPreferenceRecheckedAfterInterception` | blocked:M0-blocked-tests |
+| `test_keystroke_interceptors_can_consume_preferred_character_input` | crate::test | 1736 |  | `TestKeyDispatch_KeystrokeInterceptorsCanConsumePreferredCharacterInput` | blocked:M0-blocked-tests |
+| `test_consumed_modifier_preserves_pending_input` | crate::test | 1757 |  | `TestKeyDispatch_ConsumedModifierPreservesPendingInput` | blocked:M0-blocked-tests |
+| `test_printable_pending_input_replays_on_timeout` | crate::test | 1817 |  | `TestKeyDispatch_PrintablePendingInputReplaysOnTimeout` | blocked:M0-blocked-tests |
+| `test_pending_input_timeout_dispatches_shorter_binding` | crate::test | 1851 |  | `TestKeyDispatch_PendingInputTimeoutDispatchesShorterBinding` | blocked:M0-blocked-tests |
+| `test_running_pending_input_timeout_resets_when_binding_advances` | crate::test | 1885 |  | `TestKeyDispatch_RunningPendingInputTimeoutResetsWhenBindingAdvances` | blocked:M0-blocked-tests |
+| `test_pending_input_timeout_starts_when_binding_becomes_ambiguous` | crate::test | 1919 |  | `TestKeyDispatch_PendingInputTimeoutStartsWhenBindingBecomesAmbiguous` | blocked:M0-blocked-tests |
+| `test_invalid_continuation_while_timeout_paused_replays_pending_input` | crate::test | 1952 |  | `TestKeyDispatch_InvalidContinuationWhileTimeoutPausedReplaysPendingInput` | blocked:M0-blocked-tests |
+| `test_pending_input_timeout_pauses_and_resumes` | crate::test | 1989 |  | `TestKeyDispatch_PendingInputTimeoutPausesAndResumes` | blocked:M0-blocked-tests |
+| `test_pending_input_timeout_resumes_when_owner_is_released` | crate::test | 2043 |  | `TestKeyDispatch_PendingInputTimeoutResumesWhenOwnerIsReleased` | blocked:M0-blocked-tests |
+| `test_pending_input_timeout_resets_when_binding_advances` | crate::test | 2079 |  | `TestKeyDispatch_PendingInputTimeoutResetsWhenBindingAdvances` | blocked:M0-blocked-tests |
+| `test_clearing_pending_input_invalidates_timeout_pause` | crate::test | 2128 |  | `TestKeyDispatch_ClearingPendingInputInvalidatesTimeoutPause` | blocked:M0-blocked-tests |
+| `test_input_handler_pending` | crate::test | 2150 |  | `TestKeyDispatch_InputHandlerPending` | blocked:M0-blocked-tests |
 
 ## gpui/src/keymap.rs
 
@@ -204,45 +204,45 @@ Go target: `keymap.go` (package `gpui`), tests in `keymap_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `KeymapVersion` | struct | 14 |  | `KeymapVersion` | todo |
-| `Keymap` | struct | 18 |  | `Keymap` | todo |
-| `BindingIndex` | struct | 27 |  | `BindingIndex` | todo |
-| `Keymap::new` | assoc-fn | 51 |  | `NewKeymap` | todo |
-| `Keymap::version` | method | 58 |  | `(Keymap).Version` | todo |
-| `Keymap::add_bindings` | method | 63 |  | `(Keymap).AddBindings` | todo |
-| `Keymap::clear` | method | 81 |  | `(Keymap).Clear` | todo |
-| `Keymap::bindings` | method | 89 |  | `(Keymap).Bindings` | todo |
-| `Keymap::bindings_for_action` | method | 95 |  | `(Keymap).BindingsForAction` | todo |
-| `Keymap::all_bindings_for_input` | method | 138 |  | `(Keymap).AllBindingsForInput` | todo |
-| `Keymap::bindings_for_input` | method | 165 |  | `(Keymap).BindingsForInput` | todo |
-| `Keymap::possible_next_bindings_for_input` | method | 285 |  | `(Keymap).PossibleNextBindingsForInput` | todo |
+| `KeymapVersion` | struct | 14 |  | `KeymapVersion` | done |
+| `Keymap` | struct | 18 |  | `Keymap` | done |
+| `BindingIndex` | struct | 27 |  | `BindingIndex` | done |
+| `Keymap::new` | assoc-fn | 51 |  | `NewKeymap` | done |
+| `Keymap::version` | method | 58 |  | `(Keymap).Version` | done |
+| `Keymap::add_bindings` | method | 63 |  | `(Keymap).AddBindings` | done |
+| `Keymap::clear` | method | 81 |  | `(Keymap).Clear` | done |
+| `Keymap::bindings` | method | 89 |  | `(Keymap).Bindings` | done |
+| `Keymap::bindings_for_action` | method | 95 |  | `(Keymap).BindingsForAction` | done |
+| `Keymap::all_bindings_for_input` | method | 138 |  | `(Keymap).AllBindingsForInput` | done |
+| `Keymap::bindings_for_input` | method | 165 |  | `(Keymap).BindingsForInput` | done |
+| `Keymap::possible_next_bindings_for_input` | method | 285 |  | `(Keymap).PossibleNextBindingsForInput` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_keymap` | test | 352 |  | `TestKeymap_Keymap` | todo |
-| `test_depth_precedence` | test | 393 |  | `TestKeymap_DepthPrecedence` | todo |
-| `test_keymap_disabled` | test | 417 |  | `TestKeymap_KeymapDisabled` | todo |
-| `test_multiple_keystroke_binding_disabled` | test | 473 |  | `TestKeymap_MultipleKeystrokeBindingDisabled` | todo |
-| `test_override_multikey` | test | 568 |  | `TestKeymap_OverrideMultikey` | todo |
-| `test_simple_disable` | test | 603 |  | `TestKeymap_SimpleDisable` | todo |
-| `test_disable_weaker_sources_only` | test | 622 |  | `TestKeymap_DisableWeakerSourcesOnly` | todo |
-| `test_fail_to_disable` | test | 691 |  | `TestKeymap_FailToDisable` | todo |
-| `test_disable_deeper` | test | 714 |  | `TestKeymap_DisableDeeper` | todo |
-| `test_pending_match_enabled` | test | 736 |  | `TestKeymap_PendingMatchEnabled` | todo |
-| `test_pending_match_enabled_extended` | test | 759 |  | `TestKeymap_PendingMatchEnabledExtended` | todo |
-| `test_overriding_prefix` | test | 801 |  | `TestKeymap_OverridingPrefix` | todo |
-| `test_context_precedence_with_same_source` | test | 824 |  | `TestKeymap_ContextPrecedenceWithSameSource` | todo |
-| `test_bindings_for_action` | test | 851 |  | `TestKeymap_BindingsForAction` | todo |
-| `test_targeted_unbind_ignores_target_context` | test | 882 |  | `TestKeymap_TargetedUnbindIgnoresTargetContext` | todo |
-| `test_bindings_for_action_keeps_binding_for_narrower_targeted_unbind` | test | 907 |  | `TestKeymap_BindingsForActionKeepsBindingForNarrowerTargetedUnbind` | todo |
-| `test_bindings_for_action_removes_binding_for_broader_targeted_unbind` | test | 939 |  | `TestKeymap_BindingsForActionRemovesBindingForBroaderTargetedUnbind` | todo |
-| `test_source_precedence_sorting` | test | 956 |  | `TestKeymap_SourcePrecedenceSorting` | todo |
-| `test_possible_next_bindings_exclude_null_bindings` | test | 984 |  | `TestKeymap_PossibleNextBindingsExcludeNullBindings` | todo |
-| `test_possible_next_bindings_exclude_unbound_bindings` | test | 1002 |  | `TestKeymap_PossibleNextBindingsExcludeUnboundBindings` | todo |
-| `test_possible_next_bindings_keep_user_binding_over_base_keymap_null` | test | 1024 |  | `TestKeymap_PossibleNextBindingsKeepUserBindingOverBaseKeymapNull` | todo |
-| `test_possible_next_bindings_apply_disabling_by_context` | test | 1047 |  | `TestKeymap_PossibleNextBindingsApplyDisablingByContext` | todo |
-| `test_possible_next_bindings_exclude_longer_chord_disabled_in_deeper_context` | test | 1079 |  | `TestKeymap_PossibleNextBindingsExcludeLongerChordDisabledInDeeperContext` | todo |
-| `test_possible_next_bindings_exclude_disabled_bindings_with_typed_input` | test | 1104 |  | `TestKeymap_PossibleNextBindingsExcludeDisabledBindingsWithTypedInput` | todo |
+| `test_keymap` | test | 352 |  | `TestKeymap_Keymap` | done |
+| `test_depth_precedence` | test | 393 |  | `TestKeymap_DepthPrecedence` | done |
+| `test_keymap_disabled` | test | 417 |  | `TestKeymap_KeymapDisabled` | done |
+| `test_multiple_keystroke_binding_disabled` | test | 473 |  | `TestKeymap_MultipleKeystrokeBindingDisabled` | done |
+| `test_override_multikey` | test | 568 |  | `TestKeymap_OverrideMultikey` | done |
+| `test_simple_disable` | test | 603 |  | `TestKeymap_SimpleDisable` | done |
+| `test_disable_weaker_sources_only` | test | 622 |  | `TestKeymap_DisableWeakerSourcesOnly` | done |
+| `test_fail_to_disable` | test | 691 |  | `TestKeymap_FailToDisable` | done |
+| `test_disable_deeper` | test | 714 |  | `TestKeymap_DisableDeeper` | done |
+| `test_pending_match_enabled` | test | 736 |  | `TestKeymap_PendingMatchEnabled` | done |
+| `test_pending_match_enabled_extended` | test | 759 |  | `TestKeymap_PendingMatchEnabledExtended` | done |
+| `test_overriding_prefix` | test | 801 |  | `TestKeymap_OverridingPrefix` | done |
+| `test_context_precedence_with_same_source` | test | 824 |  | `TestKeymap_ContextPrecedenceWithSameSource` | done |
+| `test_bindings_for_action` | test | 851 |  | `TestKeymap_BindingsForAction` | done |
+| `test_targeted_unbind_ignores_target_context` | test | 882 |  | `TestKeymap_TargetedUnbindIgnoresTargetContext` | done |
+| `test_bindings_for_action_keeps_binding_for_narrower_targeted_unbind` | test | 907 |  | `TestKeymap_BindingsForActionKeepsBindingForNarrowerTargetedUnbind` | done |
+| `test_bindings_for_action_removes_binding_for_broader_targeted_unbind` | test | 939 |  | `TestKeymap_BindingsForActionRemovesBindingForBroaderTargetedUnbind` | done |
+| `test_source_precedence_sorting` | test | 956 |  | `TestKeymap_SourcePrecedenceSorting` | done |
+| `test_possible_next_bindings_exclude_null_bindings` | test | 984 |  | `TestKeymap_PossibleNextBindingsExcludeNullBindings` | done |
+| `test_possible_next_bindings_exclude_unbound_bindings` | test | 1002 |  | `TestKeymap_PossibleNextBindingsExcludeUnboundBindings` | done |
+| `test_possible_next_bindings_keep_user_binding_over_base_keymap_null` | test | 1024 |  | `TestKeymap_PossibleNextBindingsKeepUserBindingOverBaseKeymapNull` | done |
+| `test_possible_next_bindings_apply_disabling_by_context` | test | 1047 |  | `TestKeymap_PossibleNextBindingsApplyDisablingByContext` | done |
+| `test_possible_next_bindings_exclude_longer_chord_disabled_in_deeper_context` | test | 1079 |  | `TestKeymap_PossibleNextBindingsExcludeLongerChordDisabledInDeeperContext` | done |
+| `test_possible_next_bindings_exclude_disabled_bindings_with_typed_input` | test | 1104 |  | `TestKeymap_PossibleNextBindingsExcludeDisabledBindingsWithTypedInput` | done |
 
 ## gpui/src/tab_stop.rs
 
@@ -250,20 +250,20 @@ Go target: `tab_stop.go` (package `gpui`), tests in `tab_stop_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `TabStopOperation` | enum | 23 |  | `TabStopOperation` | todo |
+| `TabStopOperation` | enum | 23 |  | `TabStopOperation` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_tab_handles` | test | 193 |  | `TestTabStop_TabHandles` | todo |
-| `test_tab_non_stop_filtering` | test | 282 |  | `TestTabStop_TabNonStopFiltering` | todo |
-| `test_insert_after_sorting` | test | 393 |  | `TestTabStop_InsertAfterSorting` | todo |
-| `test_with_disabled_tab_stop` | test | 409 |  | `TestTabStop_WithDisabledTabStop` | todo |
-| `test_with_multiple_disabled_tab_stops` | test | 419 |  | `TestTabStop_WithMultipleDisabledTabStops` | todo |
-| `test_tab_group_functionality` | test | 430 |  | `TestTabStop_TabGroupFunctionality` | todo |
-| `test_sibling_groups` | test | 441 |  | `TestTabStop_SiblingGroups` | todo |
-| `test_nested_group` | test | 455 |  | `TestTabStop_NestedGroup` | todo |
-| `test_sibling_nested_groups` | test | 469 |  | `TestTabStop_SiblingNestedGroups` | todo |
-| `test_sibling_nested_groups_out_of_order` | test | 486 |  | `TestTabStop_SiblingNestedGroupsOutOfOrder` | todo |
+| `test_tab_handles` | test | 193 |  | `TestTabStop_TabHandles` | done |
+| `test_tab_non_stop_filtering` | test | 282 |  | `TestTabStop_TabNonStopFiltering` | done |
+| `test_insert_after_sorting` | test | 393 |  | `TestTabStop_InsertAfterSorting` | done |
+| `test_with_disabled_tab_stop` | test | 409 |  | `TestTabStop_WithDisabledTabStop` | done |
+| `test_with_multiple_disabled_tab_stops` | test | 419 |  | `TestTabStop_WithMultipleDisabledTabStops` | done |
+| `test_tab_group_functionality` | test | 430 |  | `TestTabStop_TabGroupFunctionality` | done |
+| `test_sibling_groups` | test | 441 |  | `TestTabStop_SiblingGroups` | done |
+| `test_nested_group` | test | 455 |  | `TestTabStop_NestedGroup` | done |
+| `test_sibling_nested_groups` | test | 469 |  | `TestTabStop_SiblingNestedGroups` | done |
+| `test_sibling_nested_groups_out_of_order` | test | 486 |  | `TestTabStop_SiblingNestedGroupsOutOfOrder` | done |
 
 ## gpui/src/keymap/binding.rs
 
@@ -271,18 +271,18 @@ Go target: `keymap_binding.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `KeyBinding` | struct | 10 |  | `KeyBinding` | todo |
-| `KeyBinding::new` | assoc-fn | 35 |  | `NewKeyBinding` | todo |
-| `KeyBinding::load` | assoc-fn | 51 |  | `KeyBindingLoad` | todo |
-| `KeyBinding::with_meta` | method | 101 |  | `(KeyBinding).WithMeta` | todo |
-| `KeyBinding::set_meta` | method | 107 |  | `(KeyBinding).SetMeta` | todo |
-| `KeyBinding::match_keystrokes` | method | 112 |  | `(KeyBinding).MatchKeystrokes` | todo |
-| `KeyBinding::keystrokes` | method | 127 |  | `(KeyBinding).Keystrokes` | todo |
-| `KeyBinding::action` | method | 132 |  | `(KeyBinding).Action` | todo |
-| `KeyBinding::predicate` | method | 137 |  | `(KeyBinding).Predicate` | todo |
-| `KeyBinding::meta` | method | 142 |  | `(KeyBinding).Meta` | todo |
-| `KeyBinding::action_input` | method | 147 |  | `(KeyBinding).ActionInput` | todo |
-| `KeyBindingMetaIndex` | struct | 166 |  | `KeyBindingMetaIndex` | todo |
+| `KeyBinding` | struct | 10 |  | `KeyBinding` | done |
+| `KeyBinding::new` | assoc-fn | 35 |  | `NewKeyBinding` | done |
+| `KeyBinding::load` | assoc-fn | 51 |  | `KeyBindingLoad` | done |
+| `KeyBinding::with_meta` | method | 101 |  | `(KeyBinding).WithMeta` | done |
+| `KeyBinding::set_meta` | method | 107 |  | `(KeyBinding).SetMeta` | done |
+| `KeyBinding::match_keystrokes` | method | 112 |  | `(KeyBinding).MatchKeystrokes` | done |
+| `KeyBinding::keystrokes` | method | 127 |  | `(KeyBinding).Keystrokes` | done |
+| `KeyBinding::action` | method | 132 |  | `(KeyBinding).Action` | done |
+| `KeyBinding::predicate` | method | 137 |  | `(KeyBinding).Predicate` | done |
+| `KeyBinding::meta` | method | 142 |  | `(KeyBinding).Meta` | done |
+| `KeyBinding::action_input` | method | 147 |  | `(KeyBinding).ActionInput` | done |
+| `KeyBindingMetaIndex` | struct | 166 |  | `KeyBindingMetaIndex` | done |
 
 ## gpui/src/keymap/context.rs
 
@@ -290,39 +290,39 @@ Go target: `keymap_context.go` (package `gpui`), tests in `keymap_context_test.g
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `KeyContext` | struct | 10 |  | `KeyContext` | todo |
-| `ContextEntry` | struct | 14 |  | `ContextEntry` | todo |
-| `KeyContext::new_with_defaults` | assoc-fn | 31 |  | `NewKeyContextWithDefaults` | todo |
-| `KeyContext::primary` | method | 48 |  | `(KeyContext).Primary` | todo |
-| `KeyContext::secondary` | method | 53 |  | `(KeyContext).Secondary` | todo |
-| `KeyContext::parse` | assoc-fn | 63 |  | `KeyContextParse` | todo |
-| `KeyContext::is_empty` | method | 96 |  | `(KeyContext).IsEmpty` | todo |
-| `KeyContext::clear` | method | 101 |  | `(KeyContext).Clear` | todo |
-| `KeyContext::extend` | method | 106 |  | `(KeyContext).Extend` | todo |
-| `KeyContext::add` | method | 115 |  | `(KeyContext).Add` | todo |
-| `KeyContext::set` | method | 124 |  | `(KeyContext).Set` | todo |
-| `KeyContext::contains` | method | 135 |  | `(KeyContext).Contains` | todo |
-| `KeyContext::get` | method | 140 |  | `(KeyContext).Get` | todo |
-| `KeyBindingContextPredicate` | enum | 170 |  | `KeyBindingContextPredicate` | todo |
-| `KeyBindingContextPredicate::parse` | assoc-fn | 247 |  | `KeyBindingContextPredicateParse` | todo |
-| `KeyBindingContextPredicate::depth_of` | method | 258 |  | `(KeyBindingContextPredicate).DepthOf` | todo |
-| `KeyBindingContextPredicate::eval` | method | 269 |  | `(KeyBindingContextPredicate).Eval` | todo |
-| `KeyBindingContextPredicate::eval_inner` | method | 274 |  | `(KeyBindingContextPredicate).EvalInner` | todo |
-| `KeyBindingContextPredicate::is_superset` | method | 325 |  | `(KeyBindingContextPredicate).IsSuperset` | todo |
+| `KeyContext` | struct | 10 |  | `KeyContext` | done |
+| `ContextEntry` | struct | 14 |  | `ContextEntry` | done |
+| `KeyContext::new_with_defaults` | assoc-fn | 31 |  | `NewKeyContextWithDefaults` | done |
+| `KeyContext::primary` | method | 48 |  | `(KeyContext).Primary` | done |
+| `KeyContext::secondary` | method | 53 |  | `(KeyContext).Secondary` | done |
+| `KeyContext::parse` | assoc-fn | 63 |  | `KeyContextParse` | done |
+| `KeyContext::is_empty` | method | 96 |  | `(KeyContext).IsEmpty` | done |
+| `KeyContext::clear` | method | 101 |  | `(KeyContext).Clear` | done |
+| `KeyContext::extend` | method | 106 |  | `(KeyContext).Extend` | done |
+| `KeyContext::add` | method | 115 |  | `(KeyContext).Add` | done |
+| `KeyContext::set` | method | 124 |  | `(KeyContext).Set` | done |
+| `KeyContext::contains` | method | 135 |  | `(KeyContext).Contains` | done |
+| `KeyContext::get` | method | 140 |  | `(KeyContext).Get` | done |
+| `KeyBindingContextPredicate` | enum | 170 |  | `KeyBindingContextPredicate` | done |
+| `KeyBindingContextPredicate::parse` | assoc-fn | 247 |  | `KeyBindingContextPredicateParse` | done |
+| `KeyBindingContextPredicate::depth_of` | method | 258 |  | `(KeyBindingContextPredicate).DepthOf` | done |
+| `KeyBindingContextPredicate::eval` | method | 269 |  | `(KeyBindingContextPredicate).Eval` | done |
+| `KeyBindingContextPredicate::eval_inner` | method | 274 |  | `(KeyBindingContextPredicate).EvalInner` | done |
+| `KeyBindingContextPredicate::is_superset` | method | 325 |  | `(KeyBindingContextPredicate).IsSuperset` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_actions_definition` | test | 521 |  | `TestContext_ActionsDefinition` | todo |
-| `test_parse_context` | test | 537 |  | `TestContext_ParseContext` | todo |
-| `test_parse_identifiers` | test | 551 |  | `TestContext_ParseIdentifiers` | todo |
-| `test_parse_negations` | test | 564 |  | `TestContext_ParseNegations` | todo |
-| `test_parse_equality_operators` | test | 576 |  | `TestContext_ParseEqualityOperators` | todo |
-| `test_parse_boolean_operators` | test | 594 |  | `TestContext_ParseBooleanOperators` | todo |
-| `test_parse_parenthesized_expressions` | test | 654 |  | `TestContext_ParseParenthesizedExpressions` | todo |
-| `test_is_superset` | test | 675 |  | `TestContext_IsSuperset` | todo |
-| `test_child_operator` | test | 698 |  | `TestContext_ChildOperator` | todo |
-| `test_not_operator` | test | 734 |  | `TestContext_NotOperator` | todo |
-| `test_context_display` | test | 814 |  | `TestContext_ContextDisplay` | todo |
+| `test_actions_definition` | test | 521 |  | `TestContext_ActionsDefinition` | done |
+| `test_parse_context` | test | 537 |  | `TestContext_ParseContext` | done |
+| `test_parse_identifiers` | test | 551 |  | `TestContext_ParseIdentifiers` | done |
+| `test_parse_negations` | test | 564 |  | `TestContext_ParseNegations` | done |
+| `test_parse_equality_operators` | test | 576 |  | `TestContext_ParseEqualityOperators` | done |
+| `test_parse_boolean_operators` | test | 594 |  | `TestContext_ParseBooleanOperators` | done |
+| `test_parse_parenthesized_expressions` | test | 654 |  | `TestContext_ParseParenthesizedExpressions` | done |
+| `test_is_superset` | test | 675 |  | `TestContext_IsSuperset` | done |
+| `test_child_operator` | test | 698 |  | `TestContext_ChildOperator` | done |
+| `test_not_operator` | test | 734 |  | `TestContext_NotOperator` | done |
+| `test_context_display` | test | 814 |  | `TestContext_ContextDisplay` | done |
 
 ## gpui/src/platform/keyboard.rs
 
@@ -395,8 +395,19 @@ Go target: `platform_keystroke.go` (package `gpui`)
 - interactive.rs: `PlatformInput` is a sealed interface whose variants are the event structs themselves (`KindName`, `TouchEvent` are interface methods; the crate-private `mouse_event` / `keyboard_event` are `platformInputMouseEvent` / `platformInputKeyboardEvent` returning a pointer to a copy, or nil). `InputEvent` / `KeyEvent` / `MouseEvent` / `GestureEvent` are sealed interfaces implemented by value. Events with `Deref<Target = Modifiers>` (`ModifiersChangedEvent`, `ScrollEvent`, `PinchEvent`, `MouseExitEvent`) embed `Modifiers`. `ClickEvent` is a tagged struct (`Kind`, zero value = Keyboard, upstream's default); `ScrollDelta` a tagged struct whose zero value is `Lines(0,0)`. `FileDropEvent` variants are `FileDropEventEntered`, `...Pending`, `...Submit`, `...Exited`, `...Ended`. `FileDragPaths` entries are `FileDragPath{Path, IsDir}` (D-TUPLE). The `LongPressEvent` / `TouchDragEvent` / `BackGestureEvent` PlatformInput methods live in interactive.go; M0-gestures-spring replaces their stub types and adds their `InputEvent` impls in gestures.go.
 - input.rs: `EntityInputHandler[T]` is implemented by `*T`; provided methods come from `EntityInputHandlerDefaults[T]` (bind with `BindEntityInputHandlerDefaults`). `NewElementInputHandler` panics if `*V` does not implement it (D-COND) and returns `*ElementInputHandler[V]`, which embeds `InputHandlerDefaults` for `ApplePressAndHoldEnabled`.
 
+## Notes (M0-keymap)
+
+- `KeyBindingContextPredicate` is a sealed interface whose variants are value structs (`KeyBindingContextPredicateIdentifier{Name}`, `...Equal{Left, Right}`, `...NotEqual{Left, Right}`, `...Descendant{Parent, Child}`, `...Not{Predicate}`, `...And{Left, Right}`, `...Or{Left, Right}`), so `==` is upstream's structural `PartialEq`; Display is `String()`. A missing predicate (`Option<Rc<...>>`) is a nil interface.
+- `KeyContext` mutators take a pointer receiver; `Clone()` copies the entries (Go slices alias). `Primary` returns a nil-able `*ContextEntry`, `Secondary` an `iter.Seq`, `Get` `(SharedString, bool)`. `TryFrom<&str>` is `KeyContextParse`. Debug is `String()`.
+- `NewKeyBinding(keystrokes, action, context Option[string])` panics on parse errors as upstream's `unwrap`. `MatchKeystrokes` and `Keymap.BindingsForInput` take `[]K` where `*K` implements `AsKeystroke` (upstream `&[impl AsKeystroke]`), so both `[]Keystroke` and `[]KeybindingKeystroke` work; `MatchKeystrokes` returns `(pending, ok)` for `Option<bool>`.
+- `Keymap.Bindings()` returns the keymap's own slice and `BindingsForAction` returns `[]*KeyBinding` into it (upstream's double-ended iterators; callers reverse by index). `Keymap::default()` is `DefaultKeymap()`; `NewKeymap` returns `*Keymap` (upstream shares it as `Rc<RefCell<Keymap>>`).
+- key_dispatch.rs and tab_stop.rs are crate-private: `dispatchTree` (`newDispatchTree`, `pushNode`, `setActiveNode`, `setKeyContext`, `setFocusID`, `setViewID`, `popNode`, `reuseSubtree`, `truncate`, `onKeyEvent`, `onModifiersChanged`, `onAction`, `focusContains`, `availableActions`, `isActionAvailable`, `bindingsForAction`, `highestPrecedenceBindingForAction`, `bindingsForInput`, `possibleNextBindingsForInput`, `dispatchKey`, `flushDispatch`, `dispatchPath`, `focusPath`, `viewPathReversed`, `node`, `focusableNodeID`, `rootNodeID`, `activeNodeID`), `dispatchNode`, `dispatchNodeID`, `reusedSubtree` (`refreshNodeID`, `containsFocus`), `replay`, `dispatchResult`, `keyListener`, `modifiersChangedListener`, `dispatchActionListener`; `tabStopMap` (`insert`, `beginGroup`, `endGroup`, `clear`, `next`, `prev`, `replay`, `paintIndex`, `tabStopCount`, field `insertionHistory`). KeyBinding fields used by the window stages: `action`, `keystrokes`, `contextPredicate`, `meta`, `actionInput`.
+- `tabStopMap` clones focus handles where upstream clones (`insert`, `next`, `prev`) and releases the history's handles in `clear` (upstream's drop). Its tests build `FocusHandle{id, TabStop, TabIndex}` literals because the stub `newFocusHandle` panics.
+- `dispatchTree.availableActions` keeps its result sorted by `D-TYPEORDER` instead of `TypeId`.
+
 ## Deviations registered here
 
 | Id | Deviation | Upstream | Reason |
 |---|---|---|---|
 | D-FLATENUM | `MouseButton::Navigate(NavigationDirection)` is flattened into `MouseButtonNavigateBack` / `MouseButtonNavigateForward` of one comparable `uint8` enum (`MouseButtonNavigate(dir)`, `(MouseButton).Navigation()`); `TouchPhase` puts `Moved` first so the zero value is upstream's `#[default]` (no `Ord` is derived, so order carries no meaning) | `gpui/src/interactive.rs:88-101`, `:453-480` | Keeps the button usable in `switch`, as a map key and as a constant; keeps zero-valued events equal to upstream's `Default` |
+| D-TYPEORDER | `DispatchTree::available_actions` orders actions by the action type's `PkgPath() + "." + String()` | `gpui/src/key_dispatch.rs:364-380` | `reflect.Type` has no ordering; upstream's `TypeId` order is arbitrary per build, so any total order keeps the binary-search dedup |

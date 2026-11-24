@@ -15,9 +15,6 @@ import (
 // DefaultWindowSize is the default size of a new window (M0-window-core ports it).
 var DefaultWindowSize = NewSize(Px(1536.), Px(1095.))
 
-// Keymap is a collection of key bindings (M0-keymap ports it).
-type Keymap struct{}
-
 // PlatformGestures are the platform's gesture recognition services (M0-gestures-spring ports it).
 type PlatformGestures interface {
 	Tuning() GestureTuning
@@ -330,14 +327,13 @@ func (h FocusHandle) Focus(window *Window, cx *App) {
 	panic("gpui: unimplemented FocusHandle.Focus")
 }
 
-// Clone returns a new counted handle (M0-window-core ports it).
+// Clone returns a new counted handle (M0-window-core ports it). The placeholder body returns a copy of h.
 func (h FocusHandle) Clone() FocusHandle {
-	panic("gpui: unimplemented FocusHandle.Clone")
+	return h
 }
 
-// Release drops this handle (M0-window-core ports it).
+// Release drops this handle (M0-window-core ports it). The placeholder body does nothing.
 func (h FocusHandle) Release() {
-	panic("gpui: unimplemented FocusHandle.Release")
 }
 
 // Focusable is implemented by views that have a focus handle (M0-window-core ports it).
@@ -901,27 +897,6 @@ func (w *Window) clearPendingKeystrokes(cx *App) {
 	panic("gpui: unimplemented Window.clearPendingKeystrokes")
 }
 
-// KeyBinding is a keybinding and its associated metadata (M0-keymap ports it).
-type KeyBinding struct{}
-
-// KeyContext is a set of identifiers and key-value pairs that keymap contexts match against (M0-keymap ports it).
-type KeyContext struct{}
-
-// AddBindings adds bindings to the keymap (M0-keymap ports it).
-func (k *Keymap) AddBindings(bindings []KeyBinding) {
-	panic("gpui: unimplemented Keymap.AddBindings")
-}
-
-// Clear removes every binding from the keymap (M0-keymap ports it).
-func (k *Keymap) Clear() {
-	panic("gpui: unimplemented Keymap.Clear")
-}
-
-// AllBindingsForInput returns the bindings that match input, ignoring context (M0-keymap ports it).
-func (k *Keymap) AllBindingsForInput(input []Keystroke) []KeyBinding {
-	panic("gpui: unimplemented Keymap.AllBindingsForInput")
-}
-
 // PromptHandle is a handle to a prompt that the prompt renderer resolves (M0-window-dispatch ports it).
 type PromptHandle struct{}
 
@@ -970,11 +945,6 @@ type promptBuilder interface {
 type promptBuilderDefault struct{}
 
 func (promptBuilderDefault) isPromptBuilder() {}
-
-// DefaultKeymap returns an empty keymap (M0-keymap ports it). The placeholder body returns a zero Keymap.
-func DefaultKeymap() *Keymap {
-	return &Keymap{}
-}
 
 // Inspector manages inspector state (M0-element ports it).
 type Inspector struct{}
