@@ -199,7 +199,7 @@ Go target: `platform/macos/window.go` (package `macos`), tests in `window_test.g
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `display_id_for_screen_handles_missing_metadata` | test | 4298 |  | `TestWindow_DisplayIDForScreenHandlesMissingMetadata` | blocked:M4-macos-window-objc |
+| `display_id_for_screen_handles_missing_metadata` | test | 4298 |  | `TestWindow_DisplayIDForScreenHandlesMissingMetadata` | done |
 
 ## gpui_macos/src/window_appearance.rs
 
@@ -233,3 +233,4 @@ Go target: `platform/macos/window_native_views.go` (package `macos`), tests in `
 | D-MACOS-CARBON | The Carbon / HIToolbox externs of `platform.rs` (TIS*, UCKeyTranslate, LMGetKbdType, kTIS* statics) are lazily resolved purego bindings in `platform.go`, loaded by `loadCarbon`; `CFDataGetBytePtr` is bound there too | `gpui_macos/src/platform.rs:1652-1680` | `#[link(name = "Carbon")]` has no purego counterpart; resolved on first use instead of at link time |
 | D-MACOS-PLATFORMIVAR | The `platform` ivar of `GPUIApplication` / `GPUIApplicationDelegate` is a package map from the object to its `*MacPlatform` (`setMacPlatformIvar` / `getMacPlatform`, same panic messages); the classes are registered lazily by `NewMacPlatform` instead of a `#[ctor]` | `gpui_macos/src/platform.rs:60-163,1324-1346` | Go pointers cannot be stored in Objective-C ivars |
 | D-MACOS-SCKFRAME | `ScreenCaptureFrame.Frame` is the sample buffer's CVImageBufferRef borrowed for the duration of the frame callback, not a retained `CVImageBuffer` released on drop | `gpui_macos/src/screen_capture.rs:264-277` | Go has no drop to release a retained frame; callers that keep a frame retain it |
+| D-MACOS-WINDOWIVAR | The `windowState` ivar of `GPUIWindow` / `GPUIPanel` / `GPUIView` is the package map behind `storeWindowState` / `loadWindowState` / `clearWindowState`; `get_window_state` panics with the ivar's `expect` message when the object has no entry, and the classes are registered lazily on first use (`sync.OnceValue`) instead of a `#[ctor]` | `gpui_macos/src/window.rs:78-545,2651-2720` | Go pointers cannot be stored in Objective-C ivars |

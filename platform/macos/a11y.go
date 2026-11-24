@@ -13,6 +13,7 @@ type a11yQueuedEvents interface {
 
 type a11yAdapter interface {
 	UpdateIfActive(updateFactory func() a11y.TreeUpdate) (a11yQueuedEvents, bool)
+	UpdateViewFocusState(isFocused bool) (a11yQueuedEvents, bool)
 	Close()
 }
 

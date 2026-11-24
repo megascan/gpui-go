@@ -4,73 +4,8 @@ package macos
 
 import (
 	gpui "github.com/megascan/gpui-go"
-	"github.com/megascan/gpui-go/internal/apple/gcd"
 	"github.com/megascan/gpui-go/internal/apple/objc"
 )
-
-func windowClass() objc.Class {
-	panic("gpui: unimplemented windowClass")
-}
-
-func panelClass() objc.Class {
-	panic("gpui: unimplemented panelClass")
-}
-
-func viewClass() objc.Class {
-	panic("gpui: unimplemented viewClass")
-}
-
-func blurredViewClass() objc.Class {
-	panic("gpui: unimplemented blurredViewClass")
-}
-
-func windowStateArchiverDelegateClass() objc.Class {
-	panic("gpui: unimplemented windowStateArchiverDelegateClass")
-}
-
-func windowStateUnarchiverClass() objc.Class {
-	panic("gpui: unimplemented windowStateUnarchiverClass")
-}
-
-func isGpuiWindow(window objc.ID) bool {
-	panic("gpui: unimplemented isGpuiWindow")
-}
-
-func getWindowState(object objc.ID) *lockedWindowState {
-	panic("gpui: unimplemented getWindowState")
-}
-
-func addMouseTrackingArea(nativeView objc.ID) {
-	panic("gpui: unimplemented addMouseTrackingArea")
-}
-
-func nativeCursor(style gpui.CursorStyle) objc.ID {
-	panic("gpui: unimplemented nativeCursor")
-}
-
-func visibility(state *macWindowState) gpui.WindowVisibility {
-	panic("gpui: unimplemented visibility")
-}
-
-func isMacosVersionAtLeast(version nsOperatingSystemVersion) bool {
-	panic("gpui: unimplemented isMacosVersionAtLeast")
-}
-
-func nsErrorDescription(err objc.ID) string {
-	panic("gpui: unimplemented nsErrorDescription")
-}
-
-func stepCallback() gcd.Function {
-	panic("gpui: unimplemented stepCallback")
-}
-
-func metalFrame(windowState *lockedWindowState, update objc.ID) {
-	panic("gpui: unimplemented metalFrame")
-}
-
-func displayIDForScreen(screen objc.ID) (uint32, bool) {
-	panic("gpui: unimplemented displayIDForScreen")
-}
 
 type nativeViews struct {
 	background            gpui.Option[gpui.Rgba]
@@ -103,4 +38,28 @@ func nativeViewsAttach(windowState *lockedWindowState, id gpui.NativeViewID, vie
 
 func nativeViewsSetFocused(windowState *lockedWindowState, id gpui.Option[gpui.NativeViewID]) {
 	panic("gpui: unimplemented nativeViewsSetFocused")
+}
+
+func nativeViewsAddWindowMethods() []objc.MethodDef {
+	panic("gpui: unimplemented nativeViewsAddWindowMethods")
+}
+
+func nativeViewsAddViewMethods() []objc.MethodDef {
+	panic("gpui: unimplemented nativeViewsAddViewMethods")
+}
+
+func checkPointerAfterFrame(windowState *lockedWindowState) {
+	panic("gpui: unimplemented checkPointerAfterFrame")
+}
+
+func nativeViewSetsCursor(state *macWindowState) bool {
+	panic("gpui: unimplemented nativeViewSetsCursor")
+}
+
+func isRoutingKeyEquivalent(windowState *lockedWindowState) bool {
+	panic("gpui: unimplemented isRoutingKeyEquivalent")
+}
+
+func gpuiViewIsFocused(state *macWindowState) bool {
+	panic("gpui: unimplemented gpuiViewIsFocused")
 }

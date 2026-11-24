@@ -10,8 +10,11 @@ import (
 	"image"
 	"log/slog"
 	"path/filepath"
+	"strings"
 	"sync"
 	"sync/atomic"
+	"time"
+	"unicode"
 	"unsafe"
 	"weak"
 
@@ -20,7 +23,9 @@ import (
 	gpui "github.com/megascan/gpui-go"
 	"github.com/megascan/gpui-go/a11y"
 	"github.com/megascan/gpui-go/internal/apple/appkit"
+	"github.com/megascan/gpui-go/internal/apple/cf"
 	"github.com/megascan/gpui-go/internal/apple/gcd"
+	"github.com/megascan/gpui-go/internal/apple/mtl"
 	"github.com/megascan/gpui-go/internal/apple/objc"
 	"github.com/megascan/gpui-go/platform/apple"
 	"github.com/megascan/gpui-go/scheduler"
@@ -2127,4 +2132,1524 @@ func currentCapslock() gpui.Capslock {
 	return gpui.Capslock{
 		On: modifiers.Contains(appkit.NSEventModifierFlagCapsLock),
 	}
+}
+
+type macClasses struct {
+	window                      objc.Class
+	panel                       objc.Class
+	view                        objc.Class
+	blurredView                 objc.Class
+	windowStateArchiverDelegate objc.Class
+	windowStateUnarchiver       objc.Class
+}
+
+var classes = sync.OnceValue(buildWindowClasses)
+
+func windowClass() objc.Class { return classes().window }
+
+func panelClass() objc.Class { return classes().panel }
+
+func viewClass() objc.Class { return classes().view }
+
+func blurredViewClass() objc.Class { return classes().blurredView }
+
+func windowStateArchiverDelegateClass() objc.Class { return classes().windowStateArchiverDelegate }
+
+func windowStateUnarchiverClass() objc.Class { return classes().windowStateUnarchiver }
+
+func mustRegisterClass(name string, superclass string, protocols []string, methods []objc.MethodDef) objc.Class {
+	class, err := objc.RegisterClass(name, objc.GetClass(superclass), protocols, nil, methods)
+	if err != nil {
+		panic(fmt.Sprintf("failed to register %s: %v", name, err))
+	}
+	return class
+}
+
+func buildWindowClasses() macClasses {
+	var c macClasses
+	c.window = buildWindowClass("GPUIWindow", "NSWindow")
+	c.panel = buildWindowClass("GPUIPanel", "NSPanel")
+	viewEvent := func(sel string) objc.MethodDef {
+		return objc.MethodDef{Cmd: objc.Sel(sel), Fn: handleViewEvent}
+	}
+	viewMethods := []objc.MethodDef{
+		{Cmd: objc.Sel("dealloc"), Fn: deallocView},
+		{Cmd: objc.Sel("performKeyEquivalent:"), Fn: handleKeyEquivalent},
+		{Cmd: objc.Sel("keyDown:"), Fn: handleKeyDown},
+		{Cmd: objc.Sel("keyUp:"), Fn: handleKeyUp},
+		viewEvent("mouseDown:"),
+		viewEvent("mouseUp:"),
+		viewEvent("rightMouseDown:"),
+		viewEvent("rightMouseUp:"),
+		viewEvent("otherMouseDown:"),
+		viewEvent("otherMouseUp:"),
+		viewEvent("mouseMoved:"),
+		{Cmd: objc.Sel("resetCursorRects"), Fn: resetCursorRects},
+		viewEvent("pressureChangeWithEvent:"),
+		viewEvent("mouseExited:"),
+		viewEvent("magnifyWithEvent:"),
+		viewEvent("mouseDragged:"),
+		viewEvent("rightMouseDragged:"),
+		viewEvent("otherMouseDragged:"),
+		viewEvent("scrollWheel:"),
+		viewEvent("swipeWithEvent:"),
+		viewEvent("flagsChanged:"),
+		{Cmd: objc.Sel("makeBackingLayer"), Fn: makeBackingLayer},
+		{Cmd: objc.Sel("viewDidChangeBackingProperties"), Fn: viewDidChangeBackingProperties},
+		{Cmd: objc.Sel("setFrameSize:"), Fn: setFrameSize},
+		{Cmd: objc.Sel("displayLayer:"), Fn: displayLayer},
+		{Cmd: objc.Sel("validAttributesForMarkedText"), Fn: validAttributesForMarkedText},
+		{Cmd: objc.Sel("hasMarkedText"), Fn: hasMarkedText},
+		{Cmd: objc.Sel("markedRange"), Fn: markedRange},
+		{Cmd: objc.Sel("selectedRange"), Fn: selectedRange},
+		{Cmd: objc.Sel("firstRectForCharacterRange:actualRange:"), Fn: firstRectForCharacterRange},
+		{Cmd: objc.Sel("insertText:replacementRange:"), Fn: insertText},
+		{Cmd: objc.Sel("setMarkedText:selectedRange:replacementRange:"), Fn: setMarkedText},
+		{Cmd: objc.Sel("unmarkText"), Fn: unmarkText},
+		{Cmd: objc.Sel("attributedSubstringForProposedRange:actualRange:"), Fn: attributedSubstringForProposedRange},
+		{Cmd: objc.Sel("viewDidChangeEffectiveAppearance"), Fn: viewDidChangeEffectiveAppearance},
+		{Cmd: objc.Sel("doCommandBySelector:"), Fn: doCommandBySelector},
+		{Cmd: objc.Sel("acceptsFirstMouse:"), Fn: acceptsFirstMouse},
+		{Cmd: objc.Sel("_opaqueRectForWindowMoveWhenInTitlebar"), Fn: opaqueRectForWindowMoveWhenInTitlebar},
+		{Cmd: objc.Sel("characterIndexForPoint:"), Fn: characterIndexForPoint},
+	}
+	viewMethods = append(viewMethods, nativeViewsAddViewMethods()...)
+	c.view = mustRegisterClass("GPUIView", "NSView", []string{"CALayerDelegate", "NSTextInputClient"}, viewMethods)
+	c.blurredView = mustRegisterClass("BlurredView", "NSVisualEffectView", nil, []objc.MethodDef{
+		{Cmd: objc.Sel("initWithFrame:"), Fn: blurredViewInitWithFrame},
+		{Cmd: objc.Sel("updateLayer"), Fn: blurredViewUpdateLayer},
+	})
+	c.windowStateArchiverDelegate = mustRegisterClass("GPUIWindowStateArchiverDelegate", "NSObject", nil, []objc.MethodDef{
+		{Cmd: objc.Sel("archiver:willEncodeObject:"), Fn: windowStateArchiverWillEncodeObject},
+	})
+	c.windowStateUnarchiver = mustRegisterClass("GPUIWindowStateKeyedUnarchiver", "NSKeyedUnarchiver", nil, []objc.MethodDef{
+		{Cmd: objc.Sel("_windowRestorationOptions"), Fn: windowStateUnarchiverRestorationOptions},
+	})
+	return c
+}
+
+func buildWindowClass(name string, superclass string) objc.Class {
+	methods := []objc.MethodDef{
+		{Cmd: objc.Sel("dealloc"), Fn: deallocWindow},
+	}
+	methods = append(methods, nativeViewsAddWindowMethods()...)
+	methods = append(methods,
+		objc.MethodDef{Cmd: objc.Sel("canBecomeMainWindow"), Fn: yes},
+		objc.MethodDef{Cmd: objc.Sel("canBecomeKeyWindow"), Fn: yes},
+		objc.MethodDef{Cmd: objc.Sel("windowDidResize:"), Fn: windowDidResize},
+		objc.MethodDef{Cmd: objc.Sel("windowDidChangeOcclusionState:"), Fn: windowDidChangeOcclusionState},
+		objc.MethodDef{Cmd: objc.Sel("windowWillEnterFullScreen:"), Fn: windowWillEnterFullscreen},
+		objc.MethodDef{Cmd: objc.Sel("windowDidFailToEnterFullScreen:"), Fn: windowDidFailToEnterFullscreen},
+		objc.MethodDef{Cmd: objc.Sel("windowWillExitFullScreen:"), Fn: windowWillExitFullscreen},
+		objc.MethodDef{Cmd: objc.Sel("windowDidFailToExitFullScreen:"), Fn: windowDidFailToExitFullscreen},
+		objc.MethodDef{Cmd: objc.Sel("windowDidExitFullScreen:"), Fn: windowDidExitFullscreen},
+		objc.MethodDef{Cmd: objc.Sel("windowDidMove:"), Fn: windowDidMove},
+		objc.MethodDef{Cmd: objc.Sel("windowDidChangeScreen:"), Fn: windowDidChangeScreen},
+		objc.MethodDef{Cmd: objc.Sel("windowDidBecomeKey:"), Fn: windowDidChangeKeyStatus},
+		objc.MethodDef{Cmd: objc.Sel("windowDidResignKey:"), Fn: windowDidChangeKeyStatus},
+		objc.MethodDef{Cmd: objc.Sel("windowShouldClose:"), Fn: windowShouldClose},
+		objc.MethodDef{Cmd: objc.Sel("close"), Fn: closeWindow},
+		objc.MethodDef{Cmd: objc.Sel("draggingEntered:"), Fn: draggingEntered},
+		objc.MethodDef{Cmd: objc.Sel("draggingUpdated:"), Fn: draggingUpdated},
+		objc.MethodDef{Cmd: objc.Sel("draggingExited:"), Fn: draggingExited},
+		objc.MethodDef{Cmd: objc.Sel("performDragOperation:"), Fn: performDragOperation},
+		objc.MethodDef{Cmd: objc.Sel("concludeDragOperation:"), Fn: concludeDragOperation},
+		objc.MethodDef{Cmd: objc.Sel("draggingSession:sourceOperationMaskForDraggingContext:"), Fn: draggingSessionSourceOperationMask},
+		objc.MethodDef{Cmd: objc.Sel("draggingSession:endedAtPoint:operation:"), Fn: draggingSessionEnded},
+		objc.MethodDef{Cmd: objc.Sel("addTitlebarAccessoryViewController:"), Fn: addTitlebarAccessoryViewController},
+		objc.MethodDef{Cmd: objc.Sel("moveTabToNewWindow:"), Fn: moveTabToNewWindow},
+		objc.MethodDef{Cmd: objc.Sel("mergeAllWindows:"), Fn: mergeAllWindows},
+		objc.MethodDef{Cmd: objc.Sel("selectNextTab:"), Fn: selectNextTab},
+		objc.MethodDef{Cmd: objc.Sel("selectPreviousTab:"), Fn: selectPreviousTab},
+		objc.MethodDef{Cmd: objc.Sel("toggleTabBar:"), Fn: toggleTabBar},
+	)
+	return mustRegisterClass(name, superclass, []string{"NSDraggingSource"}, methods)
+}
+
+func isGpuiWindow(window objc.ID) bool {
+	return objc.Send[bool](window, objc.Sel("isKindOfClass:"), windowClass()) ||
+		objc.Send[bool](window, objc.Sel("isKindOfClass:"), panelClass())
+}
+
+func getWindowState(object objc.ID) *lockedWindowState {
+	state, ok := loadWindowState(object)
+	if !ok {
+		panic("GPUI window state ivar")
+	}
+	return state
+}
+
+func windowStateIfSet(object objc.ID) (*lockedWindowState, bool) {
+	return loadWindowState(object)
+}
+
+func dropWindowState(object objc.ID) {
+	clearWindowState(object)
+}
+
+func yes(_ objc.ID, _ objc.SEL) bool {
+	return true
+}
+
+func deallocWindow(this objc.ID, _ objc.SEL) {
+	dropWindowState(this)
+	objc.SendSuper[objc.ID](this, objc.Sel("dealloc"))
+}
+
+func deallocView(this objc.ID, _ objc.SEL) {
+	dropWindowState(this)
+	objc.SendSuper[objc.ID](this, objc.Sel("dealloc"))
+}
+
+const (
+	nsTrackingMouseEnteredAndExited objc.NSUInteger = 0x01
+	nsTrackingMouseMoved            objc.NSUInteger = 0x02
+	nsTrackingActiveAlways          objc.NSUInteger = 0x80
+	nsTrackingInVisibleRect         objc.NSUInteger = 0x200
+)
+
+func addMouseTrackingArea(nativeView objc.ID) {
+	options := nsTrackingMouseEnteredAndExited |
+		nsTrackingMouseMoved |
+		nsTrackingActiveAlways |
+		nsTrackingInVisibleRect
+	trackingArea := objc.Send[objc.ID](
+		objc.Alloc(objc.GetClass("NSTrackingArea")),
+		objc.Sel("initWithRect:options:owner:userInfo:"),
+		objc.CGRect{},
+		options,
+		nativeView,
+		objc.Nil,
+	)
+	objc.SendVoid(nativeView, objc.Sel("addTrackingArea:"), trackingArea)
+	objc.Release(trackingArea)
+}
+
+func nativeCursor(style gpui.CursorStyle) objc.ID {
+	cursor := objc.GetClass("NSCursor")
+	send := func(sel string) objc.ID { return objc.SendClass[objc.ID](cursor, objc.Sel(sel)) }
+	switch style {
+	case gpui.CursorStyleArrow:
+		return send("arrowCursor")
+	case gpui.CursorStyleIBeam:
+		return send("IBeamCursor")
+	case gpui.CursorStyleCrosshair:
+		return send("crosshairCursor")
+	case gpui.CursorStyleClosedHand:
+		return send("closedHandCursor")
+	case gpui.CursorStyleOpenHand:
+		return send("openHandCursor")
+	case gpui.CursorStylePointingHand:
+		return send("pointingHandCursor")
+	case gpui.CursorStyleResizeLeftRight:
+		return send("resizeLeftRightCursor")
+	case gpui.CursorStyleResizeUpDown:
+		return send("resizeUpDownCursor")
+	case gpui.CursorStyleResizeLeft:
+		return send("resizeLeftCursor")
+	case gpui.CursorStyleResizeRight:
+		return send("resizeRightCursor")
+	case gpui.CursorStyleResizeColumn:
+		return send("resizeLeftRightCursor")
+	case gpui.CursorStyleResizeRow:
+		return send("resizeUpDownCursor")
+	case gpui.CursorStyleResizeUp:
+		return send("resizeUpCursor")
+	case gpui.CursorStyleResizeDown:
+		return send("resizeDownCursor")
+	case gpui.CursorStyleResizeUpLeftDownRight:
+		return send("_windowResizeNorthWestSouthEastCursor")
+	case gpui.CursorStyleResizeUpRightDownLeft:
+		return send("_windowResizeNorthEastSouthWestCursor")
+	case gpui.CursorStyleIBeamCursorForVerticalLayout:
+		return send("IBeamCursorForVerticalLayout")
+	case gpui.CursorStyleOperationNotAllowed:
+		return send("operationNotAllowedCursor")
+	case gpui.CursorStyleDragLink:
+		return send("dragLinkCursor")
+	case gpui.CursorStyleDragCopy:
+		return send("dragCopyCursor")
+	case gpui.CursorStyleContextualMenu:
+		return send("contextualMenuCursor")
+	}
+	return send("arrowCursor")
+}
+
+func resetCursorRects(this objc.ID, _ objc.SEL) {
+	objc.SendSuper[objc.ID](this, objc.Sel("resetCursorRects"))
+
+	windowState := getWindowState(this)
+	windowState.Lock()
+	if nativeViewSetsCursor(&windowState.macWindowState) {
+		windowState.Unlock()
+		return
+	}
+	cursorStyle := windowState.cursorStyle
+	windowState.Unlock()
+
+	cursor := nativeCursor(cursorStyle)
+
+	bounds := objc.Send[objc.CGRect](this, objc.Sel("bounds"))
+	objc.SendVoid(this, objc.Sel("addCursorRect:cursor:"), bounds, cursor)
+}
+
+func handleKeyEquivalent(this objc.ID, _ objc.SEL, nativeEvent objc.ID) bool {
+	if isRoutingKeyEquivalent(getWindowState(this)) {
+		return false
+	}
+	return handleKeyEvent(this, nativeEvent, true)
+}
+
+func handleKeyDown(this objc.ID, _ objc.SEL, nativeEvent objc.ID) {
+	handleKeyEvent(this, nativeEvent, false)
+}
+
+func handleKeyUp(this objc.ID, _ objc.SEL, nativeEvent objc.ID) {
+	handleKeyEvent(this, nativeEvent, false)
+}
+
+func isIMEInputSourceActive() bool {
+	mustLoadCarbon()
+	source := tisCopyCurrentKeyboardInputSource()
+	if source == objc.Nil {
+		return false
+	}
+
+	sourceType := tisGetInputSourceProperty(source, kTISPropertyInputSourceType)
+	isInputMode := sourceType != objc.Nil &&
+		cf.Equal(cf.TypeRef(sourceType), kTISTypeKeyboardInputMode)
+
+	isASCII := tisGetInputSourceProperty(source, kTISPropertyInputSourceIsASCIICapable)
+	isASCIICapable := isASCII != objc.Nil && cf.Boolean(isASCII).Value()
+
+	cf.Release(cf.TypeRef(source))
+
+	return isInputMode && !isASCIICapable
+}
+
+func inputContextHandleEvent(this objc.ID, nativeEvent objc.ID) bool {
+	inputContext := objc.Send[objc.ID](this, objc.Sel("inputContext"))
+	if inputContext == objc.Nil {
+		return false
+	}
+	return objc.Send[bool](inputContext, objc.Sel("handleEvent:"), nativeEvent)
+}
+
+func handleKeyEvent(this objc.ID, nativeEvent objc.ID, keyEquivalent bool) bool {
+	windowState := getWindowState(this)
+	windowState.Lock()
+
+	windowHeight := windowState.contentSize().Height
+	event := platformInputFromNative(nativeEvent, gpui.Some(windowHeight))
+
+	if event == nil {
+		windowState.Unlock()
+		return false
+	}
+
+	runCallback := func(event gpui.PlatformInput) bool {
+		windowState.Lock()
+		callback := windowState.eventCallback
+		windowState.eventCallback = nil
+		windowState.Unlock()
+		handled := false
+		if callback != nil {
+			handled = !callback(event).Propagate
+		}
+		windowState.Lock()
+		windowState.eventCallback = callback
+		windowState.Unlock()
+		return handled
+	}
+
+	switch keyDownEvent := event.(type) {
+	case gpui.KeyDownEvent:
+		if keyEquivalent {
+			ev := keyDownEvent
+			windowState.lastKeyEquivalent = &ev
+		} else {
+			last := windowState.lastKeyEquivalent
+			windowState.lastKeyEquivalent = nil
+			if last != nil && *last == keyDownEvent {
+				windowState.Unlock()
+				return false
+			}
+		}
+
+		windowState.Unlock()
+
+		markedRange, hasHandler := withInputHandler(this, func(inputHandler *gpui.PlatformInputHandler) gpui.Option[gpui.Range] {
+			return gpui.OptionFrom(inputHandler.MarkedTextRange())
+		})
+		isComposing := hasHandler && markedRange.IsSome()
+
+		keystroke := keyDownEvent.Keystroke
+		keyChar, hasKeyChar := keystroke.KeyChar.Get()
+		isIMEPrintableKey := !isComposing &&
+			hasKeyChar && !strings.ContainsFunc(keyChar, unicode.IsControl) &&
+			!keystroke.Modifiers.Control &&
+			!keystroke.Modifiers.Function &&
+			!keystroke.Modifiers.Platform &&
+			isIMEInputSourceActive()
+		if isIMEPrintableKey {
+			prefers, ok := withInputHandler(this, func(inputHandler *gpui.PlatformInputHandler) bool {
+				return inputHandler.QueryPrefersIMEForPrintableKeys()
+			})
+			isIMEPrintableKey = ok && prefers
+		}
+
+		if isComposing ||
+			isIMEPrintableKey ||
+			(!hasKeyChar &&
+				!keystroke.Modifiers.Control &&
+				!keystroke.Modifiers.Function &&
+				!keystroke.Modifiers.Platform) {
+			windowState.Lock()
+			ks := keystroke
+			windowState.keystrokeForDoCommand = &ks
+			windowState.doCommandHandled = gpui.None[bool]()
+			windowState.Unlock()
+
+			handled := inputContextHandleEvent(this, nativeEvent)
+			windowState.Lock()
+			windowState.keystrokeForDoCommand = nil
+			doCommandHandled := windowState.doCommandHandled
+			windowState.doCommandHandled = gpui.None[bool]()
+			windowState.Unlock()
+			if commandHandled, ok := doCommandHandled.Get(); ok {
+				return commandHandled
+			} else if handled {
+				return true
+			}
+
+			return runCallback(keyDownEvent)
+		}
+
+		if runCallback(keyDownEvent) {
+			return true
+		}
+
+		if keyDownEvent.IsHeld && hasKeyChar {
+			handled, ok := withInputHandler(this, func(inputHandler *gpui.PlatformInputHandler) bool {
+				if !inputHandler.ApplePressAndHoldEnabled() {
+					inputHandler.ReplaceTextInRange(gpui.None[gpui.Range](), keyChar)
+					return true
+				}
+				return false
+			})
+			if ok && handled {
+				return true
+			}
+		}
+
+		if keyEquivalent && keystroke.Modifiers != gpui.ModifiersFunction() {
+			return false
+		}
+
+		return inputContextHandleEvent(this, nativeEvent)
+
+	case gpui.KeyUpEvent:
+		windowState.Unlock()
+		return runCallback(event)
+
+	default:
+		windowState.Unlock()
+		return false
+	}
+}
+
+func handleViewEvent(this objc.ID, _ objc.SEL, nativeEvent objc.ID) {
+	windowState := getWindowState(this)
+	weakWindowState := weak.Make(windowState)
+	windowState.Lock()
+	locked := true
+	defer func() {
+		if locked {
+			windowState.Unlock()
+		}
+	}()
+	windowHeight := windowState.contentSize().Height
+	nativeEventType := appkit.NSEvent(nativeEvent).Type()
+	switch nativeEventType {
+	case appkit.NSEventTypeLeftMouseDown:
+		if windowState.lastLeftMouseDownEvent != nil {
+			windowState.lastLeftMouseDownEvent.Release()
+		}
+		windowState.lastLeftMouseDownEvent = objc.RetainObject(nativeEvent)
+	case appkit.NSEventTypeLeftMouseUp:
+		if windowState.lastLeftMouseDownEvent != nil {
+			windowState.lastLeftMouseDownEvent.Release()
+		}
+		windowState.lastLeftMouseDownEvent = nil
+	}
+	event := platformInputFromNative(nativeEvent, gpui.Some(windowHeight))
+	if event == nil {
+		return
+	}
+
+	switch event.(type) {
+	case gpui.MouseMoveEvent, gpui.MouseDownEvent, gpui.MouseUpEvent, gpui.MousePressureEvent,
+		gpui.MouseExitEvent, gpui.ScrollEvent, gpui.PinchEvent:
+		windowState.cursorVisible.Store(true)
+	}
+
+	switch e := event.(type) {
+	case gpui.MouseDownEvent:
+		if e.Button == gpui.MouseButtonLeft && e.Modifiers.Control {
+			e.Button = gpui.MouseButtonRight
+			e.Modifiers.Control = false
+			e.ClickCount = 1
+			event = e
+		} else if e.Button == gpui.MouseButtonLeft && windowState.firstMouse {
+			e.FirstMouse = true
+			event = e
+			windowState.firstMouse = false
+		}
+	case gpui.MouseUpEvent:
+		if e.Button == gpui.MouseButtonLeft && e.Modifiers.Control {
+			e.Button = gpui.MouseButtonRight
+			e.Modifiers.Control = false
+			e.ClickCount = 1
+			event = e
+		}
+	}
+
+	switch e := event.(type) {
+	case gpui.MouseDownEvent:
+		windowState.Unlock()
+		locked = false
+		inputContextHandleEvent(this, nativeEvent)
+		windowState.Lock()
+		locked = true
+	case gpui.MouseMoveEvent:
+		if e.PressedButton.IsSome() && !windowState.externalFilesDragged {
+			windowState.syntheticDragCounter++
+			executor := windowState.foregroundExecutor
+			dragID := windowState.syntheticDragCounter
+			backgroundExecutor := windowState.backgroundExecutor
+			executor.Spawn(func(s *scheduler.Scope) (struct{}, error) {
+				syntheticDrag(s, weakWindowState, dragID, e, backgroundExecutor)
+				return struct{}{}, nil
+			}).Detach()
+		}
+	case gpui.MouseUpEvent:
+		windowState.syntheticDragCounter++
+	case gpui.ModifiersChangedEvent:
+		if prev, ok := windowState.previousModifiersChangedEvent.(gpui.ModifiersChangedEvent); ok &&
+			prev.Modifiers == e.Modifiers && prev.Capslock == e.Capslock {
+			return
+		}
+		windowState.previousModifiersChangedEvent = event
+	}
+
+	if callback := windowState.eventCallback; callback != nil {
+		windowState.eventCallback = nil
+		windowState.Unlock()
+		locked = false
+		callback(event)
+		windowState.Lock()
+		locked = true
+		windowState.eventCallback = callback
+	}
+}
+
+func visibility(state *macWindowState) gpui.WindowVisibility {
+	isVisible := state.window().OcclusionState()&appkit.NSWindowOcclusionStateVisible != 0
+	if isVisible {
+		return gpui.WindowVisibilityVisible
+	}
+	return gpui.WindowVisibilityHidden
+}
+
+func reportVisibility(windowState *lockedWindowState) {
+	windowState.Lock()
+	if windowState.lastVisibility.IsNone() {
+		windowState.Unlock()
+		return
+	}
+	executor := windowState.foregroundExecutor
+	windowState.Unlock()
+
+	detachOnForeground(executor, func() {
+		windowState.Lock()
+		vis := visibility(&windowState.macWindowState)
+		if windowState.lastVisibility == gpui.Some(vis) {
+			windowState.Unlock()
+			return
+		}
+		windowState.lastVisibility = gpui.Some(vis)
+		callback := windowState.visibilityCallback
+		if callback == nil {
+			windowState.Unlock()
+			return
+		}
+		windowState.visibilityCallback = nil
+		windowState.Unlock()
+		callback(vis)
+		windowState.Lock()
+		windowState.visibilityCallback = callback
+		windowState.Unlock()
+	})
+}
+
+func windowDidChangeOcclusionState(this objc.ID, _ objc.SEL, _ objc.ID) {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	if windowState.window().OcclusionState()&appkit.NSWindowOcclusionStateVisible != 0 {
+		windowState.moveTrafficLight()
+		windowState.startDisplayLink(windowState)
+	} else {
+		windowState.stopDisplayLink()
+	}
+	windowState.Unlock()
+	reportVisibility(windowState)
+}
+
+func windowDidResize(this objc.ID, _ objc.SEL, _ objc.ID) {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	defer windowState.Unlock()
+	windowState.moveTrafficLight()
+}
+
+func windowWillEnterFullscreen(this objc.ID, _ objc.SEL, _ objc.ID) {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	defer windowState.Unlock()
+	windowState.fullscreenRestoreBounds = windowState.bounds()
+	windowState.isExitingFullscreen = false
+	windowState.preFullscreenTrafficLightFrames = windowState.trafficLightFrames
+	windowState.restoreTrafficLight()
+	windowState.applyFullscreenTitlebarOpacity()
+}
+
+func windowDidFailToEnterFullscreen(this objc.ID, _ objc.SEL, _ objc.ID) {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	defer windowState.Unlock()
+	windowState.restoreWindowedTitlebarTransparency()
+	windowState.trafficLightFrames = windowState.preFullscreenTrafficLightFrames
+	windowState.preFullscreenTrafficLightFrames = nil
+	windowState.moveTrafficLight()
+}
+
+func windowWillExitFullscreen(this objc.ID, _ objc.SEL, _ objc.ID) {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	defer windowState.Unlock()
+	windowState.isExitingFullscreen = true
+	windowState.restoreWindowedTitlebarTransparency()
+	windowState.moveTrafficLight()
+}
+
+func windowDidFailToExitFullscreen(this objc.ID, _ objc.SEL, _ objc.ID) {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	defer windowState.Unlock()
+	windowState.isExitingFullscreen = false
+	if windowState.isFullscreen() {
+		windowState.applyFullscreenTitlebarOpacity()
+	}
+	windowState.restoreTrafficLight()
+}
+
+func windowDidExitFullscreen(this objc.ID, _ objc.SEL, _ objc.ID) {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	defer windowState.Unlock()
+	windowState.isExitingFullscreen = false
+	windowState.trafficLightFrames = windowState.preFullscreenTrafficLightFrames
+	windowState.preFullscreenTrafficLightFrames = nil
+	windowState.moveTrafficLight()
+}
+
+func isMacosVersionAtLeast(version nsOperatingSystemVersion) bool {
+	processInfo := objc.SendClass[objc.ID](objc.GetClass("NSProcessInfo"), objc.Sel("processInfo"))
+	return msgSendIsOperatingSystemAtLeast(processInfo, objc.Sel("isOperatingSystemAtLeastVersion:"), version)
+}
+
+func nsErrorDescription(err objc.ID) string {
+	if err == objc.Nil {
+		return "unknown error"
+	}
+	description := objc.Send[objc.ID](err, objc.Sel("localizedDescription"))
+	return nsStringToStr(description)
+}
+
+func windowDidMove(this objc.ID, _ objc.SEL, _ objc.ID) {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	callback := windowState.movedCallback
+	if callback == nil {
+		windowState.Unlock()
+		return
+	}
+	windowState.movedCallback = nil
+	windowState.Unlock()
+	callback()
+	windowState.Lock()
+	windowState.movedCallback = callback
+	windowState.Unlock()
+}
+
+func updateWindowScaleFactor(windowState *lockedWindowState) {
+	windowState.Lock()
+	scaleFactor := windowState.scaleFactor()
+	size := windowState.contentSize()
+	drawableSize := size.ToDevicePixels(scaleFactor)
+	layer := objc.ID(windowState.renderer.LayerPtr())
+	if layer != objc.Nil {
+		objc.SendVoid(layer, objc.Sel("setContentsScale:"), float64(scaleFactor))
+	}
+
+	windowState.renderer.UpdateDrawableSize(drawableSize)
+
+	callback := windowState.resizeCallback
+	if callback == nil {
+		windowState.Unlock()
+		return
+	}
+	windowState.resizeCallback = nil
+	contentSize := windowState.contentSize()
+	scaleFactor = windowState.scaleFactor()
+	windowState.Unlock()
+	callback(contentSize, scaleFactor)
+	windowState.Lock()
+	windowState.resizeCallback = callback
+	windowState.Unlock()
+}
+
+func windowDidChangeScreen(this objc.ID, _ objc.SEL, _ objc.ID) {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	windowState.startDisplayLink(windowState)
+	windowState.Unlock()
+	updateWindowScaleFactor(windowState)
+	reportDisplayChange(windowState)
+}
+
+func reportDisplayChange(windowState *lockedWindowState) {
+	windowState.Lock()
+	executor := windowState.foregroundExecutor
+	windowState.Unlock()
+	detachOnForeground(executor, func() {
+		windowState.Lock()
+		callback := windowState.displayChangedCallback
+		windowState.displayChangedCallback = nil
+		windowState.Unlock()
+		if callback != nil {
+			callback()
+			windowState.Lock()
+			windowState.displayChangedCallback = callback
+			windowState.Unlock()
+		}
+	})
+}
+
+func windowDidChangeKeyStatus(this objc.ID, selector objc.SEL, _ objc.ID) {
+	signalAt := gpui.OptionFrom(gpui.PlatformFrameSignalCapture(scheduler.InstantNow))
+	windowState := getWindowState(this)
+	windowState.Lock()
+	isActive := objc.Send[bool](windowState.nativeWindow, objc.Sel("isKeyWindow"))
+
+	windowState.cursorVisible.Store(true)
+
+	if selector == objc.Sel("windowDidBecomeKey:") && !isActive {
+		nativeWindow := windowState.nativeWindow
+		windowState.Unlock()
+		objc.SendVoid(nativeWindow, objc.Sel("resignKeyWindow"))
+		return
+	}
+
+	executor := windowState.foregroundExecutor
+	windowState.Unlock()
+
+	windowState.Lock()
+	isFocused := isActive && gpuiViewIsFocused(&windowState.macWindowState)
+	var a11yEvents a11yQueuedEvents
+	hasA11yEvents := false
+	if adapter := windowState.a11yAdapter; adapter != nil {
+		a11yEvents, hasA11yEvents = adapter.UpdateViewFocusState(isFocused)
+	}
+	windowState.Unlock()
+	if hasA11yEvents {
+		a11yEvents.Raise()
+	}
+
+	if selector == objc.Sel("windowDidBecomeKey:") && isActive {
+		windowState := getWindowState(this)
+		windowState.Lock()
+
+		if windowState.activatedLeastOnce {
+			if callback := windowState.requestFrameCallback; callback != nil {
+				windowState.requestFrameCallback = nil
+				windowState.renderer.SetPresentsWithTransaction(true)
+				windowState.stopDisplayLink()
+				windowState.Unlock()
+				callback(gpui.RequestFrameOptions{
+					SignalAt:     signalAt,
+					SignalSource: gpui.FrameRequestSourceNativeCallback,
+				})
+
+				windowState.Lock()
+				windowState.requestFrameCallback = callback
+				windowState.renderer.SetPresentsWithTransaction(false)
+				windowState.startDisplayLink(windowState)
+			}
+		} else {
+			windowState.activatedLeastOnce = true
+		}
+		windowState.Unlock()
+	}
+
+	detachOnForeground(executor, func() {
+		windowState.Lock()
+		if isActive {
+			windowState.moveTrafficLight()
+		}
+
+		callback := windowState.activateCallback
+		if callback == nil {
+			windowState.Unlock()
+			return
+		}
+		windowState.activateCallback = nil
+		windowState.Unlock()
+		callback(isActive)
+		windowState.Lock()
+		windowState.activateCallback = callback
+		windowState.Unlock()
+	})
+}
+
+func windowShouldClose(this objc.ID, _ objc.SEL, _ objc.ID) bool {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	callback := windowState.shouldCloseCallback
+	if callback == nil {
+		windowState.Unlock()
+		return true
+	}
+	windowState.shouldCloseCallback = nil
+	windowState.Unlock()
+	shouldClose := callback()
+	windowState.Lock()
+	windowState.shouldCloseCallback = callback
+	windowState.Unlock()
+	return shouldClose
+}
+
+func closeWindow(this objc.ID, _ objc.SEL) {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	windowState.closed.Store(true)
+	closeCallback := windowState.closeCallback
+	windowState.closeCallback = nil
+	simpleFullscreen := windowState.simpleFullscreenState
+	windowState.simpleFullscreenState = nil
+	windowState.Unlock()
+
+	if simpleFullscreen != nil {
+		popSimpleFullscreenPresentationOptions()
+	}
+
+	if closeCallback != nil {
+		closeCallback()
+	}
+
+	objc.SendSuper[objc.ID](this, objc.Sel("close"))
+}
+
+func makeBackingLayer(this objc.ID, _ objc.SEL) objc.ID {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	defer windowState.Unlock()
+	return objc.ID(windowState.renderer.LayerPtr())
+}
+
+func viewDidChangeBackingProperties(this objc.ID, _ objc.SEL) {
+	updateWindowScaleFactor(getWindowState(this))
+}
+
+func setFrameSize(this objc.ID, _ objc.SEL, size objc.CGSize) {
+	convert := func(value objc.CGSize) gpui.Size[gpui.Pixels] {
+		return gpui.NewSize(gpui.Px(float32(value.Width)), gpui.Px(float32(value.Height)))
+	}
+
+	windowState := getWindowState(this)
+	windowState.Lock()
+
+	newSize := convert(size)
+	oldFrame := objc.Send[objc.CGRect](this, objc.Sel("frame"))
+	oldSize := convert(oldFrame.Size)
+
+	if oldSize == newSize {
+		windowState.Unlock()
+		return
+	}
+
+	objc.SendSuper[objc.ID](this, objc.Sel("setFrameSize:"), size)
+
+	scaleFactor := windowState.scaleFactor()
+	drawableSize := newSize.ToDevicePixels(scaleFactor)
+	windowState.renderer.UpdateDrawableSize(drawableSize)
+
+	callback := windowState.resizeCallback
+	if callback == nil {
+		windowState.Unlock()
+		return
+	}
+	windowState.resizeCallback = nil
+	contentSize := windowState.contentSize()
+	scaleFactor = windowState.scaleFactor()
+	windowState.Unlock()
+	callback(contentSize, scaleFactor)
+	windowState.Lock()
+	windowState.resizeCallback = callback
+	windowState.Unlock()
+}
+
+func displayLayer(this objc.ID, _ objc.SEL, _ objc.ID) {
+	signalAt := gpui.OptionFrom(gpui.PlatformFrameSignalCapture(scheduler.InstantNow))
+	windowState := getWindowState(this)
+	windowState.Lock()
+	callback := windowState.requestFrameCallback
+	if callback == nil {
+		windowState.Unlock()
+		return
+	}
+	windowState.requestFrameCallback = nil
+	windowState.renderer.SetPresentsWithTransaction(true)
+	windowState.stopDisplayLink()
+	windowState.Unlock()
+	callback(gpui.RequestFrameOptions{
+		SignalAt:     signalAt,
+		SignalSource: gpui.FrameRequestSourceNativeCallback,
+	})
+
+	windowState.Lock()
+	windowState.requestFrameCallback = callback
+	windowState.renderer.SetPresentsWithTransaction(false)
+	windowState.startDisplayLink(windowState)
+	windowState.Unlock()
+	checkPointerAfterFrame(windowState)
+}
+
+var stepCallback = sync.OnceValue(func() gcd.Function {
+	return gcd.NewFunction(step)
+})
+
+func step(view uintptr) {
+	windowState := getWindowState(objc.ID(view))
+	windowState.Lock()
+
+	callback := windowState.requestFrameCallback
+	if callback == nil {
+		windowState.Unlock()
+		return
+	}
+	windowState.requestFrameCallback = nil
+	signalAt := gpui.None[scheduler.Instant]()
+	signalSource := gpui.FrameRequestSourceNativeCallback
+	if frameSource := windowState.frameSource.displayLink; windowState.frameSource.metal == nil && frameSource != nil {
+		if at, source, ok := frameSource.TakeSignal(); ok {
+			signalAt = gpui.Some(at)
+			signalSource = source
+		}
+	}
+	windowState.Unlock()
+	callback(gpui.RequestFrameOptions{
+		SignalAt:     signalAt,
+		SignalSource: signalSource,
+	})
+	windowState.Lock()
+	windowState.requestFrameCallback = callback
+	windowState.Unlock()
+	checkPointerAfterFrame(windowState)
+}
+
+func metalFrame(windowState *lockedWindowState, update objc.ID) {
+	signalAt := gpui.OptionFrom(gpui.PlatformFrameSignalCapture(scheduler.InstantNow))
+	windowState.Lock()
+	metalFrames := windowState.frameSource.metal
+	if metalFrames == nil {
+		windowState.Unlock()
+		return
+	}
+	callback := windowState.requestFrameCallback
+	if callback == nil {
+		windowState.Unlock()
+		return
+	}
+	windowState.requestFrameCallback = nil
+	windowState.renderer.SetFrameDrawable(mtl.Drawable(objc.Send[objc.ID](update, objc.Sel("drawable"))))
+	windowState.Unlock()
+	metalFrames.BeginFrame()
+	callback(gpui.RequestFrameOptions{
+		SignalAt:     signalAt,
+		SignalSource: gpui.FrameRequestSourceNativeCallback,
+	})
+	windowState.Lock()
+	windowState.requestFrameCallback = callback
+	usedDrawable := windowState.renderer.SetFrameDrawable(0) == 0
+	metalFrames.EndFrame(usedDrawable)
+	windowState.Unlock()
+	checkPointerAfterFrame(windowState)
+}
+
+func validAttributesForMarkedText(_ objc.ID, _ objc.SEL) objc.ID {
+	return objc.SendClass[objc.ID](objc.GetClass("NSArray"), objc.Sel("array"))
+}
+
+func hasMarkedText(this objc.ID, _ objc.SEL) bool {
+	result, ok := withInputHandler(this, func(inputHandler *gpui.PlatformInputHandler) gpui.Option[gpui.Range] {
+		return gpui.OptionFrom(inputHandler.MarkedTextRange())
+	})
+	return ok && result.IsSome()
+}
+
+func markedRange(this objc.ID, _ objc.SEL) objc.NSRange {
+	result, ok := withInputHandler(this, func(inputHandler *gpui.PlatformInputHandler) gpui.Option[gpui.Range] {
+		return gpui.OptionFrom(inputHandler.MarkedTextRange())
+	})
+	if r, some := result.Get(); ok && some {
+		return nsRangeFromRange(r).toObjc()
+	}
+	return nsRangeInvalid().toObjc()
+}
+
+func selectedRange(this objc.ID, _ objc.SEL) objc.NSRange {
+	result, ok := withInputHandler(this, func(inputHandler *gpui.PlatformInputHandler) gpui.Option[gpui.UTF16Selection] {
+		return gpui.OptionFrom(inputHandler.SelectedTextRange(false))
+	})
+	if selection, some := result.Get(); ok && some {
+		return nsRangeFromRange(selection.Range).toObjc()
+	}
+	return nsRangeInvalid().toObjc()
+}
+
+func fromObjcRange(r objc.NSRange) NSRange {
+	return NSRange{Location: r.Location, Length: r.Length}
+}
+
+func firstRectForCharacterRange(this objc.ID, _ objc.SEL, nsRange objc.NSRange, _ *objc.NSRange) objc.CGRect {
+	frame := getFrame(this)
+	result, ok := withInputHandler(this, func(inputHandler *gpui.PlatformInputHandler) gpui.Option[gpui.Bounds[gpui.Pixels]] {
+		r, ok := fromObjcRange(nsRange).toRange()
+		if !ok {
+			return gpui.None[gpui.Bounds[gpui.Pixels]]()
+		}
+		return gpui.OptionFrom(inputHandler.BoundsForRange(r))
+	})
+	bounds, some := result.Get()
+	if !ok || !some {
+		return objc.MakeCGRect(0, 0, 0, 0)
+	}
+	return objc.MakeCGRect(
+		frame.Origin.X+objc.CGFloat(bounds.Origin.X.AsF32()),
+		frame.Origin.Y+frame.Size.Height-objc.CGFloat(bounds.Origin.Y.AsF32())-objc.CGFloat(bounds.Size.Height.AsF32()),
+		objc.CGFloat(bounds.Size.Width.AsF32()),
+		objc.CGFloat(bounds.Size.Height.AsF32()),
+	)
+}
+
+const nsWindowStyleMaskFullSizeContentView appkit.NSWindowStyleMask = 1 << 15
+
+func getFrame(this objc.ID) objc.CGRect {
+	state := getWindowState(this)
+	state.Lock()
+	defer state.Unlock()
+	frame := objc.Send[objc.CGRect](state.nativeWindow, objc.Sel("frame"))
+	contentLayoutRect := objc.Send[objc.CGRect](state.nativeWindow, objc.Sel("contentLayoutRect"))
+	styleMask := objc.Send[appkit.NSWindowStyleMask](state.nativeWindow, objc.Sel("styleMask"))
+	if !styleMask.Contains(nsWindowStyleMaskFullSizeContentView) {
+		frame.Origin.Y -= frame.Size.Height - contentLayoutRect.Size.Height
+	}
+	return frame
+}
+
+func textFromNative(text objc.ID) string {
+	if objc.Send[bool](text, objc.Sel("isKindOfClass:"), objc.GetClass("NSAttributedString")) {
+		text = objc.Send[objc.ID](text, objc.Sel("string"))
+	}
+	return nsStringToStr(text)
+}
+
+func insertText(this objc.ID, _ objc.SEL, text objc.ID, replacementRange objc.NSRange) {
+	str := textFromNative(text)
+	replacement := gpui.OptionFrom(fromObjcRange(replacementRange).toRange())
+	withInputHandler(this, func(inputHandler *gpui.PlatformInputHandler) struct{} {
+		inputHandler.ReplaceTextInRange(replacement, str)
+		return struct{}{}
+	})
+}
+
+func setMarkedText(this objc.ID, _ objc.SEL, text objc.ID, selectedRange objc.NSRange, replacementRange objc.NSRange) {
+	str := textFromNative(text)
+	selected := gpui.OptionFrom(fromObjcRange(selectedRange).toRange())
+	replacement := gpui.OptionFrom(fromObjcRange(replacementRange).toRange())
+	withInputHandler(this, func(inputHandler *gpui.PlatformInputHandler) struct{} {
+		inputHandler.ReplaceAndMarkTextInRange(replacement, str, selected)
+		return struct{}{}
+	})
+}
+
+func unmarkText(this objc.ID, _ objc.SEL) {
+	withInputHandler(this, func(inputHandler *gpui.PlatformInputHandler) struct{} {
+		inputHandler.UnmarkText()
+		return struct{}{}
+	})
+}
+
+func attributedSubstringForProposedRange(this objc.ID, _ objc.SEL, proposed objc.NSRange, actualRange *objc.NSRange) objc.ID {
+	result, ok := withInputHandler(this, func(inputHandler *gpui.PlatformInputHandler) objc.ID {
+		r, ok := fromObjcRange(proposed).toRange()
+		if !ok || r.Start >= r.End {
+			return objc.Nil
+		}
+		var adjusted gpui.Option[gpui.Range]
+		selectedText, ok := inputHandler.TextForRange(r, &adjusted)
+		if !ok {
+			return objc.Nil
+		}
+		if a, some := adjusted.Get(); some && a != r && actualRange != nil {
+			*actualRange = nsRangeFromRange(a).toObjc()
+		}
+		str := objc.Alloc(objc.GetClass("NSAttributedString"))
+		return objc.Send[objc.ID](str, objc.Sel("initWithString:"), nsString(selectedText))
+	})
+	if !ok {
+		return objc.Nil
+	}
+	return result
+}
+
+func doCommandBySelector(this objc.ID, _ objc.SEL, _ objc.SEL) {
+	state := getWindowState(this)
+	state.Lock()
+	keystroke := state.keystrokeForDoCommand
+	state.keystrokeForDoCommand = nil
+	eventCallback := state.eventCallback
+	state.eventCallback = nil
+	state.Unlock()
+
+	if keystroke != nil && eventCallback != nil {
+		handled := eventCallback(gpui.KeyDownEvent{
+			Keystroke:            *keystroke,
+			IsHeld:               false,
+			PreferCharacterInput: false,
+		})
+		state.Lock()
+		state.doCommandHandled = gpui.Some(!handled.Propagate)
+		state.Unlock()
+	}
+
+	state.Lock()
+	state.eventCallback = eventCallback
+	state.Unlock()
+}
+
+func viewDidChangeEffectiveAppearance(this objc.ID, _ objc.SEL) {
+	state := getWindowState(this)
+	state.Lock()
+	callback := state.appearanceChangedCallback
+	state.appearanceChangedCallback = nil
+	state.Unlock()
+
+	if callback != nil {
+		callback()
+		state.Lock()
+		state.appearanceChangedCallback = callback
+		state.Unlock()
+	}
+
+	state.Lock()
+	state.moveTrafficLight()
+	state.Unlock()
+}
+
+func acceptsFirstMouse(this objc.ID, _ objc.SEL, _ objc.ID) bool {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	defer windowState.Unlock()
+	windowState.firstMouse = true
+	return true
+}
+
+func opaqueRectForWindowMoveWhenInTitlebar(this objc.ID, _ objc.SEL) objc.CGRect {
+	zeroRect := objc.MakeCGRect(0, 0, 0, 0)
+	windowState := getWindowState(this)
+	windowState.Lock()
+	appOwnsTitlebarDrag := windowState.appOwnsTitlebarDrag
+	windowState.Unlock()
+	if appOwnsTitlebarDrag {
+		return objc.Send[objc.CGRect](this, objc.Sel("bounds"))
+	}
+	return zeroRect
+}
+
+func characterIndexForPoint(this objc.ID, _ objc.SEL, position objc.CGPoint) objc.NSUInteger {
+	point := screenPointToGpuiPoint(this, position)
+	result, ok := withInputHandler(this, func(inputHandler *gpui.PlatformInputHandler) gpui.Option[int] {
+		return gpui.OptionFrom(inputHandler.CharacterIndexForPoint(point))
+	})
+	if index, some := result.Get(); ok && some {
+		return objc.NSUInteger(index)
+	}
+	return objc.NSUInteger(objc.NSNotFound)
+}
+
+func screenPointToGpuiPoint(this objc.ID, position objc.CGPoint) gpui.Point[gpui.Pixels] {
+	frame := getFrame(this)
+	windowX := position.X - frame.Origin.X
+	windowY := frame.Size.Height - (position.Y - frame.Origin.Y)
+
+	return gpui.NewPoint(gpui.Px(float32(windowX)), gpui.Px(float32(windowY)))
+}
+
+const (
+	nsDragOperationNone objc.NSUInteger = 0
+	nsDragOperationCopy objc.NSUInteger = 1
+	nsDragOperationMove objc.NSUInteger = 16
+
+	nsDraggingContextOutsideApplication objc.NSInteger = 0
+	nsDraggingContextWithinApplication  objc.NSInteger = 1
+)
+
+func isDragFromThisWindow(this objc.ID, draggingInfo objc.ID) bool {
+	source := objc.Send[objc.ID](draggingInfo, objc.Sel("draggingSource"))
+	return source == this
+}
+
+func draggingEntered(this objc.ID, _ objc.SEL, draggingInfo objc.ID) objc.NSUInteger {
+	isSourceWindow := isDragFromThisWindow(this, draggingInfo)
+	windowState := getWindowState(this)
+	position := dragEventPosition(windowState, draggingInfo)
+	if paths, ok := externalPathsFromEvent(draggingInfo); ok &&
+		sendFileDropEvent(windowState, gpui.FileDropEventEntered{Position: position, Paths: paths}) {
+		if isSourceWindow {
+			return nsDragOperationMove
+		}
+		return nsDragOperationCopy
+	}
+	return nsDragOperationNone
+}
+
+func draggingUpdated(this objc.ID, _ objc.SEL, draggingInfo objc.ID) objc.NSUInteger {
+	isSourceWindow := isDragFromThisWindow(this, draggingInfo)
+	windowState := getWindowState(this)
+	position := dragEventPosition(windowState, draggingInfo)
+	if sendFileDropEvent(windowState, gpui.FileDropEventPending{Position: position}) {
+		if isSourceWindow {
+			return nsDragOperationMove
+		}
+		return nsDragOperationCopy
+	}
+	return nsDragOperationNone
+}
+
+func draggingExited(this objc.ID, _ objc.SEL, _ objc.ID) {
+	sendFileDropEvent(getWindowState(this), gpui.FileDropEventExited{})
+}
+
+func performDragOperation(this objc.ID, _ objc.SEL, draggingInfo objc.ID) bool {
+	windowState := getWindowState(this)
+	position := dragEventPosition(windowState, draggingInfo)
+	return sendFileDropEvent(windowState, gpui.FileDropEventSubmit{Position: position})
+}
+
+func externalPathsFromEvent(draggingInfo objc.ID) (gpui.ExternalPaths, bool) {
+	pasteboard := objc.Send[objc.ID](draggingInfo, objc.Sel("draggingPasteboard"))
+	if pasteboard == objc.Nil {
+		return nil, false
+	}
+	filenames := objc.Send[objc.ID](pasteboard, objc.Sel("propertyListForType:"), appkit.Constant("NSFilenamesPboardType"))
+	if filenames == objc.Nil {
+		return nil, false
+	}
+	var paths gpui.ExternalPaths
+	for _, file := range objc.NSArrayToIDs(filenames) {
+		paths = append(paths, nsStringToStr(file))
+	}
+	return paths, true
+}
+
+func concludeDragOperation(this objc.ID, _ objc.SEL, _ objc.ID) {
+	sendFileDropEvent(getWindowState(this), gpui.FileDropEventExited{})
+}
+
+func draggingSessionSourceOperationMask(_ objc.ID, _ objc.SEL, _ objc.ID, context objc.NSInteger) objc.NSUInteger {
+	var operation objc.NSUInteger
+	switch context {
+	case nsDraggingContextOutsideApplication:
+		operation = nsDragOperationCopy
+	case nsDraggingContextWithinApplication:
+		operation = nsDragOperationCopy | nsDragOperationMove
+	default:
+		operation = nsDragOperationCopy | nsDragOperationMove
+	}
+	slog.Debug(fmt.Sprintf("dragging_session_source_operation_mask: context=%d, operation=%d", context, operation))
+	return operation
+}
+
+func draggingSessionEnded(this objc.ID, _ objc.SEL, _ objc.ID, _ objc.CGPoint, operation objc.NSUInteger) {
+	slog.Debug(fmt.Sprintf("dragging_session_ended operation=%d", operation))
+	windowState := getWindowState(this)
+	windowState.Lock()
+	windowState.syntheticDragCounter++
+	if windowState.lastLeftMouseDownEvent != nil {
+		windowState.lastLeftMouseDownEvent.Release()
+	}
+	windowState.lastLeftMouseDownEvent = nil
+	windowState.Unlock()
+	sendFileDropEvent(windowState, gpui.FileDropEventEnded{})
+}
+
+func syntheticDragButtonIsPressed(button gpui.Option[gpui.MouseButton], pressed objc.NSUInteger) bool {
+	b, ok := button.Get()
+	if !ok {
+		return false
+	}
+	var bit uint
+	switch b {
+	case gpui.MouseButtonLeft:
+		bit = 0
+	case gpui.MouseButtonRight:
+		bit = 1
+	case gpui.MouseButtonMiddle:
+		bit = 2
+	case gpui.MouseButtonNavigateBack:
+		bit = 3
+	case gpui.MouseButtonNavigateForward:
+		bit = 4
+	default:
+		return false
+	}
+	return pressed&(1<<bit) != 0
+}
+
+func syntheticDrag(s *scheduler.Scope, weakWindowState weak.Pointer[lockedWindowState], dragID int, event gpui.MouseMoveEvent, executor gpui.BackgroundExecutor) {
+	for {
+		_, _ = executor.Timer(16 * time.Millisecond).Await(s)
+		windowState := weakWindowState.Value()
+		if windowState == nil {
+			break
+		}
+		windowState.Lock()
+		if windowState.syntheticDragCounter != dragID {
+			windowState.Unlock()
+			break
+		}
+		pressed := objc.SendClass[objc.NSUInteger](objc.GetClass("NSEvent"), objc.Sel("pressedMouseButtons"))
+		if !syntheticDragButtonIsPressed(event.PressedButton, pressed) {
+			windowState.syntheticDragCounter++
+			windowState.Unlock()
+			break
+		}
+		callback := windowState.eventCallback
+		if callback == nil {
+			windowState.Unlock()
+			continue
+		}
+		windowState.eventCallback = nil
+		windowState.Unlock()
+		callback(event)
+		windowState.Lock()
+		windowState.eventCallback = callback
+		windowState.Unlock()
+	}
+}
+
+func sendFileDropEvent(windowState *lockedWindowState, fileDropEvent gpui.FileDropEvent) bool {
+	externalFilesDragged := gpui.None[bool]()
+	switch fileDropEvent.(type) {
+	case gpui.FileDropEventEntered:
+		externalFilesDragged = gpui.Some(true)
+	case gpui.FileDropEventExited, gpui.FileDropEventEnded:
+		externalFilesDragged = gpui.Some(false)
+	}
+
+	windowState.Lock()
+	callback := windowState.eventCallback
+	if callback == nil {
+		windowState.Unlock()
+		return false
+	}
+	windowState.eventCallback = nil
+	windowState.Unlock()
+	callback(fileDropEvent)
+	windowState.Lock()
+	windowState.eventCallback = callback
+	if dragged, ok := externalFilesDragged.Get(); ok {
+		windowState.externalFilesDragged = dragged
+	}
+	windowState.Unlock()
+	return true
+}
+
+func dragEventPosition(windowState *lockedWindowState, draggingInfo objc.ID) gpui.Point[gpui.Pixels] {
+	dragLocation := objc.Send[objc.CGPoint](draggingInfo, objc.Sel("draggingLocation"))
+	windowState.Lock()
+	height := windowState.contentSize().Height
+	windowState.Unlock()
+	return convertMousePosition(dragLocation, height)
+}
+
+func withInputHandler[R any](window objc.ID, f func(inputHandler *gpui.PlatformInputHandler) R) (R, bool) {
+	windowState := getWindowState(window)
+	windowState.Lock()
+	inputHandler := windowState.inputHandler
+	if inputHandler == nil {
+		windowState.Unlock()
+		var zero R
+		return zero, false
+	}
+	windowState.inputHandler = nil
+	windowState.Unlock()
+	result := f(inputHandler)
+	windowState.Lock()
+	windowState.inputHandler = inputHandler
+	windowState.Unlock()
+	return result, true
+}
+
+func displayIDForScreen(screen objc.ID) (uint32, bool) {
+	if screen == objc.Nil {
+		return 0, false
+	}
+
+	deviceDescription := objc.Send[objc.ID](screen, objc.Sel("deviceDescription"))
+	if deviceDescription == objc.Nil {
+		return 0, false
+	}
+	screenNumberKey := nsString("NSScreenNumber")
+	screenNumber := objc.Send[objc.ID](deviceDescription, objc.Sel("objectForKey:"), screenNumberKey)
+	if screenNumber == objc.Nil {
+		return 0, false
+	}
+	number := objc.Send[objc.NSUInteger](screenNumber, objc.Sel("unsignedIntegerValue"))
+	return uint32(number), true
+}
+
+const (
+	nsVisualEffectMaterialUnderWindowBackground objc.NSInteger = 21
+	nsVisualEffectBlendingModeBehindWindow      objc.NSInteger = 0
+	nsVisualEffectStateActive                   objc.NSInteger = 1
+)
+
+func blurredViewInitWithFrame(this objc.ID, _ objc.SEL, frame objc.CGRect) objc.ID {
+	view := objc.SendSuper[objc.ID](this, objc.Sel("initWithFrame:"), frame)
+	objc.SendVoid(view, objc.Sel("setMaterial:"), nsVisualEffectMaterialUnderWindowBackground)
+	objc.SendVoid(view, objc.Sel("setBlendingMode:"), nsVisualEffectBlendingModeBehindWindow)
+	objc.SendVoid(view, objc.Sel("setState:"), nsVisualEffectStateActive)
+	return view
+}
+
+func blurredViewUpdateLayer(this objc.ID, _ objc.SEL) {
+	objc.SendSuper[objc.ID](this, objc.Sel("updateLayer"))
+	layer := objc.Send[objc.ID](this, objc.Sel("layer"))
+	if layer != objc.Nil {
+		removeLayerBackground(layer)
+	}
+}
+
+func removeLayerBackground(layer objc.ID) {
+	objc.SendVoid(layer, objc.Sel("setBackgroundColor:"), objc.Nil)
+
+	className := objc.Send[objc.ID](layer, objc.Sel("className"))
+	if objc.Send[bool](className, objc.Sel("isEqualToString:"), nsString("CAChameleonLayer")) {
+		objc.SendVoid(layer, objc.Sel("setHidden:"), true)
+		return
+	}
+
+	filters := objc.Send[objc.ID](layer, objc.Sel("filters"))
+	if filters != objc.Nil {
+		testString := nsString("Saturat")
+		count := objc.Send[objc.NSUInteger](filters, objc.Sel("count"))
+		for i := objc.NSUInteger(0); i < count; i++ {
+			filter := objc.Send[objc.ID](filters, objc.Sel("objectAtIndex:"), i)
+			description := objc.Send[objc.ID](filter, objc.Sel("description"))
+			if !objc.Send[bool](description, objc.Sel("containsString:"), testString) {
+				continue
+			}
+
+			allIndices := objc.MakeNSRange(0, count)
+			indices := objc.SendClass[objc.ID](objc.GetClass("NSMutableIndexSet"), objc.Sel("indexSet"))
+			objc.SendVoid(indices, objc.Sel("addIndexesInRange:"), allIndices)
+			objc.SendVoid(indices, objc.Sel("removeIndex:"), i)
+			filtered := objc.Send[objc.ID](filters, objc.Sel("objectsAtIndexes:"), indices)
+			objc.SendVoid(layer, objc.Sel("setFilters:"), filtered)
+			break
+		}
+	}
+
+	sublayers := objc.Send[objc.ID](layer, objc.Sel("sublayers"))
+	if sublayers != objc.Nil {
+		count := objc.Send[objc.NSUInteger](sublayers, objc.Sel("count"))
+		for i := objc.NSUInteger(0); i < count; i++ {
+			sublayer := objc.Send[objc.ID](sublayers, objc.Sel("objectAtIndex:"), i)
+			removeLayerBackground(sublayer)
+		}
+	}
+}
+
+func addTitlebarAccessoryViewController(this objc.ID, _ objc.SEL, viewController objc.ID) {
+	objc.SendSuper[objc.ID](this, objc.Sel("addTitlebarAccessoryViewController:"), viewController)
+
+	accessoryView := objc.Send[objc.ID](viewController, objc.Sel("view"))
+	objc.SendVoid(accessoryView, objc.Sel("setHidden:"), true)
+	frame := objc.Send[objc.CGRect](accessoryView, objc.Sel("frame"))
+	frame.Size.Height = 0.0
+	objc.SendVoid(accessoryView, objc.Sel("setFrame:"), frame)
+}
+
+func runWindowCallback(windowState *lockedWindowState, field *func()) {
+	callback := *field
+	if callback == nil {
+		windowState.Unlock()
+		return
+	}
+	*field = nil
+	windowState.Unlock()
+	callback()
+	windowState.Lock()
+	*field = callback
+	windowState.Unlock()
+}
+
+func moveTabToNewWindow(this objc.ID, _ objc.SEL, _ objc.ID) {
+	objc.SendSuper[objc.ID](this, objc.Sel("moveTabToNewWindow:"), objc.Nil)
+
+	windowState := getWindowState(this)
+	windowState.Lock()
+	runWindowCallback(windowState, &windowState.moveTabToNewWindowCallback)
+}
+
+func mergeAllWindows(this objc.ID, _ objc.SEL, _ objc.ID) {
+	objc.SendSuper[objc.ID](this, objc.Sel("mergeAllWindows:"), objc.Nil)
+
+	windowState := getWindowState(this)
+	windowState.Lock()
+	runWindowCallback(windowState, &windowState.mergeAllWindowsCallback)
+}
+
+func selectNextTab(this objc.ID, _ objc.SEL, _ objc.ID) {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	runWindowCallback(windowState, &windowState.selectNextTabCallback)
+}
+
+func selectPreviousTab(this objc.ID, _ objc.SEL, _ objc.ID) {
+	windowState := getWindowState(this)
+	windowState.Lock()
+	runWindowCallback(windowState, &windowState.selectPreviousTabCallback)
+}
+
+func toggleTabBar(this objc.ID, _ objc.SEL, _ objc.ID) {
+	objc.SendSuper[objc.ID](this, objc.Sel("toggleTabBar:"), objc.Nil)
+
+	windowState := getWindowState(this)
+	windowState.Lock()
+	windowState.moveTrafficLight()
+	runWindowCallback(windowState, &windowState.toggleTabBarCallback)
 }
