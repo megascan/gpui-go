@@ -61,8 +61,16 @@ Go target: `platform/ios/text_input.go` (package `ios`), tests in `text_input_te
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `insertion_geometry_has_a_visible_caret_width` | test | 722 |  | `TestTextInput_InsertionGeometryHasAVisibleCaretWidth` | todo |
-| `utf16_ranges_and_offsets` | test | 1093 |  | `TestTextInput_UTF16RangesAndOffsets` | todo |
+| `insertion_geometry_has_a_visible_caret_width` | test | 722 |  | `TestTextInput_InsertionGeometryHasAVisibleCaretWidth` | done |
+| `utf16_ranges_and_offsets` | test | 1093 |  | `TestTextInput_UTF16RangesAndOffsets` | done |
+
+## gpui_ios/tests/text_input.rs
+
+Go target: `platform/ios/integration_text_input_test.go` (package `ios`)
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `main` | harness | 48 | target_os = "ios" | `TestMain` | done |
 
 ## gpui_ios/src/ios/window.rs
 
@@ -70,12 +78,12 @@ Go target: `platform/ios/window.go` (package `ios`), tests in `window_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `set_status_bar_style` | fn | 122 |  | `SetStatusBarStyle` | todo |
+| `set_status_bar_style` | fn | 122 |  | `SetStatusBarStyle` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `callback_is_unavailable_during_dispatch_and_restored_afterward` | test | 1056 |  | `TestWindow_CallbackIsUnavailableDuringDispatchAndRestoredAfterward` | todo |
-| `callback_replacement_during_dispatch_is_preserved` | test | 1074 |  | `TestWindow_CallbackReplacementDuringDispatchIsPreserved` | todo |
-| `withdrawing_an_in_flight_handler_does_not_restore_it` | test | 1085 |  | `TestWindow_WithdrawingAnInFlightHandlerDoesNotRestoreIt` | todo |
-| `removing_a_replacement_does_not_resurrect_the_previous_handler` | test | 1096 |  | `TestWindow_RemovingAReplacementDoesNotResurrectThePreviousHandler` | todo |
+| `callback_is_unavailable_during_dispatch_and_restored_afterward` | test | 1056 |  | `TestWindow_CallbackIsUnavailableDuringDispatchAndRestoredAfterward` | done |
+| `callback_replacement_during_dispatch_is_preserved` | test | 1074 |  | `TestWindow_CallbackReplacementDuringDispatchIsPreserved` | done |
+| `withdrawing_an_in_flight_handler_does_not_restore_it` | test | 1085 |  | `TestWindow_WithdrawingAnInFlightHandlerDoesNotRestoreIt` | done |
+| `removing_a_replacement_does_not_resurrect_the_previous_handler` | test | 1096 |  | `TestWindow_RemovingAReplacementDoesNotResurrectThePreviousHandler` | done |
 
