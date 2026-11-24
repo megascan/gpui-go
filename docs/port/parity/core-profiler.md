@@ -19,17 +19,17 @@ Go target: `debug_overlay.go` (package `gpui`), tests in `debug_overlay_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `DebugFrameOverlayMode` | enum | 13 |  | `DebugFrameOverlayMode` | todo |
-| `DebugFrameOverlayMode::next` | method | 22 |  | `(DebugFrameOverlayMode).Next` | todo |
+| `DebugFrameOverlayMode` | enum | 13 |  | `DebugFrameOverlayMode` | done |
+| `DebugFrameOverlayMode::next` | method | 22 |  | `(DebugFrameOverlayMode).Next` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `all_rendered_characters_have_glyphs` | test | 325 |  | `TestDebugOverlay_AllRenderedCharactersHaveGlyphs` | todo |
-| `percentile_lows_are_reported_as_times` | test | 360 |  | `TestDebugOverlay_PercentileLowsAreReportedAsTimes` | todo |
-| `reset_clears_durations_but_keeps_frame_count` | test | 375 |  | `TestDebugOverlay_ResetClearsDurationsButKeepsFrameCount` | todo |
-| `frame_count_accumulates_across_mode_changes` | test | 393 |  | `TestDebugOverlay_FrameCountAccumulatesAcrossModeChanges` | todo |
-| `frame_count_is_right_aligned_and_saturates` | test | 410 |  | `TestDebugOverlay_FrameCountIsRightAlignedAndSaturates` | todo |
-| `toggling_on_shows_previous_frame_immediately` | test | 422 |  | `TestDebugOverlay_TogglingOnShowsPreviousFrameImmediately` | todo |
+| `all_rendered_characters_have_glyphs` | test | 325 |  | `TestDebugOverlay_AllRenderedCharactersHaveGlyphs` | done |
+| `percentile_lows_are_reported_as_times` | test | 360 |  | `TestDebugOverlay_PercentileLowsAreReportedAsTimes` | done |
+| `reset_clears_durations_but_keeps_frame_count` | test | 375 |  | `TestDebugOverlay_ResetClearsDurationsButKeepsFrameCount` | done |
+| `frame_count_accumulates_across_mode_changes` | test | 393 |  | `TestDebugOverlay_FrameCountAccumulatesAcrossModeChanges` | done |
+| `frame_count_is_right_aligned_and_saturates` | test | 410 |  | `TestDebugOverlay_FrameCountIsRightAlignedAndSaturates` | done |
+| `toggling_on_shows_previous_frame_immediately` | test | 422 |  | `TestDebugOverlay_TogglingOnShowsPreviousFrameImmediately` | done |
 
 ## gpui/src/hot_reload.rs
 
@@ -296,45 +296,46 @@ Go target: `profiler_hang.go` (package `gpui`), tests in `profiler_hang_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `MEASUREMENT_VERSION` | const | 26 |  | `MeasurementVersion` | todo |
-| `HangDetector` | struct | 39 |  | `HangDetector` | todo |
-| `ACTIVE_USE_WINDOW` | const | 50 |  | `ActiveUseWindow` | todo |
-| `HangIncident` | struct | 134 |  | `HangIncident` | todo |
-| `HangTrigger` | enum | 158 |  | `HangTrigger` | todo |
-| `HangTrigger::ALL` | assoc-const | 172 |  | `HangTriggerAll` | todo |
-| `HangTrigger::as_str` | method | 175 |  | `(HangTrigger).AsStr` | todo |
-| `HangDetector::new` | assoc-fn | 189 |  | `NewHangDetector` | todo |
-| `HangDetector::take_active_time` | method | 206 |  | `(HangDetector).TakeActiveTime` | todo |
-| `HangDetector::first_present_at` | method | 212 |  | `(HangDetector).FirstPresentAt` | todo |
-| `HangDetector::poll` | method | 218 |  | `(HangDetector).Poll` | todo |
-| `SerializedHangIncident` | struct | 249 |  | `SerializedHangIncident` | todo |
-| `SerializedHangContributor` | enum | 313 |  | `SerializedHangContributor` | todo |
-| `SerializedHangIncident::convert` | assoc-fn | 412 |  | `SerializedHangIncidentConvert` | todo |
-| `HangIncident::active_window` | method | 578 |  | `(HangIncident).ActiveWindow` | todo |
-| `HangIncident::detect` | assoc-fn | 599 |  | `HangIncidentDetect` | todo |
+| `MEASUREMENT_VERSION` | const | 26 |  | `MeasurementVersion` | done |
+| `HangDetector` | struct | 39 |  | `HangDetector` | done |
+| `ACTIVE_USE_WINDOW` | const | 50 |  | `ActiveUseWindow` | done |
+| `HangIncident` | struct | 134 |  | `HangIncident` | done |
+| `HangTrigger` | enum | 158 |  | `HangTrigger` | done |
+| `HangTrigger::ALL` | assoc-const | 172 |  | `HangTriggerAll` | done |
+| `HangTrigger::as_str` | method | 175 |  | `(HangTrigger).AsStr` | done |
+| `HangDetector::new` | assoc-fn | 189 |  | `NewHangDetector` | done |
+| `HangDetector::take_active_time` | method | 206 |  | `(HangDetector).TakeActiveTime` | done |
+| `HangDetector::first_present_at` | method | 212 |  | `(HangDetector).FirstPresentAt` | done |
+| `HangDetector::poll` | method | 218 |  | `(HangDetector).Poll` | done |
+| `SerializedHangIncident` | struct | 249 |  | `SerializedHangIncident` | done |
+| `SerializedHangContributor` | enum | 313 |  | `SerializedHangContributor` | done |
+| `SerializedHangIncident::convert` | assoc-fn | 412 |  | `SerializedHangIncidentConvert` | done |
+| `HangIncident::active_window` | method | 578 |  | `(HangIncident).ActiveWindow` | done |
+| `HangIncident::detect` | assoc-fn | 599 |  | `HangIncidentDetect` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `completed_skips_preserve_real_hangs_and_serialize_their_boundary` | test | 694 |  | `TestHang_CompletedSkipsPreserveRealHangsAndSerializeTheirBoundary` | todo |
-| `delayed_platform_signals_without_work_are_not_hangs` | test | 747 |  | `TestHang_DelayedPlatformSignalsWithoutWorkAreNotHangs` | todo |
-| `a_hang_outliving_the_frame_deadline_keeps_its_frame_association` | test | 775 |  | `TestHang_AHangOutlivingTheFrameDeadlineKeepsItsFrameAssociation` | todo |
-| `serialized_incident_reports_presented_seal_fields` | test | 821 |  | `TestHang_SerializedIncidentReportsPresentedSealFields` | todo |
-| `hang_monitor_polls_on_its_interval_and_on_flush` | test | 910 |  | `TestHang_HangMonitorPollsOnItsIntervalAndOnFlush` | todo |
-| `app_flushes_its_hang_monitor_on_shutdown` | gpui::test | 961 |  | `TestHang_AppFlushesItsHangMonitorOnShutdown` | todo |
-| `starting_the_hang_monitor_twice_is_rejected` | gpui::test | 990 |  | `TestHang_StartingTheHangMonitorTwiceIsRejected` | todo |
-| `serialized_incident_reports_idle_seal_fields` | test | 1014 |  | `TestHang_SerializedIncidentReportsIdleSealFields` | todo |
-| `phase_is_startup_until_the_first_present` | test | 1040 |  | `TestHang_PhaseIsStartupUntilTheFirstPresent` | todo |
-| `first_present_at_latches_on_the_first_observed_presentation` | test | 1074 |  | `TestHang_FirstPresentAtLatchesOnTheFirstObservedPresentation` | todo |
-| `busy_fraction_excludes_small_polls_outside_the_active_window` | test | 1106 |  | `TestHang_BusyFractionExcludesSmallPollsOutsideTheActiveWindow` | todo |
-| `an_interval_of_small_work_over_budget_is_an_incident` | test | 1140 |  | `TestHang_AnIntervalOfSmallWorkOverBudgetIsAnIncident` | todo |
-| `a_journal_gap_suppresses_budget_inference_but_retains_observed_hangs` | test | 1190 |  | `TestHang_AJournalGapSuppressesBudgetInferenceButRetainsObservedHangs` | todo |
-| `a_slow_frame_with_little_foreground_spend_is_not_an_incident` | test | 1229 |  | `TestHang_ASlowFrameWithLittleForegroundSpendIsNotAnIncident` | todo |
-| `active_use_counts_time_within_a_minute_of_deliberate_input` | test | 1263 |  | `TestHang_ActiveUseCountsTimeWithinAMinuteOfDeliberateInput` | todo |
-| `only_single_events_over_the_frame_budget_are_blocking_work` | test | 1313 |  | `TestHang_OnlySingleEventsOverTheFrameBudgetAreBlockingWork` | todo |
-| `late_frames_are_budget_hangs` | test | 1339 |  | `TestHang_LateFramesAreBudgetHangs` | todo |
-| `serialized_contributors_are_chronological_with_nesting_depths` | test | 1399 |  | `TestHang_SerializedContributorsAreChronologicalWithNestingDepths` | todo |
-| `detects_randomly_placed_foreground_hangs` | gpui::test(iterations = 5) | 1600 |  | `TestHang_DetectsRandomlyPlacedForegroundHangs` | todo |
-| `slow_views_are_journaled_with_their_own_time` | gpui::test | 1678 |  | `TestHang_SlowViewsAreJournaledWithTheirOwnTime` | todo |
+| `completed_skips_preserve_real_hangs_and_serialize_their_boundary` | test | 694 |  | `TestHang_CompletedSkipsPreserveRealHangsAndSerializeTheirBoundary` | done |
+| `delayed_platform_signals_without_work_are_not_hangs` | test | 747 |  | `TestHang_DelayedPlatformSignalsWithoutWorkAreNotHangs` | done |
+| `a_hang_outliving_the_frame_deadline_keeps_its_frame_association` | test | 775 |  | `TestHang_AHangOutlivingTheFrameDeadlineKeepsItsFrameAssociation` | done |
+| `serialized_incident_reports_presented_seal_fields` | test | 821 |  | `TestHang_SerializedIncidentReportsPresentedSealFields` | done |
+| `hang_monitor_polls_on_its_interval_and_on_flush` | test | 910 |  | `TestHang_HangMonitorPollsOnItsIntervalAndOnFlush` | done |
+| `app_flushes_its_hang_monitor_on_shutdown` | gpui::test | 961 |  | `TestHang_AppFlushesItsHangMonitorOnShutdown` | done |
+| `starting_the_hang_monitor_twice_is_rejected` | gpui::test | 990 |  | `TestHang_StartingTheHangMonitorTwiceIsRejected` | done |
+| `serialized_incident_reports_idle_seal_fields` | test | 1014 |  | `TestHang_SerializedIncidentReportsIdleSealFields` | done |
+| `phase_is_startup_until_the_first_present` | test | 1040 |  | `TestHang_PhaseIsStartupUntilTheFirstPresent` | done |
+| `first_present_at_latches_on_the_first_observed_presentation` | test | 1074 |  | `TestHang_FirstPresentAtLatchesOnTheFirstObservedPresentation` | done |
+| `busy_fraction_excludes_small_polls_outside_the_active_window` | test | 1106 |  | `TestHang_BusyFractionExcludesSmallPollsOutsideTheActiveWindow` | done |
+| `an_interval_of_small_work_over_budget_is_an_incident` | test | 1140 |  | `TestHang_AnIntervalOfSmallWorkOverBudgetIsAnIncident` | done |
+| `a_journal_gap_suppresses_budget_inference_but_retains_observed_hangs` | test | 1190 |  | `TestHang_AJournalGapSuppressesBudgetInferenceButRetainsObservedHangs` | done |
+| `a_slow_frame_with_little_foreground_spend_is_not_an_incident` | test | 1229 |  | `TestHang_ASlowFrameWithLittleForegroundSpendIsNotAnIncident` | done |
+| `active_use_counts_time_within_a_minute_of_deliberate_input` | test | 1263 |  | `TestHang_ActiveUseCountsTimeWithinAMinuteOfDeliberateInput` | done |
+| `only_single_events_over_the_frame_budget_are_blocking_work` | test | 1313 |  | `TestHang_OnlySingleEventsOverTheFrameBudgetAreBlockingWork` | done |
+| `late_frames_are_budget_hangs` | test | 1339 |  | `TestHang_LateFramesAreBudgetHangs` | done |
+| `serialized_contributors_are_chronological_with_nesting_depths` | test | 1399 |  | `TestHang_SerializedContributorsAreChronologicalWithNestingDepths` | done |
+| `detects_randomly_placed_foreground_hangs` | gpui::test(iterations = 5) | 1600 |  | `TestHang_DetectsRandomlyPlacedForegroundHangs` | done |
+| `slow_views_are_journaled_with_their_own_time` | gpui::test | 1678 |  | `TestHang_SlowViewsAreJournaledWithTheirOwnTime` | done |
+| `detection_matches_threshold_and_blocking_work_model_at_boundaries` | proptest | 1456 |  | `TestHang_DetectionMatchesThresholdAndBlockingWorkModelAtBoundaries` | dev:D-PROPTEST |
 
 ## gpui/src/profiler/journal.rs
 
