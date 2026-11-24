@@ -1522,10 +1522,10 @@ func (w *Window) handleA11yAction(request a11y.ActionRequest, cx *App) {
 // ToggleInspector toggles inspector mode on this window.
 func (w *Window) ToggleInspector(cx *App) {
 	if inspector, ok := w.inspector.Take().Get(); ok {
-		w.renderedFrame.nextInspectorInstanceIDs = make(map[uint64][]inspectorInstanceIDs)
-		w.renderedFrame.inspectorHitboxes = make(map[HitboxID]InspectorElementID)
-		w.nextFrame.nextInspectorInstanceIDs = make(map[uint64][]inspectorInstanceIDs)
-		w.nextFrame.inspectorHitboxes = make(map[HitboxID]InspectorElementID)
+		w.renderedFrame.nextInspectorInstanceIDs = nil
+		w.renderedFrame.inspectorHitboxes = nil
+		w.nextFrame.nextInspectorInstanceIDs = nil
+		w.nextFrame.inspectorHitboxes = nil
 		inspector.Release()
 	} else {
 		w.inspector = Some(cx.New(func(*Context[Inspector]) *Inspector { return newInspector() }))
@@ -1585,6 +1585,9 @@ func (w *Window) buildInspectorElementID(path InspectorElementPath) InspectorEle
 			return InspectorElementID{Path: sharedPath, InstanceID: instanceID}
 		}
 	}
+	if w.nextFrame.nextInspectorInstanceIDs == nil {
+		w.nextFrame.nextInspectorInstanceIDs = make(map[uint64][]inspectorInstanceIDs)
+	}
 	w.nextFrame.nextInspectorInstanceIDs[key] = append(bucket, inspectorInstanceIDs{path: path, next: 1})
 	return InspectorElementID{Path: sharedPath, InstanceID: 0}
 }
@@ -1619,6 +1622,9 @@ func (w *Window) InsertInspectorHitbox(hitboxID HitboxID, inspectorID *Inspector
 		return
 	}
 	if inspectorID != nil {
+		if w.nextFrame.inspectorHitboxes == nil {
+			w.nextFrame.inspectorHitboxes = make(map[HitboxID]InspectorElementID)
+		}
 		w.nextFrame.inspectorHitboxes[hitboxID] = *inspectorID
 	}
 }

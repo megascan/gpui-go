@@ -396,53 +396,53 @@ Go target: `window.go` (package `gpui`), tests in `window_test.go`
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_focus_handle_release` | gpui::test | 8434 |  | `TestWindow_FocusHandleRelease` | todo |
-| `test_dropped_focus_handle_blurs_only_its_windows` | gpui::test | 8475 |  | `TestWindow_DroppedFocusHandleBlursOnlyItsWindows` | todo |
-| `test_native_close_defers_app_access` | gpui::test | 8523 |  | `TestWindow_NativeCloseDefersAppAccess` | todo |
-| `test_frame_requests_and_skips_are_journaled` | gpui::test | 8537 | feat:profiler | `TestWindow_FrameRequestsAndSkipsAreJournaled` | todo |
-| `test_frame_demand_survives_throttling` | gpui::test | 8593 | feat:profiler | `TestWindow_FrameDemandSurvivesThrottling` | todo |
-| `test_debug_state_reports_cached_and_platform_values` | gpui::test | 8700 |  | `TestWindow_DebugStateReportsCachedAndPlatformValues` | todo |
-| `test_window_visibility` | gpui::test | 8729 |  | `TestWindow_WindowVisibility` | todo |
-| `test_display_tracking` | gpui::test | 8774 |  | `TestWindow_DisplayTracking` | todo |
-| `test_window_opened_from_bounds_observer_uses_new_bounds` | gpui::test | 8884 |  | `TestWindow_WindowOpenedFromBoundsObserverUsesNewBounds` | todo |
-| `test_fully_visible_bounds_preserve_layout_viewport` | gpui::test | 8926 |  | `TestWindow_FullyVisibleBoundsPreserveLayoutViewport` | todo |
-| `frame_throttle_tracks_display_refreshes` | test | 9014 |  | `TestWindow_FrameThrottleTracksDisplayRefreshes` | todo |
-| `frame_throttle_preserves_cadence_without_catching_up_after_stalls` | test | 9028 |  | `TestWindow_FrameThrottlePreservesCadenceWithoutCatchingUpAfterStalls` | todo |
-| `power_modes_preserve_frame_limits` | test | 9050 |  | `TestWindow_PowerModesPreserveFrameLimits` | todo |
-| `frame_limits_combine_enabled_intervals` | test | 9102 |  | `TestWindow_FrameLimitsCombineEnabledIntervals` | todo |
-| `test_window_opened_during_draw_defers_arena_clear` | test | 9180 |  | `TestWindow_WindowOpenedDuringDrawDefersArenaClear` | todo |
-| `test_scale_factor_change_preserves_bounds_and_survives_resize` | test | 9200 |  | `TestWindow_ScaleFactorChangePreservesBoundsAndSurvivesResize` | todo |
-| `test_fullscreen_toggle_reports_current_bounds` | gpui::test | 9239 |  | `TestWindow_FullscreenToggleReportsCurrentBounds` | todo |
-| `test_frame_waker_fires_on_frame_demand` | gpui::test | 9287 |  | `TestWindow_FrameWakerFiresOnFrameDemand` | todo |
-| `test_pending_next_frame_callbacks_are_not_stranded` | gpui::test | 9347 |  | `TestWindow_PendingNextFrameCallbacksAreNotStranded` | todo |
-| `test_window_reports_no_raw_handle_instead_of_panicking` | gpui::test | 9379 |  | `TestWindow_WindowReportsNoRawHandleInsteadOfPanicking` | todo |
-| `test_appearance_change_runs_after_app_update` | gpui::test | 9398 |  | `TestWindow_AppearanceChangeRunsAfterAppUpdate` | todo |
-| `queued_frame_callback_wakes_a_parked_render_loop` | gpui::test | 9423 |  | `TestWindow_QueuedFrameCallbackWakesAParkedRenderLoop` | todo |
-| `pending_presentation_wakes_a_parked_render_loop` | gpui::test | 9451 |  | `TestWindow_PendingPresentationWakesAParkedRenderLoop` | todo |
-| `callback_queued_during_a_frame_requests_a_follow_up` | gpui::test | 9469 |  | `TestWindow_CallbackQueuedDuringAFrameRequestsAFollowUp` | todo |
-| `auto_sized_window_root_fills_the_window` | test | 9520 |  | `TestWindow_AutoSizedWindowRootFillsTheWindow` | todo |
-| `explicitly_sized_window_root_keeps_its_size` | test | 9542 |  | `TestWindow_ExplicitlySizedWindowRootKeepsItsSize` | todo |
-| `file_drag_is_promoted_once_and_restored_in_source_window` | gpui::test | 9604 |  | `TestWindow_FileDragIsPromotedOnceAndRestoredInSourceWindow` | todo |
-| `test_focus_moved_by_focus_listener_is_dispatched` | gpui::test | 9948 |  | `TestWindow_FocusMovedByFocusListenerIsDispatched` | todo |
-| `claimed_touch_drag_receives_movement_and_release` | gpui::test | 9990 |  | `TestWindow_ClaimedTouchDragReceivesMovementAndRelease` | todo |
-| `back_gesture_is_claimed_by_the_innermost_listener` | gpui::test | 10013 |  | `TestWindow_BackGestureIsClaimedByTheInnermostListener` | todo |
-| `long_press_is_claimed_only_when_started_prevents_default` | gpui::test | 10089 |  | `TestWindow_LongPressIsClaimedOnlyWhenStartedPreventsDefault` | todo |
-| `stale_default_prevention_does_not_claim_long_press` | gpui::test | 10132 |  | `TestWindow_StaleDefaultPreventionDoesNotClaimLongPress` | todo |
-| `resolved_touch_cancels_scheduled_long_press` | gpui::test | 10156 |  | `TestWindow_ResolvedTouchCancelsScheduledLongPress` | todo |
-| `stale_long_press_timer_cannot_affect_replacement_touch` | gpui::test | 10180 |  | `TestWindow_StaleLongPressTimerCannotAffectReplacementTouch` | todo |
-| `test_underline_exclusions_preserve_device_geometry` | gpui::test | 10205 |  | `TestWindow_UnderlineExclusionsPreserveDeviceGeometry` | todo |
-| `test_underline_exclusions_preserve_helvetica_warning_edge` | gpui::test | 10314 |  | `TestWindow_UnderlineExclusionsPreserveHelveticaWarningEdge` | todo |
-| `test_underline_exclusions_preserve_content_mask_and_opacity` | gpui::test | 10353 |  | `TestWindow_UnderlineExclusionsPreserveContentMaskAndOpacity` | todo |
-| `test_underline_exclusions_adversarial_permutations` | gpui::test | 10411 |  | `TestWindow_UnderlineExclusionsAdversarialPermutations` | todo |
-| `test_empty_content_masks_remain_empty_when_snapped` | gpui::test | 10457 |  | `TestWindow_EmptyContentMasksRemainEmptyWhenSnapped` | todo |
-| `test_nonempty_content_masks_keep_covering_fractional_edges` | gpui::test | 10503 |  | `TestWindow_NonemptyContentMasksKeepCoveringFractionalEdges` | todo |
-| `test_empty_shadow_bounds_are_not_painted` | gpui::test | 10520 |  | `TestWindow_EmptyShadowBoundsAreNotPainted` | todo |
-| `test_collapsed_inset_shadow_hole_is_an_empty_point_on_the_pixel_grid` | gpui::test | 10560 |  | `TestWindow_CollapsedInsetShadowHoleIsAnEmptyPointOnThePixelGrid` | todo |
-| `test_standalone_modifier_sequence_timeout_and_recovery` | gpui::test | 10701 |  | `TestWindow_StandaloneModifierSequenceTimeoutAndRecovery` | todo |
-| `test_standalone_modifier_sequence_dispatches_before_timeout` | gpui::test | 10754 |  | `TestWindow_StandaloneModifierSequenceDispatchesBeforeTimeout` | todo |
-| `cached_view_follows_inherited_opacity` | gpui::test | 10823 |  | `TestWindow_CachedViewFollowsInheritedOpacity` | todo |
-| `test_drag_cursor_applies_before_next_paint` | gpui::test | 10928 |  | `TestWindow_DragCursorAppliesBeforeNextPaint` | todo |
-| `inspector_only_tracks_its_open_window` | gpui::test | 11017 | feat:inspector,debug | `TestWindowInspectorTests_InspectorOnlyTracksItsOpenWindow` | todo |
+| `test_focus_handle_release` | gpui::test | 8434 |  | `TestWindow_FocusHandleRelease` | done |
+| `test_dropped_focus_handle_blurs_only_its_windows` | gpui::test | 8475 |  | `TestWindow_DroppedFocusHandleBlursOnlyItsWindows` | done |
+| `test_native_close_defers_app_access` | gpui::test | 8523 |  | `TestWindow_NativeCloseDefersAppAccess` | done |
+| `test_frame_requests_and_skips_are_journaled` | gpui::test | 8537 | feat:profiler | `TestWindow_FrameRequestsAndSkipsAreJournaled` | blocked:M3-profiler-journal |
+| `test_frame_demand_survives_throttling` | gpui::test | 8593 | feat:profiler | `TestWindow_FrameDemandSurvivesThrottling` | blocked:M3-profiler-journal |
+| `test_debug_state_reports_cached_and_platform_values` | gpui::test | 8700 |  | `TestWindow_DebugStateReportsCachedAndPlatformValues` | done |
+| `test_window_visibility` | gpui::test | 8729 |  | `TestWindow_WindowVisibility` | done |
+| `test_display_tracking` | gpui::test | 8774 |  | `TestWindow_DisplayTracking` | done |
+| `test_window_opened_from_bounds_observer_uses_new_bounds` | gpui::test | 8884 |  | `TestWindow_WindowOpenedFromBoundsObserverUsesNewBounds` | done |
+| `test_fully_visible_bounds_preserve_layout_viewport` | gpui::test | 8926 |  | `TestWindow_FullyVisibleBoundsPreserveLayoutViewport` | done |
+| `frame_throttle_tracks_display_refreshes` | test | 9014 |  | `TestWindow_FrameThrottleTracksDisplayRefreshes` | done |
+| `frame_throttle_preserves_cadence_without_catching_up_after_stalls` | test | 9028 |  | `TestWindow_FrameThrottlePreservesCadenceWithoutCatchingUpAfterStalls` | done |
+| `power_modes_preserve_frame_limits` | test | 9050 |  | `TestWindow_PowerModesPreserveFrameLimits` | done |
+| `frame_limits_combine_enabled_intervals` | test | 9102 |  | `TestWindow_FrameLimitsCombineEnabledIntervals` | done |
+| `test_window_opened_during_draw_defers_arena_clear` | test | 9180 |  | `TestWindow_WindowOpenedDuringDrawDefersArenaClear` | done |
+| `test_scale_factor_change_preserves_bounds_and_survives_resize` | test | 9200 |  | `TestWindow_ScaleFactorChangePreservesBoundsAndSurvivesResize` | done |
+| `test_fullscreen_toggle_reports_current_bounds` | gpui::test | 9239 |  | `TestWindow_FullscreenToggleReportsCurrentBounds` | done |
+| `test_frame_waker_fires_on_frame_demand` | gpui::test | 9287 |  | `TestWindow_FrameWakerFiresOnFrameDemand` | done |
+| `test_pending_next_frame_callbacks_are_not_stranded` | gpui::test | 9347 |  | `TestWindow_PendingNextFrameCallbacksAreNotStranded` | done |
+| `test_window_reports_no_raw_handle_instead_of_panicking` | gpui::test | 9379 |  | `TestWindow_WindowReportsNoRawHandleInsteadOfPanicking` | done |
+| `test_appearance_change_runs_after_app_update` | gpui::test | 9398 |  | `TestWindow_AppearanceChangeRunsAfterAppUpdate` | done |
+| `queued_frame_callback_wakes_a_parked_render_loop` | gpui::test | 9423 |  | `TestWindow_QueuedFrameCallbackWakesAParkedRenderLoop` | done |
+| `pending_presentation_wakes_a_parked_render_loop` | gpui::test | 9451 |  | `TestWindow_PendingPresentationWakesAParkedRenderLoop` | done |
+| `callback_queued_during_a_frame_requests_a_follow_up` | gpui::test | 9469 |  | `TestWindow_CallbackQueuedDuringAFrameRequestsAFollowUp` | done |
+| `auto_sized_window_root_fills_the_window` | test | 9520 |  | `TestWindow_AutoSizedWindowRootFillsTheWindow` | done |
+| `explicitly_sized_window_root_keeps_its_size` | test | 9542 |  | `TestWindow_ExplicitlySizedWindowRootKeepsItsSize` | done |
+| `file_drag_is_promoted_once_and_restored_in_source_window` | gpui::test | 9604 |  | `TestWindow_FileDragIsPromotedOnceAndRestoredInSourceWindow` | done |
+| `test_focus_moved_by_focus_listener_is_dispatched` | gpui::test | 9948 |  | `TestWindow_FocusMovedByFocusListenerIsDispatched` | done |
+| `claimed_touch_drag_receives_movement_and_release` | gpui::test | 9990 |  | `TestWindow_ClaimedTouchDragReceivesMovementAndRelease` | done |
+| `back_gesture_is_claimed_by_the_innermost_listener` | gpui::test | 10013 |  | `TestWindow_BackGestureIsClaimedByTheInnermostListener` | done |
+| `long_press_is_claimed_only_when_started_prevents_default` | gpui::test | 10089 |  | `TestWindow_LongPressIsClaimedOnlyWhenStartedPreventsDefault` | done |
+| `stale_default_prevention_does_not_claim_long_press` | gpui::test | 10132 |  | `TestWindow_StaleDefaultPreventionDoesNotClaimLongPress` | done |
+| `resolved_touch_cancels_scheduled_long_press` | gpui::test | 10156 |  | `TestWindow_ResolvedTouchCancelsScheduledLongPress` | done |
+| `stale_long_press_timer_cannot_affect_replacement_touch` | gpui::test | 10180 |  | `TestWindow_StaleLongPressTimerCannotAffectReplacementTouch` | done |
+| `test_underline_exclusions_preserve_device_geometry` | gpui::test | 10205 |  | `TestWindow_UnderlineExclusionsPreserveDeviceGeometry` | done |
+| `test_underline_exclusions_preserve_helvetica_warning_edge` | gpui::test | 10314 |  | `TestWindow_UnderlineExclusionsPreserveHelveticaWarningEdge` | done |
+| `test_underline_exclusions_preserve_content_mask_and_opacity` | gpui::test | 10353 |  | `TestWindow_UnderlineExclusionsPreserveContentMaskAndOpacity` | done |
+| `test_underline_exclusions_adversarial_permutations` | gpui::test | 10411 |  | `TestWindow_UnderlineExclusionsAdversarialPermutations` | done |
+| `test_empty_content_masks_remain_empty_when_snapped` | gpui::test | 10457 |  | `TestWindow_EmptyContentMasksRemainEmptyWhenSnapped` | done |
+| `test_nonempty_content_masks_keep_covering_fractional_edges` | gpui::test | 10503 |  | `TestWindow_NonemptyContentMasksKeepCoveringFractionalEdges` | done |
+| `test_empty_shadow_bounds_are_not_painted` | gpui::test | 10520 |  | `TestWindow_EmptyShadowBoundsAreNotPainted` | done |
+| `test_collapsed_inset_shadow_hole_is_an_empty_point_on_the_pixel_grid` | gpui::test | 10560 |  | `TestWindow_CollapsedInsetShadowHoleIsAnEmptyPointOnThePixelGrid` | done |
+| `test_standalone_modifier_sequence_timeout_and_recovery` | gpui::test | 10701 |  | `TestWindow_StandaloneModifierSequenceTimeoutAndRecovery` | done |
+| `test_standalone_modifier_sequence_dispatches_before_timeout` | gpui::test | 10754 |  | `TestWindow_StandaloneModifierSequenceDispatchesBeforeTimeout` | done |
+| `cached_view_follows_inherited_opacity` | gpui::test | 10823 |  | `TestWindow_CachedViewFollowsInheritedOpacity` | done |
+| `test_drag_cursor_applies_before_next_paint` | gpui::test | 10928 |  | `TestWindow_DragCursorAppliesBeforeNextPaint` | done |
+| `inspector_only_tracks_its_open_window` | gpui::test | 11017 | feat:inspector,debug | `TestWindowInspectorTests_InspectorOnlyTracksItsOpenWindow` | done |
 
 ## gpui/src/window/a11y.rs
 

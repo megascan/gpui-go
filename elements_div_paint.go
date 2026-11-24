@@ -763,6 +763,7 @@ func (i *Interactivity) paintMouseListeners(hitbox *Hitbox, elementState *Intera
 							window.Refresh()
 							cx.StopPropagation()
 						}
+						drag.View.Release()
 					}
 				}
 			}

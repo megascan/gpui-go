@@ -1123,10 +1123,8 @@ func (f *frame) recordDebugBounds(selector string, bounds Bounds[Pixels]) {
 
 func newFrame(dispatchTree *dispatchTree) *frame {
 	return &frame{
-		dispatchTree:             dispatchTree,
-		debugBounds:              make(map[string]Bounds[Pixels]),
-		nextInspectorInstanceIDs: make(map[uint64][]inspectorInstanceIDs),
-		inspectorHitboxes:        make(map[HitboxID]InspectorElementID),
+		dispatchTree: dispatchTree,
+		debugBounds:  make(map[string]Bounds[Pixels]),
 	}
 }
 
