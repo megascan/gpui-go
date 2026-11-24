@@ -4,59 +4,73 @@ Scope: gpui_macos. Milestone: M4. Index and rules: [../PARITY.md](../PARITY.md).
 
 Status values: `todo`, `done`, `dev:<id>` (deviation registered in PARITY.md section 5), `n/a:<id>`. A row's Go symbol is the name derived by the naming rules (PARITY.md section 3); if a builder must deviate, edit the Go column and set `dev:<id>`.
 
+## gpui_macos/src/display.rs
+
+Go target: `platform/macos/display.go` (package `macos`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `MacDisplay` | struct | 16 |  | `MacDisplay` | done |
+| `MacDisplay::find_by_id` | assoc-fn | 22 |  | `MacDisplayFindByID` | done |
+| `MacDisplay::primary` | assoc-fn | 28 |  | `MacDisplayPrimary` | done |
+| `MacDisplay::all` | assoc-fn | 50 |  | `MacDisplayAll` | done |
+| `CGDisplayCreateUUIDFromDisplayID` | extern-fn | 77 |  | `cgDisplayCreateUUIDFromDisplayID` | done |
+| `PlatformDisplay for MacDisplay` | impl | 80 |  | `(*MacDisplay).UUID` | done |
+| `MacDisplay::get_nsscreen` | method | 166 |  | `(*MacDisplay).getNSScreen` | done |
+
 ## gpui_macos/src/display_link.rs
 
 Go target: `platform/macos/display_link.go` (package `macos`), tests in `display_link_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `MetalFrames` | struct | 305 |  | `MetalFrames` | todo |
-| `MetalFrames::replace` | method | 312 |  | `(MetalFrames).Replace` | todo |
-| `MetalFrames::is_attached` | method | 316 |  | `(MetalFrames).IsAttached` | todo |
-| `MetalFrames::wake` | method | 320 |  | `(MetalFrames).Wake` | todo |
-| `MetalFrames::begin_frame` | method | 330 |  | `(MetalFrames).BeginFrame` | todo |
-| `MetalFrames::debug_state` | method | 334 |  | `(MetalFrames).DebugState` | todo |
-| `MetalFrames::end_frame` | method | 350 |  | `(MetalFrames).EndFrame` | todo |
-| `WindowFrameSource` | struct | 362 |  | `WindowFrameSource` | todo |
-| `WindowFrameSource::new` | assoc-fn | 369 |  | `NewWindowFrameSource` | todo |
-| `WindowFrameSource::start` | method | 391 |  | `(WindowFrameSource).Start` | todo |
-| `WindowFrameSource::debug_state` | method | 399 |  | `(WindowFrameSource).DebugState` | todo |
-| `WindowFrameSource::take_signal` | method | 407 |  | `(WindowFrameSource).TakeSignal` | todo |
-| `WindowFrameSource::stop` | method | 411 |  | `(WindowFrameSource).Stop` | todo |
-| `CVDisplayLink` | enum | 446 |  | `CVDisplayLink` | todo |
-| `CVTimeStampFlags` | type | 479 |  | `CVTimeStampFlags` | todo |
-| `kCVTimeStampVideoTimeValid` | const | 481 |  | `Kcvtimestampvideotimevalid` | todo |
-| `kCVTimeStampHostTimeValid` | const | 482 |  | `Kcvtimestamphosttimevalid` | todo |
-| `kCVTimeStampSMPTETimeValid` | const | 483 |  | `Kcvtimestampsmptetimevalid` | todo |
-| `kCVTimeStampVideoRefreshPeriodValid` | const | 484 |  | `Kcvtimestampvideorefreshperiodvalid` | todo |
-| `kCVTimeStampRateScalarValid` | const | 485 |  | `Kcvtimestampratescalarvalid` | todo |
-| `kCVTimeStampTopField` | const | 486 |  | `Kcvtimestamptopfield` | todo |
-| `kCVTimeStampBottomField` | const | 487 |  | `Kcvtimestampbottomfield` | todo |
-| `kCVTimeStampVideoHostTimeValid` | const | 488 |  | `Kcvtimestampvideohosttimevalid` | todo |
-| `kCVTimeStampIsInterlaced` | const | 490 |  | `Kcvtimestampisinterlaced` | todo |
-| `CVSMPTETimeType` | type | 507 |  | `CVSMPTETimeType` | todo |
-| `kCVSMPTETimeType24` | const | 509 |  | `Kcvsmptetimetype24` | todo |
-| `kCVSMPTETimeType25` | const | 510 |  | `Kcvsmptetimetype25` | todo |
-| `kCVSMPTETimeType30Drop` | const | 511 |  | `Kcvsmptetimetype30drop` | todo |
-| `kCVSMPTETimeType30` | const | 512 |  | `Kcvsmptetimetype30` | todo |
-| `kCVSMPTETimeType2997` | const | 513 |  | `Kcvsmptetimetype2997` | todo |
-| `kCVSMPTETimeType2997Drop` | const | 514 |  | `Kcvsmptetimetype2997drop` | todo |
-| `kCVSMPTETimeType60` | const | 515 |  | `Kcvsmptetimetype60` | todo |
-| `kCVSMPTETimeType5994` | const | 516 |  | `Kcvsmptetimetype5994` | todo |
-| `CVSMPTETimeFlags` | type | 518 |  | `CVSMPTETimeFlags` | todo |
-| `kCVSMPTETimeValid` | const | 520 |  | `Kcvsmptetimevalid` | todo |
-| `kCVSMPTETimeRunning` | const | 521 |  | `Kcvsmptetimerunning` | todo |
-| `CVDisplayLinkOutputCallback` | type | 523 |  | `CVDisplayLinkOutputCallback` | todo |
-| `DisplayLink::new` | assoc-fn | 561 |  | `NewDisplayLink` | todo |
-| `DisplayLinkRef::start` | method | 591 |  | `(DisplayLinkRef).Start` | todo |
-| `DisplayLinkRef::stop` | method | 600 |  | `(DisplayLinkRef).Stop` | todo |
+| `MetalFrames` | struct | 305 |  | `MetalFrames` | done |
+| `MetalFrames::replace` | method | 312 |  | `(MetalFrames).Replace` | done |
+| `MetalFrames::is_attached` | method | 316 |  | `(MetalFrames).IsAttached` | done |
+| `MetalFrames::wake` | method | 320 |  | `(MetalFrames).Wake` | done |
+| `MetalFrames::begin_frame` | method | 330 |  | `(MetalFrames).BeginFrame` | done |
+| `MetalFrames::debug_state` | method | 334 |  | `(MetalFrames).DebugState` | done |
+| `MetalFrames::end_frame` | method | 350 |  | `(MetalFrames).EndFrame` | done |
+| `WindowFrameSource` | struct | 362 |  | `WindowFrameSource` | done |
+| `WindowFrameSource::new` | assoc-fn | 369 |  | `NewWindowFrameSource` | done |
+| `WindowFrameSource::start` | method | 391 |  | `(WindowFrameSource).Start` | done |
+| `WindowFrameSource::debug_state` | method | 399 |  | `(WindowFrameSource).DebugState` | done |
+| `WindowFrameSource::take_signal` | method | 407 |  | `(WindowFrameSource).TakeSignal` | done |
+| `WindowFrameSource::stop` | method | 411 |  | `(WindowFrameSource).Stop` | done |
+| `CVDisplayLink` | enum | 446 |  | `CVDisplayLink` | done |
+| `CVTimeStampFlags` | type | 479 |  | `CVTimeStampFlags` | done |
+| `kCVTimeStampVideoTimeValid` | const | 481 |  | `Kcvtimestampvideotimevalid` | done |
+| `kCVTimeStampHostTimeValid` | const | 482 |  | `Kcvtimestamphosttimevalid` | done |
+| `kCVTimeStampSMPTETimeValid` | const | 483 |  | `Kcvtimestampsmptetimevalid` | done |
+| `kCVTimeStampVideoRefreshPeriodValid` | const | 484 |  | `Kcvtimestampvideorefreshperiodvalid` | done |
+| `kCVTimeStampRateScalarValid` | const | 485 |  | `Kcvtimestampratescalarvalid` | done |
+| `kCVTimeStampTopField` | const | 486 |  | `Kcvtimestamptopfield` | done |
+| `kCVTimeStampBottomField` | const | 487 |  | `Kcvtimestampbottomfield` | done |
+| `kCVTimeStampVideoHostTimeValid` | const | 488 |  | `Kcvtimestampvideohosttimevalid` | done |
+| `kCVTimeStampIsInterlaced` | const | 490 |  | `Kcvtimestampisinterlaced` | done |
+| `CVSMPTETimeType` | type | 507 |  | `CVSMPTETimeType` | done |
+| `kCVSMPTETimeType24` | const | 509 |  | `Kcvsmptetimetype24` | done |
+| `kCVSMPTETimeType25` | const | 510 |  | `Kcvsmptetimetype25` | done |
+| `kCVSMPTETimeType30Drop` | const | 511 |  | `Kcvsmptetimetype30drop` | done |
+| `kCVSMPTETimeType30` | const | 512 |  | `Kcvsmptetimetype30` | done |
+| `kCVSMPTETimeType2997` | const | 513 |  | `Kcvsmptetimetype2997` | done |
+| `kCVSMPTETimeType2997Drop` | const | 514 |  | `Kcvsmptetimetype2997drop` | done |
+| `kCVSMPTETimeType60` | const | 515 |  | `Kcvsmptetimetype60` | done |
+| `kCVSMPTETimeType5994` | const | 516 |  | `Kcvsmptetimetype5994` | done |
+| `CVSMPTETimeFlags` | type | 518 |  | `CVSMPTETimeFlags` | done |
+| `kCVSMPTETimeValid` | const | 520 |  | `Kcvsmptetimevalid` | done |
+| `kCVSMPTETimeRunning` | const | 521 |  | `Kcvsmptetimerunning` | done |
+| `CVDisplayLinkOutputCallback` | type | 523 |  | `CVDisplayLinkOutputCallback` | done |
+| `DisplayLink::new` | assoc-fn | 561 |  | `NewDisplayLink` | done |
+| `DisplayLinkRef::start` | method | 591 |  | `(DisplayLinkRef).Start` | done |
+| `DisplayLinkRef::stop` | method | 600 |  | `(DisplayLinkRef).Stop` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `metal_frames_pause_only_when_gpui_neither_draws_nor_asks_again` | test | 617 |  | `TestDisplayLink_MetalFramesPauseOnlyWhenGpuiNeitherDrawsNorAsksAgain` | todo |
-| `a_renderer_draws_normally_after_its_display_link_is_invalidated` | test | 645 |  | `TestDisplayLink_ARendererDrawsNormallyAfterItsDisplayLinkIsInvalidated` | todo |
-| `host_timestamp_preserves_request_age_at_different_clock_rates` | test | 665 |  | `TestDisplayLink_HostTimestampPreservesRequestAgeAtDifferentClockRates` | todo |
-| `invalid_host_timestamps_fall_back_to_receipt_time` | test | 680 |  | `TestDisplayLink_InvalidHostTimestampsFallBackToReceiptTime` | todo |
+| `metal_frames_pause_only_when_gpui_neither_draws_nor_asks_again` | test | 617 |  | `TestDisplayLink_MetalFramesPauseOnlyWhenGpuiNeitherDrawsNorAsksAgain` | done |
+| `a_renderer_draws_normally_after_its_display_link_is_invalidated` | test | 645 |  | `TestDisplayLink_ARendererDrawsNormallyAfterItsDisplayLinkIsInvalidated` | blocked:M4-apple-metal-renderer |
+| `host_timestamp_preserves_request_age_at_different_clock_rates` | test | 665 |  | `TestDisplayLink_HostTimestampPreservesRequestAgeAtDifferentClockRates` | done |
+| `invalid_host_timestamps_fall_back_to_receipt_time` | test | 680 |  | `TestDisplayLink_InvalidHostTimestampsFallBackToReceiptTime` | done |
 
 ## gpui_macos/src/events.rs
 
@@ -112,30 +126,31 @@ Go target: `platform/macos/pasteboard.go` (package `macos`), tests in `pasteboar
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Pasteboard` | struct | 24 |  | `Pasteboard` | todo |
-| `Pasteboard::general` | assoc-fn | 31 |  | `PasteboardGeneral` | todo |
-| `Pasteboard::find` | assoc-fn | 37 |  | `PasteboardFind` | todo |
-| `Pasteboard::read` | method | 59 |  | `(Pasteboard).Read` | todo |
-| `Pasteboard::write` | method | 162 |  | `(Pasteboard).Write` | todo |
-| `UTType` | struct | 253 |  | `UTType` | todo |
-| `UTType::png` | assoc-fn | 256 |  | `UTTypePng` | todo |
-| `UTType::jpeg` | assoc-fn | 261 |  | `UTTypeJpeg` | todo |
-| `UTType::gif` | assoc-fn | 266 |  | `UTTypeGif` | todo |
-| `UTType::webp` | assoc-fn | 271 |  | `UTTypeWebp` | todo |
-| `UTType::bmp` | assoc-fn | 276 |  | `UTTypeBmp` | todo |
-| `UTType::svg` | assoc-fn | 281 |  | `UTTypeSvg` | todo |
-| `UTType::ico` | assoc-fn | 286 |  | `UTTypeIco` | todo |
-| `UTType::tiff` | assoc-fn | 291 |  | `UTTypeTiff` | todo |
-| `UTType::pnm` | assoc-fn | 296 |  | `UTTypePnm` | todo |
+| `Pasteboard` | struct | 24 |  | `Pasteboard` | done |
+| `Pasteboard::general` | assoc-fn | 31 |  | `PasteboardGeneral` | done |
+| `Pasteboard::find` | assoc-fn | 37 |  | `PasteboardFind` | done |
+| `Pasteboard::read` | method | 59 |  | `(Pasteboard).Read` | done |
+| `Pasteboard::write` | method | 162 |  | `(Pasteboard).Write` | done |
+| `UTType` | struct | 253 |  | `UTType` | done |
+| `UTType::png` | assoc-fn | 256 |  | `UTTypePng` | done |
+| `UTType::jpeg` | assoc-fn | 261 |  | `UTTypeJpeg` | done |
+| `UTType::gif` | assoc-fn | 266 |  | `UTTypeGif` | done |
+| `UTType::webp` | assoc-fn | 271 |  | `UTTypeWebp` | done |
+| `UTType::bmp` | assoc-fn | 276 |  | `UTTypeBmp` | done |
+| `UTType::svg` | assoc-fn | 281 |  | `UTTypeSvg` | done |
+| `UTType::ico` | assoc-fn | 286 |  | `UTTypeIco` | done |
+| `UTType::tiff` | assoc-fn | 291 |  | `UTTypeTiff` | done |
+| `UTType::pnm` | assoc-fn | 296 |  | `UTTypePnm` | done |
+| `From<ImageFormat> for UTType` | impl | 236 |  | `UTTypeFrom` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_string` | test | 314 |  | `TestPasteboard_String` | todo |
-| `test_custom_types_survive_creation_autorelease_pool` | test | 350 |  | `TestPasteboard_CustomTypesSurviveCreationAutoreleasePool` | todo |
-| `test_read_external_path` | test | 367 |  | `TestPasteboard_ReadExternalPath` | todo |
-| `test_read_external_paths_with_spaces` | test | 397 |  | `TestPasteboard_ReadExternalPathsWithSpaces` | todo |
-| `test_read_multiple_external_paths` | test | 416 |  | `TestPasteboard_ReadMultipleExternalPaths` | todo |
-| `test_read_image` | test | 448 |  | `TestPasteboard_ReadImage` | todo |
+| `test_string` | test | 314 |  | `TestPasteboard_String` | done |
+| `test_custom_types_survive_creation_autorelease_pool` | test | 350 |  | `TestPasteboard_CustomTypesSurviveCreationAutoreleasePool` | done |
+| `test_read_external_path` | test | 367 |  | `TestPasteboard_ReadExternalPath` | done |
+| `test_read_external_paths_with_spaces` | test | 397 |  | `TestPasteboard_ReadExternalPathsWithSpaces` | done |
+| `test_read_multiple_external_paths` | test | 416 |  | `TestPasteboard_ReadMultipleExternalPaths` | done |
+| `test_read_image` | test | 448 |  | `TestPasteboard_ReadImage` | blocked:M0-app-contexts |
 
 ## gpui_macos/src/platform.rs
 
@@ -185,6 +200,16 @@ Go target: `platform/macos/window.go` (package `macos`), tests in `window_test.g
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
 | `display_id_for_screen_handles_missing_metadata` | test | 4298 |  | `TestWindow_DisplayIDForScreenHandlesMissingMetadata` | todo |
+
+## gpui_macos/src/window_appearance.rs
+
+Go target: `platform/macos/window_appearance.go` (package `macos`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `window_appearance_from_native` | fn | 7 |  | `windowAppearanceFromNative` | done |
+| `NSAppearanceNameAqua` | static | 34 |  | `windowAppearanceFromNative` | done |
+| `NSAppearanceNameDarkAqua` | static | 35 |  | `windowAppearanceFromNative` | done |
 
 ## gpui_macos/src/window/native_views.rs
 
