@@ -137,7 +137,7 @@ Go target: `profiler.go` (package `gpui`), tests in `profiler_test.go`
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `interruptions_drop_latency_samples_but_hiding_keeps_draw_work` | test | 1661 | feat:profiler | `TestProfiler_InterruptionsDropLatencySamplesButHidingKeepsDrawWork` | blocked:M3-profiler-journal |
+| `interruptions_drop_latency_samples_but_hiding_keeps_draw_work` | test | 1661 | feat:profiler | `TestProfiler_InterruptionsDropLatencySamplesButHidingKeepsDrawWork` | blocked:M3-exit |
 | `frame_work_starts_at_the_later_of_signal_and_invalidation` | test | 1698 | feat:profiler | `TestProfiler_FrameWorkStartsAtTheLaterOfSignalAndInvalidation` | done |
 | `frames_are_split_by_refresh_interval_and_classified` | test | 1731 | feat:profiler | `TestProfiler_FramesAreSplitByRefreshIntervalAndClassified` | done |
 | `records_draw_events_only_while_tracing` | test | 1886 | feat:profiler | `TestProfiler_RecordsDrawEventsOnlyWhileTracing` | done |
@@ -339,70 +339,75 @@ Go target: `profiler_journal.go` (package `gpui`), tests in `profiler_journal_te
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `TASK_POLL_FLOOR` | const | 39 |  | `TaskPollFloor` | todo |
-| `FRAME_DEADLINE` | const | 47 |  | `FrameDeadline` | todo |
-| `ForegroundEvent` | enum | 78 |  | `ForegroundEvent` | todo |
-| `ForegroundEvent::start_time` | method | 99 |  | `(ForegroundEvent).StartTime` | todo |
-| `ForegroundEvent::end_time` | method | 112 |  | `(ForegroundEvent).EndTime` | todo |
-| `ForegroundEvent::duration` | method | 127 |  | `(ForegroundEvent).Duration` | todo |
-| `InputTiming` | struct | 134 |  | `InputTiming` | todo |
-| `PlatformSignal` | struct | 148 |  | `PlatformSignal` | todo |
-| `FrameSkipReason` | enum | 161 |  | `FrameSkipReason` | todo |
-| `FrameSkipped` | struct | 176 |  | `FrameSkipped` | todo |
-| `PollSummary` | struct | 187 |  | `PollSummary` | todo |
-| `SmallPollFlush` | struct | 203 |  | `SmallPollFlush` | todo |
-| `PresentedFrame` | struct | 214 |  | `PresentedFrame` | todo |
-| `PresentedFrame::dirty_to_present_duration` | method | 223 |  | `(PresentedFrame).DirtyToPresentDuration` | todo |
-| `IntervalBoundary` | enum | 232 |  | `IntervalBoundary` | todo |
-| `IntervalBoundary::end_time` | method | 254 |  | `(IntervalBoundary).EndTime` | todo |
-| `IntervalBoundary::dirty_at` | method | 263 |  | `(IntervalBoundary).DirtyAt` | todo |
-| `FrameStateChange` | enum | 273 |  | `FrameStateChange` | todo |
-| `ForegroundJournalEntry` | enum | 293 |  | `ForegroundJournalEntry` | todo |
-| `FrameSnapshot` | struct | 320 |  | `FrameSnapshot` | todo |
-| `FrameSnapshot::interval_end` | method | 343 |  | `(FrameSnapshot).IntervalEnd` | todo |
-| `FrameSnapshot::small_poll_summary` | method | 349 |  | `(FrameSnapshot).SmallPollSummary` | todo |
-| `FrameSnapshot::occupancy` | method | 362 |  | `(FrameSnapshot).Occupancy` | todo |
-| `FrameSnapshot::occupancy_within` | method | 372 |  | `(FrameSnapshot).OccupancyWithin` | todo |
-| `FrameSnapshot::busy_fraction` | method | 423 |  | `(FrameSnapshot).BusyFraction` | todo |
-| `ForegroundJournal` | struct | 1307 |  | `ForegroundJournal` | todo |
-| `ForegroundJournal::collector` | method | 1324 |  | `(ForegroundJournal).Collector` | todo |
-| `DrainedEntries` | struct | 1334 |  | `DrainedEntries` | todo |
-| `ForegroundJournalCollector` | struct | 1348 |  | `ForegroundJournalCollector` | todo |
-| `ForegroundJournalCollector::collect_unseen` | method | 1357 |  | `(ForegroundJournalCollector).CollectUnseen` | todo |
-| `IntervalSealer` | struct | 1395 |  | `IntervalSealer` | todo |
-| `IntervalSealer::new` | assoc-fn | 1406 |  | `NewIntervalSealer` | todo |
-| `IntervalSealer::note_lost` | method | 1418 |  | `(IntervalSealer).NoteLost` | todo |
-| `IntervalSealer::push_entries` | method | 1426 |  | `(IntervalSealer).PushEntries` | todo |
+| `TASK_POLL_FLOOR` | const | 39 |  | `TaskPollFloor` | done |
+| `FRAME_DEADLINE` | const | 47 |  | `FrameDeadline` | done |
+| `ForegroundEvent` | enum | 78 |  | `ForegroundEvent` | done |
+| `ForegroundEvent::start_time` | method | 99 |  | `(ForegroundEvent).StartTime` | done |
+| `ForegroundEvent::end_time` | method | 112 |  | `(ForegroundEvent).EndTime` | done |
+| `ForegroundEvent::duration` | method | 127 |  | `(ForegroundEvent).Duration` | done |
+| `InputTiming` | struct | 134 |  | `InputTiming` | done |
+| `PlatformSignal` | struct | 148 |  | `PlatformSignal` | done |
+| `FrameSkipReason` | enum | 161 |  | `FrameSkipReason` | done |
+| `FrameSkipped` | struct | 176 |  | `FrameSkipped` | done |
+| `PollSummary` | struct | 187 |  | `PollSummary` | done |
+| `SmallPollFlush` | struct | 203 |  | `SmallPollFlush` | done |
+| `PresentedFrame` | struct | 214 |  | `PresentedFrame` | done |
+| `PresentedFrame::dirty_to_present_duration` | method | 223 |  | `(PresentedFrame).DirtyToPresentDuration` | done |
+| `IntervalBoundary` | enum | 232 |  | `IntervalBoundary` | done |
+| `IntervalBoundary::end_time` | method | 254 |  | `(IntervalBoundary).EndTime` | done |
+| `IntervalBoundary::dirty_at` | method | 263 |  | `(IntervalBoundary).DirtyAt` | done |
+| `FrameStateChange` | enum | 273 |  | `FrameStateChange` | done |
+| `ForegroundJournalEntry` | enum | 293 |  | `ForegroundJournalEntry` | done |
+| `FrameSnapshot` | struct | 320 |  | `FrameSnapshot` | done |
+| `FrameSnapshot::interval_end` | method | 343 |  | `(FrameSnapshot).IntervalEnd` | done |
+| `FrameSnapshot::small_poll_summary` | method | 349 |  | `(FrameSnapshot).SmallPollSummary` | done |
+| `FrameSnapshot::occupancy` | method | 362 |  | `(FrameSnapshot).Occupancy` | done |
+| `FrameSnapshot::occupancy_within` | method | 372 |  | `(FrameSnapshot).OccupancyWithin` | done |
+| `FrameSnapshot::busy_fraction` | method | 423 |  | `(FrameSnapshot).BusyFraction` | done |
+| `ForegroundJournal` | struct | 1307 |  | `ForegroundJournal` | done |
+| `ForegroundJournal::collector` | method | 1324 |  | `(ForegroundJournal).Collector` | done |
+| `DrainedEntries` | struct | 1334 |  | `DrainedEntries` | done |
+| `ForegroundJournalCollector` | struct | 1348 |  | `ForegroundJournalCollector` | done |
+| `ForegroundJournalCollector::collect_unseen` | method | 1357 |  | `(ForegroundJournalCollector).CollectUnseen` | done |
+| `IntervalSealer` | struct | 1395 |  | `IntervalSealer` | done |
+| `IntervalSealer::new` | assoc-fn | 1406 |  | `NewIntervalSealer` | done |
+| `IntervalSealer::note_lost` | method | 1418 |  | `(IntervalSealer).NoteLost` | done |
+| `IntervalSealer::push_entries` | method | 1426 |  | `(IntervalSealer).PushEntries` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `platform_signals_are_journaled_without_sealing_or_occupying_time` | test | 1523 |  | `TestJournal_PlatformSignalsAreJournaledWithoutSealingOrOccupyingTime` | todo |
-| `completed_skips_seal_without_retiring_pending_demand` | test | 1567 |  | `TestJournal_CompletedSkipsSealWithoutRetiringPendingDemand` | todo |
-| `idle_refreshes_seal_nothing_and_keep_polls_folded` | test | 1626 |  | `TestJournal_IdleRefreshesSealNothingAndKeepPollsFolded` | todo |
-| `reentrant_skip_does_not_seal_the_enclosing_draw` | test | 1659 |  | `TestJournal_ReentrantSkipDoesNotSealTheEnclosingDraw` | todo |
-| `wake_rechecks_native_visibility` | gpui::test | 1707 |  | `TestJournal_WakeRechecksNativeVisibility` | todo |
-| `power_interruption_drops_the_poll_before_small_poll_folding` | test | 1728 |  | `TestJournal_PowerInterruptionDropsThePollBeforeSmallPollFolding` | todo |
-| `a_poll_spanning_an_unnotified_suspend_is_dropped` | test | 1765 |  | `TestJournal_APollSpanningAnUnnotifiedSuspendIsDropped` | todo |
-| `suspend_clock_ignores_jitter_and_notified_suspends` | test | 1800 |  | `TestJournal_SuspendClockIgnoresJitterAndNotifiedSuspends` | todo |
-| `visibility_and_power_changes_clear_pending_frames` | test | 1828 |  | `TestJournal_VisibilityAndPowerChangesClearPendingFrames` | todo |
-| `draw_waits_for_its_presentation_boundary` | test | 1860 |  | `TestJournal_DrawWaitsForItsPresentationBoundary` | todo |
-| `outermost_turn_seals_no_frame_work_when_idle` | test | 1923 |  | `TestJournal_OutermostTurnSealsNoFrameWorkWhenIdle` | todo |
-| `nested_turns_only_seal_after_the_outermost_turn` | test | 1964 |  | `TestJournal_NestedTurnsOnlySealAfterTheOutermostTurn` | todo |
-| `an_immediately_ready_runnable_prevents_an_idle_boundary_between_polls` | test | 2000 |  | `TestJournal_AnImmediatelyReadyRunnablePreventsAnIdleBoundaryBetweenPolls` | todo |
-| `a_pending_frame_prevents_idle_until_presentation` | test | 2035 |  | `TestJournal_APendingFramePreventsIdleUntilPresentation` | todo |
-| `a_present_without_a_draw_clears_the_window_pending_state` | test | 2067 |  | `TestJournal_APresentWithoutADrawClearsTheWindowPendingState` | todo |
-| `a_presentation_after_the_deadline_seals_the_whole_interval` | test | 2092 |  | `TestJournal_APresentationAfterTheDeadlineSealsTheWholeInterval` | todo |
-| `an_expired_frame_no_longer_blocks_idle_boundaries` | test | 2120 |  | `TestJournal_AnExpiredFrameNoLongerBlocksIdleBoundaries` | todo |
-| `closing_a_window_unblocks_idle_boundaries` | test | 2158 |  | `TestJournal_ClosingAWindowUnblocksIdleBoundaries` | todo |
-| `presenting_one_window_does_not_clear_another_pending_window` | test | 2183 |  | `TestJournal_PresentingOneWindowDoesNotClearAnotherPendingWindow` | todo |
-| `small_polls_are_flushed_immediately_before_a_retained_event` | test | 2221 |  | `TestJournal_SmallPollsAreFlushedImmediatelyBeforeARetainedEvent` | todo |
-| `small_polls_are_flushed_before_frame_state_changes` | test | 2268 |  | `TestJournal_SmallPollsAreFlushedBeforeFrameStateChanges` | todo |
-| `sparse_small_polls_are_discarded_when_the_foreground_returns_to_idle` | test | 2302 |  | `TestJournal_SparseSmallPollsAreDiscardedWhenTheForegroundReturnsToIdle` | todo |
-| `note_lost_is_reported_on_the_next_snapshot_only` | test | 2335 |  | `TestJournal_NoteLostIsReportedOnTheNextSnapshotOnly` | todo |
-| `losses_alone_seal_a_snapshot_at_the_next_boundary` | test | 2363 |  | `TestJournal_LossesAloneSealASnapshotAtTheNextBoundary` | todo |
-| `interval_event_cap_counts_overflowing_events` | test | 2379 |  | `TestJournal_IntervalEventCapCountsOverflowingEvents` | todo |
-| `collect_unseen_returns_each_entry_once_in_order` | test | 2403 |  | `TestJournal_CollectUnseenReturnsEachEntryOnceInOrder` | todo |
-| `concurrent_collection_preserves_the_complete_logical_sequence` | test | 2436 |  | `TestJournal_ConcurrentCollectionPreservesTheCompleteLogicalSequence` | todo |
+| `platform_signals_are_journaled_without_sealing_or_occupying_time` | test | 1523 |  | `TestJournal_PlatformSignalsAreJournaledWithoutSealingOrOccupyingTime` | done |
+| `completed_skips_seal_without_retiring_pending_demand` | test | 1567 |  | `TestJournal_CompletedSkipsSealWithoutRetiringPendingDemand` | done |
+| `idle_refreshes_seal_nothing_and_keep_polls_folded` | test | 1626 |  | `TestJournal_IdleRefreshesSealNothingAndKeepPollsFolded` | done |
+| `reentrant_skip_does_not_seal_the_enclosing_draw` | test | 1659 |  | `TestJournal_ReentrantSkipDoesNotSealTheEnclosingDraw` | done |
+| `wake_rechecks_native_visibility` | gpui::test | 1707 |  | `TestJournal_WakeRechecksNativeVisibility` | done |
+| `power_interruption_drops_the_poll_before_small_poll_folding` | test | 1728 |  | `TestJournal_PowerInterruptionDropsThePollBeforeSmallPollFolding` | done |
+| `a_poll_spanning_an_unnotified_suspend_is_dropped` | test | 1765 |  | `TestJournal_APollSpanningAnUnnotifiedSuspendIsDropped` | done |
+| `suspend_clock_ignores_jitter_and_notified_suspends` | test | 1800 |  | `TestJournal_SuspendClockIgnoresJitterAndNotifiedSuspends` | done |
+| `visibility_and_power_changes_clear_pending_frames` | test | 1828 |  | `TestJournal_VisibilityAndPowerChangesClearPendingFrames` | done |
+| `draw_waits_for_its_presentation_boundary` | test | 1860 |  | `TestJournal_DrawWaitsForItsPresentationBoundary` | done |
+| `outermost_turn_seals_no_frame_work_when_idle` | test | 1923 |  | `TestJournal_OutermostTurnSealsNoFrameWorkWhenIdle` | done |
+| `nested_turns_only_seal_after_the_outermost_turn` | test | 1964 |  | `TestJournal_NestedTurnsOnlySealAfterTheOutermostTurn` | done |
+| `an_immediately_ready_runnable_prevents_an_idle_boundary_between_polls` | test | 2000 |  | `TestJournal_AnImmediatelyReadyRunnablePreventsAnIdleBoundaryBetweenPolls` | done |
+| `a_pending_frame_prevents_idle_until_presentation` | test | 2035 |  | `TestJournal_APendingFramePreventsIdleUntilPresentation` | done |
+| `a_present_without_a_draw_clears_the_window_pending_state` | test | 2067 |  | `TestJournal_APresentWithoutADrawClearsTheWindowPendingState` | done |
+| `a_presentation_after_the_deadline_seals_the_whole_interval` | test | 2092 |  | `TestJournal_APresentationAfterTheDeadlineSealsTheWholeInterval` | done |
+| `an_expired_frame_no_longer_blocks_idle_boundaries` | test | 2120 |  | `TestJournal_AnExpiredFrameNoLongerBlocksIdleBoundaries` | done |
+| `closing_a_window_unblocks_idle_boundaries` | test | 2158 |  | `TestJournal_ClosingAWindowUnblocksIdleBoundaries` | done |
+| `presenting_one_window_does_not_clear_another_pending_window` | test | 2183 |  | `TestJournal_PresentingOneWindowDoesNotClearAnotherPendingWindow` | done |
+| `small_polls_are_flushed_immediately_before_a_retained_event` | test | 2221 |  | `TestJournal_SmallPollsAreFlushedImmediatelyBeforeARetainedEvent` | done |
+| `small_polls_are_flushed_before_frame_state_changes` | test | 2268 |  | `TestJournal_SmallPollsAreFlushedBeforeFrameStateChanges` | done |
+| `sparse_small_polls_are_discarded_when_the_foreground_returns_to_idle` | test | 2302 |  | `TestJournal_SparseSmallPollsAreDiscardedWhenTheForegroundReturnsToIdle` | done |
+| `note_lost_is_reported_on_the_next_snapshot_only` | test | 2335 |  | `TestJournal_NoteLostIsReportedOnTheNextSnapshotOnly` | done |
+| `losses_alone_seal_a_snapshot_at_the_next_boundary` | test | 2363 |  | `TestJournal_LossesAloneSealASnapshotAtTheNextBoundary` | done |
+| `interval_event_cap_counts_overflowing_events` | test | 2379 |  | `TestJournal_IntervalEventCapCountsOverflowingEvents` | done |
+| `collect_unseen_returns_each_entry_once_in_order` | test | 2403 |  | `TestJournal_CollectUnseenReturnsEachEntryOnceInOrder` | done |
+| `concurrent_collection_preserves_the_complete_logical_sequence` | test | 2436 |  | `TestJournal_ConcurrentCollectionPreservesTheCompleteLogicalSequence` | done |
+| `ring_matches_reference_model_under_wrap_collisions_and_independent_cursors` | proptest | 3117 |  | `TestJournal_RingMatchesReferenceModelUnderWrapCollisionsAndIndependentCursors` | dev:D-PROPTEST |
+| `a_presentation_seals_exactly_once_regardless_of_delay` | proptest | 3219 |  | `TestJournal_APresentationSealsExactlyOnceRegardlessOfDelay` | dev:D-PROPTEST |
+| `completion_order_sealer_matches_reference_under_arbitrary_batching` | proptest | 3245 |  | `TestJournal_CompletionOrderSealerMatchesReferenceUnderArbitraryBatching` | dev:D-PROPTEST |
+| `occupancy_matches_interval_union_and_fold_apportionment` | proptest | 3283 |  | `TestJournal_OccupancyMatchesIntervalUnionAndFoldApportionment` | dev:D-PROPTEST |
+| `writer_matches_state_model_across_turn_frame_and_runnable_transitions` | proptest | 3362 |  | `TestJournal_WriterMatchesStateModelAcrossTurnFrameAndRunnableTransitions` | dev:D-PROPTEST |
 
 ## gpui/src/profiler/hang/monitor.rs
 
@@ -420,3 +425,5 @@ Go target: `profiler_hang_monitor.go` (package `gpui`)
 | Id | Deviation | Upstream | Reason |
 |---|---|---|---|
 | D-PROFTHREAD | The thread-local `THREAD_TIMINGS` becomes a registry keyed by an explicit `ThreadID` (allocated with `NewThreadID`); `UpdateRunningTask`, `SaveTaskTiming`, `GetCurrentThreadTaskTimings` and `GetCurrentThreadTimings` take the dispatcher's `ThreadID` as first parameter, and `ReleaseThreadTimings` is the thread-exit drop | `gpui/src/profiler.rs:42`, `:59`, `:540-556`, `:671-697` | Go has no thread-local storage and goroutines have no stable identity; the dispatcher owns its thread identity |
+| D-JOURNALTHREAD | The thread-local foreground journal and runnable counter become one process-wide journal behind a mutex; record calls from any goroutine reach it, and an unbalanced `end_turn` returns without the debug assertion (tests share the journal that earlier Apps installed, where upstream gives each test thread none) | `gpui/src/profiler/journal.rs:526-529`, `:727-731` | Go has no thread-local storage; the dispatchers must only journal the main thread's polls (handoff) |
+| D-SUSPENDCLOCK | `system_suspended_time` is the package variable `systemSuspendedTime`, returning no clock until per-OS files set it (CLOCK_BOOTTIME - CLOCK_MONOTONIC on Linux, QueryInterruptTime - QueryUnbiasedInterruptTime on Windows, mach_continuous_time - mach_absolute_time on macOS) | `gpui/src/profiler/journal.rs:882-970` | One upstream file maps to one Go file and the root package cannot hold OS-specific code in profiler_journal.go; the per-OS bodies need files outside this stage (handoff) |
