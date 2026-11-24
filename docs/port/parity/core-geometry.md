@@ -36,8 +36,8 @@ Go target: `bounds_tree.go` (package `gpui`), tests in `bounds_tree_test.go`
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_insert` | test | 398 |  | `TestBoundsTree_Insert` | todo |
-| `test_random_iterations` | test | 456 |  | `TestBoundsTree_RandomIterations` | todo |
+| `test_insert` | test | 398 |  | `TestBoundsTree_Insert` | done |
+| `test_random_iterations` | test | 456 |  | `TestBoundsTree_RandomIterations` | dev:D-RNG |
 
 ## gpui/src/color.rs
 

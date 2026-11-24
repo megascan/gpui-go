@@ -1,7 +1,6 @@
 package gpui
 
 import (
-	"iter"
 	"math/rand/v2"
 	"reflect"
 	"testing"
@@ -1147,17 +1146,29 @@ func (s *Stateful[E]) IntoAnyElement() AnyElement {
 	panic("gpui: unimplemented Stateful.IntoAnyElement")
 }
 
-// Scene is the list of primitives painted in one frame (M0-scene ports it).
-type Scene struct{}
+// HitboxID identifies a hitbox within a frame (M0-window-core ports it).
+type HitboxID uint64
 
-// PrimitiveBatch is a batch of primitives of one kind (M0-scene ports it).
-type PrimitiveBatch interface {
-	isBatch()
+// TimedTransformation is a transformation animated over time (M0-elements-media ports it).
+type TimedTransformation struct{}
+
+func (t TimedTransformation) minFrameInterval() (time.Duration, bool) {
+	panic("gpui: unimplemented TimedTransformation.minFrameInterval")
 }
 
-// Batches returns the scene's primitives in paint order (M0-scene ports it).
-func (s *Scene) Batches() iter.Seq[PrimitiveBatch] {
-	panic("gpui: unimplemented Scene.Batches")
+func (t TimedTransformation) at(elapsed time.Duration) Transformation {
+	panic("gpui: unimplemented TimedTransformation.at")
+}
+
+// Transformation is a scale, translation, rotation and alpha applied to an SVG (M0-elements-media ports it).
+type Transformation struct{}
+
+func (t Transformation) alphaFactor() float32 {
+	panic("gpui: unimplemented Transformation.alphaFactor")
+}
+
+func (t Transformation) intoMatrix(center Point[Pixels], scaleFactor float32) TransformationMatrix {
+	panic("gpui: unimplemented Transformation.intoMatrix")
 }
 
 // TextSystem is the application's text system (M0-text-system ports it).

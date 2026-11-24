@@ -10,28 +10,52 @@ Go target: `path_builder.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `PathStyle` | enum | 15 |  | `PathStyle` | todo |
-| `StrokeOptions` | struct | 24 |  | `StrokeOptions` | todo |
-| `FillOptions` | struct | 49 |  | `FillOptions` | todo |
-| `PathBuilder` | struct | 63 |  | `PathBuilder` | todo |
-| `PathBuilder::stroke` | assoc-fn | 126 |  | `PathBuilderStroke` | todo |
-| `PathBuilder::fill` | assoc-fn | 137 |  | `PathBuilderFill` | todo |
-| `PathBuilder::with_style` | method | 142 |  | `(PathBuilder).WithStyle` | todo |
-| `PathBuilder::dash_array` | method | 149 |  | `(PathBuilder).DashArray` | todo |
-| `PathBuilder::move_to` | method | 166 |  | `(PathBuilder).MoveTo` | todo |
-| `PathBuilder::line_to` | method | 172 |  | `(PathBuilder).LineTo` | todo |
-| `PathBuilder::curve_to` | method | 178 |  | `(PathBuilder).CurveTo` | todo |
-| `PathBuilder::cubic_bezier_to` | method | 185 |  | `(PathBuilder).CubicBezierTo` | todo |
-| `PathBuilder::arc_to` | method | 196 |  | `(PathBuilder).ArcTo` | todo |
-| `PathBuilder::relative_arc_to` | method | 213 |  | `(PathBuilder).RelativeArcTo` | todo |
-| `PathBuilder::add_polygon` | method | 230 |  | `(PathBuilder).AddPolygon` | todo |
-| `PathBuilder::close` | method | 240 |  | `(PathBuilder).Close` | todo |
-| `PathBuilder::transform` | method | 246 |  | `(PathBuilder).Transform` | todo |
-| `PathBuilder::translate` | method | 252 |  | `(PathBuilder).Translate` | todo |
-| `PathBuilder::scale` | method | 262 |  | `(PathBuilder).Scale` | todo |
-| `PathBuilder::rotate` | method | 274 |  | `(PathBuilder).Rotate` | todo |
-| `PathBuilder::build` | method | 284 |  | `(PathBuilder).Build` | todo |
-| `Path` | struct | 387 |  | `Path` | todo |
+| `PathStyle` | enum | 15 |  | `PathStyle` | done |
+| `StrokeOptions` | struct | 24 |  | `StrokeOptions` | done |
+| `FillOptions` | struct | 49 |  | `FillOptions` | done |
+| `PathBuilder` | struct | 63 |  | `PathBuilder` | done |
+| `PathBuilder::stroke` | assoc-fn | 126 |  | `PathBuilderStroke` | done |
+| `PathBuilder::fill` | assoc-fn | 137 |  | `PathBuilderFill` | done |
+| `PathBuilder::with_style` | method | 142 |  | `(PathBuilder).WithStyle` | done |
+| `PathBuilder::dash_array` | method | 149 |  | `(PathBuilder).DashArray` | done |
+| `PathBuilder::move_to` | method | 166 |  | `(PathBuilder).MoveTo` | done |
+| `PathBuilder::line_to` | method | 172 |  | `(PathBuilder).LineTo` | done |
+| `PathBuilder::curve_to` | method | 178 |  | `(PathBuilder).CurveTo` | done |
+| `PathBuilder::cubic_bezier_to` | method | 185 |  | `(PathBuilder).CubicBezierTo` | done |
+| `PathBuilder::arc_to` | method | 196 |  | `(PathBuilder).ArcTo` | done |
+| `PathBuilder::relative_arc_to` | method | 213 |  | `(PathBuilder).RelativeArcTo` | done |
+| `PathBuilder::add_polygon` | method | 230 |  | `(PathBuilder).AddPolygon` | done |
+| `PathBuilder::close` | method | 240 |  | `(PathBuilder).Close` | done |
+| `PathBuilder::transform` | method | 246 |  | `(PathBuilder).Transform` | done |
+| `PathBuilder::translate` | method | 252 |  | `(PathBuilder).Translate` | done |
+| `PathBuilder::scale` | method | 262 |  | `(PathBuilder).Scale` | done |
+| `PathBuilder::rotate` | method | 274 |  | `(PathBuilder).Rotate` | done |
+| `PathBuilder::build` | method | 284 |  | `(PathBuilder).Build` | done |
+| `Path` | struct | 387 |  | `Path` | done |
+| `pub use lyon_path::math::Transform` | type | 8 |  | `Transform` | done |
+| `pub use lyon_path::FillRule` | type | 9 |  | `FillRule` | done |
+| `FillRule::EvenOdd` (re-export) | variant | 9 |  | `FillRuleEvenOdd` | done |
+| `FillRule::NonZero` (re-export) | variant | 9 |  | `FillRuleNonZero` | done |
+| `pub use lyon_path::LineCap` | type | 9 |  | `LineCap` | done |
+| `LineCap::Butt` (re-export) | variant | 9 |  | `LineCapButt` | done |
+| `LineCap::Square` (re-export) | variant | 9 |  | `LineCapSquare` | done |
+| `LineCap::Round` (re-export) | variant | 9 |  | `LineCapRound` | done |
+| `pub use lyon_path::LineJoin` | type | 9 |  | `LineJoin` | done |
+| `LineJoin::Miter` (re-export) | variant | 9 |  | `LineJoinMiter` | done |
+| `LineJoin::MiterClip` (re-export) | variant | 9 |  | `LineJoinMiterClip` | done |
+| `LineJoin::Round` (re-export) | variant | 9 |  | `LineJoinRound` | done |
+| `LineJoin::Bevel` (re-export) | variant | 9 |  | `LineJoinBevel` | done |
+| `PathStyle::Stroke` | variant | 17 |  | `PathStyleStroke` | done |
+| `PathStyle::Fill` | variant | 19 |  | `PathStyleFill` | done |
+| `impl Default for StrokeOptions` | impl | 37 |  | `DefaultStrokeOptions` | done |
+| `impl Default for FillOptions` | impl | 55 |  | `DefaultFillOptions` | done |
+| `impl Default for PathBuilder` | impl | 112 |  | `DefaultPathBuilder` | done |
+| `impl From<lyon_path::Builder> for PathBuilder` | impl | 70 |  | `newPathBuilderFromBuilder` | done |
+| `impl From<WithSvg<BuilderImpl>> for PathBuilder` | impl | 79 |  | `newPathBuilderFromSvg` | done |
+| `impl From<lyon_path::math::Point> for Point<Pixels>` | impl | 88 |  | `pointFromLyon` | done |
+| `impl From<Point<Pixels>> for lyon_path::math::Point` | impl | 94 |  | `lyonPoint` | done |
+| `impl From<Point<Pixels>> for Vector` | impl | 100 |  | `lyonVector` | done |
+| `impl From<Point<Pixels>> for Point2D<f32, Pixels>` | impl | 106 |  | `lyonPoint` | done |
 
 ## gpui/src/path_winding.rs
 
@@ -39,11 +63,11 @@ Go target: `path_winding.go` (package `gpui`), tests in `path_winding_test.go`
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `rectangle_is_nine_tiles` | test | 715 |  | `TestPathWinding_RectangleIsNineTiles` | todo |
-| `huge_path_paints_only_visible_tiles` | test | 723 |  | `TestPathWinding_HugePathPaintsOnlyVisibleTiles` | todo |
-| `overflowing_paths_are_skipped` | test | 746 |  | `TestPathWinding_OverflowingPathsAreSkipped` | todo |
-| `non_finite_point_fails_path` | test | 759 |  | `TestPathWinding_NonFinitePointFailsPath` | todo |
-| `endpoints_balance` | test | 776 |  | `TestPathWinding_EndpointsBalance` | todo |
+| `rectangle_is_nine_tiles` | test | 715 |  | `TestPathWinding_RectangleIsNineTiles` | done |
+| `huge_path_paints_only_visible_tiles` | test | 723 |  | `TestPathWinding_HugePathPaintsOnlyVisibleTiles` | done |
+| `overflowing_paths_are_skipped` | test | 746 |  | `TestPathWinding_OverflowingPathsAreSkipped` | done |
+| `non_finite_point_fails_path` | test | 759 |  | `TestPathWinding_NonFinitePointFailsPath` | done |
+| `endpoints_balance` | test | 776 |  | `TestPathWinding_EndpointsBalance` | done |
 
 ## gpui/src/scene.rs
 
@@ -51,57 +75,64 @@ Go target: `scene.go` (package `gpui`), tests in `scene_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `DrawOrder` | type | 18 |  | `DrawOrder` | todo |
-| `PaddedBool32` | struct | 26 |  | `PaddedBool32` | todo |
-| `PaddedBool32::as_bool` | method | 36 |  | `(PaddedBool32).AsBool` | todo |
-| `Scene` | struct | 53 |  | `Scene` | todo |
-| `Scene::clear` | method | 72 |  | `(Scene).Clear` | todo |
-| `Scene::len` | method | 131 |  | `(Scene).Len` | todo |
-| `Scene::push_layer` | method | 135 |  | `(Scene).PushLayer` | todo |
-| `Scene::pop_layer` | method | 147 |  | `(Scene).PopLayer` | todo |
-| `Scene::insert_primitive` | method | 220 |  | `(Scene).InsertPrimitive` | todo |
-| `Scene::replay` | method | 286 |  | `(Scene).Replay` | todo |
-| `Scene::finish` | method | 306 |  | `(Scene).Finish` | todo |
-| `Scene::batches` | method | 372 |  | `(Scene).Batches` | todo |
-| `quad_depth_scale` | fn | 437 |  | `QuadDepthScale` | todo |
-| `quad_depth` | fn | 443 |  | `QuadDepth` | todo |
-| `Primitive` | enum | 493 |  | `Primitive` | todo |
-| `Primitive::bounds` | method | 521 |  | `(Primitive).Bounds` | todo |
-| `Primitive::content_mask` | method | 549 |  | `(Primitive).ContentMask` | todo |
-| `PrimitiveBatch` | enum | 806 |  | `PrimitiveBatch` | todo |
-| `PrimitiveBatch::label` | method | 830 |  | `(PrimitiveBatch).Label` | todo |
-| `Quad` | struct | 866 |  | `Quad` | todo |
-| `Underline` | struct | 886 |  | `Underline` | todo |
-| `Shadow` | struct | 905 |  | `Shadow` | todo |
-| `BorderStyle` | enum | 927 |  | `BorderStyle` | todo |
-| `TransformationMatrix` | struct | 938 |  | `TransformationMatrix` | todo |
-| `TransformationMatrix::unit` | assoc-fn | 950 |  | `TransformationMatrixUnit` | todo |
-| `TransformationMatrix::translate` | method | 958 |  | `(TransformationMatrix).Translate` | todo |
-| `TransformationMatrix::rotate` | method | 966 |  | `(TransformationMatrix).Rotate` | todo |
-| `TransformationMatrix::scale` | method | 977 |  | `(TransformationMatrix).Scale` | todo |
-| `TransformationMatrix::compose` | method | 988 |  | `(TransformationMatrix).Compose` | todo |
-| `TransformationMatrix::apply` | method | 1045 |  | `(TransformationMatrix).Apply` | todo |
-| `MonochromeSprite` | struct | 1066 |  | `MonochromeSprite` | todo |
-| `SpriteAnimationId` | struct | 1082 |  | `SpriteAnimationID` | todo |
-| `SpriteAnimationId::NONE` | assoc-const | 1086 |  | `SpriteAnimationIDNone` | todo |
-| `SubpixelSprite` | struct | 1131 |  | `SubpixelSprite` | todo |
-| `PolychromeSprite` | struct | 1150 |  | `PolychromeSprite` | todo |
-| `PaintSurface` | struct | 1169 |  | `PaintSurface` | todo |
-| `PaintNativeView` | struct | 1189 |  | `PaintNativeView` | todo |
-| `PathCurve` | struct | 1214 |  | `PathCurve` | todo |
-| `PathPaint` | struct | 1226 |  | `PathPaint` | todo |
-| `PathTile` | struct | 1238 |  | `PathTile` | todo |
-| `PaintedPath` | struct | 1252 |  | `PaintedPath` | todo |
-| `PaintedPath::new` | assoc-fn | 1262 |  | `NewPaintedPath` | todo |
-| `PaintedPath::tile_count` | method | 1286 |  | `(PaintedPath).TileCount` | todo |
-| `PaintedPath::append_to` | method | 1290 |  | `(PaintedPath).AppendTo` | todo |
+| `DrawOrder` | type | 18 |  | `DrawOrder` | done |
+| `PaddedBool32` | struct | 26 |  | `PaddedBool32` | done |
+| `PaddedBool32::as_bool` | method | 36 |  | `(PaddedBool32).AsBool` | done |
+| `Scene` | struct | 53 |  | `Scene` | done |
+| `Scene::clear` | method | 72 |  | `(Scene).Clear` | done |
+| `Scene::len` | method | 131 |  | `(Scene).Len` | done |
+| `Scene::push_layer` | method | 135 |  | `(Scene).PushLayer` | done |
+| `Scene::pop_layer` | method | 147 |  | `(Scene).PopLayer` | done |
+| `Scene::insert_primitive` | method | 220 |  | `(Scene).InsertPrimitive` | done |
+| `Scene::replay` | method | 286 |  | `(Scene).Replay` | done |
+| `Scene::finish` | method | 306 |  | `(Scene).Finish` | done |
+| `Scene::batches` | method | 372 |  | `(Scene).Batches` | done |
+| `quad_depth_scale` | fn | 437 |  | `QuadDepthScale` | done |
+| `quad_depth` | fn | 443 |  | `QuadDepth` | done |
+| `Primitive` | enum | 493 |  | `Primitive` | dev:D-PRIMITIVE |
+| `Primitive::bounds` | method | 521 |  | `(Primitive).Bounds` | done |
+| `Primitive::content_mask` | method | 549 |  | `(Primitive).ContentMask` | done |
+| `PrimitiveBatch` | enum | 806 |  | `PrimitiveBatch` | done |
+| `PrimitiveBatch::label` | method | 830 |  | `(PrimitiveBatch).Label` | done |
+| `Quad` | struct | 866 |  | `Quad` | done |
+| `Underline` | struct | 886 |  | `Underline` | done |
+| `Shadow` | struct | 905 |  | `Shadow` | done |
+| `BorderStyle` | enum | 927 |  | `BorderStyle` | dev:D-GPUENUM |
+| `TransformationMatrix` | struct | 938 |  | `TransformationMatrix` | done |
+| `TransformationMatrix::unit` | assoc-fn | 950 |  | `TransformationMatrixUnit` | done |
+| `TransformationMatrix::translate` | method | 958 |  | `(TransformationMatrix).Translate` | done |
+| `TransformationMatrix::rotate` | method | 966 |  | `(TransformationMatrix).Rotate` | done |
+| `TransformationMatrix::scale` | method | 977 |  | `(TransformationMatrix).Scale` | done |
+| `TransformationMatrix::compose` | method | 988 |  | `(TransformationMatrix).Compose` | done |
+| `TransformationMatrix::apply` | method | 1045 |  | `(TransformationMatrix).Apply` | done |
+| `MonochromeSprite` | struct | 1066 |  | `MonochromeSprite` | done |
+| `SpriteAnimationId` | struct | 1082 |  | `SpriteAnimationID` | done |
+| `SpriteAnimationId::NONE` | assoc-const | 1086 |  | `SpriteAnimationIDNone` | done |
+| `SubpixelSprite` | struct | 1131 |  | `SubpixelSprite` | done |
+| `PolychromeSprite` | struct | 1150 |  | `PolychromeSprite` | done |
+| `PaintSurface` | struct | 1169 |  | `PaintSurface` | dev:D-SURFACEBUF |
+| `PaintNativeView` | struct | 1189 |  | `PaintNativeView` | done |
+| `PathCurve` | struct | 1214 |  | `PathCurve` | done |
+| `PathPaint` | struct | 1226 |  | `PathPaint` | done |
+| `PathTile` | struct | 1238 |  | `PathTile` | done |
+| `PaintedPath` | struct | 1252 |  | `PaintedPath` | done |
+| `PaintedPath::new` | assoc-fn | 1262 |  | `NewPaintedPath` | done |
+| `PaintedPath::tile_count` | method | 1286 |  | `(PaintedPath).TileCount` | done |
+| `PaintedPath::append_to` | method | 1290 |  | `(PaintedPath).AppendTo` | done |
+| `impl From<bool> for PaddedBool32` | impl | 28 |  | `PaddedBool32FromBool` | done |
+| `impl From<X> for Primitive` (every primitive) | impl | 877 |  | `IntoPrimitive` | dev:D-PRIMITIVE |
+| `impl Default for TransformationMatrix` | impl | 1058 |  | `DefaultTransformationMatrix` | done |
+| `impl Default for SpriteAnimationId` | impl | 1089 |  | `DefaultSpriteAnimationID` | done |
+| `BorderStyle` serde (Serialize) | impl | 925 |  | `(BorderStyle).MarshalJSONTo` | done |
+| `BorderStyle` serde (Deserialize) | impl | 925 |  | `(BorderStyle).UnmarshalJSONFrom` | done |
+| `BorderStyle` schema (JsonSchema) | impl | 925 |  | `(BorderStyle).JSONSchema` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `a_native_view_in_a_layer_is_covered_by_what_the_layer_paints_after_it` | test | 1352 |  | `TestScene_ANativeViewInALayerIsCoveredByWhatTheLayerPaintsAfterIt` | todo |
-| `a_native_view_painted_twice_is_kept_where_it_was_painted_first` | test | 1375 |  | `TestScene_ANativeViewPaintedTwiceIsKeptWhereItWasPaintedFirst` | todo |
-| `layers_are_drawn_in_paint_order` | test | 1405 |  | `TestScene_LayersAreDrawnInPaintOrder` | todo |
-| `nested_layers_are_drawn_above_their_parents` | test | 1431 |  | `TestScene_NestedLayersAreDrawnAboveTheirParents` | todo |
+| `a_native_view_in_a_layer_is_covered_by_what_the_layer_paints_after_it` | test | 1352 |  | `TestScene_ANativeViewInALayerIsCoveredByWhatTheLayerPaintsAfterIt` | done |
+| `a_native_view_painted_twice_is_kept_where_it_was_painted_first` | test | 1375 |  | `TestScene_ANativeViewPaintedTwiceIsKeptWhereItWasPaintedFirst` | done |
+| `layers_are_drawn_in_paint_order` | test | 1405 |  | `TestScene_LayersAreDrawnInPaintOrder` | done |
+| `nested_layers_are_drawn_above_their_parents` | test | 1431 |  | `TestScene_NestedLayersAreDrawnAboveTheirParents` | done |
 
 ## gpui/src/spring.rs
 
@@ -443,3 +474,9 @@ Go target: `taffy.go` (package `gpui`), tests in `taffy_test.go`
 |---|---|---|---|---|---|
 | `border_widths_to_taffy_use_stroke_snapping` | test | 761 |  | `TestTaffy_BorderWidthsToTaffyUseStrokeSnapping` | todo |
 
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-PRIMITIVE | `Primitive` is a sealed interface over wrapper variants (`PrimitiveQuad{Quad}`, `PrimitivePath{PaintedPath}`, ...); `Bounds` and `ContentMask` are methods of the wrappers. `impl Into<Primitive>` is the `IntoPrimitive` interface, implemented by every primitive struct and every wrapper, so `Scene.InsertPrimitive` takes either | `gpui/src/scene.rs:493-560`, `:220` | the primitive structs have exported `Bounds` / `ContentMask` fields, so they cannot also carry methods of those names |
+| D-SURFACEBUF | `PaintSurface.ImageBuffer` (`CFRetained<CVPixelBuffer>`, macOS and iOS only) is a `uintptr` CVPixelBufferRef present on every GOOS, zero elsewhere; the Apple back end owns its retain and release | `gpui/src/scene.rs:1169-1175` | the root package imports no Apple bindings (DESIGN 4) and the struct does not vary by GOOS |

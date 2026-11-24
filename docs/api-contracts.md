@@ -22,10 +22,9 @@ Stub owners (the stage that replaces the symbol):
 | `Keymap` | M0-keymap |
 | `PlatformGestures`, `GestureTuning`, `GestureKinds` | M0-gestures-spring |
 | `SystemWindowTab` | M0-app-core |
-| `RenderSvgParams` | M0-elements-media |
+| `RenderSvgParams`, `TimedTransformation`, `Transformation` (and their unexported `minFrameInterval`, `at`, `alphaFactor`, `intoMatrix`) | M0-elements-media |
 | `NativeViewID` | M0-window-a11y |
 | `ClickEvent`, `PlatformInput`, `Modifiers`, `Keystroke`, `KeystrokeParse`, `Action`, `ActionData`, `RegisterAction`, `Fluent`, `BindFluent`, `(Fluent).When`, `(Fluent).Map` | M0-input-types |
-| `Scene`, `PrimitiveBatch`, `(Scene).Batches` | M0-scene |
 | `TextSystem`, `WindowTextSystem`, `Font`, `FontRun`, `TextRun`, `FontMetrics`, `LineLayout`, `ShapedRun`, `ShapedGlyph`, `WrappedLineLayout`, `LineLayoutCache`, `FontID`, `GlyphID`, `RenderGlyphParams`, `MissingGlyphSink`, `MissingGlyph` | M0-text-system |
 | `LineWrapper`, `Boundary` | M0-line-wrapper |
 | `EntityID`, `AnyEntity`, `AnyWeakEntity`, `Entity`, `WeakEntity`, `slot`, `entityFromAny`, `Subscription` | M0-entities |
@@ -36,7 +35,7 @@ Stub owners (the stage that replaces the symbol):
 | `TestAppContext` | M0-test-contexts |
 | `Styler`, `Styled`, `BindStyled`, `(Styled).Flex`, `SizeFull`, `Style`, `StyleRefinement` | M0-style |
 | `Element`, `ElementA11y`, `ElementA11ySyntheticChildren`, `IntoElement`, `AnyElement`, `NewAnyElement`, `Render`, `RenderOnce`, `View`, `AnyView`, `anyViewDowncast`, `ParentElement`, `Parent`, `BindParent`, `GlobalElementID`, `InspectorElementID`, `SourceLocation`, `LayoutID`, `AvailableSpace`, `(Entity).IntoAnyElement` | M0-element |
-| `Window` (type), `WindowID`, `AnyWindowHandle`, `WindowHandle`, `ArenaClearNeeded`, `DispatchPhase`, `FocusHandle`, `Focusable`, `ContentMask`, `ElementID`, `ElementIDSource`, `Hitbox`, `HitboxBehavior`, `PaintQuad`, `DefaultWindowSize`, `WindowControlArea` | M0-window-core |
+| `HitboxID` (final type `uint64`, so tests build ids directly), `Window` (type), `WindowID`, `AnyWindowHandle`, `WindowHandle`, `ArenaClearNeeded`, `DispatchPhase`, `FocusHandle`, `Focusable`, `ContentMask`, `ElementID`, `ElementIDSource`, `Hitbox`, `HitboxBehavior`, `PaintQuad`, `DefaultWindowSize`, `WindowControlArea` | M0-window-core |
 | `(Window).RemSize`, `Draw`, `WithElementState`, `PaintQuad`, `Refresh`, `OnNextFrame`, `RequestAnimationFrame`, `ReplaceRoot` | M0-window-paint |
 | `(Window).RequestLayout`, `InsertHitbox`, `DispatchKeystroke`, `DispatchEvent`, `DispatchEventResult` | M0-window-dispatch |
 | `Interactivity`, `InteractiveElement`, `Interactive`, `BindInteractive`, `InteractiveID`, `BindInteractiveID`, `StatefulInteractiveElement`, `StatefulInteractive`, `BindStatefulInteractive`, `Div`, `NewDiv` and its methods except `IntoAnyElement` | M0-div-api |
@@ -157,3 +156,14 @@ func newMacWindow() *MacWindow {
 - Screen capture seam: `ScapBackend` (`GetAllTargets`, `BuildCapturer`) and `ScapCapturer` (`StartCapture`, `StopCapture`, `GetNextFrame`, `Target`) mirror the zed-scap calls of `scap_screen_capture.rs`; targets are `*ScapDisplay` / `*ScapWindow`, frames the `ScapFrame*` types. Code that builds a `ScreenCaptureFrame` from a `ScapFrame` needs `//go:build linux || windows`. A back end registers once from `init` with `RegisterScapBackend` (a nil or second registration panics); the glue (M3-root-capture) reads it with the unexported `registeredScapBackend`.
 - Stub field contracts set here for later stages: `FontMetrics` (`UnitsPerEm`, `Ascent`, `Descent`, `LineGap`, `UnderlinePosition`, `UnderlineThickness`, `CapHeight`, `XHeight`, `BoundingBox`), `LineLayout`, `ShapedRun`, `ShapedGlyph`, `RenderGlyphParams`, `RenderSvgParams`, `RenderImageParams` and `Capslock.On` carry upstream's public fields; `FontID` is `uint`, `GlyphID` `uint32`, `ImageID` `uint`.
 
+## 7. Scene and renderer (scene.go, path_builder.go, render/render.go)
+
+Built by M0-scene; DESIGN 6.8 and 6.9 give the reasons.
+
+- `Scene`'s zero value is an empty scene. Its primitive slices are exported fields (`Shadows`, `Quads`, `Paths`, `Underlines`, `MonochromeSprites`, `SubpixelSprites`, `PolychromeSprites`, `Surfaces`, `NativeViews`), sorted into drawing order by `Finish`. Renderers upload them with `unsafe.Slice`; `scene_layout_test.go` pins every GPU struct's size and offsets against the WGSL, HLSL and Metal (cbindgen C) layouts.
+- `InsertPrimitive(IntoPrimitive)` takes any primitive struct (`Quad`, `Shadow`, `Underline`, `MonochromeSprite`, `SubpixelSprite`, `PolychromeSprite`, `PaintSurface`, `PaintNativeView`, `PaintedPath`) or a `Primitive`. `Primitive` is a sealed interface over the wrappers `PrimitiveQuad{Quad}` and so on (D-PRIMITIVE); `Bounds()` and `ContentMask()` are wrapper methods.
+- `Batches() iter.Seq[PrimitiveBatch]` (call `Finish` first). Batches are `PrimitiveBatchShadows{Range}`, `PrimitiveBatchQuads`, `PrimitiveBatchPaths`, `PrimitiveBatchUnderlines`, `PrimitiveBatchSurfaces`, `PrimitiveBatchNativeViews` (each embeds `Range`) and `PrimitiveBatchMonochromeSprites` / `SubpixelSprites` / `PolychromeSprites` with `TextureID` and `Range`; type-switch on them. `Label()` gives upstream's debug label. Paths are uploaded with `PaintedPath.AppendTo(&paints, &curves, &tiles)`; `TileCount` counts instances. `QuadDepthScale` / `QuadDepth` are the quad depth helpers.
+- Zero values that are not upstream's defaults: a zero `TransformationMatrix` is not the unit matrix and a zero `SpriteAnimationID` is not `SpriteAnimationIDNone`. Every sprite built by ported code sets `Transformation: TransformationMatrixUnit()` (or the element's matrix) and `Animation: SpriteAnimationIDNone`, as upstream's call sites do; a zero matrix collapses the sprite's bounds and the scene drops it. `BorderStyle` is a `uint32` (D-GPUENUM) with JSON as `"Solid"` / `"Dashed"`.
+- `PaintSurface.ImageBuffer` is a `uintptr` CVPixelBufferRef on macOS and iOS, zero elsewhere (D-SURFACEBUF); the Apple back end retains it when painting and releases it when the scene is cleared.
+- Paths: `PathBuilderFill()` / `PathBuilderStroke(width)` return `*PathBuilder`; the drawing methods mutate it, `WithStyle` / `DashArray` return it, `Build() (Path, error)`. `PathStyle` is `PathStyleStroke{StrokeOptions}` or `PathStyleFill{FillOptions}`. `Transform`, `FillRule`, `LineCap`, `LineJoin` alias internal/lyon with their variant constants re-declared in gpui. `NewPaintedPath(path, scaleFactor, ContentMask[Pixels], Background)` bins a path for painting (`Window.PaintPath`).
+- `render.Renderer` (package `render`, imports only gpui) is the method set platform windows hold: `Draw`, `UpdateDrawableSize`, `UpdateTransparency`, `SetSubpixelLayout`, `SpriteAtlas`, `SupportsDualSourceBlending`, `GPUSpecs`, `DeviceLost`, `Recover(RawWindowHandle) error`, `Destroy`. `Destroy` runs before the window's surface and display connection close.
