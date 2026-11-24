@@ -9,6 +9,7 @@ import (
 	"syscall/js"
 
 	"github.com/megascan/gpui-go/render/wgpu/internal/gpu"
+	"github.com/megascan/gpui-go/render/wgpu/internal/gpu/webgl2"
 	"github.com/megascan/gpui-go/render/wgpu/internal/gpu/webgpu"
 	"github.com/megascan/gpui-go/scheduler"
 )
@@ -91,13 +92,8 @@ func wgpuContextNewWebWithBackend(canvas js.Value, preference WebBackendPreferen
 	if preference == WebBackendPreferenceAuto && !webgpu.BrowserWebGpuSupported() {
 		backends &^= gpu.BackendsBrowserWebGpu
 	}
-	if backends&gpu.BackendsBrowserWebGpu == 0 {
-		return wgpuContextNewWebGl(canvas, preference)
-	}
-	instance := createInstance(gpu.InstanceDescriptor{Backends: backends})
-	surface, err := webgpu.CreateCanvasSurface(instance, canvas)
+	instance, surface, err := createWebInstanceAndSurface(backends, canvas)
 	if err != nil {
-		instance.Release()
 		return nil, fmt.Errorf("Failed to create browser graphics surface: %w", err)
 	}
 
@@ -154,8 +150,24 @@ func wgpuContextNewWebWithBackend(canvas js.Value, preference WebBackendPreferen
 	return &PreparedWebGraphics{Context: context, Surface: surface}, nil
 }
 
-var errWebGlUnavailable = errors.New("the WebGL2 backend is not available in this build")
+func createWebInstanceAndSurface(backends gpu.Backends, canvas js.Value) (gpu.Instance, gpu.Surface, error) {
+	var instance gpu.Instance
+	if backends&gpu.BackendsBrowserWebGpu != 0 {
+		instance = createInstance(gpu.InstanceDescriptor{Backends: backends})
+	} else {
+		instance = webgl2.CreateInstance(gpu.InstanceDescriptor{Backends: backends})
+	}
+	surface, err := createCanvasSurface(instance, canvas)
+	if err != nil {
+		instance.Release()
+		return nil, nil, err
+	}
+	return instance, surface, nil
+}
 
-func wgpuContextNewWebGl(canvas js.Value, preference WebBackendPreference) (*PreparedWebGraphics, error) {
-	return nil, fmt.Errorf("Failed to request a %s adapter compatible with the canvas: %w", preference, errWebGlUnavailable)
+func createCanvasSurface(instance gpu.Instance, canvas js.Value) (gpu.Surface, error) {
+	if surface, err := webgl2.CreateCanvasSurface(instance, canvas); !errors.Is(err, webgl2.ErrNotWebGl2Instance) {
+		return surface, err
+	}
+	return webgpu.CreateCanvasSurface(instance, canvas)
 }

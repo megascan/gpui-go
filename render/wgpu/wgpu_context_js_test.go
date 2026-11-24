@@ -3,7 +3,7 @@
 package wgpu
 
 import (
-	"errors"
+	"strings"
 	"syscall/js"
 	"testing"
 
@@ -34,9 +34,9 @@ func TestWgpuContextJS_WebBackendPreferenceBackends(t *testing.T) {
 	}
 }
 
-func TestWgpuContextJS_WebGlBranchReturnsError(t *testing.T) {
+func TestWgpuContextJS_WebGlBranchRequiresCanvas(t *testing.T) {
 	_, err := wgpuContextNewWebWithBackend(js.Undefined(), WebBackendPreferenceWebGl)
-	if !errors.Is(err, errWebGlUnavailable) {
-		t.Fatalf("err = %v, want errWebGlUnavailable", err)
+	if err == nil || !strings.Contains(err.Error(), "canvas element is undefined") {
+		t.Fatalf("err = %v, want the undefined canvas error", err)
 	}
 }
