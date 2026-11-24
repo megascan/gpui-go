@@ -10,8 +10,8 @@ Go target: `platform/linux/internal/dbus/power.go` (package `dbus`), tests in `p
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `maps_profiles_without_guessing_unknown_values` | test | 154 |  | `TestPower_MapsProfilesWithoutGuessingUnknownValues` | todo |
-| `monitors_profiles_and_service_restarts` | test | 171 |  | `TestPower_MonitorsProfilesAndServiceRestarts` | todo |
+| `maps_profiles_without_guessing_unknown_values` | test | 154 |  | `TestPower_MapsProfilesWithoutGuessingUnknownValues` | done |
+| `monitors_profiles_and_service_restarts` | test | 171 |  | `TestPower_MonitorsProfilesAndServiceRestarts` | done |
 
 ## gpui_linux/src/linux/system_notifications.rs
 
@@ -19,7 +19,7 @@ Go target: `platform/linux/internal/dbus/system_notifications.go` (package `dbus
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `caller_action_ids_do_not_collide_with_transport_action_ids` | test | 137 |  | `TestSystemNotifications_CallerActionIDsDoNotCollideWithTransportActionIDs` | todo |
+| `caller_action_ids_do_not_collide_with_transport_action_ids` | test | 137 |  | `TestSystemNotifications_CallerActionIDsDoNotCollideWithTransportActionIDs` | done |
 
 ## gpui_linux/src/linux/xdg_desktop_portal.rs
 
@@ -27,11 +27,11 @@ Go target: `platform/linux/internal/dbus/xdg_desktop_portal.go` (package `dbus`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Event` | enum | 13 |  | `Event` | todo |
-| `XDPEventSource` | struct | 28 |  | `XDPEventSource` | todo |
-| `XDPEventSource::new` | assoc-fn | 34 |  | `NewXDPEventSource` | todo |
+| `Event` | enum | 13 |  | `Event` | done |
+| `XDPEventSource` | struct | 28 |  | `XDPEventSource` | done |
+| `XDPEventSource::new` | assoc-fn | 34 |  | `NewXDPEventSource` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `text_scale_factor_is_clamped_to_a_usable_range` | test | 238 |  | `TestXdgDesktopPortal_TextScaleFactorIsClampedToAUsableRange` | todo |
+| `text_scale_factor_is_clamped_to_a_usable_range` | test | 238 |  | `TestXdgDesktopPortal_TextScaleFactorIsClampedToAUsableRange` | done |
 
