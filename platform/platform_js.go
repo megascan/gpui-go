@@ -4,30 +4,30 @@ package platform
 
 import (
 	"github.com/megascan/gpui-go"
-	"github.com/megascan/gpui-go/render/wgpu"
+	"github.com/megascan/gpui-go/platform/web"
 )
 
 // WebBackendPreference selects the browser graphics back end.
-type WebBackendPreference = wgpu.WebBackendPreference
+type WebBackendPreference = web.WebBackendPreference
 
 // ApplicationWithWebBackend returns a web app that uses backendPreference.
 func ApplicationWithWebBackend(backendPreference WebBackendPreference) *gpui.Application {
-	panic(errPlatformNotPorted("web"))
+	return gpui.ApplicationWithPlatform(web.NewWebPlatformWithBackend(true, backendPreference))
 }
 
 // SingleThreadedWeb returns a single-threaded web app, unlike Application.
 func SingleThreadedWeb() *gpui.Application {
-	panic(errPlatformNotPorted("web"))
+	return gpui.ApplicationWithPlatform(web.NewWebPlatform(false))
 }
 
-// WebInit initializes panic hooks and logging for the web platform. Call it before running the
-// application.
+// WebInit initializes logging for the web platform; Go already reports panics to the browser
+// console. Call it before running the application.
 func WebInit() {
-	panic(errPlatformNotPorted("web"))
+	web.InitLogging()
 }
 
 func currentPlatform(headless bool) (Platform, error) {
-	return nil, errPlatformNotPorted("web")
+	return web.NewWebPlatformWithBackend(true, web.WebBackendPreferenceAuto), nil
 }
 
 func currentHeadlessRenderer() (gpui.PlatformHeadlessRenderer, error) {

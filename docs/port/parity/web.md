@@ -10,19 +10,19 @@ Go target: `platform/web/canvas_fallback.go` (package `web`), tests in `canvas_f
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `CanvasFontFallback` | enum | 19 |  | `CanvasFontFallback` | todo |
-| `CanvasFallback` | struct | 42 |  | `CanvasFallback` | todo |
-| `classify_canvas_fallback` | fn | 51 |  | `ClassifyCanvasFallback` | todo |
+| `CanvasFontFallback` | enum | 19 |  | `CanvasFontFallback` | done |
+| `CanvasFallback` | struct | 42 |  | `CanvasFallback` | done |
+| `classify_canvas_fallback` | fn | 51 |  | `ClassifyCanvasFallback` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `canvas_font_fallback_policy` | test | 234 |  | `TestCanvasFallback_CanvasFontFallbackPolicy` | todo |
-| `ascii_is_ineligible_but_keycaps_are_preserved` | test | 262 |  | `TestCanvasFallback_AsciiIsIneligibleButKeycapsArePreserved` | todo |
-| `ordinary_cjk_clusters` | test | 284 |  | `TestCanvasFallback_OrdinaryCjkClusters` | todo |
-| `emoji_presentation_is_preserved` | test | 323 |  | `TestCanvasFallback_EmojiPresentationIsPreserved` | todo |
-| `unsupported_scripts_and_cjk_forms_stay_on_cosmic` | test | 372 |  | `TestCanvasFallback_UnsupportedScriptsAndCjkFormsStayOnCosmic` | todo |
-| `malformed_or_out_of_policy_emoji_stay_on_cosmic` | test | 430 |  | `TestCanvasFallback_MalformedOrOutOfPolicyEmojiStayOnCosmic` | todo |
-| `accepts_only_one_whole_extended_grapheme` | test | 461 |  | `TestCanvasFallback_AcceptsOnlyOneWholeExtendedGrapheme` | todo |
+| `canvas_font_fallback_policy` | test | 234 |  | `TestCanvasFallback_CanvasFontFallbackPolicy` | done |
+| `ascii_is_ineligible_but_keycaps_are_preserved` | test | 262 |  | `TestCanvasFallback_AsciiIsIneligibleButKeycapsArePreserved` | done |
+| `ordinary_cjk_clusters` | test | 284 |  | `TestCanvasFallback_OrdinaryCjkClusters` | done |
+| `emoji_presentation_is_preserved` | test | 323 |  | `TestCanvasFallback_EmojiPresentationIsPreserved` | done |
+| `unsupported_scripts_and_cjk_forms_stay_on_cosmic` | test | 372 |  | `TestCanvasFallback_UnsupportedScriptsAndCjkFormsStayOnCosmic` | done |
+| `malformed_or_out_of_policy_emoji_stay_on_cosmic` | test | 430 |  | `TestCanvasFallback_MalformedOrOutOfPolicyEmojiStayOnCosmic` | done |
+| `accepts_only_one_whole_extended_grapheme` | test | 461 |  | `TestCanvasFallback_AcceptsOnlyOneWholeExtendedGrapheme` | done |
 
 ## gpui_web/src/dispatcher.rs
 
@@ -61,9 +61,9 @@ Go target: `platform/web/glyph_cache.go` (package `web`), tests in `glyph_cache_
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `warm_lookup_borrows_text_and_preserves_storage` | test | 59 |  | `TestGlyphCache_WarmLookupBorrowsTextAndPreservesStorage` | todo |
-| `font_and_presentation_have_distinct_ids` | test | 95 |  | `TestGlyphCache_FontAndPresentationHaveDistinctIDs` | todo |
-| `insertion_rechecks_a_previous_miss` | test | 123 |  | `TestGlyphCache_InsertionRechecksAPreviousMiss` | todo |
+| `warm_lookup_borrows_text_and_preserves_storage` | test | 59 |  | `TestGlyphCache_WarmLookupBorrowsTextAndPreservesStorage` | done |
+| `font_and_presentation_have_distinct_ids` | test | 95 |  | `TestGlyphCache_FontAndPresentationHaveDistinctIDs` | done |
+| `insertion_rechecks_a_previous_miss` | test | 123 |  | `TestGlyphCache_InsertionRechecksAPreviousMiss` | done |
 
 ## gpui_web/src/http_client.rs
 
@@ -113,15 +113,15 @@ Go target: `platform/web/run_replacements.go` (package `web`), tests in `run_rep
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `candidates_capture_bounds_without_a_flattened_vector` | test | 219 |  | `TestRunReplacements_CandidatesCaptureBoundsWithoutAFlattenedVector` | todo |
-| `candidates_keep_graphemes_across_same_font_boundaries` | test | 264 |  | `TestRunReplacements_CandidatesKeepGraphemesAcrossSameFontBoundaries` | todo |
-| `candidates_handle_nonmonotonic_and_disjoint_source_indices` | test | 296 |  | `TestRunReplacements_CandidatesHandleNonmonotonicAndDisjointSourceIndices` | todo |
-| `candidates_preserve_native_coverage_and_color` | test | 332 |  | `TestRunReplacements_CandidatesPreserveNativeCoverageAndColor` | todo |
-| `no_replacements_preserves_even_empty_runs` | test | 476 |  | `TestRunReplacements_NoReplacementsPreservesEvenEmptyRuns` | todo |
-| `whole_run_reuses_both_allocations` | test | 490 |  | `TestRunReplacements_WholeRunReusesBothAllocations` | todo |
-| `splits_reuse_outer_prefix_unaffected_and_emptied_buffers` | test | 513 |  | `TestRunReplacements_SplitsReuseOuterPrefixUnaffectedAndEmptiedBuffers` | todo |
-| `multiple_splits_and_shifts` | test | 540 |  | `TestRunReplacements_MultipleSplitsAndShifts` | todo |
-| `exhaustive_small_streams_match_reference` | test | 559 |  | `TestRunReplacements_ExhaustiveSmallStreamsMatchReference` | todo |
+| `candidates_capture_bounds_without_a_flattened_vector` | test | 219 |  | `TestRunReplacements_CandidatesCaptureBoundsWithoutAFlattenedVector` | done |
+| `candidates_keep_graphemes_across_same_font_boundaries` | test | 264 |  | `TestRunReplacements_CandidatesKeepGraphemesAcrossSameFontBoundaries` | done |
+| `candidates_handle_nonmonotonic_and_disjoint_source_indices` | test | 296 |  | `TestRunReplacements_CandidatesHandleNonmonotonicAndDisjointSourceIndices` | done |
+| `candidates_preserve_native_coverage_and_color` | test | 332 |  | `TestRunReplacements_CandidatesPreserveNativeCoverageAndColor` | done |
+| `no_replacements_preserves_even_empty_runs` | test | 476 |  | `TestRunReplacements_NoReplacementsPreservesEvenEmptyRuns` | done |
+| `whole_run_reuses_both_allocations` | test | 490 |  | `TestRunReplacements_WholeRunReusesBothAllocations` | done |
+| `splits_reuse_outer_prefix_unaffected_and_emptied_buffers` | test | 513 |  | `TestRunReplacements_SplitsReuseOuterPrefixUnaffectedAndEmptiedBuffers` | done |
+| `multiple_splits_and_shifts` | test | 540 |  | `TestRunReplacements_MultipleSplitsAndShifts` | done |
+| `exhaustive_small_streams_match_reference` | test | 559 |  | `TestRunReplacements_ExhaustiveSmallStreamsMatchReference` | done |
 
 ## gpui_web/src/window.rs
 
@@ -144,6 +144,14 @@ Go target: `platform/web/window.go` (package `web`)
 - events.rs → events.go, ime_mirror.rs → ime_mirror.go (no public items). Event handlers read DOM events through syscall/js; the IME mirror's value/selection logic runs against the `mirrorTextArea` / `mirrorInputHandler` interfaces so sync, window and diff logic is tested under node without a DOM (ime_mirror_test.go, events_test.go).
 - The input-diff of `register_input` is factored into `diffImeEdit`; pasted-image reads chain `arrayBuffer` promises instead of `spawn_local` (same order, same handler-at-resolution semantics).
 - `sync` takes the input handler once for the whole sync rather than per call; nothing re-enters the window between the calls, so behaviour is the same.
+
+## Notes (M4-web-text)
+
+- canvas_fallback.go holds `CanvasFontFallback` and a port of unicode-properties 0.1.3's `EMOJI_STATUS` range table (the version gpui_web pins), searched by binary search; graphemes come from go-text/typesetting/segmenter, Han script and `Lo` from package unicode.
+- canvas_text.go, glyph_cache.go, run_replacements.go and text_system.go have no public items. `CANVAS_FONT_BIT` is the top bit of `gpui.FontID` (`uint`, 64-bit on Go wasm; upstream's wasm32 usize gives bit 31): same logic.
+- canvas_text's thread-local canvas is a package-level slot with a reentrancy flag, created lazily, so node tests never touch OffscreenCanvas.
+- `SmallVec`/`retain_mut`/`drain` in run_replacements become in-place compaction and reslicing, so the allocation-reuse tests check the same backing arrays.
+- platform/platform_js.go now returns the web platform; `web_init`'s console_error_panic_hook has no Go equivalent to install (Go wasm panics already print to the console), so WebInit only calls InitLogging.
 
 ## Deviations registered here
 
