@@ -401,24 +401,3 @@ func installForegroundJournal() ForegroundJournal {
 type VisualTestPlatform struct {
 	Platform
 }
-
-// ListSizingBehavior is the sizing behavior to apply during layout (M0-list ports it). The zero
-// value is upstream's default, Auto.
-type ListSizingBehavior uint8
-
-const (
-	// ListSizingBehaviorAuto means the list should not calculate a fixed size.
-	ListSizingBehaviorAuto ListSizingBehavior = iota
-	// ListSizingBehaviorInfer means the list should calculate its size based on the size of its items.
-	ListSizingBehaviorInfer
-)
-
-// ListHorizontalSizingBehavior is the horizontal sizing behavior to apply during layout (M0-list ports it).
-type ListHorizontalSizingBehavior uint8
-
-const (
-	// ListHorizontalSizingBehaviorFitList means list items' width can never exceed the width of the list.
-	ListHorizontalSizingBehaviorFitList ListHorizontalSizingBehavior = iota
-	// ListHorizontalSizingBehaviorUnconstrained means list items' width may go over the width of the list, if any item is wider.
-	ListHorizontalSizingBehaviorUnconstrained
-)
