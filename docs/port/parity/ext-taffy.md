@@ -2043,6 +2043,151 @@ Go target: `internal/taffy/hand_written_measure_test.go` (package `taffy`, test-
 | `measure_absolute_child` | test | 360 | test | `TestHandWrittenMeasure_MeasureAbsoluteChild` | done |
 | `ignore_invalid_measure` | test | 383 | test | `TestHandWrittenMeasure_IgnoreInvalidMeasure` | done |
 
+## tests/hand_written/min_max_overrides.rs
+
+Go target: `internal/taffy/hand_written_min_max_overrides_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::min_max_overrides` is the Go file stem, so the inner `mod min_max_overrides` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `min_overrides_max` | test | 7 | test | `TestHandWrittenMinMaxOverrides_MinOverridesMax` | done |
+| `max_overrides_size` | test | 36 | test | `TestHandWrittenMinMaxOverrides_MaxOverridesSize` | done |
+| `min_overrides_size` | test | 61 | test | `TestHandWrittenMinMaxOverrides_MinOverridesSize` | done |
+
+## tests/hand_written/negative_available_space.rs
+
+Go target: `internal/taffy/hand_written_negative_available_space_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::negative_available_space` is the Go file stem, so the inner `mod negative_available_space` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `block_child_margins_exceed_container_width` | test | 75 | test | `TestHandWrittenNegativeAvailableSpace_BlockChildMarginsExceedContainerWidth` | done |
+| `flex_column_child_margins_exceed_container_width` | test | 80 | test | `TestHandWrittenNegativeAvailableSpace_FlexColumnChildMarginsExceedContainerWidth` | done |
+| `grid_child_margins_exceed_container_width` | test | 85 | test | `TestHandWrittenNegativeAvailableSpace_GridChildMarginsExceedContainerWidth` | done |
+
+## tests/hand_written/oof_hoisting.rs
+
+Go target: `internal/taffy/hand_written_oof_hoisting_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::oof_hoisting` is the Go file stem, so the inner `mod oof_hoisting` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `absolute_skips_static_parent` | test | 16 | flexbox, grid, block_layout | `TestHandWrittenOofHoisting_AbsoluteSkipsStaticParent` | done |
+| `hoisted_children_are_in_document_order` | test | 63 | flexbox, grid, block_layout | `TestHandWrittenOofHoisting_HoistedChildrenAreInDocumentOrder` | done |
+| `static_position_is_containing_block_relative` | test | 112 | flexbox, grid, block_layout | `TestHandWrittenOofHoisting_StaticPositionIsContainingBlockRelative` | done |
+| `fixed_hoists_to_root` | test | 164 | flexbox, grid, block_layout | `TestHandWrittenOofHoisting_FixedHoistsToRoot` | done |
+| `absolute_within_absolute` | test | 201 | flexbox, grid, block_layout | `TestHandWrittenOofHoisting_AbsoluteWithinAbsolute` | done |
+| `fixed_within_absolute_hoists_to_root` | test | 239 | flexbox, grid, block_layout | `TestHandWrittenOofHoisting_FixedWithinAbsoluteHoistsToRoot` | done |
+| `hoisting_survives_cache_hits` | test | 289 | flexbox, grid, block_layout | `TestHandWrittenOofHoisting_HoistingSurvivesCacheHits` | done |
+| `cached_root_does_not_duplicate_hoisted_children` | test | 337 | flexbox, grid, block_layout | `TestHandWrittenOofHoisting_CachedRootDoesNotDuplicateHoistedChildren` | done |
+| `rounding_uses_containing_block_offsets` | test | 363 | flexbox, grid, block_layout | `TestHandWrittenOofHoisting_RoundingUsesContainingBlockOffsets` | done |
+| `claim_change_relayouts_with_hot_cache` | test | 404 | flexbox, grid, block_layout | `TestHandWrittenOofHoisting_ClaimChangeRelayoutsWithHotCache` | done |
+| `fixed_claim_change_relayouts_with_hot_cache` | test | 454 | flexbox, grid, block_layout | `TestHandWrittenOofHoisting_FixedClaimChangeRelayoutsWithHotCache` | done |
+| `content_change_inside_hoisted_subtree` | test | 494 | flexbox, grid, block_layout | `TestHandWrittenOofHoisting_ContentChangeInsideHoistedSubtree` | done |
+
+## tests/hand_written/position.rs
+
+Go target: `internal/taffy/hand_written_position_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The inner `mod position_variants` is inserted after the file stem (N14).
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `static_and_sticky_ignore_inset` | test | 27 | test | `TestHandWrittenPositionPositionVariants_StaticAndStickyIgnoreInset` | done |
+| `sticky_is_positioned_but_in_flow` | test | 40 | test | `TestHandWrittenPositionPositionVariants_StickyIsPositionedButInFlow` | done |
+
+## tests/hand_written/relayout.rs
+
+Go target: `internal/taffy/hand_written_relayout_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The file has no inner module.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `relayout` | test | 5 | test | `TestHandWrittenRelayout_Relayout` | done |
+| `toggle_root_display_none` | test | 62 | test | `TestHandWrittenRelayout_ToggleRootDisplayNone` | done |
+| `toggle_root_display_none_with_children` | test | 107 | test | `TestHandWrittenRelayout_ToggleRootDisplayNoneWithChildren` | done |
+| `toggle_flex_child_display_none` | test | 142 | test | `TestHandWrittenRelayout_ToggleFlexChildDisplayNone` | done |
+| `toggle_flex_container_display_none` | test | 188 | test | `TestHandWrittenRelayout_ToggleFlexContainerDisplayNone` | done |
+| `toggle_grid_child_display_none` | test | 234 | test | `TestHandWrittenRelayout_ToggleGridChildDisplayNone` | done |
+| `toggle_grid_container_display_none` | test | 280 | test | `TestHandWrittenRelayout_ToggleGridContainerDisplayNone` | done |
+| `relayout_is_stable_with_rounding` | test | 326 | test | `TestHandWrittenRelayout_RelayoutIsStableWithRounding` | done |
+| `block_child_does_not_keep_collapsed_margin_as_flex_item` | test | 502 | block_layout, flexbox | `TestHandWrittenRelayout_BlockChildDoesNotKeepCollapsedMarginAsFlexItem` | done |
+| `block_child_does_not_keep_collapsed_margin_as_grid_item` | test | 514 | block_layout, flexbox, grid | `TestHandWrittenRelayout_BlockChildDoesNotKeepCollapsedMarginAsGridItem` | done |
+| `flex_base_size_is_not_answered_by_an_inherent_size_measurement` | test | 531 | block_layout, flexbox, grid | `TestHandWrittenRelayout_FlexBaseSizeIsNotAnsweredByAnInherentSizeMeasurement` | done |
+| `a_percentage_height_is_not_reused_after_its_containing_block_loses_its_height` | test | 564 | block_layout, flexbox | `TestHandWrittenRelayout_APercentageHeightIsNotReusedAfterItsContainingBlockLosesItsHeight` | done |
+
+## tests/hand_written/root_constraints.rs
+
+Go target: `internal/taffy/hand_written_root_constraints_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The module path `hand_written::root_constraints` is the Go file stem, so the inner `mod root_constraints` adds nothing to the test name.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `root_with_percentage_size` | test | 9 | test | `TestHandWrittenRootConstraints_RootWithPercentageSize` | done |
+| `root_with_no_size` | test | 37 | test | `TestHandWrittenRootConstraints_RootWithNoSize` | done |
+| `root_with_larger_size` | test | 57 | test | `TestHandWrittenRootConstraints_RootWithLargerSize` | done |
+| `root_padding_and_border_larger_than_definite_size` | test | 85 | test | `TestHandWrittenRootConstraints_RootPaddingAndBorderLargerThanDefiniteSize` | done |
+
+## tests/hand_written/rounding.rs
+
+Go target: `internal/taffy/hand_written_rounding_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The file has no inner module.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `rounding_doesnt_leave_gaps` | test | 5 | test | `TestHandWrittenRounding_RoundingDoesntLeaveGaps` | done |
+
+## tests/hand_written/safe_alignment.rs
+
+Go target: `internal/taffy/hand_written_safe_alignment_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The file has no inner module.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `grid_safe_align_self_falls_back_to_start_on_overflow` | test | 15 | test | `TestHandWrittenSafeAlignment_GridSafeAlignSelfFallsBackToStartOnOverflow` | done |
+| `grid_safe_align_self_behaves_as_end_when_no_overflow` | test | 45 | test | `TestHandWrittenSafeAlignment_GridSafeAlignSelfBehavesAsEndWhenNoOverflow` | done |
+| `grid_unsafe_align_self_keeps_overflowing_position` | test | 75 | test | `TestHandWrittenSafeAlignment_GridUnsafeAlignSelfKeepsOverflowingPosition` | done |
+| `grid_safe_justify_self_falls_back_to_start_on_overflow` | test | 105 | test | `TestHandWrittenSafeAlignment_GridSafeJustifySelfFallsBackToStartOnOverflow` | done |
+| `grid_safe_justify_self_rtl_falls_back_to_rtl_start_edge` | test | 134 | test | `TestHandWrittenSafeAlignment_GridSafeJustifySelfRtlFallsBackToRtlStartEdge` | done |
+| `grid_safe_align_content_overflow_falls_back_to_start` | test | 166 | test | `TestHandWrittenSafeAlignment_GridSafeAlignContentOverflowFallsBackToStart` | done |
+| `flex_safe_align_self_falls_back_to_start_on_overflow` | test | 197 | test | `TestHandWrittenSafeAlignment_FlexSafeAlignSelfFallsBackToStartOnOverflow` | done |
+| `flex_unsafe_align_self_keeps_overflowing_position` | test | 225 | test | `TestHandWrittenSafeAlignment_FlexUnsafeAlignSelfKeepsOverflowingPosition` | done |
+| `flex_safe_justify_content_falls_back_to_start_on_overflow` | test | 253 | test | `TestHandWrittenSafeAlignment_FlexSafeJustifyContentFallsBackToStartOnOverflow` | done |
+| `flex_safe_align_content_falls_back_to_start_on_multiline_overflow` | test | 282 | test | `TestHandWrittenSafeAlignment_FlexSafeAlignContentFallsBackToStartOnMultilineOverflow` | done |
+
+## tests/hand_written/scroll_size.rs
+
+Go target: `internal/taffy/hand_written_scroll_size_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The file has no inner module.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `scroll_height_does_not_depend_on_which_edge_the_border_is_on` | test | 53 | test | `TestHandWrittenScrollSize_ScrollHeightDoesNotDependOnWhichEdgeTheBorderIsOn` | done |
+| `scroll_height_is_the_content_beyond_the_padding_box` | test | 69 | test | `TestHandWrittenScrollSize_ScrollHeightIsTheContentBeyondThePaddingBox` | done |
+| `scrollable_overflow_excludes_the_containers_own_border` | test | 81 | test | `TestHandWrittenScrollSize_ScrollableOverflowExcludesTheContainersOwnBorder` | done |
+| `scrollable_overflow_includes_the_containers_own_padding` | test | 92 | test | `TestHandWrittenScrollSize_ScrollableOverflowIncludesTheContainersOwnPadding` | done |
+| `scrollable_overflow_excludes_the_own_padding_of_a_non_scroll_container` | test | 107 | test | `TestHandWrittenScrollSize_ScrollableOverflowExcludesTheOwnPaddingOfANonScrollContainer` | done |
+| `leaf_content_size_includes_the_containers_own_padding` | test | 161 | test | `TestHandWrittenScrollSize_LeafContentSizeIncludesTheContainersOwnPadding` | done |
+| `leaf_content_size_excludes_the_own_padding_of_a_non_scroll_container` | test | 170 | test | `TestHandWrittenScrollSize_LeafContentSizeExcludesTheOwnPaddingOfANonScrollContainer` | done |
+| `scroll_height_accounts_for_the_containers_own_padding` | test | 181 | test | `TestHandWrittenScrollSize_ScrollHeightAccountsForTheContainersOwnPadding` | done |
+| `grid_scrollable_overflow_includes_item_positions_in_overflowing_tracks` | test | 197 | test | `TestHandWrittenScrollSize_GridScrollableOverflowIncludesItemPositionsInOverflowingTracks` | done |
+| `scroll_height_agrees_with_borders_and_padding_combined` | test | 222 | test | `TestHandWrittenScrollSize_ScrollHeightAgreesWithBordersAndPaddingCombined` | done |
+
+## tests/hand_written/scrollable_overflow.rs
+
+Go target: `internal/taffy/hand_written_scrollable_overflow_test.go` (package `taffy`, test-only; shared assertion helpers in `hand_written_test.go`). The file has no inner module.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `wholly_unreachable_boxes_are_excluded_for_scroll_containers` | test | 54 | test | `TestHandWrittenScrollableOverflow_WhollyUnreachableBoxesAreExcludedForScrollContainers` | done |
+| `wholly_unreachable_boxes_contribute_to_non_scroll_containers` | test | 65 | test | `TestHandWrittenScrollableOverflow_WhollyUnreachableBoxesContributeToNonScrollContainers` | done |
+| `partially_unreachable_boxes_contribute_their_whole_border_box` | test | 76 | test | `TestHandWrittenScrollableOverflow_PartiallyUnreachableBoxesContributeTheirWholeBorderBox` | done |
+| `end_side_overflow_is_captured_and_scrollable` | test | 90 | test | `TestHandWrittenScrollableOverflow_EndSideOverflowIsCapturedAndScrollable` | done |
+| `absolute_only_containers_include_scroll_container_end_padding` | test | 101 | test | `TestHandWrittenScrollableOverflow_AbsoluteOnlyContainersIncludeScrollContainerEndPadding` | done |
+| `scroll_container_in_one_axis_clips_both_axes` | test | 169 | test | `TestHandWrittenScrollableOverflow_ScrollContainerInOneAxisClipsBothAxes` | done |
+| `clip_in_one_axis_does_not_clip_the_other` | test | 180 | test | `TestHandWrittenScrollableOverflow_ClipInOneAxisDoesNotClipTheOther` | done |
+| `wholly_unreachable_boxes_are_excluded_for_rtl_scroll_containers` | test | 191 | test | `TestHandWrittenScrollableOverflow_WhollyUnreachableBoxesAreExcludedForRtlScrollContainers` | done |
+| `end_side_overflow_is_captured_for_rtl_scroll_containers` | test | 203 | test | `TestHandWrittenScrollableOverflow_EndSideOverflowIsCapturedForRtlScrollContainers` | done |
+
+## tests/hand_written/serde.rs
+
+Go target: none; the file gates the module on `serde`, which gpui does not enable (D-TAFFY-FEATURE).
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `serde_can_serialize` | test | 8 | serde | - | n/a:D-TAFFY-FEATURE |
+| `serde_can_deserialize_partial_values` | test | 14 | serde | - | n/a:D-TAFFY-FEATURE |
+
 ## Deviations registered here
 
 | Id | Deviation | Upstream | Go |
