@@ -261,42 +261,42 @@ Go target: `text_system_line_wrapper.go` (package `gpui`), tests in `text_system
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `TruncateFrom` | enum | 8 |  | `TruncateFrom` | todo |
-| `IndentAdjustment` | enum | 19 |  | `IndentAdjustment` | todo |
-| `LineWrapper` | struct | 30 |  | `LineWrapper` | todo |
-| `LineWrapper::MAX_INDENT` | assoc-const | 55 |  | `LineWrapperMaxIndent` | todo |
-| `LineWrapper::wrap_line` | method | 77 |  | `(LineWrapper).WrapLine` | todo |
-| `LineWrapper::should_truncate_line` | method | 240 |  | `(LineWrapper).ShouldTruncateLine` | todo |
-| `LineWrapper::truncate_line` | method | 347 |  | `(LineWrapper).TruncateLine` | todo |
-| `LineWrapper::truncate_wrapped_line` | method | 409 |  | `(LineWrapper).TruncateWrappedLine` | todo |
-| `LineFragment` | enum | 684 |  | `LineFragment` | todo |
-| `LineFragment::text` | assoc-fn | 701 |  | `LineFragmentText` | todo |
-| `LineFragment::element` | assoc-fn | 706 |  | `LineFragmentElement` | todo |
-| `Boundary` | struct | 744 |  | `Boundary` | todo |
+| `TruncateFrom` | enum | 8 |  | `TruncateFrom` | done |
+| `IndentAdjustment` | enum | 19 |  | `IndentAdjustment` | done |
+| `LineWrapper` | struct | 30 |  | `LineWrapper` | done |
+| `LineWrapper::MAX_INDENT` | assoc-const | 55 |  | `LineWrapperMaxIndent` | done |
+| `LineWrapper::wrap_line` | method | 77 |  | `(LineWrapper).WrapLine` | done |
+| `LineWrapper::should_truncate_line` | method | 240 |  | `(LineWrapper).ShouldTruncateLine` | done |
+| `LineWrapper::truncate_line` | method | 347 |  | `(LineWrapper).TruncateLine` | done |
+| `LineWrapper::truncate_wrapped_line` | method | 409 |  | `(LineWrapper).TruncateWrappedLine` | done |
+| `LineFragment` | enum | 684 |  | `LineFragment` | done |
+| `LineFragment::text` | assoc-fn | 701 |  | `LineFragmentText` | done |
+| `LineFragment::element` | assoc-fn | 706 |  | `LineFragmentElement` | done |
+| `Boundary` | struct | 744 |  | `Boundary` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_emergency_wrap_preserves_graphemes` | test | 851 |  | `TestLineWrapper_EmergencyWrapPreservesGraphemes` | todo |
-| `test_emergency_wrap_exact_boundaries` | test | 856 |  | `TestLineWrapper_EmergencyWrapExactBoundaries` | todo |
-| `test_emergency_wrap_elements_and_graphemes` | test | 897 |  | `TestLineWrapper_EmergencyWrapElementsAndGraphemes` | todo |
-| `test_wrap_line` | test | 941 |  | `TestLineWrapper_WrapLine` | todo |
-| `test_wrap_line_break_opportunities` | test | 1112 |  | `TestLineWrapper_WrapLineBreakOpportunities` | todo |
-| `test_truncate_line_end` | test | 1141 |  | `TestLineWrapper_TruncateLineEnd` | todo |
-| `test_truncate_line_start` | test | 1190 |  | `TestLineWrapper_TruncateLineStart` | todo |
-| `test_truncate_multiple_runs_end` | test | 1240 |  | `TestLineWrapper_TruncateMultipleRunsEnd` | todo |
-| `test_truncate_multiple_runs_start` | test | 1299 |  | `TestLineWrapper_TruncateMultipleRunsStart` | todo |
-| `test_update_run_after_truncation_end` | test | 1364 |  | `TestLineWrapper_UpdateRunAfterTruncationEnd` | todo |
-| `test_wrap_shaped_line` | crate::test | 1404 | macos | `TestLineWrapper_WrapShapedLine` | todo |
-| `test_multiline_truncation_fits_within_wrapped_lines` | test | 1459 |  | `TestLineWrapper_MultilineTruncationFitsWithinWrappedLines` | todo |
-| `test_multiline_truncation_no_truncation_needed` | test | 1513 |  | `TestLineWrapper_MultilineTruncationNoTruncationNeeded` | todo |
-| `test_multiline_truncation_three_lines` | test | 1540 |  | `TestLineWrapper_MultilineTruncationThreeLines` | todo |
-| `test_multiline_truncation_preserves_breaks_after_empty_lines` | test | 1581 |  | `TestLineWrapper_MultilineTruncationPreservesBreaksAfterEmptyLines` | todo |
-| `test_multiline_truncation_with_newlines` | test | 1604 |  | `TestLineWrapper_MultilineTruncationWithNewlines` | todo |
-| `test_multiline_truncation_newline_on_last_line` | test | 1652 |  | `TestLineWrapper_MultilineTruncationNewlineOnLastLine` | todo |
-| `test_truncate_line_middle` | test | 1682 |  | `TestLineWrapper_TruncateLineMiddle` | todo |
-| `test_multiline_truncation_trailing_newline` | test | 1757 |  | `TestLineWrapper_MultilineTruncationTrailingNewline` | todo |
-| `test_multiline_truncation_newline_fits_exactly` | test | 1784 |  | `TestLineWrapper_MultilineTruncationNewlineFitsExactly` | todo |
-| `test_extra_columns_overflow_guard` | test | 1812 |  | `TestLineWrapper_ExtraColumnsOverflowGuard` | todo |
+| `test_emergency_wrap_preserves_graphemes` | test | 851 |  | `TestLineWrapper_EmergencyWrapPreservesGraphemes` | done |
+| `test_emergency_wrap_exact_boundaries` | test | 856 |  | `TestLineWrapper_EmergencyWrapExactBoundaries` | done |
+| `test_emergency_wrap_elements_and_graphemes` | test | 897 |  | `TestLineWrapper_EmergencyWrapElementsAndGraphemes` | done |
+| `test_wrap_line` | test | 941 |  | `TestLineWrapper_WrapLine` | done |
+| `test_wrap_line_break_opportunities` | test | 1112 |  | `TestLineWrapper_WrapLineBreakOpportunities` | done |
+| `test_truncate_line_end` | test | 1141 |  | `TestLineWrapper_TruncateLineEnd` | done |
+| `test_truncate_line_start` | test | 1190 |  | `TestLineWrapper_TruncateLineStart` | done |
+| `test_truncate_multiple_runs_end` | test | 1240 |  | `TestLineWrapper_TruncateMultipleRunsEnd` | done |
+| `test_truncate_multiple_runs_start` | test | 1299 |  | `TestLineWrapper_TruncateMultipleRunsStart` | done |
+| `test_update_run_after_truncation_end` | test | 1364 |  | `TestLineWrapper_UpdateRunAfterTruncationEnd` | done |
+| `test_wrap_shaped_line` | crate::test | 1404 | macos | `TestLineWrapper_WrapShapedLine` | blocked:M0-blocked-tests |
+| `test_multiline_truncation_fits_within_wrapped_lines` | test | 1459 |  | `TestLineWrapper_MultilineTruncationFitsWithinWrappedLines` | done |
+| `test_multiline_truncation_no_truncation_needed` | test | 1513 |  | `TestLineWrapper_MultilineTruncationNoTruncationNeeded` | done |
+| `test_multiline_truncation_three_lines` | test | 1540 |  | `TestLineWrapper_MultilineTruncationThreeLines` | done |
+| `test_multiline_truncation_preserves_breaks_after_empty_lines` | test | 1581 |  | `TestLineWrapper_MultilineTruncationPreservesBreaksAfterEmptyLines` | done |
+| `test_multiline_truncation_with_newlines` | test | 1604 |  | `TestLineWrapper_MultilineTruncationWithNewlines` | done |
+| `test_multiline_truncation_newline_on_last_line` | test | 1652 |  | `TestLineWrapper_MultilineTruncationNewlineOnLastLine` | done |
+| `test_truncate_line_middle` | test | 1682 |  | `TestLineWrapper_TruncateLineMiddle` | done |
+| `test_multiline_truncation_trailing_newline` | test | 1757 |  | `TestLineWrapper_MultilineTruncationTrailingNewline` | done |
+| `test_multiline_truncation_newline_fits_exactly` | test | 1784 |  | `TestLineWrapper_MultilineTruncationNewlineFitsExactly` | done |
+| `test_extra_columns_overflow_guard` | test | 1812 |  | `TestLineWrapper_ExtraColumnsOverflowGuard` | done |
 
 ## Deviations registered here
 

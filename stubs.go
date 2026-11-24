@@ -1,9 +1,6 @@
 package gpui
 
 import (
-	"iter"
-
-	"github.com/go-text/typesetting/segmenter"
 	"math/rand/v2"
 	"reflect"
 	"testing"
@@ -1139,56 +1136,6 @@ func (t Transformation) alphaFactor() float32 {
 func (t Transformation) intoMatrix(center Point[Pixels], scaleFactor float32) TransformationMatrix {
 	panic("gpui: unimplemented Transformation.intoMatrix")
 }
-
-// LineWrapper wraps lines of text (M0-line-wrapper ports it).
-type LineWrapper struct {
-	textSystem *TextSystem
-	fontID     FontID
-	fontSize   Pixels
-	charWidths charWidthCache
-}
-
-type charWidthCache struct {
-	ascii [128]Option[Pixels]
-	other map[rune]Pixels
-}
-
-func defaultCharWidthCache() charWidthCache {
-	return charWidthCache{other: map[rune]Pixels{}}
-}
-
-func newLineWrapper(fontID FontID, fontSize Pixels, textSystem *TextSystem, charWidths charWidthCache) *LineWrapper {
-	return &LineWrapper{textSystem: textSystem, fontID: fontID, fontSize: fontSize, charWidths: charWidths}
-}
-
-func (w *LineWrapper) intoCharWidths() charWidthCache {
-	return w.charWidths
-}
-
-func lineWrapperBreakIndices(text string) iter.Seq[int] {
-	return func(yield func(int) bool) {
-		if !yield(0) {
-			return
-		}
-		var seg segmenter.Segmenter
-		seg.Init([]rune(text))
-		lines := seg.LineIterator()
-		offset := 0
-		for lines.Next() {
-			line := lines.Line()
-			offset = line.OffsetInBytes + line.LengthInBytes
-			if offset == 0 {
-				continue
-			}
-			if !yield(offset) {
-				return
-			}
-		}
-	}
-}
-
-// Boundary is a wrap boundary in a line (M0-line-wrapper ports it).
-type Boundary struct{}
 
 // ShapedLine is a line of text that has been shaped and decorated; it embeds its layout
 // (upstream's Deref) (M0-text-elements ports it).
