@@ -220,15 +220,216 @@ func (b GpuiBorrow[T]) Release() {
 	panic("gpui: unimplemented GpuiBorrow.Release")
 }
 
-// DisplayID is an opaque identifier for a hardware display (M0-platform-types ports it).
-type DisplayID uint64
+const profilerFeatureEnabled = false
 
-// PlatformDisplay is a display attached to the platform (M0-platform-types ports the full method set).
-type PlatformDisplay interface {
-	ID() DisplayID
-	Bounds() Bounds[Pixels]
-	VisibleBounds() Bounds[Pixels]
+// DefaultWindowSize is the default size of a new window (M0-window-core ports it).
+var DefaultWindowSize = NewSize(Px(1536.), Px(1095.))
+
+// WindowParams are the parameters the platform opens a window with (M0-platform-data ports it).
+type WindowParams struct{}
+
+// WindowBounds is the bounds and state of a window (M0-platform-data ports it).
+type WindowBounds struct{}
+
+// WindowAppearance is the appearance of the application's windows (M0-platform-data ports it).
+type WindowAppearance uint8
+
+const (
+	// WindowAppearanceLight is the light appearance.
+	WindowAppearanceLight WindowAppearance = iota
+	// WindowAppearanceVibrantLight is the vibrant light appearance.
+	WindowAppearanceVibrantLight
+	// WindowAppearanceDark is the dark appearance.
+	WindowAppearanceDark
+	// WindowAppearanceVibrantDark is the vibrant dark appearance.
+	WindowAppearanceVibrantDark
+)
+
+// WindowBackgroundAppearance is the appearance of a window's background (M0-platform-data ports it).
+type WindowBackgroundAppearance uint8
+
+const (
+	// WindowBackgroundAppearanceOpaque is an opaque background.
+	WindowBackgroundAppearanceOpaque WindowBackgroundAppearance = iota
+	// WindowBackgroundAppearanceTransparent is a transparent background.
+	WindowBackgroundAppearanceTransparent
+	// WindowBackgroundAppearanceBlurred is a blurred background.
+	WindowBackgroundAppearanceBlurred
+	// WindowBackgroundAppearanceMicaBackdrop is the Windows Mica backdrop.
+	WindowBackgroundAppearanceMicaBackdrop
+	// WindowBackgroundAppearanceMicaAltBackdrop is the Windows Mica Alt backdrop.
+	WindowBackgroundAppearanceMicaAltBackdrop
+)
+
+// TextRenderingMode is the text rendering mode (M0-platform-data ports it).
+type TextRenderingMode uint8
+
+const (
+	// TextRenderingModePlatformDefault uses the platform's default.
+	TextRenderingModePlatformDefault TextRenderingMode = iota
+	// TextRenderingModeSubpixel uses subpixel rendering.
+	TextRenderingModeSubpixel
+	// TextRenderingModeGrayscale uses grayscale rendering.
+	TextRenderingModeGrayscale
+)
+
+// PathPromptOptions configures a path prompt (M0-platform-data ports it).
+type PathPromptOptions struct{}
+
+// PromptLevel is the severity of a prompt (M0-platform-data ports it).
+type PromptLevel uint8
+
+const (
+	// PromptLevelInfo is an informational prompt.
+	PromptLevelInfo PromptLevel = iota
+	// PromptLevelWarning is a warning prompt.
+	PromptLevelWarning
+	// PromptLevelCritical is a critical prompt.
+	PromptLevelCritical
+)
+
+// PromptButton is a button of a prompt (M0-platform-data ports it).
+type PromptButton struct{}
+
+// CursorStyle is the style of the mouse cursor (M0-platform-data ports it).
+type CursorStyle uint8
+
+// ClipboardItem is an item on the clipboard (M0-platform-data ports it).
+type ClipboardItem struct{}
+
+// PlatformInputHandler connects a window's focused input handler to the platform (M0-platform-data ports it).
+type PlatformInputHandler struct{}
+
+// TextInputConfiguration configures the platform's text input session (M0-platform-data ports it).
+type TextInputConfiguration struct{}
+
+// Menu is an application menu (M0-platform-data ports it).
+type Menu struct{}
+
+// MenuItem is an item of an application menu (M0-platform-data ports it).
+type MenuItem struct{}
+
+// OwnedMenu is an application menu returned by the platform (M0-platform-data ports it).
+type OwnedMenu struct{}
+
+// Capslock is the state of the capslock key (M0-input-types ports it).
+type Capslock struct {
+	// On reports whether capslock is on.
+	On bool
 }
+
+// KeybindingKeystroke is a keystroke used in keybindings and displayed to the user (M0-input-types ports it).
+type KeybindingKeystroke struct{}
+
+// KeybindingKeystrokeFromKeystroke wraps a keystroke (M0-input-types ports it).
+func KeybindingKeystrokeFromKeystroke(keystroke Keystroke) KeybindingKeystroke {
+	panic("gpui: unimplemented KeybindingKeystrokeFromKeystroke")
+}
+
+// KeyDownEvent is a key press from the platform (M0-input-types ports it).
+type KeyDownEvent struct{}
+
+// ExternalDragPayload is data offered to the platform for a native drag session (M0-input-types ports it).
+type ExternalDragPayload interface {
+	isExternalDragPayload()
+}
+
+// RenderImageParams identifies a decoded image frame in the sprite atlas (M0-input-types ports it).
+type RenderImageParams struct {
+	// ImageID is the image.
+	ImageID ImageID
+	// FrameIndex is the frame of the image.
+	FrameIndex int
+}
+
+// ImageID is a unique identifier for the image cache (M0-input-types ports it).
+type ImageID uint
+
+// Keymap is a collection of key bindings (M0-keymap ports it).
+type Keymap struct{}
+
+// PlatformGestures are the platform's gesture recognition services (M0-gestures-spring ports it).
+type PlatformGestures interface {
+	Tuning() GestureTuning
+	NativeRecognizers() GestureKinds
+}
+
+// GestureTuning holds feel constants for the portable gesture recognizers (M0-gestures-spring ports it).
+type GestureTuning struct{}
+
+// GestureKinds is the set of gesture kinds a platform recognizes natively (M0-gestures-spring ports it).
+type GestureKinds struct{}
+
+// FontID is an opaque identifier for a font (M0-text-system ports it).
+type FontID uint
+
+// GlyphID is an identifier for a glyph (M0-text-system ports it).
+type GlyphID uint32
+
+// RenderGlyphParams are the parameters for rendering a glyph; they must stay comparable (M0-text-system ports it).
+type RenderGlyphParams struct {
+	// FontID is the font.
+	FontID FontID
+	// GlyphID is the glyph.
+	GlyphID GlyphID
+	// FontSize is the font size.
+	FontSize Pixels
+	// SubpixelVariant is the subpixel variant on each axis.
+	SubpixelVariant PointOf[uint8]
+	// ScaleFactor is the window scale factor.
+	ScaleFactor float32
+	// IsEmoji reports whether the glyph is an emoji.
+	IsEmoji bool
+	// SubpixelRendering reports whether the glyph uses subpixel rendering.
+	SubpixelRendering bool
+	// Dilation is the dilation level.
+	Dilation uint8
+}
+
+// MissingGlyphSink accepts missing glyphs detected by a platform text system (M0-text-system ports it).
+type MissingGlyphSink interface {
+	Report(missingGlyphs []MissingGlyph)
+}
+
+// MissingGlyph is a grapheme cluster that exhausted font fallback (M0-text-system ports it).
+type MissingGlyph struct{}
+
+// RenderSvgParams identifies a rasterized SVG in the sprite atlas (M0-elements-media ports it).
+type RenderSvgParams struct {
+	// Path is the SVG's asset path.
+	Path SharedString
+	// Size is the rasterized size.
+	Size Size[DevicePixels]
+}
+
+// SystemWindowTab is a window tab of the system tab bar (M0-app-core ports it).
+type SystemWindowTab struct{}
+
+// TestDispatcher is the deterministic test dispatcher (M0-executors ports it).
+type TestDispatcher struct{}
+
+// ThreadedDispatcher is the threaded test dispatcher (M0-executors ports it).
+type ThreadedDispatcher struct{}
+
+// TestWindow is the test platform's window (M0-test-platform ports it).
+type TestWindow struct{}
+
+// WindowControlArea is a window control area that corresponds to the platform window (M0-window-core ports it).
+type WindowControlArea uint8
+
+const (
+	// WindowControlAreaDrag allows dragging the platform window.
+	WindowControlAreaDrag WindowControlArea = iota
+	// WindowControlAreaClose allows closing the platform window.
+	WindowControlAreaClose
+	// WindowControlAreaMax allows maximizing the platform window.
+	WindowControlAreaMax
+	// WindowControlAreaMin allows minimizing the platform window.
+	WindowControlAreaMin
+)
+
+// NativeViewID identifies a native view within its window (M0-window-a11y ports it).
+type NativeViewID uint64
 
 // WindowOptions configures a new window (M0-platform-data ports it).
 type WindowOptions struct{}
@@ -1086,16 +1287,62 @@ type FontRun struct{}
 type TextRun struct{}
 
 // FontMetrics are the metrics of a font (M0-text-system ports it).
-type FontMetrics struct{}
+type FontMetrics struct {
+	// UnitsPerEm is the number of font units in the em square.
+	UnitsPerEm uint32
+	// Ascent is the distance from the baseline to the top of the glyph covers, in font units.
+	Ascent float32
+	// Descent is the distance from the baseline to the bottom of the glyph covers, in font units.
+	Descent float32
+	// LineGap is the recommended additional space between lines.
+	LineGap float32
+	// UnderlinePosition is the suggested position of the underline.
+	UnderlinePosition float32
+	// UnderlineThickness is the suggested thickness of the underline.
+	UnderlineThickness float32
+	// CapHeight is the height of a capital letter.
+	CapHeight float32
+	// XHeight is the height of a lowercase x.
+	XHeight float32
+	// BoundingBox is the outer limits of the area that the font covers.
+	BoundingBox Bounds[float32]
+}
 
 // LineLayout is a shaped line of text (M0-text-system ports it).
-type LineLayout struct{}
+type LineLayout struct {
+	// FontSize is the font size of the line.
+	FontSize Pixels
+	// Width is the width of the line.
+	Width Pixels
+	// Ascent is the ascent of the line.
+	Ascent Pixels
+	// Descent is the descent of the line.
+	Descent Pixels
+	// Runs are the shaped runs of the line.
+	Runs []ShapedRun
+	// Len is the length of the line in UTF-8 bytes.
+	Len int
+}
 
 // ShapedRun is a run of shaped glyphs in one font (M0-text-system ports it).
-type ShapedRun struct{}
+type ShapedRun struct {
+	// FontID is the font of the run.
+	FontID FontID
+	// Glyphs are the glyphs of the run.
+	Glyphs []ShapedGlyph
+}
 
 // ShapedGlyph is one shaped glyph (M0-text-system ports it).
-type ShapedGlyph struct{}
+type ShapedGlyph struct {
+	// ID is the glyph id.
+	ID GlyphID
+	// Position is the position of the glyph in its line.
+	Position Point[Pixels]
+	// Index is the byte index of the glyph in the original text.
+	Index int
+	// IsEmoji reports whether the glyph is an emoji.
+	IsEmoji bool
+}
 
 // WrappedLineLayout is a shaped line with wrap boundaries (M0-text-system ports it).
 type WrappedLineLayout struct{}

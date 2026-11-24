@@ -330,13 +330,13 @@ Go target: `platform_keyboard.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `PlatformKeyboardLayout` | trait | 6 |  | `PlatformKeyboardLayout` | todo |
-| `PlatformKeyboardLayout::id` | trait-method | 8 |  | `PlatformKeyboardLayout.ID` | todo |
-| `PlatformKeyboardLayout::name` | trait-method | 10 |  | `PlatformKeyboardLayout.Name` | todo |
-| `PlatformKeyboardMapper` | trait | 14 |  | `PlatformKeyboardMapper` | todo |
-| `PlatformKeyboardMapper::map_key_equivalent` | trait-method | 16 |  | `PlatformKeyboardMapper.MapKeyEquivalent` | todo |
-| `PlatformKeyboardMapper::get_key_equivalents` | trait-method | 23 |  | `PlatformKeyboardMapper.GetKeyEquivalents` | todo |
-| `DummyKeyboardMapper` | struct | 27 |  | `DummyKeyboardMapper` | todo |
+| `PlatformKeyboardLayout` | trait | 6 |  | `PlatformKeyboardLayout` | done |
+| `PlatformKeyboardLayout::id` | trait-method | 8 |  | `PlatformKeyboardLayout.ID` | done |
+| `PlatformKeyboardLayout::name` | trait-method | 10 |  | `PlatformKeyboardLayout.Name` | done |
+| `PlatformKeyboardMapper` | trait | 14 |  | `PlatformKeyboardMapper` | done |
+| `PlatformKeyboardMapper::map_key_equivalent` | trait-method | 16 |  | `PlatformKeyboardMapper.MapKeyEquivalent` | done |
+| `PlatformKeyboardMapper::get_key_equivalents` | trait-method | 23 |  | `PlatformKeyboardMapper.GetKeyEquivalents` | done |
+| `DummyKeyboardMapper` | struct | 27 |  | `DummyKeyboardMapper` | done |
 
 ## gpui/src/platform/keystroke.rs
 

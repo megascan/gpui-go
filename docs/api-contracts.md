@@ -8,17 +8,25 @@ Binding for every stage that writes or calls package `gpui` (STAGES.md decision 
 - A stage that ports an upstream file deletes that file's symbols from `stubs.go` and writes them in the mapped Go file (PARITY F1). It may add stubs for symbols a later stage owns. A signature change to a stubbed exported symbol is a contract change: update this file in the same change and record it in `docs/port/handoff/<stage>.md`.
 - Other packages compile against stubs and never call them, in tests or in `init`. `RegisterAction` is a stub until M0-input-types, so a package that registers actions from `init` must not be linked into a test binary before then.
 - `stubs.go` is deleted by M3-root-capture. internal/taffy and the platform packages use the same protocol with a package-local `stubs.go`.
-- The only real bodies in `stubs.go` are `AnyElement.IntoAnyElement` and the mixin bind helpers (section 3); the stage that takes over the type keeps them unchanged.
+- The only real bodies in `stubs.go` are `AnyElement.IntoAnyElement` and the mixin bind helpers (section 3), plus the final values of `DefaultWindowSize` and `profilerFeatureEnabled`; the stage that takes over the symbol keeps them unchanged.
 
 Stub owners (the stage that replaces the symbol):
 
 | Symbols | Stage |
 |---|---|
-| `DisplayID`, `PlatformDisplay` | M0-platform-types |
-| `WindowOptions` | M0-platform-data |
+| `WindowOptions`, `WindowParams`, `WindowBounds`, `WindowAppearance`, `WindowBackgroundAppearance`, `TextRenderingMode`, `PathPromptOptions`, `PromptLevel`, `PromptButton`, `CursorStyle`, `ClipboardItem`, `PlatformInputHandler`, `TextInputConfiguration`, `Menu`, `MenuItem`, `OwnedMenu` | M0-platform-data |
+| `Capslock`, `KeybindingKeystroke`, `KeybindingKeystrokeFromKeystroke`, `KeyDownEvent`, `ExternalDragPayload`, `RenderImageParams`, `ImageID` | M0-input-types |
+| `profilerFeatureEnabled` (const, false until the `gpui_profiler` tag files exist) | M0-profiler-core |
+| `TestDispatcher`, `ThreadedDispatcher` | M0-executors |
+| `TestWindow` | M0-test-platform |
+| `Keymap` | M0-keymap |
+| `PlatformGestures`, `GestureTuning`, `GestureKinds` | M0-gestures-spring |
+| `SystemWindowTab` | M0-app-core |
+| `RenderSvgParams` | M0-elements-media |
+| `NativeViewID` | M0-window-a11y |
 | `ClickEvent`, `PlatformInput`, `Modifiers`, `Keystroke`, `KeystrokeParse`, `Action`, `ActionData`, `RegisterAction`, `Fluent`, `BindFluent`, `(Fluent).When`, `(Fluent).Map` | M0-input-types |
 | `Scene`, `PrimitiveBatch`, `(Scene).Batches` | M0-scene |
-| `TextSystem`, `WindowTextSystem`, `Font`, `FontRun`, `TextRun`, `FontMetrics`, `LineLayout`, `ShapedRun`, `ShapedGlyph`, `WrappedLineLayout`, `LineLayoutCache` | M0-text-system |
+| `TextSystem`, `WindowTextSystem`, `Font`, `FontRun`, `TextRun`, `FontMetrics`, `LineLayout`, `ShapedRun`, `ShapedGlyph`, `WrappedLineLayout`, `LineLayoutCache`, `FontID`, `GlyphID`, `RenderGlyphParams`, `MissingGlyphSink`, `MissingGlyph` | M0-text-system |
 | `LineWrapper`, `Boundary` | M0-line-wrapper |
 | `EntityID`, `AnyEntity`, `AnyWeakEntity`, `Entity`, `WeakEntity`, `slot`, `entityFromAny`, `Subscription` | M0-entities |
 | `BackgroundExecutor`, `ForegroundExecutor` | M0-executors |
@@ -28,7 +36,7 @@ Stub owners (the stage that replaces the symbol):
 | `TestAppContext` | M0-test-contexts |
 | `Styler`, `Styled`, `BindStyled`, `(Styled).Flex`, `SizeFull`, `Style`, `StyleRefinement` | M0-style |
 | `Element`, `ElementA11y`, `ElementA11ySyntheticChildren`, `IntoElement`, `AnyElement`, `NewAnyElement`, `Render`, `RenderOnce`, `View`, `AnyView`, `anyViewDowncast`, `ParentElement`, `Parent`, `BindParent`, `GlobalElementID`, `InspectorElementID`, `SourceLocation`, `LayoutID`, `AvailableSpace`, `(Entity).IntoAnyElement` | M0-element |
-| `Window` (type), `WindowID`, `AnyWindowHandle`, `WindowHandle`, `ArenaClearNeeded`, `DispatchPhase`, `FocusHandle`, `Focusable`, `ContentMask`, `ElementID`, `ElementIDSource`, `Hitbox`, `HitboxBehavior`, `PaintQuad` | M0-window-core |
+| `Window` (type), `WindowID`, `AnyWindowHandle`, `WindowHandle`, `ArenaClearNeeded`, `DispatchPhase`, `FocusHandle`, `Focusable`, `ContentMask`, `ElementID`, `ElementIDSource`, `Hitbox`, `HitboxBehavior`, `PaintQuad`, `DefaultWindowSize`, `WindowControlArea` | M0-window-core |
 | `(Window).RemSize`, `Draw`, `WithElementState`, `PaintQuad`, `Refresh`, `OnNextFrame`, `RequestAnimationFrame`, `ReplaceRoot` | M0-window-paint |
 | `(Window).RequestLayout`, `InsertHitbox`, `DispatchKeystroke`, `DispatchEvent`, `DispatchEventResult` | M0-window-dispatch |
 | `Interactivity`, `InteractiveElement`, `Interactive`, `BindInteractive`, `InteractiveID`, `BindInteractiveID`, `StatefulInteractiveElement`, `StatefulInteractive`, `BindStatefulInteractive`, `Div`, `NewDiv` and its methods except `IntoAnyElement` | M0-div-api |
@@ -118,3 +126,34 @@ func NewDiv() *Div {
 - Generic trait methods of a sealed context trait are free functions named `<Trait><Method>` (D-CTX): `AppContextNew`, `VisualContextFocus`.
 - `anyhow::Result<T>` is `(T, error)`, `Result<()>` is `error`, returned `Option<T>` is `(T, bool)` or a nil-able type, `Option<T>` fields are `Option[T]`.
 - Re-exports: `Task`, `FallibleTask`, `Priority`, `DedicatedExecutor`, `SchedulerLocalExecutor` alias package scheduler; `AccessibleAction`, `Orientation`, `Role`, `Toggled` alias package a11y.
+
+## 6. Platform interfaces (platform.go)
+
+Built by M0-platform-types; DESIGN 6.9 gives the reasons.
+
+- `Platform`, `PlatformWindow`, `PlatformDisplay`, `PlatformDispatcher`, `PlatformTextSystem`, `PlatformAtlas`, `AtlasBackend`, `PlatformHeadlessRenderer`, `ScreenCaptureSource`, `ScreenCaptureStream`, `PlatformKeyboardLayout`, `PlatformKeyboardMapper` carry upstream's methods in upstream order. Methods upstream gates by `cfg` (`ReadFromPrimary`, `WriteToPrimary`, `ReadFromFindPasteboard`, `WriteToFindPasteboard`, `WriteCredentialsIfNotExists`, `SetTrafficLightPosition`, `SetNativeTitlebarVisibility`, `GetRawHandle`, `SetExclusiveEdge`, `AsTest`, `AsThreaded`, `RenderToImage`, `Contains`) exist on every GOOS.
+- Provided methods (D-DEFAULTS): embed the matching `*Defaults` struct. `PlatformDefaults`, `PlatformWindowDefaults`, `PlatformDisplayDefaults` and `PlatformDispatcherDefaults` must be bound in the constructor, because some defaults call other methods of the implementor (`ReadFromClipboardAsync`, `VisualViewportBounds`, `InnerWindowBounds`, `VisibleBounds`, `DefaultBounds`, `DispatchOnMainThreadWhenIdle`); an unbound default panics. `PlatformTextSystemDefaults` and `PlatformAtlasDefaults` need no binding.
+
+```go
+type MacWindow struct {
+	gpui.PlatformWindowDefaults
+	// ...
+}
+
+func newMacWindow() *MacWindow {
+	w := &MacWindow{}
+	gpui.BindPlatformWindowDefaults(&w.PlatformWindowDefaults, w)
+	return w
+}
+```
+
+- cfg-gated methods with no upstream default get a no-op default: an implementation for the OS that has them (Linux `ReadFromPrimary` / `WriteToPrimary`, macOS find pasteboard, Windows `GetRawHandle`) must override it.
+- Drop (D-PLATSEAM): `Platform.Close` and `PlatformWindow.Close` are the drop of the platform and window values (default no-op; owners with an upstream `impl Drop` override them). `ScreenCaptureStream.Stop` stops capture. `AttachNativeView` returns a `NativeViewAttachment` (nil when unsupported) whose `Close` removes the view. `ActivityGuard.Release` and `TimerResolutionGuard.Run` (a `gpuiutil.Deferred`) end their activity.
+- Return shapes: `Task<Result<()>>` and `Task<()>` are `*Task[struct{}]`; `Task<Result<Option<T>>>` is `*Task[Option[T]]`. `oneshot::Receiver<Result<T>>` is `*scheduler.OneshotReceiver[scheduler.Result[T]]`: `Recv`'s error is the cancellation, `Result.Err` the platform's error. A returned `Option<Rc<dyn X>>` / `Option<Box<dyn X>>` is a nil-able interface; other returned options are `(T, bool)`. `Option<&[T]>` and `Option<Vec<T>>` parameters are `Option[[]T]` where `Some` of an empty slice means something else than `None` (`SetInputRegion`). `serde_json::Value` is `jsontext.Value` (`"null"` by default). Paths are `string`. `Uuid` is `gpui.UUID`.
+- `RawWindowHandle` is a tagged struct: `Kind` selects which fields are set (Wayland display + surface, Xcb connection + window + visual, AppKit view, UIKit view, Win32 HWND + HINSTANCE, Web canvas element id). Native pointers are `uintptr`.
+- `AtlasKey` is comparable and built only with `AtlasKeyFromGlyph` / `AtlasKeyFromSvg` / `AtlasKeyFromImage`, so `RenderGlyphParams`, `RenderSvgParams` and `RenderImageParams` must stay comparable. `AtlasTile`, `AtlasTextureID`, `AtlasTextureKind` (`uint32`, D-GPUENUM) and `TileID` are GPU data: 32-byte `AtlasTile` in upstream field order. `AtlasState[B AtlasBackend]` is used with a pointer backend (`NewAtlasState(&myTextures{})`); `HeadlessAtlas`'s zero value is ready to use. Conversions between `TileID` and etagere `AllocID` live in the atlas implementations.
+- `PlatformFrameSignal` must be created with `NewPlatformFrameSignal` and not copied; it stores nothing while `profilerFeatureEnabled` is false.
+- `GraphicalEnvironment` has one struct per OS family (`platform_cfg_freedesktop.go` for `linux || freebsd`, `platform_cfg_windows.go`, `platform_cfg_other.go` for the rest); code that reads its fields must carry the same build constraint. `GuessCompositor` and `WindowingModes` are Linux and FreeBSD only (`linux || freebsd`); `WindowButtonLayoutLinuxDefault`, `WindowButtonLayoutParse` and the unexported `format` build everywhere (Linux-only upstream). `PlatformScreenCaptureFrame` is `ScapFrame` on Linux and Windows (`platform_cfg_linux.go`, `platform_cfg_windows.go`) and a `uintptr` elsewhere: a CVImageBufferRef on macOS (the macOS back end owns its retain and release), zero on FreeBSD (`platform_cfg_freebsd.go`) and the rest (`platform_cfg_other.go`).
+- Screen capture seam: `ScapBackend` (`GetAllTargets`, `BuildCapturer`) and `ScapCapturer` (`StartCapture`, `StopCapture`, `GetNextFrame`, `Target`) mirror the zed-scap calls of `scap_screen_capture.rs`; targets are `*ScapDisplay` / `*ScapWindow`, frames the `ScapFrame*` types. Code that builds a `ScreenCaptureFrame` from a `ScapFrame` needs `//go:build linux || windows`. A back end registers once from `init` with `RegisterScapBackend` (a nil or second registration panics); the glue (M3-root-capture) reads it with the unexported `registeredScapBackend`.
+- Stub field contracts set here for later stages: `FontMetrics` (`UnitsPerEm`, `Ascent`, `Descent`, `LineGap`, `UnderlinePosition`, `UnderlineThickness`, `CapHeight`, `XHeight`, `BoundingBox`), `LineLayout`, `ShapedRun`, `ShapedGlyph`, `RenderGlyphParams`, `RenderSvgParams`, `RenderImageParams` and `Capslock.On` carry upstream's public fields; `FontID` is `uint`, `GlyphID` `uint32`, `ImageID` `uint`.
+
