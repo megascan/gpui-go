@@ -1664,6 +1664,69 @@ No `pub` items. The `std` branch is ported as unexported helpers: `round`, `ceil
 | `alloc` module (`not(feature = "std")`) | mod | 85 | std | - | n/a:D-TAFFY-FEATURE |
 | `polyfill` module (`not(feature = "std")`) | mod | 145 | std | - | n/a:D-TAFFY-FEATURE |
 
+## tests/common/src/lib.rs
+
+Go target: `internal/taffy/tests_common_test.go` (package `taffy`, test-only)
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `new_test_tree` | fn | 6 | test | `newTestTree` | done |
+| `TestNodeContext` | struct | 13 | test | `TestNodeContext` | done |
+| `TestNodeContext::new` | assoc-fn | 22 | test | `newTestNodeContext` | dev:D-TAFFY-TESTNAMES |
+| `TestNodeContext::zero` | assoc-fn | 27 | test | `testNodeContextZero` | dev:D-TAFFY-TESTNAMES |
+| `TestNodeContext::fixed` | assoc-fn | 32 | test | `testNodeContextFixed` | dev:D-TAFFY-TESTNAMES |
+| `TestNodeContext::aspect_ratio` | assoc-fn | 37 | test | `testNodeContextAspectRatio` | dev:D-TAFFY-TESTNAMES |
+| `TestNodeContext::ahem_text` | assoc-fn | 43 | test | `testNodeContextAhemText` | dev:D-TAFFY-TESTNAMES |
+| `TestMeasureData` | enum | 51 | test | `TestMeasureData` | done |
+| `test_measure_function` | fn | 63 | test | `testMeasureFunction` | done |
+| `AspectRatioMeasureData` | struct | 97 | test | `AspectRatioMeasureData` | done |
+| `WritingMode` | enum | 112 | test | `WritingMode` | done |
+| `impl FromStr for WritingMode` | trait-impl | 121 | test | `WritingModeFromStr` | done |
+| `AhemTextMeasureData` | struct | 135 | test | `AhemTextMeasureData` | done |
+
+## tests/xml.rs
+
+Go target: `internal/taffy/xml_test.go` (package `taffy`); the `parse`-feature CSS value parsers it calls through `FromStr` are ported test-only in `xml_css_test.go` (D-TAFFY-XMLPARSE); the enabled category list is `fixtures_enabled_test.go`; the fixtures are packed into `internal/taffy/testdata/xml.zip` by `internal/taffy/internal/mkfixtures` (`go generate`, sorted entries, zero timestamps, a no-op when `_ext/taffy` is absent). Each fixture is one subtest of `TestXml` named `<category>/<file>`; trees are printed only on failure.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `OutputNode` | struct | 14 | test | `outputNode` | done |
+| `TrackListToken` | enum | 27 | test | `trackListToken` | done |
+| `parse_track_list` | fn | 36 | test | `parseTrackList` | done |
+| `track_lists_match` | fn | 68 | test | `trackListsMatch` | done |
+| `impl PartialEq for OutputNode` | trait-impl | 80 | test | `(*outputNode).eq` | done |
+| `OutputNode::write_metrics` | method | 107 | test | `(*outputNode).writeMetrics` | done |
+| `OutputNode::write_tree` | method | 126 | test | `(*outputNode).writeTree` | done |
+| `OutputNode::print_tree` | method | 152 | test | `(*outputNode).treeString` | done |
+| `get_dir` | test | 168 | test | `TestXml_GetDir` | done |
+| `run_xml_test` | fn | 175 | test | `runXMLTest` | done |
+| `construct_tree` | fn | 241 | test | `constructTree` | done |
+| `parse_or_default` / `parse_or` | fn | 284 | test | `parseOr` | done |
+| `parse_self_alignment` | fn | 293 | test | `parseSelfAlignment` | done |
+| `maybe_parse` | fn | 297 | test | `maybeParse` | done |
+| `get_computed_expectations` | fn | 302 | test | `getComputedExpectations` | done |
+| `get_resolved_track_lists` | fn | 327 | detailed_layout_info | - | n/a:D-TAFFY-FEATURE |
+| `build_expectations` | fn | 342 | test | `buildExpectations` | done |
+| `build_style` | fn | 365 | test | `buildStyle` | done |
+| `build_style`: `flex_line_count` | field | 449 | flexbox_balance | - | n/a:D-TAFFY-FEATURE |
+| `tests/xml/mod.rs` (generated `#[test]` per fixture) | test | 1 | test | `TestXml` | done |
+
+## tests/xml fixtures
+
+Fixture counts per category (6504 files in tag v0.15.0). `flex-wrap: balance` fixtures (136, all in `flex`) need `flexbox_balance` and skip as n/a:D-TAFFY-FEATURE. Fixtures that reach a stub skip as blocked until the stage that owns it lands.
+
+| Upstream test | Kind | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `tests/xml/leaf` (60: 56 pass, 4 lay out a flex container) | fixture | - | test | `TestXml/leaf` | blocked:M0-taffy-flexbox |
+| `tests/xml/flex` (2708, 136 of them n/a) | fixture | - | test | `TestXml/flex` | blocked:M0-taffy-flexbox |
+| `tests/xml/block` (1116) | fixture | - | test | `TestXml/block` | blocked:M0-taffy-block |
+| `tests/xml/blockflex` (52) | fixture | - | test | `TestXml/blockflex` | blocked:M0-taffy-block |
+| `tests/xml/float` (116) | fixture | - | test | `TestXml/float` | blocked:M0-taffy-block |
+| `tests/xml/contain` (32) | fixture | - | test | `TestXml/contain` | blocked:M0-taffy-block |
+| `tests/xml/grid` (2336) | fixture | - | test | `TestXml/grid` | blocked:M0-taffy-grid-sizing |
+| `tests/xml/gridflex` (28) | fixture | - | test | `TestXml/gridflex` | blocked:M0-taffy-grid-sizing |
+| `tests/xml/blockgrid` (56) | fixture | - | test | `TestXml/blockgrid` | blocked:M0-taffy-grid-sizing |
+
 ## Deviations registered here
 
 | Id | Deviation | Upstream | Go |
@@ -1683,3 +1746,5 @@ No `pub` items. The `std` branch is ported as unexported helpers: `round`, `ceil
 | D-TAFFY-RESULT | `TaffyResult<T>` has no Go type: TaffyTree methods return `(T, error)` (or `error` for `()`), the error being a `TaffyError` value comparable with `==`; references (`&Style`, `&Layout`, `&[NodeId]`) are pointers / slices into the tree. `get_node_context(_mut)` return a nil-able pointer, `get_disjoint_node_context_mut` takes variadic ids and returns `([]*C, bool)`. | `src/tree/taffy_tree.rs:38-58,698-731` | `internal/taffy/tree_taffy_tree.go` |
 | D-TAFFY-CTXDROP | Go has no destructors: removing or clearing nodes drops the tree's reference to their contexts, which `remove_drops_the_nodes_context` / `clear_drops_every_nodes_context` check as an empty `node_context_data` instead of a drop counter. | `src/tree/taffy_tree.rs:1502-1542` | `internal/taffy/tree_taffy_tree_test.go` |
 | D-TAFFY-RANGE | `remove_children_range`'s `RangeBounds<usize>` is the half-open pair `start, end` (`1..=2` is `1, 3`); invalid ranges panic with core's slice-range messages. | `src/tree/taffy_tree.rs:818-829` | `internal/taffy/tree_taffy_tree.go` |
+| D-TAFFY-XMLPARSE | The `parse` feature is not ported (D-TAFFY-FEATURE), but `tests/xml.rs` reads every style through `FromStr`; the `FromCss` impls it reaches (keyword enums, alignment, lengths, `AvailableSpace`, `Contain`, grid placement / tracks / repetitions / auto-flow) are ported test-only on a minimal cssparser-like tokenizer in `xml_css_test.go`. Numbers parse as f64 then convert to f32, as cssparser does. | `src/util/parse.rs`, `src/style/*.rs` `FromCss` impls | `internal/taffy/xml_css_test.go` |
+| D-TAFFY-TESTNAMES | Test helper constructors of `tests/common` are unexported (`testNodeContextZero`, ...) because `go vet` rejects `Test*` functions that are not tests. | `tests/common/src/lib.rs:21-46` | `internal/taffy/tests_common_test.go` |
