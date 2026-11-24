@@ -110,6 +110,11 @@ func NewElementInputHandler[V any](elementBounds Bounds[Pixels], view Entity[V])
 	return h
 }
 
+// Release releases the handler's view; the frame that owns the handler calls it when the handler is dropped.
+func (h *ElementInputHandler[V]) Release() {
+	h.view.Release()
+}
+
 func entityInputHandler[V any](view *V) EntityInputHandler[V] {
 	return any(view).(EntityInputHandler[V])
 }

@@ -24,12 +24,6 @@ func windowTestAddEmpty(cx *TestAppContext) WindowHandle[windowTestEmptyView] {
 	})
 }
 
-func windowTestReleaseAll(cx *TestAppContext) {
-	for _, window := range cx.Windows() {
-		divTestReleaseRoot(cx, window)
-	}
-}
-
 func windowTestMust(err error) {
 	if err != nil {
 		panic(err)
@@ -121,7 +115,6 @@ func TestWindow_FocusHandleRelease(t *testing.T) {
 func TestWindow_DroppedFocusHandleBlursOnlyItsWindows(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		var windows [5]WindowHandle[windowTestEmptyView]
 		for i := range windows {
 			windows[i] = windowTestAddEmpty(cx)
@@ -177,10 +170,6 @@ func TestWindow_NativeCloseDefersAppAccess(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
 		window := windowTestAddEmpty(cx)
-		divTestUpdateWindow(cx, window.AnyWindowHandle, func(window *Window, _ *App) { divTestClearTabStops(window) })
-		var root AnyView
-		divTestUpdateWindow(cx, window.AnyWindowHandle, func(window *Window, _ *App) { root = window.root.Unwrap() })
-		defer root.Release()
 		platformWindow := cx.testWindow(window.AnyWindowHandle)
 		{
 			app := cx.app.BorrowMut()
@@ -354,7 +343,6 @@ func windowTestDebugWindowState(cx *TestAppContext, windowID uint64) map[string]
 func TestWindow_DebugStateReportsCachedAndPlatformValues(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := windowTestAddEmpty(cx)
 		windowID := window.WindowID().AsU64()
 		visibility := func() map[string]any {
@@ -375,7 +363,6 @@ func TestWindow_DebugStateReportsCachedAndPlatformValues(t *testing.T) {
 func TestWindow_WindowVisibility(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := windowTestAddEmpty(cx)
 		var observed []WindowVisibility
 		subscription, err := window.UpdateR(cx, func(_ *windowTestEmptyView, window *Window, _ *Context[windowTestEmptyView]) Subscription {
@@ -441,7 +428,6 @@ type windowTestDisplayNotification struct {
 func TestWindow_DisplayTracking(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		sixtyHertz := time.Second / 60
 		oneHundredTwentyHertz := time.Second / 120
 		oneHundredFortyFourHertz := time.Second / 144
@@ -541,7 +527,6 @@ func (*windowTestBoundsObserver) Render(_ *Window, _ *Context[windowTestBoundsOb
 func TestWindow_WindowOpenedFromBoundsObserverUsesNewBounds(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		openedWindow := None[AnyWindowHandle]()
 		window := cx.AddWindow(func(window *Window, cx *Context[windowTestBoundsObserver]) *windowTestBoundsObserver {
 			return &windowTestBoundsObserver{subscription: cx.ObserveWindowBounds(window, func(_ *windowTestBoundsObserver, _ *Window, cx *Context[windowTestBoundsObserver]) {
@@ -576,7 +561,6 @@ func TestWindow_WindowOpenedFromBoundsObserverUsesNewBounds(t *testing.T) {
 func TestWindow_FullyVisibleBoundsPreserveLayoutViewport(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := windowTestAddEmpty(cx)
 		platformWindow := cx.testWindow(window.AnyWindowHandle)
 		platformWindow.SimulateResize(NewSize(Px(400.), Px(800.)))
@@ -674,7 +658,6 @@ func (v *windowTestOpensWindowOnPaint) Render(_ *Window, _ *Context[windowTestOp
 func windowTestSingle(t *testing.T) *TestAppContext {
 	cx := TestAppContextSingle()
 	t.Cleanup(func() {
-		windowTestReleaseAll(cx)
 		cx.Close()
 	})
 	return cx
@@ -739,7 +722,6 @@ func TestWindow_ScaleFactorChangePreservesBoundsAndSurvivesResize(t *testing.T) 
 func TestWindow_FullscreenToggleReportsCurrentBounds(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := windowTestAddEmpty(cx)
 		handle := window.AnyWindowHandle
 		notifications := 0
@@ -786,7 +768,6 @@ func TestWindow_FullscreenToggleReportsCurrentBounds(t *testing.T) {
 func TestWindow_FrameWakerFiresOnFrameDemand(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := windowTestAddEmpty(cx)
 		testWindow := cx.testWindow(window.AnyWindowHandle)
 		testWindow.simulateActiveStatusChange(true)
@@ -827,7 +808,6 @@ func TestWindow_FrameWakerFiresOnFrameDemand(t *testing.T) {
 func TestWindow_PendingNextFrameCallbacksAreNotStranded(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := windowTestAddEmpty(cx)
 		testWindow := cx.testWindow(window.AnyWindowHandle)
 		testWindow.SimulateFrameRequest(RequestFrameOptions{})
@@ -848,7 +828,6 @@ func TestWindow_PendingNextFrameCallbacksAreNotStranded(t *testing.T) {
 func TestWindow_WindowReportsNoRawHandleInsteadOfPanicking(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := windowTestAddEmpty(cx)
 		windowTestMust(window.Update(cx, func(_ *windowTestEmptyView, window *Window, _ *Context[windowTestEmptyView]) {
 			if kind := window.RawWindowHandle().Kind; kind != RawWindowHandleNone {
@@ -861,7 +840,6 @@ func TestWindow_WindowReportsNoRawHandleInsteadOfPanicking(t *testing.T) {
 func TestWindow_AppearanceChangeRunsAfterAppUpdate(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := windowTestAddEmpty(cx)
 		observedAppearance := None[WindowAppearance]()
 		subscription, err := window.UpdateR(cx, func(_ *windowTestEmptyView, window *Window, _ *Context[windowTestEmptyView]) Subscription {
@@ -891,7 +869,6 @@ func windowTestAddPlainEmpty(cx *TestAppContext) WindowHandle[windowTestPlainEmp
 func TestWindow_QueuedFrameCallbackWakesAParkedRenderLoop(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := windowTestAddPlainEmpty(cx)
 		testWindow := cx.testWindow(window.AnyWindowHandle)
 
@@ -920,7 +897,6 @@ func TestWindow_QueuedFrameCallbackWakesAParkedRenderLoop(t *testing.T) {
 func TestWindow_PendingPresentationWakesAParkedRenderLoop(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := windowTestAddPlainEmpty(cx)
 		testWindow := cx.testWindow(window.AnyWindowHandle)
 
@@ -937,7 +913,6 @@ func TestWindow_PendingPresentationWakesAParkedRenderLoop(t *testing.T) {
 func TestWindow_CallbackQueuedDuringAFrameRequestsAFollowUp(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := windowTestAddPlainEmpty(cx)
 		testWindow := cx.testWindow(window.AnyWindowHandle)
 
@@ -1061,7 +1036,6 @@ func windowTestActiveDragIs[T any](cx *App) bool {
 func TestWindow_FileDragIsPromotedOnceAndRestoredInSourceWindow(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		startDrag := func(path string, platformResult bool) windowTestDrag {
 			moves := &[]Point[Pixels]{}
 			drops := &[]string{}
@@ -1194,8 +1168,6 @@ func TestWindow_FileDragIsPromotedOnceAndRestoredInSourceWindow(t *testing.T) {
 			if !windowTestActiveDragIs[string](cx) {
 				t.Fatal("cancelled drag should restore")
 			}
-			stopped := cx.activeDrag.Unwrap().View
-			defer stopped.Release()
 			if !cx.StopActiveDrag(window) || cx.activeDrag.IsSome() {
 				t.Fatal("stop active drag")
 			}
@@ -1206,19 +1178,13 @@ func TestWindow_FileDragIsPromotedOnceAndRestoredInSourceWindow(t *testing.T) {
 
 		removed := startDrag("/tmp/removed-window-drag", true)
 		removedWindowID := removed.window.WindowID()
-		var removedRoot AnyView
 		windowTestMust(cx.updateWindow(removed.window, func(_ AnyView, window *Window, cx *App) {
 			window.DispatchEvent(MouseMoveEvent{Position: outsidePosition, PressedButton: Some(MouseButtonLeft)}, cx)
 			if cx.activeDrag.IsSome() {
 				t.Fatal("drag not promoted")
 			}
-			suspended := cx.platformOwnedDrag.Unwrap().state.(platformOwnedDragStateSuspended).drag.View
-			defer suspended.Release()
-			divTestClearTabStops(window)
-			removedRoot = window.root.Unwrap()
 			window.RemoveWindow()
 		}))
-		removedRoot.Release()
 		if cx.UpdateR(func(cx *App) bool { return cx.endPlatformDrag(removedWindowID) }) {
 			t.Fatal("removed window drag still pending")
 		}
@@ -1236,11 +1202,6 @@ func TestWindow_FileDragIsPromotedOnceAndRestoredInSourceWindow(t *testing.T) {
 		if got := cx.testWindow(failed.window).ExternalDragFiles(); !slices.Equal(got, []FileDragPath{{Path: failedPath, IsDir: true}}) {
 			t.Fatalf("external drag files = %v", got)
 		}
-		cx.Update(func(cx *App) {
-			if drag, ok := cx.activeDrag.Take().Get(); ok {
-				drag.View.Release()
-			}
-		})
 	})
 }
 
@@ -1273,7 +1234,6 @@ func TestWindow_FocusMovedByFocusListenerIsDispatched(t *testing.T) {
 		windowTestMust(window.Update(cx, func(v *windowTestFocusForwarder, _ *Window, _ *Context[windowTestFocusForwarder]) { a, b = v.a, v.b }))
 		defer b.Release()
 		defer a.Release()
-		defer windowTestReleaseAll(cx)
 
 		windowTestMust(window.Update(cx, func(_ *windowTestFocusForwarder, window *Window, _ *Context[windowTestFocusForwarder]) {
 			window.ActivateWindow()
@@ -1329,7 +1289,6 @@ func windowTestDispatchTouch[V any](window WindowHandle[V], cx *TestAppContext, 
 func TestWindow_ClaimedTouchDragReceivesMovementAndRelease(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		var events []windowTestTouchPhaseX
 		window := cx.AddWindow(func(*Window, *Context[windowTestTouchDragListener]) *windowTestTouchDragListener {
 			return &windowTestTouchDragListener{events: &events}
@@ -1362,7 +1321,6 @@ func (v *windowTestBackListeners) Render(_ *Window, _ *Context[windowTestBackLis
 func TestWindow_BackGestureIsClaimedByTheInnermostListener(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		var claims []string
 		window := cx.AddWindow(func(*Window, *Context[windowTestBackListeners]) *windowTestBackListeners {
 			return &windowTestBackListeners{claims: &claims}
@@ -1429,7 +1387,6 @@ func windowTestAddLongPress(cx *TestAppContext, phases *[]TouchPhase, response w
 func TestWindow_LongPressIsClaimedOnlyWhenStartedPreventsDefault(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		for _, response := range []windowTestLongPressResponse{windowTestLongPressPreventDefault, windowTestLongPressStopPropagation, windowTestLongPressNone} {
 			var phases []TouchPhase
 			window := windowTestAddLongPress(cx, &phases, response)
@@ -1462,7 +1419,6 @@ func TestWindow_LongPressIsClaimedOnlyWhenStartedPreventsDefault(t *testing.T) {
 func TestWindow_StaleDefaultPreventionDoesNotClaimLongPress(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		var phases []TouchPhase
 		window := windowTestAddLongPress(cx, &phases, windowTestLongPressNone)
 		windowTestMust(window.Update(cx, func(_ *windowTestLongPressListener, window *Window, _ *Context[windowTestLongPressListener]) {
@@ -1481,7 +1437,6 @@ func TestWindow_StaleDefaultPreventionDoesNotClaimLongPress(t *testing.T) {
 func TestWindow_ResolvedTouchCancelsScheduledLongPress(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		for _, c := range []struct {
 			phase    TouchPhase
 			position float32
@@ -1502,7 +1457,6 @@ func TestWindow_ResolvedTouchCancelsScheduledLongPress(t *testing.T) {
 func TestWindow_StaleLongPressTimerCannotAffectReplacementTouch(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		var phases []TouchPhase
 		window := windowTestAddLongPress(cx, &phases, windowTestLongPressPreventDefault)
 		firstTouch := TouchID(1)
@@ -1574,7 +1528,6 @@ func windowTestUnderlineDeviceColumns(underlines []Underline) []int32 {
 func windowTestRunPaint(t *testing.T, paint func(t *testing.T, window *Window)) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		windowTestPaintAtScales(cx, func(window *Window) { paint(t, window) })
 	})
 }
@@ -1980,7 +1933,6 @@ func windowTestStandaloneModifierSetup(cx *TestAppContext) (Entity[windowTestSta
 		var focusHandle FocusHandle
 		vcx.Update(func(_ *Window, cx *App) { focusHandle = view.Read(cx).focusHandle })
 		view.Release()
-		windowTestReleaseAll(cx)
 		focusHandle.Release()
 	}
 }
@@ -2074,7 +2026,6 @@ func (r *windowTestCachedRoot) Render(_ *Window, _ *Context[windowTestCachedRoot
 func TestWindow_CachedViewFollowsInheritedOpacity(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		child := cx.New(func(*Context[windowTestCachedChild]) *windowTestCachedChild { return &windowTestCachedChild{} })
 		window := cx.AddWindow(func(*Window, *Context[windowTestCachedRoot]) *windowTestCachedRoot {
 			return &windowTestCachedRoot{opacity: 1., width: Px(200.), child: child.Clone()}
@@ -2161,7 +2112,6 @@ func (*windowTestResizeHandle) Render(_ *Window, _ *Context[windowTestResizeHand
 func TestWindow_DragCursorAppliesBeforeNextPaint(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := cx.AddWindow(func(*Window, *Context[windowTestResizeHandle]) *windowTestResizeHandle {
 			return &windowTestResizeHandle{}
 		})
@@ -2258,7 +2208,6 @@ func TestWindowInspectorTests_InspectorOnlyTracksItsOpenWindow(t *testing.T) {
 		}
 		windows := []WindowHandle[windowTestInspectorRoot]{cx.AddWindow(newRoot), cx.AddWindow(newRoot)}
 		defer func() {
-			windowTestReleaseAll(cx)
 			for _, c := range children {
 				c.Release()
 			}

@@ -594,7 +594,7 @@ func (w *Window) SimulateNextFrame(cx *App) int {
 func (w *Window) Spawn[R any](cx *App, f func(cx *AsyncWindowContext) (R, error)) *Task[R] {
 	handle := w.handle
 	return cx.Spawn(func(app *AsyncApp) (R, error) {
-		asyncWindowCx := newAsyncWindowContext(app.clone(), handle)
+		asyncWindowCx := newAsyncWindowContext(app, handle)
 		return f(asyncWindowCx)
 	})
 }
@@ -604,7 +604,7 @@ func (w *Window) Spawn[R any](cx *App, f func(cx *AsyncWindowContext) (R, error)
 func (w *Window) SpawnWithPriority[R any](priority Priority, cx *App, f func(cx *AsyncWindowContext) (R, error)) *Task[R] {
 	handle := w.handle
 	return cx.SpawnWithPriority(priority, func(app *AsyncApp) (R, error) {
-		asyncWindowCx := newAsyncWindowContext(app.clone(), handle)
+		asyncWindowCx := newAsyncWindowContext(app, handle)
 		return f(asyncWindowCx)
 	})
 }
@@ -1750,6 +1750,24 @@ func (w *Window) SetWindowCursorStyle(style CursorStyle) {
 	})
 }
 
+func (w *Window) drop() {
+	if w.closeA11yChannels != nil {
+		w.closeA11yChannels()
+		w.closeA11yChannels = nil
+	}
+	if root, ok := w.root.Take().Get(); ok {
+		root.Release()
+	}
+	if prompt, ok := w.prompt.Take().Get(); ok {
+		prompt.release()
+	}
+	w.renderedFrame.clear()
+	w.nextFrame.clear()
+	if inputHandler := w.platformWindow.TakeInputHandler(); inputHandler != nil {
+		inputHandler.release()
+	}
+}
+
 // SetTooltip sets a tooltip to be rendered for the upcoming frame; call it only during prepaint.
 func (w *Window) SetTooltip(tooltip AnyTooltip) TooltipID {
 	w.invalidator.debugAssertPrepaint()
@@ -1819,7 +1837,7 @@ func (w *Window) Transact[T any](f func(window *Window) (T, error)) (T, error) {
 	result, err := f(w)
 	if err != nil {
 		w.nextFrame.hitboxes = w.nextFrame.hitboxes[:index.hitboxesIndex]
-		clear(w.nextFrame.tooltipRequests[index.tooltipsIndex:])
+		releaseTooltipRequests(w.nextFrame.tooltipRequests[index.tooltipsIndex:])
 		w.nextFrame.tooltipRequests = w.nextFrame.tooltipRequests[:index.tooltipsIndex]
 		clear(w.nextFrame.deferredDraws[index.deferredDrawsIndex:])
 		w.nextFrame.deferredDraws = w.nextFrame.deferredDraws[:index.deferredDrawsIndex]
@@ -1928,12 +1946,12 @@ func (w *Window) WithElementState[S, R any](globalID *GlobalElementID, f func(st
 		state := stateBox.Take().Expect("reentrant call to with_element_state for the same state type and element id")
 		result, state := f(Some(state), w)
 		stateBox.Replace(state)
-		w.insertElementState(key, elementStateBox{inner: stateBox, typeName: box.typeName})
+		w.insertElementState(key, newElementStateBox(stateBox, box.typeName))
 		return result
 	}
 	result, state := f(None[S](), w)
 	stateBox := Some(state)
-	w.insertElementState(key, elementStateBox{inner: &stateBox, typeName: typeNameOf(reflect.TypeFor[S]())})
+	w.insertElementState(key, newElementStateBox(&stateBox, typeNameOf(reflect.TypeFor[S]())))
 	return result
 }
 

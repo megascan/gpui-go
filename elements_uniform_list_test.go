@@ -112,7 +112,6 @@ func TestUniformList_ScrollStrategyNearest(t *testing.T) {
 		})
 		defer func() {
 			view.Release()
-			windowTestReleaseAll(tcx)
 		}()
 
 		check := func(index int, visibleRange Range) {
@@ -195,7 +194,6 @@ func TestUniformList_ItemPositionsFarDownLongList(t *testing.T) {
 		})
 		defer func() {
 			view.Release()
-			windowTestReleaseAll(tcx)
 		}()
 
 		*itemBounds = (*itemBounds)[:0]

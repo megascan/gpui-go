@@ -2,9 +2,11 @@ package gpui
 
 import (
 	"errors"
+	"runtime"
 	"strconv"
 	"sync/atomic"
 	"testing"
+	"weak"
 
 	"github.com/megascan/gpui-go/scheduler"
 )
@@ -37,7 +39,22 @@ func TestTextSystemFontResolutionTests_CachesResolvedFontFallbacks(t *testing.T)
 }
 
 func TestTextSystemLineWrapperPoolTests_PooledLineWrappersDoNotRetainTextSystem(t *testing.T) {
-	t.Skip("blocked:M0-line-wrapper: needs LineWrapper.WrapLine and LineFragmentText")
+	textSystem := NewTextSystem(NewNoopTextSystem())
+	weakTextSystem := weak.Make(textSystem)
+
+	wrapper := textSystem.LineWrapper(NewFont(".ZedMono"), Px(16.))
+	fragments := []LineFragment{LineFragmentText("hello world")}
+	for range wrapper.WrapLine(fragments, Px(40.), IndentAdjustment{}) {
+	}
+	wrapper.Release()
+	wrapper = nil
+	textSystem = nil
+
+	runtime.GC()
+	runtime.GC()
+	if weakTextSystem.Value() != nil {
+		t.Fatal("pooled line wrappers retained the text system")
+	}
 }
 
 func nowOrNever[T any](f scheduler.Future[T]) (T, bool) {

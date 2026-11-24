@@ -282,8 +282,6 @@ func (p *TestPlatform) SetScreenCaptureSources(sources []TestScreenCaptureSource
 	p.screenCaptureSources = sources
 }
 
-// prompt queues the prompt so a test can later inspect or answer it through
-// PendingPrompt and SimulatePromptAnswer.
 func (p *TestPlatform) prompt(msg string, detail Option[string], answers []PromptButton) *scheduler.OneshotReceiver[int] {
 	tx, rx := scheduler.Oneshot[int]()
 	labels := make([]string, 0, len(answers))

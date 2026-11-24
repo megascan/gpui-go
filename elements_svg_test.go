@@ -67,7 +67,6 @@ func svgTestAnimate(tcx *TestAppContext, transformation TimedTransformation) (fu
 	}
 	release := func() {
 		view.Release()
-		windowTestReleaseAll(tcx)
 	}
 	return poseAfter, renders, release
 }
@@ -188,7 +187,6 @@ func TestSvg_ScenePresentsAsOftenAsItsLeastCappedAnimation(t *testing.T) {
 		})
 		defer func() {
 			view.Release()
-			windowTestReleaseAll(tcx)
 		}()
 		cx.RunUntilParked()
 		cx.Update(func(window *Window, _ *App) {

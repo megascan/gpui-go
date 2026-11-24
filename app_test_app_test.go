@@ -30,19 +30,6 @@ func (c *testAppCounter) Drop(*App) {
 	c.focusHandle.Release()
 }
 
-func testAppReleaseWindows(app *TestApp) {
-	for _, window := range app.Windows() {
-		for _, step := range []func(*Window){divTestClearTabStops, divTestTakeRoot} {
-			app.Update(func(cx *App) {
-				_, _ = AppContextUpdateWindow(cx, window, func(_ AnyView, window *Window, _ *App) struct{} {
-					step(window)
-					return struct{}{}
-				})
-			})
-		}
-	}
-}
-
 func TestTestApp_BasicUsage(t *testing.T) {
 	app := NewTestApp()
 	defer app.Close()
@@ -59,7 +46,6 @@ func TestTestApp_BasicUsage(t *testing.T) {
 		}
 	})
 
-	testAppReleaseWindows(app)
 	app.Update(func(cx *App) { cx.Shutdown() })
 }
 
@@ -85,7 +71,6 @@ func TestTestApp_SimulateScaleFactorChange(t *testing.T) {
 		}
 	})
 
-	testAppReleaseWindows(app)
 	app.Update(func(cx *App) { cx.Shutdown() })
 }
 

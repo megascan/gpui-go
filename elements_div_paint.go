@@ -1354,6 +1354,12 @@ type ElementHoverState struct {
 	Element bool
 }
 
+func (s *InteractiveElementState) dropElementState() {
+	if s.activeTooltip != nil {
+		s.activeTooltip.set(None[activeTooltipState]())
+	}
+}
+
 type activeTooltipKind uint8
 
 const (
@@ -1433,7 +1439,7 @@ func setTooltipOnWindow(activeTooltip *activeTooltipCell, window *Window) Option
 	if !ok || current.kind == activeTooltipWaitingForShow {
 		return None[TooltipID]()
 	}
-	return Some(window.SetTooltip(current.tooltip))
+	return Some(window.SetTooltip(cloneAnyTooltip(current.tooltip)))
 }
 
 type tooltipBuildFunc func(window *Window, cx *App) (view AnyView, hoverable bool, ok bool)
@@ -1541,9 +1547,8 @@ func handleTooltipMouseMove(activeTooltip *activeTooltipCell, buildTooltip toolt
 }
 
 func windowSpawn(window *Window, cx *App, f func(cx *AsyncWindowContext)) *Task[struct{}] {
-	handle := window.handle
-	return cx.Spawn(func(app *AsyncApp) (struct{}, error) {
-		f(newAsyncWindowContext(app, handle))
+	return window.Spawn(cx, func(cx *AsyncWindowContext) (struct{}, error) {
+		f(cx)
 		return struct{}{}, nil
 	})
 }

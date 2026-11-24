@@ -31,8 +31,37 @@ func TestExecutor_SendForegroundExecutorSubmitsFromWorker(t *testing.T) {
 	}
 }
 
+func createExecutorTestApp() (*TestDispatcher, BackgroundExecutor, *AppCell) {
+	dispatcher := NewTestDispatcher(0)
+	arcDispatcher := dispatcher.Clone()
+	backgroundExecutor := NewBackgroundExecutor(arcDispatcher)
+	foregroundExecutor := NewForegroundExecutor(arcDispatcher)
+
+	platform := NewTestPlatform(backgroundExecutor, foregroundExecutor)
+	httpClient := fakeHTTPClientWith404Response()
+
+	app := newApp(platform, NoAssets{}, httpClient)
+	return dispatcher, backgroundExecutor, app
+}
+
 func TestExecutor_SanityTestTasksRun(t *testing.T) {
-	t.Skip("blocked:M0-test-platform: needs App.newApp and TestPlatform")
+	dispatcher, _, app := createExecutorTestApp()
+	borrow := app.Borrow()
+	foregroundExecutor := borrow.Get().foregroundExecutor
+	borrow.Release()
+
+	taskRan := false
+
+	foregroundExecutor.Spawn(func(*scheduler.Scope) (struct{}, error) {
+		taskRan = true
+		return struct{}{}, nil
+	}).Detach()
+
+	dispatcher.RunUntilParked()
+
+	if !taskRan {
+		t.Fatal("Task should run normally when app is alive")
+	}
 }
 
 func TestExecutor_ScopedWaitsForEveryFuture(t *testing.T) {

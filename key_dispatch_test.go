@@ -284,7 +284,6 @@ func dispatchTestReleaseView[V any](cx *VisualTestContext, view Entity[V], focus
 		var handle FocusHandle
 		cx.Update(func(_ *Window, cx *App) { handle = focusHandle(view.Read(cx)) })
 		view.Release()
-		windowTestReleaseAll(cx.TestAppContext)
 		handle.Release()
 	}
 }

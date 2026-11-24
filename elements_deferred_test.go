@@ -60,7 +60,6 @@ func (r *deferredTestSubscriptionRoot) Drop(*App) {
 func TestDeferred_CachedReuseKeepsEntitySubscriptions(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		for _, deferredChild := range []bool{true, false} {
 			for _, deferredPanel := range []bool{false, true} {
 				output := 0
@@ -152,7 +151,6 @@ func (r *deferredTestRootView) Drop(*App) {
 func TestDeferred_NestedDeferredDrawsWithReusedViews(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := cx.OpenWindow(NewSize(Px(800.), Px(600.)), func(_ *Window, cx *Context[deferredTestRootView]) *deferredTestRootView {
 			panel := AppContextNew(cx, func(*Context[deferredTestPanelView]) *deferredTestPanelView { return &deferredTestPanelView{} })
 			return &deferredTestRootView{panel: panel}

@@ -1347,7 +1347,7 @@ func (cx *App) Shutdown() {
 		futures = append(futures, hangMonitorFlushFuture(hangMonitorFlush))
 	}
 
-	cx.windows.clear()
+	cx.dropWindows()
 	clear(cx.windowHandles)
 	cx.flushEffects()
 	cx.quitting = true
@@ -1367,6 +1367,15 @@ func (cx *App) Shutdown() {
 	}
 
 	cx.quitting = false
+}
+
+func (cx *App) dropWindows() {
+	for _, window := range cx.windows.all() {
+		if window != nil {
+			window.drop()
+		}
+	}
+	cx.windows.clear()
 }
 
 // KeyboardLayout returns the current keyboard layout.
@@ -2957,7 +2966,7 @@ func (cx *App) ActiveDragCursorStyle() (CursorStyle, bool) {
 // StopActiveDrag stops the active drag and clears any related effects.
 func (cx *App) StopActiveDrag(window *Window) bool {
 	if cx.activeDrag.IsSome() {
-		cx.activeDrag = None[AnyDrag]()
+		releaseActiveDrag(cx.activeDrag.Take())
 		if drag, ok := cx.platformOwnedDrag.Get(); ok && drag.sourceWindow == window.WindowHandle().WindowID() {
 			if _, restored := drag.state.(platformOwnedDragStateRestoredInSourceWindow); restored {
 				cx.platformOwnedDrag = None[platformOwnedDrag]()
@@ -3018,7 +3027,10 @@ func (cx *App) endPlatformDrag(sourceWindow WindowID) bool {
 		return false
 	}
 	cx.platformOwnedDrag = None[platformOwnedDrag]()
-	cx.activeDrag = None[AnyDrag]()
+	if suspended, ok := drag.state.(platformOwnedDragStateSuspended); ok {
+		suspended.drag.View.Release()
+	}
+	releaseActiveDrag(cx.activeDrag.Take())
 	return true
 }
 
@@ -3153,6 +3165,7 @@ func updateWindowTrail(windowID WindowID, window *Window, cx *App) bool {
 	cx.windowUpdateStack = cx.windowUpdateStack[:len(cx.windowUpdateStack)-1]
 
 	if window.removed {
+		window.drop()
 		cx.endPlatformDrag(windowID)
 		delete(cx.windowHandles, windowID)
 		cx.windows.remove(windowID)

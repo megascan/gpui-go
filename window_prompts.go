@@ -54,6 +54,16 @@ func (h PromptHandle) WithView[V any](view Entity[V], window *Window, cx *App) R
 			}
 		}
 	}).Detach()
+	cx.ObserveRelease(view, func(_ *V, _ *App) {
+		if sender != nil {
+			s := sender
+			sender = nil
+			s.Close()
+			if hasPreviousFocus {
+				previousFocus.Release()
+			}
+		}
+	}).Detach()
 
 	focusHandle := view.FocusHandle(cx)
 	window.Focus(focusHandle, cx)
@@ -183,6 +193,11 @@ func (r *FallbackPromptRenderer) Render(window *Window, cx *Context[FallbackProm
 // FocusHandle returns the prompt's focus handle; the caller releases it.
 func (r *FallbackPromptRenderer) FocusHandle(cx *App) FocusHandle {
 	return r.focus.Clone()
+}
+
+// Drop releases the prompt's focus handle when the entity is released.
+func (r *FallbackPromptRenderer) Drop(cx *App) {
+	r.focus.Release()
 }
 
 type promptViewHandle interface {

@@ -31,3 +31,11 @@ Go port of Zed's GPUI at zed@6501df15765d66d6c2a2b66b1eb22434ccef3f86. Target: f
 - Screenshots only via internal/cmd/shoot into docs/port/screenshots/<group>/<example>.png; open and check every image. Unverifiable-here items -> `docs/port/owner-checks/<stage>.md` as `YOU: ...`.
 - Git: branch feat/port (base dev); only exit/CI stages commit and push, only paths of stages with a `.done` file; never `git add -A`, force-push or Co-Authored-By. Apple/iOS paths first committed by M4-ci-macos, Windows by M4-ci-windows.
 - Known limits: L-GLYPH, L-JPEG, L-SVGTEXT, L-WGPUVER, L-WEBTHREADS (cite as `dev:L-x` / `n/a:L-x`).
+
+## State after M0-exit
+- Headless core complete: root package, scheduler, sumtree, collections, gpuiutil, refineable, a11y, internal/{taffy,lyon,etagere,jsonschema}. M0 parity rows are done / dev / n/a or `blocked:<M3 stage>` (profiler journal/hang, bench context, root capture, inspector reflection).
+- `stubs.go` holds only profiler-hang, journal, debug-overlay and visual-test symbols; M3-root-capture deletes it.
+- Window teardown: `Window.drop` (window_paint.go) releases root, prompt, both frames (element states via `dropElementState`, tooltip requests, input handlers, tab stops), the platform input handler and the a11y channels; app.go calls it on window removal and `Shutdown`, test teardown via `releaseAppWindows`. Tests need no manual root/drag release helpers.
+- `SetTooltip` takes ownership of the tooltip view (callers pass a clone). Element state types that own handles implement `dropElementState()`.
+- Test teardown order: release contexts, `DrainTasks`, then leak report (testing.go).
+- CI: draft PR feat/port -> dev; Actions blocked by account billing (TECH_DEBT CI-BILLING). Owner checks in docs/port/OWNER-CHECKS.md.

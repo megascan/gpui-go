@@ -55,7 +55,6 @@ func TestInteractive_OnEvents(t *testing.T) {
 			var focusHandle FocusHandle
 			cx.Update(func(cx *App) { focusHandle = view.Read(cx).focusHandle })
 			view.Release()
-			windowTestReleaseAll(cx)
 			focusHandle.Release()
 		}()
 
@@ -88,7 +87,6 @@ func TestInteractive_MultiModifierGestureDoesNotDispatchStandaloneModifierBindin
 			var focusHandle FocusHandle
 			cx.Update(func(_ *Window, cx *App) { focusHandle = testView.Read(cx).focusHandle })
 			testView.Release()
-			windowTestReleaseAll(tcx)
 			focusHandle.Release()
 		}()
 

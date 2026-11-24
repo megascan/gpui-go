@@ -230,7 +230,6 @@ func (r *appTestRenderCounter) Render(_ *Window, _ *Context[appTestRenderCounter
 func TestApp_AsyncAppRefreshFlushesRefreshEffect(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		renderCount := 0
 
 		_ = cx.AddWindow(func(_ *Window, _ *Context[appTestRenderCounter]) *appTestRenderCounter {

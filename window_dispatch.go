@@ -566,9 +566,8 @@ func (w *Window) dispatchRecognizedTouchGesture(gesture recognizedTouchGesture, 
 }
 
 func (w *Window) spawnWindowTask(cx *App, f func(cx *AsyncWindowContext)) *Task[struct{}] {
-	handle := w.handle
-	return cx.Spawn(func(app *AsyncApp) (struct{}, error) {
-		f(newAsyncWindowContext(app, handle))
+	return w.Spawn(cx, func(cx *AsyncWindowContext) (struct{}, error) {
+		f(cx)
 		return struct{}{}, nil
 	})
 }

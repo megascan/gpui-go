@@ -47,35 +47,12 @@ func divTestUpdateWindow(cx *TestAppContext, window AnyWindowHandle, f func(wind
 	}
 }
 
-func divTestClearTabStops(window *Window) {
-	window.renderedFrame.tabStops.clear()
-	window.nextFrame.tabStops.clear()
-}
-
-func divTestTakeRoot(window *Window) {
-	if root, ok := window.root.Take().Get(); ok {
-		root.Release()
-	}
-	window.RemoveWindow()
-}
-
-func divTestReleaseRoot(cx *TestAppContext, window AnyWindowHandle) {
-	for _, step := range []func(*Window){divTestClearTabStops, divTestTakeRoot} {
-		_, _ = AppContextUpdateWindow(cx, window, func(_ AnyView, window *Window, _ *App) struct{} {
-			step(window)
-			return struct{}{}
-		})
-	}
-}
-
 func divTestClose(cx *TestAppContext, window AnyWindowHandle) {
-	divTestReleaseRoot(cx, window)
 	cx.Close()
 }
 
 func divTestRemoveWindow(cx *TestAppContext, window AnyWindowHandle) {
-	divTestUpdateWindow(cx, window, func(window *Window, _ *App) { divTestClearTabStops(window) })
-	divTestUpdateWindow(cx, window, func(window *Window, _ *App) { divTestTakeRoot(window) })
+	divTestUpdateWindow(cx, window, func(window *Window, _ *App) { window.RemoveWindow() })
 }
 
 func divTestDraw(cx *TestAppContext, window AnyWindowHandle) {
@@ -141,7 +118,6 @@ func TestDiv_GroupHoverStylesUpdateOnlyOnTransitions(t *testing.T) {
 		window := cx.AddWindow(func(_ *Window, _ *Context[groupHoverTestView]) *groupHoverTestView {
 			return &groupHoverTestView{renderCount: &renderCount, anonymousPaintCount: &anonymousPaintCount, statefulWidth: &statefulWidth}
 		}).AnyWindowHandle
-		defer divTestReleaseRoot(cx, window)
 
 		divTestDraw(cx, window)
 		if anonymousPaintCount != 0 || statefulWidth != Px(10.) {
@@ -208,7 +184,6 @@ func TestDiv_DefaultHoverListenerUpdatesWhenLayoutChangesUnderStationaryMouse(t 
 		window := cx.AddWindow(func(_ *Window, _ *Context[hoverListenerLayoutTestView]) *hoverListenerLayoutTestView {
 			return &hoverListenerLayoutTestView{targetLeft: Px(40.), hoverTransitions: &hoverTransitions}
 		})
-		defer divTestReleaseRoot(cx, window.AnyWindowHandle)
 		anyWindow := window.AnyWindowHandle
 
 		divTestUpdateWindow(cx, anyWindow, func(window *Window, cx *App) {
@@ -240,7 +215,6 @@ func TestDiv_DefaultHoverListenerEndsAfterKeyPress(t *testing.T) {
 		window := cx.AddWindow(func(_ *Window, _ *Context[hoverListenerLayoutTestView]) *hoverListenerLayoutTestView {
 			return &hoverListenerLayoutTestView{targetLeft: Px(0.), hoverTransitions: &hoverTransitions}
 		})
-		defer divTestReleaseRoot(cx, window.AnyWindowHandle)
 		anyWindow := window.AnyWindowHandle
 
 		divTestUpdateWindow(cx, anyWindow, func(window *Window, cx *App) {
@@ -283,7 +257,6 @@ func TestDiv_InputModalityIndependentHoverListenerUpdatesAfterKeyPress(t *testin
 		window := cx.AddWindow(func(_ *Window, _ *Context[hoverListenerModeLayoutTestView]) *hoverListenerModeLayoutTestView {
 			return &hoverListenerModeLayoutTestView{targetLeft: Px(40.), hoverTransitions: &hoverTransitions}
 		})
-		defer divTestReleaseRoot(cx, window.AnyWindowHandle)
 		anyWindow := window.AnyWindowHandle
 		pointerPosition := NewPoint(Px(10.), Px(10.))
 
@@ -325,7 +298,6 @@ func TestDiv_DefaultHoverListenerRemainsHoveredDuringStationaryMousePress(t *tes
 		window := cx.AddWindow(func(_ *Window, _ *Context[hoverListenerLayoutTestView]) *hoverListenerLayoutTestView {
 			return &hoverListenerLayoutTestView{targetLeft: Px(0.), hoverTransitions: &hoverTransitions}
 		})
-		defer divTestReleaseRoot(cx, window.AnyWindowHandle)
 		anyWindow := window.AnyWindowHandle
 		mousePosition := NewPoint(Px(10.), Px(10.))
 
@@ -467,7 +439,6 @@ func TestDiv_ScrollHandleAlignsTallChildrenToTopEdge(t *testing.T) {
 }
 
 func TestDiv_LongPressShowsTooltipUntilTouchEnds(t *testing.T) {
-	t.Skip("blocked:M0-text-elements: the visible tooltip renders text through SharedString.IntoAnyElement")
 	testApp, anyWindow, captured := createTooltipOwnerTest(None[time.Duration]())
 	defer divTestClose(testApp, anyWindow)
 	activeTooltip := captured.upgrade(t)
@@ -558,7 +529,6 @@ func TestDiv_TooltipWaitingForShowIsReleasedWhenItsOwnerDisappears(t *testing.T)
 }
 
 func TestDiv_TooltipRespectsCustomShowDelay(t *testing.T) {
-	t.Skip("blocked:M0-text-elements: the visible tooltip renders text through SharedString.IntoAnyElement")
 	extraDelay := time.Second
 	showDelayOverride := defaultTooltipShowDelay + extraDelay
 	testApp, anyWindow, captured := setupTooltipOwnerTest(Some(showDelayOverride))
@@ -582,7 +552,6 @@ func TestDiv_TooltipRespectsCustomShowDelay(t *testing.T) {
 }
 
 func TestDiv_TooltipIsReleasedWhenItsOwnerDisappears(t *testing.T) {
-	t.Skip("blocked:M0-text-elements: the visible tooltip renders text through SharedString.IntoAnyElement")
 	testApp, anyWindow, captured := setupTooltipOwnerTest(None[time.Duration]())
 	defer divTestClose(testApp, anyWindow)
 
@@ -607,7 +576,6 @@ func TestDiv_TooltipIsReleasedWhenItsOwnerDisappears(t *testing.T) {
 }
 
 func TestDiv_TooltipHidesAfterMouseLeavesOrigin(t *testing.T) {
-	t.Skip("blocked:M0-text-elements: the visible tooltip renders text through SharedString.IntoAnyElement")
 	testApp, anyWindow, captured := setupTooltipOwnerTest(None[time.Duration]())
 	defer divTestClose(testApp, anyWindow)
 
@@ -643,14 +611,12 @@ func (o *mouseDownOutOwner) Render(_ *Window, _ *Context[mouseDownOutOwner]) Int
 }
 
 func TestDiv_MouseDownOutIsSuppressedWhileWindowPromptIsActive(t *testing.T) {
-	t.Skip("blocked:M0-text-elements: the fallback prompt renders text through SharedString.IntoAnyElement")
 	testApp := TestAppContextSingle()
 	defer testApp.Close()
 	mouseDownOutCount := 0
 	window := testApp.AddWindow(func(_ *Window, _ *Context[mouseDownOutOwner]) *mouseDownOutOwner {
 		return &mouseDownOutOwner{mouseDownOutCount: &mouseDownOutCount}
 	})
-	defer divTestReleaseRoot(testApp, window.AnyWindowHandle)
 	anyWindow := window.AnyWindowHandle
 
 	dispatchMouseDownOutsideTarget := func() {
@@ -688,7 +654,6 @@ func TestDiv_TouchTapOutFiresOnceAfterRelease(t *testing.T) {
 	window := testApp.AddWindow(func(_ *Window, _ *Context[mouseDownOutOwner]) *mouseDownOutOwner {
 		return &mouseDownOutOwner{mouseDownOutCount: &mouseDownOutCount}
 	})
-	defer divTestReleaseRoot(testApp, window.AnyWindowHandle)
 	anyWindow := window.AnyWindowHandle
 
 	divTestUpdateWindow(testApp, anyWindow, func(window *Window, cx *App) {
@@ -715,7 +680,6 @@ func TestDiv_TouchPanAndCancelDoNotFireMouseDownOut(t *testing.T) {
 		window := cx.AddWindow(func(_ *Window, _ *Context[mouseDownOutOwner]) *mouseDownOutOwner {
 			return &mouseDownOutOwner{mouseDownOutCount: &mouseDownOutCount}
 		})
-		defer divTestReleaseRoot(cx, window.AnyWindowHandle)
 		type sample struct {
 			phase    TouchPhase
 			vertical float32
@@ -841,7 +805,6 @@ func setupKeyboardActivationTest() (*TestAppContext, AnyWindowHandle, *[]string,
 }
 
 func teardownKeyboardActivationTest(cx *TestAppContext, window AnyWindowHandle, focusA, focusB FocusHandle) {
-	divTestReleaseRoot(cx, window)
 	cx.Update(func(*App) {
 		focusA.Release()
 		focusB.Release()
@@ -1012,7 +975,6 @@ func TestDiv_FocusNextFromTabGroupContainerEntersThatGroup(t *testing.T) {
 	window := cx.AddWindow(func(_ *Window, _ *Context[tabGroupFocus]) *tabGroupFocus {
 		return &tabGroupFocus{groupA: groupA.Clone(), itemA: itemA.Clone(), groupB: groupB.Clone(), itemB: itemB.Clone()}
 	}).AnyWindowHandle
-	defer divTestReleaseRoot(cx, window)
 	divTestDraw(cx, window)
 
 	focused := None[FocusID]()
@@ -1054,7 +1016,6 @@ func TestDiv_FractionalPaddingDoesNotMakeAFittingContainerScrollable(t *testing.
 		window := cx.AddWindow(func(_ *Window, _ *Context[paddedContainer]) *paddedContainer {
 			return &paddedContainer{scrollHandle: scrollHandle}
 		}).AnyWindowHandle
-		defer divTestReleaseRoot(cx, window)
 		divTestDraw(cx, window)
 
 		if scrollHandle.MaxOffset().Y != Px(0.) {
@@ -1092,7 +1053,6 @@ func TestDiv_ScrollsToAnItemRequestedBeforeTheFirstFrame(t *testing.T) {
 		window := cx.AddWindow(func(_ *Window, _ *Context[scrollStrip]) *scrollStrip {
 			return &scrollStrip{scrollHandle: scrollHandle}
 		}).AnyWindowHandle
-		defer divTestReleaseRoot(cx, window)
 		divTestDraw(cx, window)
 
 		if scrollHandle.Offset().X != Px(-100.) {
@@ -1125,7 +1085,6 @@ func TestDiv_GridColsMaxContentSizesColumnsToTheirContent(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
 		window := cx.AddWindow(func(_ *Window, _ *Context[contentSizedGrid]) *contentSizedGrid { return &contentSizedGrid{} }).AnyWindowHandle
-		defer divTestReleaseRoot(cx, window)
 		divTestDraw(cx, window)
 
 		bounds := func(selector string) Bounds[Pixels] {

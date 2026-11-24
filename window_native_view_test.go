@@ -153,7 +153,6 @@ func nativeViewTestClose(cx *TestAppContext, windows ...WindowHandle[nativeViewT
 			views = append(views, view)
 		})
 	}
-	windowTestReleaseAll(cx)
 	for _, view := range views {
 		view.nativeView.Release()
 		view.otherFocus.Release()

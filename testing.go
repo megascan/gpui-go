@@ -143,7 +143,11 @@ func (tc *TestRun) teardown() {
 			cx.Quit()
 		})
 		cx.RunUntilParked()
-		cx.drop()
+		cx.release()
+	}
+	tc.dispatcher.DrainTasks()
+	for _, cx := range tc.contexts {
+		reportAppLeaks(cx.app)
 	}
 	tc.contexts = nil
 }

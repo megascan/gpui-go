@@ -125,7 +125,6 @@ func TestAnimation_SpringAnimationParent(t *testing.T) {
 func TestAnimation_SpringAnimationPreservesVelocityWhenRetargeted(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		renderedValues, window := animationTestOpenSpringWindow(cx, Px(0.0), None[Pixels]())
 		if !slices.Equal(*renderedValues, []Pixels{Px(0.0)}) {
 			t.Fatalf("values = %v", *renderedValues)
@@ -158,7 +157,6 @@ func TestAnimation_SpringAnimationPreservesVelocityWhenRetargeted(t *testing.T) 
 func TestAnimation_PausedSpringResumesWithItsVelocity(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		renderedValues, window := animationTestOpenSpringWindow(cx, Px(0.0), None[Pixels]())
 
 		animationTestUpdateSpring(cx, window, func(view *animationTestSpringView) { view.target = Px(100.0) })
@@ -198,7 +196,6 @@ func TestAnimation_PausedSpringResumesWithItsVelocity(t *testing.T) {
 func TestAnimation_StoppedSpringResumesWithoutVelocity(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		renderedValues, window := animationTestOpenSpringWindow(cx, Px(0.0), None[Pixels]())
 
 		animationTestUpdateSpring(cx, window, func(view *animationTestSpringView) { view.target = Px(1_000_000.0) })
@@ -240,7 +237,6 @@ func TestAnimation_StoppedSpringResumesWithoutVelocity(t *testing.T) {
 func TestAnimation_CancelledAndCompletedSpringsResolveTheirEndpoints(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		renderedValues, window := animationTestOpenSpringWindow(cx, Px(100.0), Some(Px(20.0)))
 		if !slices.Equal(*renderedValues, []Pixels{Px(20.0)}) {
 			t.Fatalf("values = %v", *renderedValues)
@@ -278,7 +274,6 @@ func TestAnimation_CancelledAndCompletedSpringsResolveTheirEndpoints(t *testing.
 func TestAnimation_SpringAnimationRespectsReducedMotion(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		cx.Update(func(cx *App) { cx.SetReduceMotion(true) })
 		renderedValues, window := animationTestOpenSpringWindow(cx, Px(100.0), None[Pixels]())
 
@@ -294,7 +289,6 @@ func TestAnimation_SpringAnimationRespectsReducedMotion(t *testing.T) {
 func TestAnimation_RepeatingAnimationSchedulesAnimationFrames(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		renderedDeltas, window := animationTestOpenWindow(cx)
 
 		if len(*renderedDeltas) != 1 {
@@ -315,7 +309,6 @@ func TestAnimation_RepeatingAnimationSchedulesAnimationFrames(t *testing.T) {
 func TestAnimation_MaxFpsSchedulesTimerDrivenFrames(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		capped := animationTestOneSecond().RepeatSynced().WithMaxFps(10.0)
 		renderedDeltas, window := animationTestOpenWindowWithAnimations(cx, []Animation{capped})
 
@@ -352,7 +345,6 @@ func TestAnimation_MaxFpsSchedulesTimerDrivenFrames(t *testing.T) {
 func TestAnimation_SyncedStepsRenderOnceEach(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		uptime := 300*24*time.Hour + 30*time.Millisecond
 		cx.Executor().AdvanceClock(uptime)
 		sevenths := animationTestOneSecond().RepeatSynced().WithSteps(7)
@@ -377,7 +369,6 @@ func TestAnimation_SyncedStepsRenderOnceEach(t *testing.T) {
 func TestAnimation_StepsFinishAndRepeatOnTime(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		quarters := animationTestOneSecond().WithSteps(4)
 		chain := []Animation{quarters.WithMaxFps(0.1), animationTestOneSecond()}
 		chained, window := animationTestOpenWindowWithAnimations(cx, chain)
@@ -404,7 +395,6 @@ func TestAnimation_StepsFinishAndRepeatOnTime(t *testing.T) {
 func TestAnimation_SoonerStepReplacesThePendingOne(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		slow := []Animation{animationTestOneSecond().Repeat().WithSteps(1)}
 		renderedDeltas, window := animationTestOpenWindowWithAnimations(cx, slow)
 
@@ -427,7 +417,6 @@ func TestAnimation_SoonerStepReplacesThePendingOne(t *testing.T) {
 func TestAnimation_SyncedAnimationsSharePhaseAcrossElements(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		firstDeltas := &[]float32{}
 		secondDeltas := &[]float32{}
 		window := cx.OpenWindow(NewSize(Px(100.), Px(100.)), func(*Window, *Context[animationTestSyncedView]) *animationTestSyncedView {
@@ -482,7 +471,6 @@ func TestAnimation_SyncedAnimationsSharePhaseAcrossElements(t *testing.T) {
 func TestAnimation_ReduceMotionRendersSingleStaticFrame(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		cx.Update(func(cx *App) { cx.SetReduceMotion(true) })
 		renderedDeltas, window := animationTestOpenWindow(cx)
 

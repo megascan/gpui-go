@@ -88,7 +88,8 @@ func runPendingCleanups() {
 func releaseAppWindows(app *AppCell) {
 	lock := app.BorrowMut()
 	defer lock.Release()
-	lock.windows.clear()
+	lock.dropWindows()
+	releaseActiveDrag(lock.activeDrag.Take())
 	clear(lock.windowHandles)
 	lock.flushEffects()
 }
@@ -777,14 +778,13 @@ func (cx *TestAppContext) SetName(name string) {
 	cx.Update(func(cx *App) { cx.name = Some(name) })
 }
 
-func (cx *TestAppContext) drop() {
+func (cx *TestAppContext) release() {
 	callbacks := *cx.onQuit
 	*cx.onQuit = nil
 	for _, f := range callbacks {
 		f()
 	}
 	releaseAppWindows(cx.app)
-	reportAppLeaks(cx.app)
 }
 
 // Close ends a context made with TestAppContextSingle or NewApp outside RunTest: it releases

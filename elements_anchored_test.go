@@ -46,7 +46,6 @@ func anchoredTestMenuBounds[V any](t *testing.T, cx *TestAppContext, window Wind
 func TestAnchored_AnchoredPositionWithoutScroll(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := cx.OpenWindow(NewSize(Px(800.), Px(600.)), func(*Window, *Context[anchoredTestView]) *anchoredTestView {
 			return &anchoredTestView{position: NewPoint(Px(100.), Px(100.))}
 		})
@@ -66,7 +65,6 @@ func TestAnchored_AnchoredPositionWithoutScroll(t *testing.T) {
 func TestAnchored_AnchoredPositionWhenScrolled(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := cx.OpenWindow(NewSize(Px(800.), Px(600.)), func(*Window, *Context[anchoredTestView]) *anchoredTestView {
 			return &anchoredTestView{position: NewPoint(Px(100.), Px(100.))}
 		})
@@ -96,7 +94,6 @@ func TestAnchored_AnchoredPositionWhenScrolled(t *testing.T) {
 func TestAnchored_AnchoredSnapsToWindow(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		window := cx.OpenWindow(NewSize(Px(800.), Px(600.)), func(*Window, *Context[anchoredTestView]) *anchoredTestView {
 			return &anchoredTestView{position: NewPoint(Px(100.), Px(500.))}
 		})
@@ -140,7 +137,6 @@ func (v *anchoredTestAttachedView) Render(_ *Window, _ *Context[anchoredTestAtta
 func TestAnchored_AnchoredAttachMovesToTheSideWithRoom(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		cx := tc.Cx()
-		defer windowTestReleaseAll(cx)
 		trigger := func(x, y float32) Bounds[Pixels] {
 			return NewBounds(NewPoint(Px(x), Px(y)), NewSize(Px(100.), Px(20.)))
 		}

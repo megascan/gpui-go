@@ -101,7 +101,6 @@ func TestInput_TextInputConfigurationAndFocusStateAreForwardedOnChange(t *testin
 			cx.Update(func(cx *App) { focusHandle = view.Read(cx).focusHandle })
 			inputTestReleaseHandlerViews(cx, view)
 			view.Release()
-			windowTestReleaseAll(cx)
 			focusHandle.Release()
 		}()
 		draw := func() {
@@ -166,7 +165,6 @@ func TestInput_TextNotificationsRequireAFocusedInputAndTrackFieldChanges(t *test
 		defer func() {
 			inputTestReleaseHandlerViews(cx, view)
 			view.Release()
-			windowTestReleaseAll(cx)
 			firstFocus.Release()
 			secondFocus.Release()
 		}()

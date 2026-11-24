@@ -925,6 +925,15 @@ type tooltipRequest struct {
 	tooltip AnyTooltip
 }
 
+func releaseTooltipRequests(requests []*tooltipRequest) {
+	for i, request := range requests {
+		requests[i] = nil
+		if request != nil {
+			request.tooltip.View.Release()
+		}
+	}
+}
+
 type elementIDStack struct {
 	ids    []ElementID
 	hashes []uint64
@@ -1024,7 +1033,11 @@ func (m *elementStateMap) insert(key elementStateKey, state elementStateBox) {
 	entries := m.buckets[b]
 	for i := range entries {
 		if entries[i].key.id.Equal(key.id) {
+			old := entries[i].state
 			entries[i].state = state
+			if old.inner != state.inner {
+				old.release()
+			}
 			return
 		}
 	}
@@ -1056,8 +1069,14 @@ func (m *elementStateMap) len() int {
 }
 
 func (m *elementStateMap) clear() {
-	clear(m.buckets)
+	buckets := m.buckets
+	m.buckets = nil
 	m.count = 0
+	for _, entries := range buckets {
+		for _, entry := range entries {
+			entry.state.release()
+		}
+	}
 }
 
 type windowControlHitbox struct {
@@ -1136,9 +1155,14 @@ func (f *frame) clear() {
 	f.mouseListeners = f.mouseListeners[:0]
 	f.dispatchTree.clear()
 	f.scene.Clear()
-	clear(f.inputHandlers)
+	for i, inputHandler := range f.inputHandlers {
+		f.inputHandlers[i] = nil
+		if inputHandler != nil {
+			inputHandler.release()
+		}
+	}
 	f.inputHandlers = f.inputHandlers[:0]
-	clear(f.tooltipRequests)
+	releaseTooltipRequests(f.tooltipRequests)
 	f.tooltipRequests = f.tooltipRequests[:0]
 	f.cursorStyles = f.cursorStyles[:0]
 	f.hitboxes = f.hitboxes[:0]
@@ -1219,6 +1243,7 @@ const (
 
 // Window holds the state for a specific window.
 type Window struct {
+	closeA11yChannels          func()
 	handle                     AnyWindowHandle
 	invalidator                windowInvalidator
 	removed                    bool
@@ -1560,6 +1585,27 @@ type pendingInput struct {
 type elementStateBox struct {
 	inner    any
 	typeName string
+	drop     func()
+}
+
+type elementStateDropper interface {
+	dropElementState()
+}
+
+func newElementStateBox[S any](state *Option[S], typeName string) elementStateBox {
+	return elementStateBox{inner: state, typeName: typeName, drop: func() {
+		if value, ok := state.Take().Get(); ok {
+			if dropper, ok := any(&value).(elementStateDropper); ok {
+				dropper.dropElementState()
+			}
+		}
+	}}
+}
+
+func (b elementStateBox) release() {
+	if b.drop != nil {
+		b.drop()
+	}
 }
 
 func defaultBounds(activeWindowBounds Option[WindowBounds], display PlatformDisplay) WindowBounds {
@@ -1750,6 +1796,7 @@ func newWindow(handle AnyWindowHandle, options WindowOptions, cx *App) (*Window,
 
 	accessibilityForceDisabled := cx.accessibilityForceDisabled
 	a11yActiveFlag := new(atomic.Bool)
+	var closeA11yChannels func()
 
 	if runtime.GOARCH != "wasm" && !accessibilityForceDisabled {
 		initialRootNode := a11y.NewNode(a11y.RoleWindow)
@@ -1765,6 +1812,11 @@ func newWindow(handle AnyWindowHandle, options WindowOptions, cx *App) (*Window,
 		activationSender, activationReceiver := scheduler.Chan[struct{}](0)
 		deactivationSender, deactivationReceiver := scheduler.Chan[struct{}](0)
 		actionSender, actionReceiver := scheduler.Chan[a11y.ActionRequest](0)
+		closeA11yChannels = func() {
+			activationSender.Close()
+			deactivationSender.Close()
+			actionSender.Close()
+		}
 
 		platformWindow.A11yInit(A11yCallbacks{
 			Activation: func() (a11y.TreeUpdate, bool) {
@@ -2189,6 +2241,7 @@ func newWindow(handle AnyWindowHandle, options WindowOptions, cx *App) (*Window,
 	}
 
 	return &Window{
+		closeA11yChannels:      closeA11yChannels,
 		handle:                 handle,
 		invalidator:            invalidator,
 		removed:                false,

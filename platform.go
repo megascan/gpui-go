@@ -2196,6 +2196,12 @@ type PlatformInputHandler struct {
 	focusID Option[FocusID]
 }
 
+func (h *PlatformInputHandler) release() {
+	if releaser, ok := h.handler.(interface{ Release() }); ok {
+		releaser.Release()
+	}
+}
+
 // NewPlatformInputHandler wraps handler so the platform can call it through cx.
 func NewPlatformInputHandler(cx AsyncWindowContext, handler InputHandler) *PlatformInputHandler {
 	return &PlatformInputHandler{

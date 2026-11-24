@@ -125,20 +125,129 @@ func TestSubscription_SingleActivationAfterDropDuringRetain(t *testing.T) {
 	first.Unsubscribe()
 }
 
+type subscriptionTestGlobal struct{}
+
+func takeSubscription(slot **Subscription) {
+	if sub := *slot; sub != nil {
+		*slot = nil
+		sub.Unsubscribe()
+	}
+}
+
 func TestSubscription_UnsubscribeDuringCallbackWithInsert(t *testing.T) {
-	t.Skip("blocked:M0-test-contexts: needs TestApp and App.ObserveGlobal")
+	app := NewTestApp()
+	defer app.Close()
+	app.SetGlobal(subscriptionTestGlobal{})
+
+	observerACount := 0
+	observerBCount := 0
+
+	var subA, subB *Subscription
+
+	a := app.UpdateR(func(cx *App) Subscription {
+		return cx.ObserveGlobal[subscriptionTestGlobal](func(cx *App) {
+			observerACount++
+			takeSubscription(&subA)
+			cx.ObserveGlobal[subscriptionTestGlobal](func(*App) {}).Detach()
+		})
+	})
+	subA = &a
+
+	b := app.UpdateR(func(cx *App) Subscription {
+		return cx.ObserveGlobal[subscriptionTestGlobal](func(*App) {
+			observerBCount++
+			takeSubscription(&subB)
+		})
+	})
+	subB = &b
+
+	app.Update(func(cx *App) { cx.SetGlobal(subscriptionTestGlobal{}) })
+	if observerACount != 1 || observerBCount != 1 {
+		t.Fatalf("counts = %d, %d, want 1, 1", observerACount, observerBCount)
+	}
+
+	app.Update(func(cx *App) { cx.SetGlobal(subscriptionTestGlobal{}) })
+	if observerACount != 1 {
+		t.Fatalf("observer A count = %d, want 1", observerACount)
+	}
+	if observerBCount != 1 {
+		t.Fatalf("orphaned subscriber fired again: %d", observerBCount)
+	}
 }
 
 func TestSubscription_CallbackDroppedByEarlierCallbackDoesNotFire(t *testing.T) {
-	t.Skip("blocked:M0-test-contexts: needs TestApp and App.ObserveGlobal")
+	app := NewTestApp()
+	defer app.Close()
+	app.SetGlobal(subscriptionTestGlobal{})
+
+	observerBCount := 0
+	var subB *Subscription
+
+	app.Update(func(cx *App) {
+		cx.ObserveGlobal[subscriptionTestGlobal](func(*App) {
+			takeSubscription(&subB)
+		}).Detach()
+	})
+
+	b := app.UpdateR(func(cx *App) Subscription {
+		return cx.ObserveGlobal[subscriptionTestGlobal](func(*App) {
+			observerBCount++
+		})
+	})
+	subB = &b
+
+	app.Update(func(cx *App) { cx.SetGlobal(subscriptionTestGlobal{}) })
+	if observerBCount != 0 {
+		t.Fatalf("B should not fire — A dropped its subscription: %d", observerBCount)
+	}
 }
 
 func TestSubscription_SelfDropDuringCallback(t *testing.T) {
-	t.Skip("blocked:M0-test-contexts: needs TestApp and App.ObserveGlobal")
+	app := NewTestApp()
+	defer app.Close()
+	app.SetGlobal(subscriptionTestGlobal{})
+
+	count := 0
+	var sub *Subscription
+
+	s := app.UpdateR(func(cx *App) Subscription {
+		return cx.ObserveGlobal[subscriptionTestGlobal](func(*App) {
+			count++
+			takeSubscription(&sub)
+		})
+	})
+	sub = &s
+
+	app.Update(func(cx *App) { cx.SetGlobal(subscriptionTestGlobal{}) })
+	if count != 1 {
+		t.Fatalf("count = %d, want 1", count)
+	}
+
+	app.Update(func(cx *App) { cx.SetGlobal(subscriptionTestGlobal{}) })
+	if count != 1 {
+		t.Fatalf("should not fire after self-drop: %d", count)
+	}
 }
 
 func TestSubscription_SubscriptionDrop(t *testing.T) {
-	t.Skip("blocked:M0-test-contexts: needs TestApp and App.ObserveGlobal")
+	app := NewTestApp()
+	defer app.Close()
+	app.SetGlobal(subscriptionTestGlobal{})
+
+	count := 0
+
+	subscription := app.UpdateR(func(cx *App) Subscription {
+		return cx.ObserveGlobal[subscriptionTestGlobal](func(*App) {
+			count++
+		})
+	})
+
+	subscription.Unsubscribe()
+
+	app.Update(func(cx *App) { cx.SetGlobal(subscriptionTestGlobal{}) })
+	if count != 0 {
+		t.Fatalf("should not fire after drop: %d", count)
+	}
 }
 
 func TestSubscription_GoUnsubscribeRemovesSubscriber(t *testing.T) {

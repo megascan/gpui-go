@@ -51,7 +51,6 @@ func imgTestLastPolychromeSprite(cx *VisualTestContext, what string) (Polychrome
 func TestImg_ZeroFrameImageDoesNotPanicOnPaint(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		tcx := tc.Cx()
-		defer windowTestReleaseAll(tcx)
 		imgTestDraw(tcx.AddEmptyWindow(), NewPoint(Px(0.), Px(0.)), NewSize(Px(100.), Px(100.)), func() Element[ImgLayoutState, Option[Hitbox]] {
 			return NewImg(ImageSourceRender{Image: imgTestImage(0)})
 		})
@@ -61,7 +60,6 @@ func TestImg_ZeroFrameImageDoesNotPanicOnPaint(t *testing.T) {
 func TestImg_ImageObjectFitCoverCropsToElementBounds(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		tcx := tc.Cx()
-		defer windowTestReleaseAll(tcx)
 		window := tcx.AddEmptyWindow()
 		img := imgTestImageWithSize(200, 100)
 		imgTestDraw(window, NewPoint(Px(0.), Px(0.)), NewSize(Px(100.), Px(100.)), func() Element[ImgLayoutState, Option[Hitbox]] {
@@ -97,7 +95,6 @@ func TestImg_ImageObjectFitCoverCropsToElementBounds(t *testing.T) {
 func TestImg_ExplicitAspectRatioIsNotOverriddenByIntrinsicRatio(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		tcx := tc.Cx()
-		defer windowTestReleaseAll(tcx)
 		window := tcx.AddEmptyWindow()
 
 		imgTestDraw(window, NewPoint(Px(0.), Px(0.)), NewSize(Px(100.), Px(100.)), func() Element[DivFrameState, Option[Hitbox]] {
@@ -126,7 +123,6 @@ func TestImg_ExplicitAspectRatioIsNotOverriddenByIntrinsicRatio(t *testing.T) {
 func TestImg_ImageObjectFitCoverClampsCornerRadiiToVisibleBounds(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		tcx := tc.Cx()
-		defer windowTestReleaseAll(tcx)
 		window := tcx.AddEmptyWindow()
 		imgTestDraw(window, NewPoint(Px(0.), Px(0.)), NewSize(Px(100.), Px(100.)), func() Element[ImgLayoutState, Option[Hitbox]] {
 			return NewImg(ImageSourceRender{Image: imgTestImageWithSize(200, 100)}).
@@ -156,7 +152,6 @@ func TestImg_ImageObjectFitCoverClampsCornerRadiiToVisibleBounds(t *testing.T) {
 func TestImg_StaleFrameIndexIsClampedWhenImageChanges(t *testing.T) {
 	RunTest(t, func(tc *TestRun) {
 		tcx := tc.Cx()
-		defer windowTestReleaseAll(tcx)
 		window := tcx.AddEmptyWindow()
 
 		imgTestDraw(window, NewPoint(Px(0.), Px(0.)), NewSize(Px(100.), Px(100.)), func() Element[DivFrameState, Option[Hitbox]] {

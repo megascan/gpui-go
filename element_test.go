@@ -127,7 +127,6 @@ func TestElementGlobalElementIDTests_FrameCost(t *testing.T) {
 			stateful := items * (depth + 2)
 			t.Logf("%d items x %d deep (%d stateful elements): median frame %.2f ms, %.0f ns per stateful element",
 				items, depth, stateful, median.Seconds()*1e3, float64(median.Nanoseconds())/float64(stateful))
-			divTestReleaseRoot(cx, window)
 		}
 	})
 }

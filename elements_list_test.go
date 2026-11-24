@@ -129,7 +129,6 @@ func listTestRun(t *testing.T, fn func(t *testing.T, cx *VisualTestContext)) {
 	RunTest(t, func(tc *TestRun) {
 		tcx := tc.Cx()
 		cx := tcx.AddEmptyWindow()
-		defer windowTestReleaseAll(tcx)
 		fn(t, cx)
 	})
 }
