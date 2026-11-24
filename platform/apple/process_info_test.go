@@ -15,13 +15,17 @@ func postNotification(center objc.ID, name objc.ID) {
 }
 
 func TestProcessInfo_NotificationsAreDeferredAndCancelledOnDrop(t *testing.T) {
-	t.Skip("blocked: M0-test-contexts ports TestAppContext (foreground/background executors, RunUntilParked)")
-	for _, name := range []objc.ID{
-		objc.FoundationConstant("NSProcessInfoPowerStateDidChangeNotification"),
-		objc.FoundationConstant("NSProcessInfoThermalStateDidChangeNotification"),
-	} {
-		checkNotificationLifecycle(t, nil, nil, nil, name)
-	}
+	gpui.RunTest(t, func(tc *gpui.TestRun) {
+		cx := tc.Cx()
+		foreground := cx.ForegroundExecutor()
+		background := cx.Executor()
+		for _, name := range []objc.ID{
+			objc.FoundationConstant("NSProcessInfoPowerStateDidChangeNotification"),
+			objc.FoundationConstant("NSProcessInfoThermalStateDidChangeNotification"),
+		} {
+			checkNotificationLifecycle(t, &foreground, &background, cx.RunUntilParked, name)
+		}
+	})
 }
 
 func checkNotificationLifecycle(t *testing.T, foreground *gpui.ForegroundExecutor, background *gpui.BackgroundExecutor, runUntilParked func(), name objc.ID) {

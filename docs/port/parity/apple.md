@@ -90,38 +90,38 @@ Go target: `platform/apple/metal_renderer.go` (package `apple`), tests in `metal
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Context` | type | 45 |  | `Context` | todo |
-| `Renderer` | type | 46 |  | `Renderer` | todo |
-| `new_renderer` | fn | 48 |  | `NewRenderer` | todo |
-| `InstanceBufferPool` | struct | 56 |  | `InstanceBufferPool` | todo |
-| `MetalRenderer` | struct | 123 |  | `MetalRenderer` | todo |
-| `MetalRenderer::new` | assoc-fn | 158 |  | `NewMetalRenderer` | todo |
-| `MetalRenderer::from_layer` | assoc-fn | 172 |  | `MetalRendererFromLayer` | todo |
-| `MetalRenderer::new_headless` | assoc-fn | 225 | feat:bench-support,feat:test-support | `NewMetalRendererHeadless` | todo |
-| `MetalRenderer::layer` | method | 424 |  | `(MetalRenderer).Layer` | todo |
-| `MetalRenderer::layer_ptr` | method | 428 |  | `(MetalRenderer).LayerPtr` | todo |
-| `MetalRenderer::sprite_atlas` | method | 435 |  | `(MetalRenderer).SpriteAtlas` | todo |
-| `MetalRenderer::set_frame_drawable` | method | 451 |  | `(MetalRenderer).SetFrameDrawable` | todo |
-| `MetalRenderer::set_display_link_attached` | method | 471 |  | `(MetalRenderer).SetDisplayLinkAttached` | todo |
-| `MetalRenderer::is_display_link_attached` | method | 479 |  | `(MetalRenderer).IsDisplayLinkAttached` | todo |
-| `MetalRenderer::presents_with_transaction` | method | 483 |  | `(MetalRenderer).PresentsWithTransaction` | todo |
-| `MetalRenderer::set_presents_with_transaction` | method | 487 |  | `(MetalRenderer).SetPresentsWithTransaction` | todo |
-| `MetalRenderer::update_drawable_size` | method | 494 |  | `(MetalRenderer).UpdateDrawableSize` | todo |
-| `MetalRenderer::update_transparency` | method | 500 |  | `(MetalRenderer).UpdateTransparency` | todo |
-| `MetalRenderer::destroy` | method | 507 |  | `(MetalRenderer).Destroy` | todo |
-| `MetalRenderer::draw` | method | 511 |  | `(MetalRenderer).Draw` | todo |
-| `MetalRenderer::render_to_image` | method | 630 | feat:test-support | `(MetalRenderer).RenderToImage` | todo |
-| `MetalRenderer::render_scene_to_image` | method | 649 | feat:bench-support,feat:test-support | `(MetalRenderer).RenderSceneToImage` | todo |
-| `MetalRenderer::render_scene` | method | 719 | feat:bench-support,feat:test-support | `(MetalRenderer).RenderScene` | todo |
-| `SurfaceBounds` | struct | 1695 |  | `SurfaceBounds` | todo |
-| `MetalHeadlessRenderer` | struct | 1701 | feat:bench-support,feat:test-support | `MetalHeadlessRenderer` | todo |
-| `MetalHeadlessRenderer::new` | assoc-fn | 1707 | feat:bench-support,feat:test-support | `NewMetalHeadlessRenderer` | todo |
+| `Context` | type | 45 |  | `Context` | done |
+| `Renderer` | type | 46 |  | `Renderer` | done |
+| `new_renderer` | fn | 48 |  | `NewRenderer` | done |
+| `InstanceBufferPool` | struct | 56 |  | `InstanceBufferPool` | done |
+| `MetalRenderer` | struct | 123 |  | `MetalRenderer` | done |
+| `MetalRenderer::new` | assoc-fn | 158 |  | `NewMetalRenderer` | done |
+| `MetalRenderer::from_layer` | assoc-fn | 172 |  | `MetalRendererFromLayer` | done |
+| `MetalRenderer::new_headless` | assoc-fn | 225 | feat:bench-support,feat:test-support | `NewMetalRendererHeadless` | done |
+| `MetalRenderer::layer` | method | 424 |  | `(MetalRenderer).Layer` | done |
+| `MetalRenderer::layer_ptr` | method | 428 |  | `(MetalRenderer).LayerPtr` | done |
+| `MetalRenderer::sprite_atlas` | method | 435 |  | `(MetalRenderer).SpriteAtlas` | done |
+| `MetalRenderer::set_frame_drawable` | method | 451 |  | `(MetalRenderer).SetFrameDrawable` | done |
+| `MetalRenderer::set_display_link_attached` | method | 471 |  | `(MetalRenderer).SetDisplayLinkAttached` | done |
+| `MetalRenderer::is_display_link_attached` | method | 479 |  | `(MetalRenderer).IsDisplayLinkAttached` | done |
+| `MetalRenderer::presents_with_transaction` | method | 483 |  | `(MetalRenderer).PresentsWithTransaction` | done |
+| `MetalRenderer::set_presents_with_transaction` | method | 487 |  | `(MetalRenderer).SetPresentsWithTransaction` | done |
+| `MetalRenderer::update_drawable_size` | method | 494 |  | `(MetalRenderer).UpdateDrawableSize` | done |
+| `MetalRenderer::update_transparency` | method | 500 |  | `(MetalRenderer).UpdateTransparency` | done |
+| `MetalRenderer::destroy` | method | 507 |  | `(MetalRenderer).Destroy` | done |
+| `MetalRenderer::draw` | method | 511 |  | `(MetalRenderer).Draw` | done |
+| `MetalRenderer::render_to_image` | method | 630 | feat:test-support | `(MetalRenderer).RenderToImage` | done |
+| `MetalRenderer::render_scene_to_image` | method | 649 | feat:bench-support,feat:test-support | `(MetalRenderer).RenderSceneToImage` | done |
+| `MetalRenderer::render_scene` | method | 719 | feat:bench-support,feat:test-support | `(MetalRenderer).RenderScene` | done |
+| `SurfaceBounds` | struct | 1695 |  | `SurfaceBounds` | done |
+| `MetalHeadlessRenderer` | struct | 1701 | feat:bench-support,feat:test-support | `MetalHeadlessRenderer` | done |
+| `MetalHeadlessRenderer::new` | assoc-fn | 1707 | feat:bench-support,feat:test-support | `NewMetalHeadlessRenderer` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `render_to_image_rejects_zero_sized_layer` | test | 1746 |  | `TestMetalRenderer_RenderToImageRejectsZeroSizedLayer` | todo |
-| `display_link_mode_consumes_and_clears_drawables` | test | 1756 |  | `TestMetalRenderer_DisplayLinkModeConsumesAndClearsDrawables` | todo |
-| `render_core_video_surface` | test | 1801 |  | `TestMetalRenderer_RenderCoreVideoSurface` | todo |
+| `render_to_image_rejects_zero_sized_layer` | test | 1746 |  | `TestMetalRenderer_RenderToImageRejectsZeroSizedLayer` | done |
+| `display_link_mode_consumes_and_clears_drawables` | test | 1756 |  | `TestMetalRenderer_DisplayLinkModeConsumesAndClearsDrawables` | done |
+| `render_core_video_surface` | test | 1801 |  | `TestMetalRenderer_RenderCoreVideoSurface` | done |
 
 ## gpui_apple/src/open_type.rs
 
@@ -145,7 +145,7 @@ Go target: `platform/apple/process_info.go` (package `apple`), tests in `process
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `notifications_are_deferred_and_cancelled_on_drop` | gpui::test | 129 |  | `TestProcessInfo_NotificationsAreDeferredAndCancelledOnDrop` | blocked:M0-test-contexts |
+| `notifications_are_deferred_and_cancelled_on_drop` | gpui::test | 129 |  | `TestProcessInfo_NotificationsAreDeferredAndCancelledOnDrop` | done |
 
 ## gpui_apple/src/text_system.rs
 
