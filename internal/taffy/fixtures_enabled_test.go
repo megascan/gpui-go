@@ -7,4 +7,7 @@ var xmlFixturesEnabled = []string{
 	"blockflex",
 	"float",
 	"contain",
+	"grid",
+	"gridflex",
+	"blockgrid",
 }

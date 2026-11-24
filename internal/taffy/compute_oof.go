@@ -349,7 +349,7 @@ func layoutOofBox[S CheapCloneStr, Tree LayoutContainingBlock[S]](
 				Top:    areaOffset.Y,
 				Bottom: areaOffset.Y + areaSize.Height,
 			}
-			gridArea := gridInfo.resolveAbsoluteGridArea(
+			gridArea := gridInfo.ResolveAbsoluteGridArea(
 				childStyle.GridRow(),
 				childStyle.GridColumn(),
 				direction,

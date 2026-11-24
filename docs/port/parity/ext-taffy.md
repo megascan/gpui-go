@@ -221,20 +221,20 @@ Go target: `internal/taffy/compute_grid_mod.go` (package `taffy`), tests in `com
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `compute_grid_layout` | fn | 219 |  | `ComputeGridLayout` | todo |
-| `DetailedGridInfo` | struct | 1062 |  | `DetailedGridInfo` | todo |
-| `DetailedGridInfo::write_grid_template_rows` | method | 1157 |  | `(DetailedGridInfo).WriteGridTemplateRows` | todo |
-| `DetailedGridInfo::write_grid_template_columns` | method | 1165 |  | `(DetailedGridInfo).WriteGridTemplateColumns` | todo |
-| `DetailedGridInfo::grid_template_rows` | method | 1172 |  | `(DetailedGridInfo).GridTemplateRows` | todo |
-| `DetailedGridInfo::grid_template_columns` | method | 1179 |  | `(DetailedGridInfo).GridTemplateColumns` | todo |
-| `DetailedGridInfo::resolve_absolute_grid_area` | method | 1185 |  | `(DetailedGridInfo).ResolveAbsoluteGridArea` | todo |
-| `DetailedGridInfo::item_grid_area` | method | 1219 |  | `(DetailedGridInfo).ItemGridArea` | todo |
-| `DetailedGridTracksInfo` | struct | 1233 |  | `DetailedGridTracksInfo` | todo |
-| `DetailedGridTracksInfo::names_for_line` | method | 1306 |  | `(DetailedGridTracksInfo).NamesForLine` | todo |
-| `DetailedGridTracksInfo::iter_line_names` | method | 1316 |  | `(DetailedGridTracksInfo).IterLineNames` | todo |
-| `DetailedGridTracksInfo::write_track_list` | method | 1330 |  | `(DetailedGridTracksInfo).WriteTrackList` | todo |
-| `DetailedGridTracksInfo::to_track_list_string` | method | 1375 |  | `(DetailedGridTracksInfo).ToTrackListString` | todo |
-| `DetailedGridItemsInfo` | struct | 1387 |  | `DetailedGridItemsInfo` | todo |
+| `compute_grid_layout` | fn | 219 |  | `ComputeGridLayout` | done |
+| `DetailedGridInfo` | struct | 1062 |  | `DetailedGridInfo` | done |
+| `DetailedGridInfo::write_grid_template_rows` | method | 1157 |  | `(DetailedGridInfo).WriteGridTemplateRows` | done |
+| `DetailedGridInfo::write_grid_template_columns` | method | 1165 |  | `(DetailedGridInfo).WriteGridTemplateColumns` | done |
+| `DetailedGridInfo::grid_template_rows` | method | 1172 |  | `(DetailedGridInfo).GridTemplateRows` | done |
+| `DetailedGridInfo::grid_template_columns` | method | 1179 |  | `(DetailedGridInfo).GridTemplateColumns` | done |
+| `DetailedGridInfo::resolve_absolute_grid_area` | method | 1185 |  | `(DetailedGridInfo).ResolveAbsoluteGridArea` | done |
+| `DetailedGridInfo::item_grid_area` | method | 1219 |  | `(DetailedGridInfo).ItemGridArea` | done |
+| `DetailedGridTracksInfo` | struct | 1233 |  | `DetailedGridTracksInfo` | done |
+| `DetailedGridTracksInfo::names_for_line` | method | 1306 |  | `(DetailedGridTracksInfo).NamesForLine` | done |
+| `DetailedGridTracksInfo::iter_line_names` | method | 1316 |  | `(DetailedGridTracksInfo).IterLineNames` | done |
+| `DetailedGridTracksInfo::write_track_list` | method | 1330 |  | `(DetailedGridTracksInfo).WriteTrackList` | done |
+| `DetailedGridTracksInfo::to_track_list_string` | method | 1375 |  | `(DetailedGridTracksInfo).ToTrackListString` | done |
+| `DetailedGridItemsInfo` | struct | 1387 |  | `DetailedGridItemsInfo` | done |
 
 ## src/compute/grid/placement.rs
 
@@ -1838,17 +1838,17 @@ Fixture counts per category (6504 files in tag v0.15.0). `flex-wrap: balance` fi
 | Upstream test | Kind | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
 | `tests/xml/leaf` (60, all pass) | fixture | - | test | `TestXml` | done |
-| `tests/xml/flex` (2708: 2552 pass, 136 n/a, 20 lay out a grid box) | fixture | - | test | `TestXml` | done |
-| `tests/xml/flex` fixtures that lay out a grid box (20) | fixture | - | test | `TestXml/flex` | blocked:M0-taffy-grid-sizing |
-| `tests/xml/block` (1116: 1112 pass) | fixture | - | test | `TestXml` | done |
-| `tests/xml/block` fixtures that lay out a grid box (4) | fixture | - | test | `TestXml/block` | blocked:M0-taffy-grid-sizing |
+| `tests/xml/flex` (2708: 2572 pass, 136 n/a) | fixture | - | test | `TestXml` | done |
+| `tests/xml/flex` fixtures that lay out a grid box (20) | fixture | - | test | `TestXml` | done |
+| `tests/xml/block` (1116, all pass) | fixture | - | test | `TestXml` | done |
+| `tests/xml/block` fixtures that lay out a grid box (4) | fixture | - | test | `TestXml` | done |
 | `tests/xml/blockflex` (52, all pass) | fixture | - | test | `TestXml` | done |
-| `tests/xml/float` (116: 108 pass) | fixture | - | test | `TestXml` | done |
-| `tests/xml/float` fixtures that lay out a grid box (8) | fixture | - | test | `TestXml/float` | blocked:M0-taffy-grid-sizing |
+| `tests/xml/float` (116, all pass) | fixture | - | test | `TestXml` | done |
+| `tests/xml/float` fixtures that lay out a grid box (8) | fixture | - | test | `TestXml` | done |
 | `tests/xml/contain` (32, all pass) | fixture | - | test | `TestXml` | done |
-| `tests/xml/grid` (2336) | fixture | - | test | `TestXml/grid` | blocked:M0-taffy-grid-sizing |
-| `tests/xml/gridflex` (28) | fixture | - | test | `TestXml/gridflex` | blocked:M0-taffy-grid-sizing |
-| `tests/xml/blockgrid` (56) | fixture | - | test | `TestXml/blockgrid` | blocked:M0-taffy-grid-sizing |
+| `tests/xml/grid` (2336, all pass) | fixture | - | test | `TestXml` | done |
+| `tests/xml/gridflex` (28, all pass) | fixture | - | test | `TestXml` | done |
+| `tests/xml/blockgrid` (56, all pass) | fixture | - | test | `TestXml` | done |
 
 ## Deviations registered here
 
