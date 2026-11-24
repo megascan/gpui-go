@@ -58,20 +58,25 @@ Go target: `platform/platform.go` (package `platform`), tests in `platform_test.
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `background_executor` | fn | 12 |  | `BackgroundExecutor` | todo |
-| `application` | fn | 16 |  | `Application` | todo |
-| `headless` | fn | 20 |  | `Headless` | todo |
-| `linux` | fn | 33 | linux,freebsd | `Linux` | todo |
-| `application_with_web_backend` | fn | 38 | wasm | `ApplicationWithWebBackend` | todo |
-| `single_threaded_web` | fn | 48 | wasm | `SingleThreadedWeb` | todo |
-| `web_init` | fn | 56 | wasm | `WebInit` | todo |
-| `current_platform` | fn | 62 |  | `CurrentPlatform` | todo |
-| `bench_text_system` | fn | 92 | feat:bench-support | `BenchTextSystem` | todo |
-| `current_headless_renderer` | fn | 102 | feat:bench-support,feat:test-support | `CurrentHeadlessRenderer` | todo |
+| `background_executor` | fn | 12 |  | `BackgroundExecutor` | done |
+| `application` | fn | 16 |  | `Application` | done |
+| `headless` | fn | 20 |  | `Headless` | done |
+| `linux` | fn | 33 | linux,freebsd | `Linux` | done |
+| `application_with_web_backend` | fn | 38 | wasm | `ApplicationWithWebBackend` | blocked:M4-web-text |
+| `single_threaded_web` | fn | 48 | wasm | `SingleThreadedWeb` | blocked:M4-web-text |
+| `web_init` | fn | 56 | wasm | `WebInit` | blocked:M4-web-text |
+| `current_platform` | fn | 62 |  | `CurrentPlatform` | done |
+| `bench_text_system` | fn | 92 | feat:bench-support | `BenchTextSystem` | dev:D-PLATFORM-BENCHTS |
+| `current_headless_renderer` | fn | 102 | feat:bench-support,feat:test-support | `CurrentHeadlessRenderer` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_foreground_tasks_run_with_run_until_parked` | test ignore | 139 | macos | `TestGpuiPlatform_ForegroundTasksRunWithRunUntilParked` | todo |
-| `test_advance_clock_triggers_delayed_tasks` | test ignore | 168 | macos | `TestGpuiPlatform_AdvanceClockTriggersDelayedTasks` | todo |
-| `test_window_spawn_uses_test_dispatcher` | test ignore | 199 | macos | `TestGpuiPlatform_WindowSpawnUsesTestDispatcher` | todo |
+| `test_foreground_tasks_run_with_run_until_parked` | test ignore | 139 | macos | `TestGpuiPlatform_ForegroundTasksRunWithRunUntilParked` | done |
+| `test_advance_clock_triggers_delayed_tasks` | test ignore | 168 | macos | `TestGpuiPlatform_AdvanceClockTriggersDelayedTasks` | done |
+| `test_window_spawn_uses_test_dispatcher` | test ignore | 199 | macos | `TestGpuiPlatform_WindowSpawnUsesTestDispatcher` | done |
 
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-PLATFORM-BENCHTS | `BenchTextSystem` builds the text system once per process (`sync.OnceValue`) instead of once per thread | `gpui_platform/src/gpui_platform.rs:92-100` | Go has no thread-locals; gpui runs on the one locked main thread |

@@ -30,7 +30,7 @@ Go target: `platform/linux/internal/common/dispatcher.go` (package `common`), te
 
 ## gpui_linux/src/linux/platform.rs
 
-Go target: `platform/linux/internal/common/common.go` (package `common`), tests in `common_test.go`; the display-mode tests go to `platform/linux/platform_test.go` (M1-linux-platform)
+Go target: `platform/linux/internal/common/common.go` (package `common`), tests in `common_test.go`; LinuxPlatform and the display-mode tests are in the second platform.rs section
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
@@ -85,9 +85,33 @@ Go target: `platform/linux/internal/common/common.go` (package `common`), tests 
 | `times_out_when_writer_stalls_after_partial_write` | test | 1980 | feat:wayland,feat:x11 | `TestPlatformReadFdWithTimeout_TimesOutWhenWriterStallsAfterPartialWrite` | done |
 | `slow_writer_resets_deadline_between_chunks` | test | 1993 | feat:wayland,feat:x11 | `TestPlatformReadFdWithTimeout_SlowWriterResetsDeadlineBetweenChunks` | done |
 | `reads_payload_larger_than_pipe_capacity` | test | 2016 | feat:wayland,feat:x11 | `TestPlatformReadFdWithTimeout_ReadsPayloadLargerThanPipeCapacity` | done |
-| `failed_wayland_attach_preserves_headless_app_and_allows_retry` | test | 2049 | feat:wayland | `TestPlatformDisplayModeTests_FailedWaylandAttachPreservesHeadlessAppAndAllowsRetry` | todo |
-| `headless_windows_block_switching_to_a_display_server` | test | 2102 | feat:wayland | `TestPlatformDisplayModeTests_HeadlessWindowsBlockSwitchingToADisplayServer` | todo |
-| `display_modes_limit_switching` | test | 2134 |  | `TestPlatformDisplayModeTests_DisplayModesLimitSwitching` | todo |
+
+## gpui_linux/src/linux/platform.rs
+
+Go target: `platform/linux/platform.go` (package `linux`), tests in `platform_test.go` (LinuxPlatform, M1-linux-platform)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `LinuxPlatform` | struct | 295 |  | `linuxPlatform` | done |
+| `StartupEnvironment` | struct | 317 |  | `startupEnvironment` | done |
+| `LinuxPlatform::new` | assoc-fn | 328 |  | `newLinuxPlatform` | done |
+| `LinuxPlatform::connect_initially` | method | 361 |  | `(*linuxPlatform).connectInitially` | done |
+| `LinuxPlatform::with_common` | method | 395 |  | `linuxPlatform` (field access) | dev:D-LINUX-NOCELL |
+| `LinuxPlatform::connect` | method | 410 |  | `(*linuxPlatform).connect` | done |
+| `LinuxPlatform::replace_connection` | method | 446 |  | `(*linuxPlatform).replaceConnection` | done |
+| `LinuxPlatform::apply_pending_mode` | method | 480 |  | `(*linuxPlatform).applyPendingMode` | done |
+| `LinuxPlatform::request_mode` | method | 510 |  | `(*linuxPlatform).requestMode` | done |
+| `impl Drop for LinuxPlatform` | impl | 560 |  | `(*linuxPlatform).Close` | done |
+| `impl Platform for LinuxPlatform` | impl | 568 |  | `(*linuxPlatform).Run` | done |
+| `{:?}` of `WindowingModes` in panic and error messages | fmt | 389 |  | `windowingModesDebug` | done |
+| `prompt_for_paths` / `prompt_for_new_path` (ashpd FileChooser) | method | 822 |  | `fileChooserRequest` | dev:D-LINUX-FILECHOOSER |
+| `write_credentials` / `read_credentials` / `delete_credentials` (oo7) | method | 1086 |  | `(*linuxPlatform).WriteCredentials` | done |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `failed_wayland_attach_preserves_headless_app_and_allows_retry` | test | 2049 | feat:wayland | `TestPlatformDisplayModeTests_FailedWaylandAttachPreservesHeadlessAppAndAllowsRetry` | done |
+| `headless_windows_block_switching_to_a_display_server` | test | 2102 | feat:wayland | `TestPlatformDisplayModeTests_HeadlessWindowsBlockSwitchingToADisplayServer` | blocked:M0-window-paint |
+| `display_modes_limit_switching` | test | 2134 |  | `TestPlatformDisplayModeTests_DisplayModesLimitSwitching` | done |
 
 ## gpui_linux/src/linux/headless.rs
 
@@ -143,3 +167,5 @@ Go target: `platform/linux/internal/common/text_system.go` (package `common`)
 | D-LINUX-OPEN | open::commands is ported without its WSL PowerShell launcher; launchers, order and option-safe paths match open-5.4.5 | `open-5.4.5/src/unix.rs:58-149` | WSL needs a Windows host to test; tracked in docs/port/debt/M1-linux-common.md |
 | D-LINUX-GPUHINT | `CompositorGPUHintFromDevT` returns `(vendorID, deviceID, ok)` instead of `gpui_wgpu::CompositorGpuHint`; callers build `wgpu.CompositorGPUHint` | `gpui_linux/src/linux/platform.rs:1681-1714` | importing render/wgpu (cgo) into the shared package would make every common test link wgpu-native |
 | D-LINUX-BOUNDS | `ReadFdWithTimeout` fails once a pipe delivers more than `MaxPipeReadSize` (256 MiB); a portal request waits at most `PortalResponseTimeout` (5 min) for its Response, then closes the Request and fails | `gpui_linux/src/linux/platform.rs` read_fd / ashpd request | review: another client could stream unbounded clipboard / drag data, and a silent portal left a worker and signal subscription forever |
+| D-LINUX-NOCELL | LinuxPlatform's `RefCell` fields and `with_common` become plain fields used on the main goroutine; replacing a connection swaps the field before closing the old one, as upstream does outside the borrow | `gpui_linux/src/linux/platform.rs:295-439` | Go has no borrow checker; the platform is only touched from the main goroutine |
+| D-LINUX-FILECHOOSER | The FileChooser portal is called with godbus (`fileChooserRequest`) instead of ashpd: a missing portal is detected from the `version` property or the D-Bus error name and reported as `FILE_PICKER_PORTAL_MISSING`; the blocking call runs on the background executor while the foreground task awaits it | `gpui_linux/src/linux/platform.rs:822-943` | ashpd has no Go port; D-Bus calls block, and foreground tasks must not |
