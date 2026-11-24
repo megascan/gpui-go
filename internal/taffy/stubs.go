@@ -32,14 +32,6 @@ type GridCoordinate interface {
 // DetailedGridInfo is the detailed information of a grid container's layout (owner: M0-taffy-grid-sizing).
 type DetailedGridInfo[S CheapCloneStr] struct{}
 
-// BlockContext is the per-container state of a block formatting context (owner: M0-taffy-block).
-type BlockContext struct{}
-
-// ComputeBlockLayout computes the layout of a block container and its direct children (owner: M0-taffy-block).
-func ComputeBlockLayout(tree LayoutBlockContainer, nodeID NodeID, inputs LayoutInput, blockCtx *BlockContext) LayoutOutput {
-	panic("taffy: unimplemented ComputeBlockLayout")
-}
-
 // ComputeGridLayout computes the layout of a CSS grid container and its direct children (owner: M0-taffy-grid-sizing).
 func ComputeGridLayout[S CheapCloneStr](tree LayoutGridContainer[S], node NodeID, inputs LayoutInput) LayoutOutput {
 	panic("taffy: unimplemented ComputeGridLayout")

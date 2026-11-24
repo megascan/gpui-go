@@ -29,25 +29,35 @@ Go target: `internal/taffy/compute_block.go` (package `taffy`), tests in `comput
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `compute_block_align_content_offset` | fn | 35 |  | `ComputeBlockAlignContentOffset` | todo |
-| `BlockFormattingContext` | struct | 41 |  | `BlockFormattingContext` | todo |
-| `BlockFormattingContext::new` | assoc-fn | 58 |  | `NewBlockFormattingContext` | todo |
-| `BlockFormattingContext::root_block_context` | method | 63 |  | `(BlockFormattingContext).RootBlockContext` | todo |
-| `BlockContext` | struct | 82 |  | `BlockContext` | todo |
-| `BlockContext::sub_context` | method | 112 |  | `(BlockContext).SubContext` | todo |
-| `BlockContext::is_bfc_root` | method | 131 |  | `(BlockContext).IsBfcRoot` | todo |
-| `BlockContext::set_width` | method | 143 | float_layout | `(BlockContext).SetWidth` | todo |
-| `BlockContext::apply_content_box_inset` | method | 149 | float_layout | `(BlockContext).ApplyContentBoxInset` | todo |
-| `BlockContext::has_floats` | method | 156 | float_layout | `(BlockContext).HasFloats` | todo |
-| `BlockContext::has_active_floats` | method | 162 | float_layout | `(BlockContext).HasActiveFloats` | todo |
-| `BlockContext::place_floated_box` | method | 167 | float_layout | `(BlockContext).PlaceFloatedBox` | todo |
-| `BlockContext::find_content_slot` | method | 194 | float_layout | `(BlockContext).FindContentSlot` | todo |
-| `BlockContext::find_bfc_slot` | method | 204 | float_layout | `(BlockContext).FindBfcSlot` | todo |
-| `BlockContext::cleared_threshold` | method | 226 | float_layout | `(BlockContext).ClearedThreshold` | todo |
-| `BlockContext::has_adjoining_float` | method | 232 | float_layout | `(BlockContext).HasAdjoiningFloat` | todo |
-| `BlockContext::add_child_floated_content_height_contribution` | method | 265 | float_layout | `(BlockContext).AddChildFloatedContentHeightContribution` | todo |
-| `BlockContext::floated_content_height_contribution` | method | 270 | float_layout | `(BlockContext).FloatedContentHeightContribution` | todo |
-| `compute_block_layout` | fn | 374 |  | `ComputeBlockLayout` | todo |
+| `compute_block_align_content_offset` | fn | 35 |  | `ComputeBlockAlignContentOffset` | done |
+| `BlockFormattingContext` | struct | 41 |  | `BlockFormattingContext` | done |
+| `BlockFormattingContext::new` | assoc-fn | 58 |  | `NewBlockFormattingContext` | done |
+| `BlockFormattingContext::root_block_context` | method | 63 |  | `(BlockFormattingContext).RootBlockContext` | done |
+| `BlockContext` | struct | 82 |  | `BlockContext` | done |
+| `BlockContext::sub_context` | method | 112 |  | `(BlockContext).SubContext` | done |
+| `BlockContext::is_bfc_root` | method | 131 |  | `(BlockContext).IsBfcRoot` | done |
+| `BlockContext::set_width` | method | 143 | float_layout | `(BlockContext).SetWidth` | done |
+| `BlockContext::apply_content_box_inset` | method | 149 | float_layout | `(BlockContext).ApplyContentBoxInset` | done |
+| `BlockContext::has_floats` | method | 156 | float_layout | `(BlockContext).HasFloats` | done |
+| `BlockContext::has_active_floats` | method | 162 | float_layout | `(BlockContext).HasActiveFloats` | done |
+| `BlockContext::place_floated_box` | method | 167 | float_layout | `(BlockContext).PlaceFloatedBox` | done |
+| `BlockContext::find_content_slot` | method | 194 | float_layout | `(BlockContext).FindContentSlot` | done |
+| `BlockContext::find_bfc_slot` | method | 204 | float_layout | `(BlockContext).FindBfcSlot` | done |
+| `BlockContext::cleared_threshold` | method | 226 | float_layout | `(BlockContext).ClearedThreshold` | done |
+| `BlockContext::has_adjoining_float` | method | 232 | float_layout | `(BlockContext).HasAdjoiningFloat` | done |
+| `BlockContext::add_child_floated_content_height_contribution` | method | 265 | float_layout | `(BlockContext).AddChildFloatedContentHeightContribution` | done |
+| `BlockContext::floated_content_height_contribution` | method | 270 | float_layout | `(BlockContext).FloatedContentHeightContribution` | done |
+| `compute_block_layout` | fn | 374 |  | `ComputeBlockLayout` | done |
+| `BlockItem` (private) | struct | 290 |  | `blockItem` | done |
+| `BlockContext::merge_adjoining_floats` (private) | method | 242 | float_layout | `(BlockContext).mergeAdjoiningFloats` | done |
+| `BlockContext::commit_strut` (private) | method | 250 | float_layout | `(BlockContext).commitStrut` | done |
+| `BlockContext::top_adjoining_floats` (private) | method | 259 | float_layout | `(BlockContext).getTopAdjoiningFloats` | done |
+| `BlockContext::float_content_contribution` (private) | method | 279 | !float_layout | - | n/a:D-TAFFY-FEATURE |
+| `compute_inner` (private) | fn | 478 |  | `computeInner` | done |
+| `generate_item_list` (private) | fn | 876 |  | `generateItemList` | done |
+| `resolve_stretch_height` (private) | fn | 982 |  | `resolveStretchHeight` | done |
+| `determine_content_based_container_width` (private) | fn | 1003 |  | `determineContentBasedContainerWidth` | done |
+| `perform_final_layout_on_in_flow_children` (private) | fn | 1061 |  | `performFinalLayoutOnInFlowChildren` | done |
 
 ## src/compute/common/alignment.rs
 
@@ -134,24 +144,39 @@ Go target: `internal/taffy/compute_float.go` (package `taffy`), tests in `comput
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `ContentSlot` | struct | 41 |  | `ContentSlot` | todo |
-| `BfcSlot` | struct | 60 |  | `BfcSlot` | todo |
-| `PlacedFloatedBox` | struct | 79 |  | `PlacedFloatedBox` | todo |
-| `FloatContext` | struct | 211 |  | `FloatContext` | todo |
-| `FloatContext::new` | assoc-fn | 256 |  | `NewFloatContext` | todo |
-| `FloatContext::has_floats` | method | 262 |  | `(FloatContext).HasFloats` | todo |
-| `FloatContext::has_active_floats` | method | 268 |  | `(FloatContext).HasActiveFloats` | todo |
-| `FloatContext::set_width` | method | 273 |  | `(FloatContext).SetWidth` | todo |
-| `FloatContext::left_floats` | method | 278 |  | `(FloatContext).LeftFloats` | todo |
-| `FloatContext::right_floats` | method | 283 |  | `(FloatContext).RightFloats` | todo |
-| `FloatContext::place_floated_box` | method | 311 |  | `(FloatContext).PlaceFloatedBox` | todo |
-| `FloatContext::cleared_threshold` | method | 581 |  | `(FloatContext).ClearedThreshold` | todo |
-| `FloatContext::find_content_slot` | method | 594 |  | `(FloatContext).FindContentSlot` | todo |
-| `FloatContext::find_bfc_slot` | method | 667 |  | `(FloatContext).FindBfcSlot` | todo |
-| `FloatIntrinsicWidthCalculator` | struct | 747 |  | `FloatIntrinsicWidthCalculator` | todo |
-| `FloatIntrinsicWidthCalculator::new` | assoc-fn | 760 |  | `NewFloatIntrinsicWidthCalculator` | todo |
-| `FloatIntrinsicWidthCalculator::add_float` | method | 765 |  | `(FloatIntrinsicWidthCalculator).AddFloat` | todo |
-| `FloatIntrinsicWidthCalculator::result` | method | 788 |  | `(FloatIntrinsicWidthCalculator).Result` | todo |
+| `ContentSlot` | struct | 41 |  | `ContentSlot` | done |
+| `BfcSlot` | struct | 60 |  | `BfcSlot` | done |
+| `PlacedFloatedBox` | struct | 79 |  | `PlacedFloatedBox` | done |
+| `FloatContext` | struct | 211 |  | `FloatContext` | done |
+| `FloatContext::new` | assoc-fn | 256 |  | `NewFloatContext` | done |
+| `FloatContext::has_floats` | method | 262 |  | `(FloatContext).HasFloats` | done |
+| `FloatContext::has_active_floats` | method | 268 |  | `(FloatContext).HasActiveFloats` | done |
+| `FloatContext::set_width` | method | 273 |  | `(FloatContext).SetWidth` | done |
+| `FloatContext::left_floats` | method | 278 |  | `(FloatContext).LeftFloats` | done |
+| `FloatContext::right_floats` | method | 283 |  | `(FloatContext).RightFloats` | done |
+| `FloatContext::place_floated_box` | method | 311 |  | `(FloatContext).PlaceFloatedBox` | done |
+| `FloatContext::cleared_threshold` | method | 581 |  | `(FloatContext).ClearedThreshold` | done |
+| `FloatContext::find_content_slot` | method | 594 |  | `(FloatContext).FindContentSlot` | done |
+| `FloatContext::find_bfc_slot` | method | 667 |  | `(FloatContext).FindBfcSlot` | done |
+| `FIT_TOLERANCE` (`pub(crate)`) | const | 36 |  | `fitTolerance` | done |
+| `Segment` (private) | struct | 95 |  | `segment` | done |
+| `Segment::fits_float_width` (private) | method | 110 |  | `(*segment).fitsFloatWidth` | done |
+| `float_fits_horizontally` (private) | fn | 134 |  | `floatFitsHorizontally` | done |
+| `FloatFitter` (private) | struct | 156 |  | `floatFitter` | done |
+| `FloatFitter::new` (private) | assoc-fn | 169 |  | `newFloatFitter` | done |
+| `FloatFitter::union_insets` (private) | method | 176 |  | `(*floatFitter).unionInsets` | done |
+| `FloatFitter::placed_inset` (private) | method | 183 |  | `(*floatFitter).placedInset` | done |
+| `FloatFitter::fits_horiontally` (private) | method | 192 |  | `(*floatFitter).fitsHoriontally` | done |
+| `FloatFitter::add_height` (private) | method | 199 |  | `(*floatFitter).addHeight` | done |
+| `FloatFitter::fits_vertically` (private) | method | 204 |  | `(*floatFitter).fitsVertically` | done |
+| `FloatContext::subdivide_segment` (private) | method | 289 |  | `(*FloatContext).subdivideSegment` | done |
+| `FloatContext::update_last_placed_float` (private) | method | 304 |  | `(*FloatContext).updateLastPlacedFloat` | done |
+| `FloatContext::place_floated_box_inner` (private) | method | 345 |  | `(*FloatContext).placeFloatedBoxInner` | done |
+| `FloatContext::cleared_segment` (private) | method | 569 |  | `(*FloatContext).clearedSegment` | done |
+| `FloatIntrinsicWidthCalculator` | struct | 747 |  | `FloatIntrinsicWidthCalculator` | done |
+| `FloatIntrinsicWidthCalculator::new` | assoc-fn | 760 |  | `NewFloatIntrinsicWidthCalculator` | done |
+| `FloatIntrinsicWidthCalculator::add_float` | method | 765 |  | `(FloatIntrinsicWidthCalculator).AddFloat` | done |
+| `FloatIntrinsicWidthCalculator::result` | method | 788 |  | `(FloatIntrinsicWidthCalculator).Result` | done |
 
 ## src/compute/grid/alignment.rs
 
@@ -1757,12 +1782,14 @@ Fixture counts per category (6504 files in tag v0.15.0). `flex-wrap: balance` fi
 | Upstream test | Kind | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
 | `tests/xml/leaf` (60, all pass) | fixture | - | test | `TestXml` | done |
-| `tests/xml/flex` (2708: 2512 pass, 136 n/a, 44 lay out a block box) | fixture | - | test | `TestXml/flex` | blocked:M0-taffy-block |
-| `tests/xml/flex` fixtures that lay out a grid box (16) | fixture | - | test | `TestXml/flex` | blocked:M0-taffy-grid-sizing |
-| `tests/xml/block` (1116) | fixture | - | test | `TestXml/block` | blocked:M0-taffy-block |
-| `tests/xml/blockflex` (52) | fixture | - | test | `TestXml/blockflex` | blocked:M0-taffy-block |
-| `tests/xml/float` (116) | fixture | - | test | `TestXml/float` | blocked:M0-taffy-block |
-| `tests/xml/contain` (32) | fixture | - | test | `TestXml/contain` | blocked:M0-taffy-block |
+| `tests/xml/flex` (2708: 2552 pass, 136 n/a, 20 lay out a grid box) | fixture | - | test | `TestXml` | done |
+| `tests/xml/flex` fixtures that lay out a grid box (20) | fixture | - | test | `TestXml/flex` | blocked:M0-taffy-grid-sizing |
+| `tests/xml/block` (1116: 1112 pass) | fixture | - | test | `TestXml` | done |
+| `tests/xml/block` fixtures that lay out a grid box (4) | fixture | - | test | `TestXml/block` | blocked:M0-taffy-grid-sizing |
+| `tests/xml/blockflex` (52, all pass) | fixture | - | test | `TestXml` | done |
+| `tests/xml/float` (116: 108 pass) | fixture | - | test | `TestXml` | done |
+| `tests/xml/float` fixtures that lay out a grid box (8) | fixture | - | test | `TestXml/float` | blocked:M0-taffy-grid-sizing |
+| `tests/xml/contain` (32, all pass) | fixture | - | test | `TestXml` | done |
 | `tests/xml/grid` (2336) | fixture | - | test | `TestXml/grid` | blocked:M0-taffy-grid-sizing |
 | `tests/xml/gridflex` (28) | fixture | - | test | `TestXml/gridflex` | blocked:M0-taffy-grid-sizing |
 | `tests/xml/blockgrid` (56) | fixture | - | test | `TestXml/blockgrid` | blocked:M0-taffy-grid-sizing |
