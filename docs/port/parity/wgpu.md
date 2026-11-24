@@ -68,41 +68,41 @@ Go target: `render/wgpu/wgpu_renderer.go` (package `wgpu`), tests in `wgpu_rende
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
 | `WgpuSurfaceConfig` | struct | 113 |  | `WgpuSurfaceConfig` | done |
-| `GpuContext` | type | 182 |  | `GPUContext` | todo |
-| `WgpuRenderer` | struct | 253 |  | `WgpuRenderer` | todo |
-| `WgpuRenderer::new` | assoc-fn | 299 | wasm | `NewWgpuRenderer` | todo |
-| `WgpuRenderer::new_from_canvas` | assoc-fn | 365 | wasm | `NewWgpuRendererFromCanvas` | todo |
-| `WgpuRenderer::new_from_surface` | assoc-fn | 379 | wasm | `NewWgpuRendererFromSurface` | todo |
-| `WgpuRenderer::update_drawable_size` | method | 1003 |  | `(WgpuRenderer).UpdateDrawableSize` | todo |
-| `WgpuRenderer::set_subpixel_layout` | method | 1028 |  | `(WgpuRenderer).SetSubpixelLayout` | todo |
-| `WgpuRenderer::update_transparency` | method | 1035 |  | `(WgpuRenderer).UpdateTransparency` | todo |
-| `WgpuRenderer::viewport_size` | method | 1058 |  | `(WgpuRenderer).ViewportSize` | todo |
-| `WgpuRenderer::sprite_atlas` | method | 1065 |  | `(WgpuRenderer).SpriteAtlas` | todo |
-| `WgpuRenderer::supports_dual_source_blending` | method | 1069 |  | `(WgpuRenderer).SupportsDualSourceBlending` | todo |
-| `WgpuRenderer::gpu_specs` | method | 1075 |  | `(WgpuRenderer).GPUSpecs` | todo |
-| `WgpuRenderer::max_texture_size` | method | 1085 |  | `(WgpuRenderer).MaxTextureSize` | todo |
-| `WgpuRenderer::draw` | method | 1089 |  | `(WgpuRenderer).Draw` | todo |
-| `WgpuRenderer::unconfigure_surface` | method | 2079 |  | `(WgpuRenderer).UnconfigureSurface` | todo |
-| `WgpuRenderer::replace_surface` | method | 2098 | wasm | `(WgpuRenderer).ReplaceSurface` | todo |
-| `WgpuRenderer::destroy` | method | 2149 |  | `(WgpuRenderer).Destroy` | todo |
-| `WgpuRenderer::device_lost` | method | 2156 |  | `(WgpuRenderer).DeviceLost` | todo |
-| `WgpuRenderer::needs_redraw` | method | 2162 |  | `(WgpuRenderer).NeedsRedraw` | todo |
-| `WgpuRenderer::recover` | method | 2174 | wasm | `(WgpuRenderer).Recover` | todo |
-| `WgpuHeadlessRenderer` | struct | 2278 | wasm,feat:bench-support,feat:test-support | `WgpuHeadlessRenderer` | todo |
-| `WgpuHeadlessRenderer::new` | assoc-fn | 2290 | wasm,feat:bench-support,feat:test-support | `NewWgpuHeadlessRenderer` | todo |
+| `GpuContext` | type | 182 |  | `GPUContext` | done |
+| `WgpuRenderer` | struct | 253 |  | `WgpuRenderer` | done |
+| `WgpuRenderer::new` | assoc-fn | 299 | wasm | `NewWgpuRenderer` | done |
+| `WgpuRenderer::new_from_canvas` | assoc-fn | 365 | wasm | `NewWgpuRendererFromCanvas` | blocked:M4-web-wgpu-js |
+| `WgpuRenderer::new_from_surface` | assoc-fn | 379 | wasm | `NewWgpuRendererFromSurface` | done |
+| `WgpuRenderer::update_drawable_size` | method | 1003 |  | `(WgpuRenderer).UpdateDrawableSize` | done |
+| `WgpuRenderer::set_subpixel_layout` | method | 1028 |  | `(WgpuRenderer).SetSubpixelLayout` | done |
+| `WgpuRenderer::update_transparency` | method | 1035 |  | `(WgpuRenderer).UpdateTransparency` | done |
+| `WgpuRenderer::viewport_size` | method | 1058 |  | `(WgpuRenderer).ViewportSize` | done |
+| `WgpuRenderer::sprite_atlas` | method | 1065 |  | `(WgpuRenderer).SpriteAtlas` | done |
+| `WgpuRenderer::supports_dual_source_blending` | method | 1069 |  | `(WgpuRenderer).SupportsDualSourceBlending` | done |
+| `WgpuRenderer::gpu_specs` | method | 1075 |  | `(WgpuRenderer).GPUSpecs` | done |
+| `WgpuRenderer::max_texture_size` | method | 1085 |  | `(WgpuRenderer).MaxTextureSize` | done |
+| `WgpuRenderer::draw` | method | 1089 |  | `(WgpuRenderer).Draw` | done |
+| `WgpuRenderer::unconfigure_surface` | method | 2079 |  | `(WgpuRenderer).UnconfigureSurface` | done |
+| `WgpuRenderer::replace_surface` | method | 2098 | wasm | `(WgpuRenderer).ReplaceSurface` | done |
+| `WgpuRenderer::destroy` | method | 2149 |  | `(WgpuRenderer).Destroy` | done |
+| `WgpuRenderer::device_lost` | method | 2156 |  | `(WgpuRenderer).DeviceLost` | done |
+| `WgpuRenderer::needs_redraw` | method | 2162 |  | `(WgpuRenderer).NeedsRedraw` | done |
+| `WgpuRenderer::recover` | method | 2174 | wasm | `(WgpuRenderer).Recover` | done |
+| `WgpuHeadlessRenderer` | struct | 2278 | wasm,feat:bench-support,feat:test-support | `WgpuHeadlessRenderer` | done |
+| `WgpuHeadlessRenderer::new` | assoc-fn | 2290 | wasm,feat:bench-support,feat:test-support | `NewWgpuHeadlessRenderer` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `headless_renderer_draws_quads_with_distinct_colors` | test | 2640 | linux | `TestWgpuRenderer_HeadlessRendererDrawsQuadsWithDistinctColors` | todo |
-| `headless_renderer_captures_each_requested_size` | test | 2658 | linux | `TestWgpuRenderer_HeadlessRendererCapturesEachRequestedSize` | todo |
-| `headless_renderer_reuses_target_for_same_size` | test | 2684 | linux | `TestWgpuRenderer_HeadlessRendererReusesTargetForSameSize` | todo |
-| `headless_renderer_rejects_invalid_sizes` | test | 2707 | linux | `TestWgpuRenderer_HeadlessRendererRejectsInvalidSizes` | todo |
+| `headless_renderer_draws_quads_with_distinct_colors` | test | 2640 | linux | `TestWgpuRenderer_HeadlessRendererDrawsQuadsWithDistinctColors` | done |
+| `headless_renderer_captures_each_requested_size` | test | 2658 | linux | `TestWgpuRenderer_HeadlessRendererCapturesEachRequestedSize` | done |
+| `headless_renderer_reuses_target_for_same_size` | test | 2684 | linux | `TestWgpuRenderer_HeadlessRendererReusesTargetForSameSize` | done |
+| `headless_renderer_rejects_invalid_sizes` | test | 2707 | linux | `TestWgpuRenderer_HeadlessRendererRejectsInvalidSizes` | done |
 | `webgl_shader_is_valid_wgsl_without_storage_buffers` | test | 2736 |  | `TestWgpuRenderer_WebglShaderIsValidWgslWithoutStorageBuffers` | done |
 | `storage_buffer_shader_is_valid_wgsl` | test | 2742 |  | `TestWgpuRenderer_StorageBufferShaderIsValidWgsl` | done |
 | `subpixel_storage_buffer_shader_is_valid_wgsl` | test | 2747 |  | `TestWgpuRenderer_SubpixelStorageBufferShaderIsValidWgsl` | done |
 | `subpixel_webgl_shader_is_valid_wgsl_without_storage_buffers` | test | 2755 |  | `TestWgpuRenderer_SubpixelWebglShaderIsValidWgslWithoutStorageBuffers` | done |
-| `webgl_record_sizes_match_shader_word_strides` | test | 2771 |  | `TestWgpuRenderer_WebglRecordSizesMatchShaderWordStrides` | todo |
-| `webgl_quad_layout_matches_fixed_decoder` | test | 2784 |  | `TestWgpuRenderer_WebglQuadLayoutMatchesFixedDecoder` | todo |
+| `webgl_record_sizes_match_shader_word_strides` | test | 2771 |  | `TestWgpuRenderer_WebglRecordSizesMatchShaderWordStrides` | done |
+| `webgl_quad_layout_matches_fixed_decoder` | test | 2784 |  | `TestWgpuRenderer_WebglQuadLayoutMatchesFixedDecoder` | done |
 
 ## Deviations registered here
 
