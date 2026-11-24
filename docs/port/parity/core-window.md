@@ -450,26 +450,26 @@ Go target: `window_a11y.go` (package `gpui`), tests in `window_a11y_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `A11ySubtreeBuilder` | struct | 304 |  | `A11ySubtreeBuilder` | todo |
-| `A11ySubtreeBuilder::synthetic_node_id` | method | 335 |  | `(A11ySubtreeBuilder).SyntheticNodeID` | todo |
-| `A11ySubtreeBuilder::push_child` | method | 346 |  | `(A11ySubtreeBuilder).PushChild` | todo |
-| `A11ySubtreeBuilder::parent_node` | method | 364 |  | `(A11ySubtreeBuilder).ParentNode` | todo |
+| `A11ySubtreeBuilder` | struct | 304 |  | `A11ySubtreeBuilder` | done |
+| `A11ySubtreeBuilder::synthetic_node_id` | method | 335 |  | `(A11ySubtreeBuilder).SyntheticNodeID` | dev:D-A11YHASH |
+| `A11ySubtreeBuilder::push_child` | method | 346 |  | `(A11ySubtreeBuilder).PushChild` | done |
+| `A11ySubtreeBuilder::parent_node` | method | 364 |  | `(A11ySubtreeBuilder).ParentNode` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `accessibility_enabled_is_independent_of_activation` | test | 662 |  | `TestA11y_AccessibilityEnabledIsIndependentOfActivation` | todo |
-| `active_descendant_honored_when_container_focused` | test | 675 |  | `TestA11y_ActiveDescendantHonoredWhenContainerFocused` | todo |
-| `active_descendant_honored_for_deep_descendant` | test | 696 |  | `TestA11y_ActiveDescendantHonoredForDeepDescendant` | todo |
-| `active_descendant_ignored_when_focus_in_other_subtree` | test | 720 |  | `TestA11y_ActiveDescendantIgnoredWhenFocusInOtherSubtree` | todo |
-| `active_descendant_ignored_when_nothing_focused` | test | 747 |  | `TestA11y_ActiveDescendantIgnoredWhenNothingFocused` | todo |
-| `regular_focus_used_when_no_active_descendant` | test | 766 |  | `TestA11y_RegularFocusUsedWhenNoActiveDescendant` | todo |
-| `focus_is_ancestor_excludes_self_and_non_ancestors` | test | 779 |  | `TestA11y_FocusIsAncestorExcludesSelfAndNonAncestors` | todo |
-| `multiple_active_descendant_claims_panic_in_debug` | test | 806 |  | `TestA11y_MultipleActiveDescendantClaimsPanicInDebug` | todo |
-| `setting_focus_twice_panics_in_debug` | test | 819 |  | `TestA11y_SettingFocusTwicePanicsInDebug` | todo |
-| `set_focus_without_set_focusable` | test | 832 |  | `TestA11y_SetFocusWithoutSetFocusable` | todo |
-| `set_active_descendant_on_focused_node` | test | 844 |  | `TestA11y_SetActiveDescendantOnFocusedNode` | todo |
-| `two_siblings_claiming_active_descendant` | test | 861 |  | `TestA11y_TwoSiblingsClaimingActiveDescendant` | todo |
-| `active_descendant_in_unfocused_subtree_keeps_real_focus` | test | 885 |  | `TestA11y_ActiveDescendantInUnfocusedSubtreeKeepsRealFocus` | todo |
+| `accessibility_enabled_is_independent_of_activation` | test | 662 |  | `TestA11y_AccessibilityEnabledIsIndependentOfActivation` | done |
+| `active_descendant_honored_when_container_focused` | test | 675 |  | `TestA11y_ActiveDescendantHonoredWhenContainerFocused` | done |
+| `active_descendant_honored_for_deep_descendant` | test | 696 |  | `TestA11y_ActiveDescendantHonoredForDeepDescendant` | done |
+| `active_descendant_ignored_when_focus_in_other_subtree` | test | 720 |  | `TestA11y_ActiveDescendantIgnoredWhenFocusInOtherSubtree` | done |
+| `active_descendant_ignored_when_nothing_focused` | test | 747 |  | `TestA11y_ActiveDescendantIgnoredWhenNothingFocused` | done |
+| `regular_focus_used_when_no_active_descendant` | test | 766 |  | `TestA11y_RegularFocusUsedWhenNoActiveDescendant` | done |
+| `focus_is_ancestor_excludes_self_and_non_ancestors` | test | 779 |  | `TestA11y_FocusIsAncestorExcludesSelfAndNonAncestors` | done |
+| `multiple_active_descendant_claims_panic_in_debug` | test | 806 |  | `TestA11y_MultipleActiveDescendantClaimsPanicInDebug` | done |
+| `setting_focus_twice_panics_in_debug` | test | 819 |  | `TestA11y_SettingFocusTwicePanicsInDebug` | done |
+| `set_focus_without_set_focusable` | test | 832 |  | `TestA11y_SetFocusWithoutSetFocusable` | done |
+| `set_active_descendant_on_focused_node` | test | 844 |  | `TestA11y_SetActiveDescendantOnFocusedNode` | done |
+| `two_siblings_claiming_active_descendant` | test | 861 |  | `TestA11y_TwoSiblingsClaimingActiveDescendant` | done |
+| `active_descendant_in_unfocused_subtree_keeps_real_focus` | test | 885 |  | `TestA11y_ActiveDescendantInUnfocusedSubtreeKeepsRealFocus` | done |
 
 ## gpui/src/window/native_view.rs
 
@@ -477,26 +477,26 @@ Go target: `window_native_view.go` (package `gpui`), tests in `window_native_vie
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `NativeViewId` | struct | 20 |  | `NativeViewID` | todo |
-| `NativeViewId::for_test` | assoc-fn | 25 | feat:test-support | `NativeViewIDForTest` | todo |
-| `NativeView` | struct | 69 |  | `NativeView` | todo |
-| `NativeView::new` | assoc-fn | 102 |  | `NewNativeView` | todo |
-| `NativeView::set_background` | method | 130 |  | `(NativeView).SetBackground` | todo |
-| `NativeView::reserve_action` | method | 148 |  | `(NativeView).ReserveAction` | todo |
+| `NativeViewId` | struct | 20 |  | `NativeViewID` | done |
+| `NativeViewId::for_test` | assoc-fn | 25 | feat:test-support | `NativeViewIDForTest` | done |
+| `NativeView` | struct | 69 |  | `NativeView` | done |
+| `NativeView::new` | assoc-fn | 102 |  | `NewNativeView` | done |
+| `NativeView::set_background` | method | 130 |  | `(NativeView).SetBackground` | done |
+| `NativeView::reserve_action` | method | 148 |  | `(NativeView).ReserveAction` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `focusing_a_native_view_gives_it_keyboard_input` | gpui::test | 408 |  | `TestNativeView_FocusingANativeViewGivesItKeyboardInput` | todo |
-| `platform_focus_of_a_native_view_focuses_its_handle` | gpui::test | 435 |  | `TestNativeView_PlatformFocusOfANativeViewFocusesItsHandle` | todo |
-| `only_reserved_and_pending_bindings_apply_before_a_native_view` | gpui::test | 456 |  | `TestNativeView_OnlyReservedAndPendingBindingsApplyBeforeANativeView` | todo |
-| `mouse_reaches_a_native_view_only_where_nothing_covers_it` | gpui::test | 534 |  | `TestNativeView_MouseReachesANativeViewOnlyWhereNothingCoversIt` | todo |
-| `mouse_press_on_a_native_view_reaches_nothing_behind_it` | gpui::test | 551 |  | `TestNativeView_MousePressOnANativeViewReachesNothingBehindIt` | todo |
-| `changing_the_background_repaints_the_native_view` | gpui::test | 570 |  | `TestNativeView_ChangingTheBackgroundRepaintsTheNativeView` | todo |
-| `native_view_painted_twice_shows_where_it_was_painted_first` | gpui::test | 596 |  | `TestNativeView_NativeViewPaintedTwiceShowsWhereItWasPaintedFirst` | todo |
-| `native_view_is_drawn_in_paint_order` | gpui::test | 641 |  | `TestNativeView_NativeViewIsDrawnInPaintOrder` | todo |
-| `native_view_stays_attached_until_its_last_handle_is_dropped` | gpui::test | 661 |  | `TestNativeView_NativeViewStaysAttachedUntilItsLastHandleIsDropped` | todo |
-| `native_view_shows_nothing_in_another_window` | gpui::test | 681 |  | `TestNativeView_NativeViewShowsNothingInAnotherWindow` | todo |
-| `focusing_a_native_view_ends_a_composition` | gpui::test | 710 |  | `TestNativeView_FocusingANativeViewEndsAComposition` | todo |
+| `focusing_a_native_view_gives_it_keyboard_input` | gpui::test | 408 |  | `TestNativeView_FocusingANativeViewGivesItKeyboardInput` | done |
+| `platform_focus_of_a_native_view_focuses_its_handle` | gpui::test | 435 |  | `TestNativeView_PlatformFocusOfANativeViewFocusesItsHandle` | done |
+| `only_reserved_and_pending_bindings_apply_before_a_native_view` | gpui::test | 456 |  | `TestNativeView_OnlyReservedAndPendingBindingsApplyBeforeANativeView` | done |
+| `mouse_reaches_a_native_view_only_where_nothing_covers_it` | gpui::test | 534 |  | `TestNativeView_MouseReachesANativeViewOnlyWhereNothingCoversIt` | done |
+| `mouse_press_on_a_native_view_reaches_nothing_behind_it` | gpui::test | 551 |  | `TestNativeView_MousePressOnANativeViewReachesNothingBehindIt` | done |
+| `changing_the_background_repaints_the_native_view` | gpui::test | 570 |  | `TestNativeView_ChangingTheBackgroundRepaintsTheNativeView` | done |
+| `native_view_painted_twice_shows_where_it_was_painted_first` | gpui::test | 596 |  | `TestNativeView_NativeViewPaintedTwiceShowsWhereItWasPaintedFirst` | done |
+| `native_view_is_drawn_in_paint_order` | gpui::test | 641 |  | `TestNativeView_NativeViewIsDrawnInPaintOrder` | done |
+| `native_view_stays_attached_until_its_last_handle_is_dropped` | gpui::test | 661 |  | `TestNativeView_NativeViewStaysAttachedUntilItsLastHandleIsDropped` | done |
+| `native_view_shows_nothing_in_another_window` | gpui::test | 681 |  | `TestNativeView_NativeViewShowsNothingInAnotherWindow` | done |
+| `focusing_a_native_view_ends_a_composition` | gpui::test | 710 |  | `TestNativeView_FocusingANativeViewEndsAComposition` | done |
 
 ## gpui/src/window/prompts.rs
 
@@ -523,3 +523,4 @@ Go target: `window_prompts.go` (package `gpui`)
 | D-INSPECTORORDER | `Inspector.RenderInspectorStates` renders the active element's states in the order they were first stored; upstream iterates a `TypeIdHashMap` | `gpui/src/inspector.rs:158-196` | Go map iteration is randomized per run; insertion order is the deterministic choice |
 | D-SRCLOC | `SourceLocation.Column` is 0: Go's runtime reports file and line only. `CallerSourceLocation(skip)` replaces `#[track_caller]` + `Location::caller()` and interns one value per call site | `gpui/src/element.rs:70`, `gpui/src/view.rs:297` | `runtime.Frame` has no column |
 | D-SPRANGE | `Window.PaintUnderlineWithExclusions` takes `[]ScaledPixelsRange{Start, End ScaledPixels}` for upstream's `&[Range<ScaledPixels>]` | `gpui/src/window.rs:3620-3626` | D-RANGE covers `Range<usize>` only; Go has no generic std range type |
+| D-A11YHASH | `A11ySubtreeBuilder.SyntheticNodeID` hashes the parent id and `gpui.Hash(key)` with FxHasher instead of std `DefaultHasher` (SipHash-1-3), so synthetic node ids differ numerically from upstream; uniqueness and stability per parent and key are the same | `gpui/src/window/a11y.rs:335` | Go has no std SipHash-1-3 and keys are generic, not `impl Hash` |

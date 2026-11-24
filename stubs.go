@@ -1,150 +1,10 @@
 package gpui
 
 import (
-	"slices"
-	"sync/atomic"
 	"time"
-	"weak"
 
-	"github.com/megascan/gpui-go/a11y"
 	"github.com/megascan/gpui-go/scheduler"
 )
-
-// NativeViewID identifies a native view within its window (M0-window-a11y ports it).
-type NativeViewID uint64
-
-// A11ySubtreeBuilder adds synthetic accessibility nodes below an element (M0-window-a11y ports it).
-type A11ySubtreeBuilder struct {
-	parentID a11y.NodeID
-	nodes    *a11yNodeBuilder
-	creator  nodeCreator
-}
-
-func newA11ySubtreeBuilder(parentID a11y.NodeID, nodes *a11yNodeBuilder) A11ySubtreeBuilder {
-	panic("gpui: unimplemented newA11ySubtreeBuilder")
-}
-
-func (b A11ySubtreeBuilder) withCreator(creator nodeCreator) A11ySubtreeBuilder {
-	panic("gpui: unimplemented A11ySubtreeBuilder.withCreator")
-}
-
-type windowA11y struct {
-	forceDisabled   bool
-	activeThisFrame bool
-	windowTitle     Option[SharedString]
-	nodes           a11yNodeBuilder
-	focusIDs        map[a11y.NodeID]FocusID
-	nodeBounds      map[a11y.NodeID]Bounds[Pixels]
-	actionListeners map[a11y.NodeID][]a11yActionEntry
-	viewTypeNames   map[EntityID]string
-}
-
-type a11yActionListener func(data a11y.ActionData, window *Window, cx *App)
-
-type a11yActionEntry struct {
-	action   a11y.Action
-	listener a11yActionListener
-}
-
-func newWindowA11y(activeFlag *atomic.Bool, forceDisabled bool, windowTitle Option[SharedString]) windowA11y {
-	return windowA11y{
-		forceDisabled:   forceDisabled,
-		focusIDs:        make(map[a11y.NodeID]FocusID),
-		nodeBounds:      make(map[a11y.NodeID]Bounds[Pixels]),
-		actionListeners: make(map[a11y.NodeID][]a11yActionEntry),
-		viewTypeNames:   make(map[EntityID]string),
-	}
-}
-
-func (a *windowA11y) isEnabled() bool {
-	return !a.forceDisabled
-}
-
-func (a *windowA11y) debugTreeJSON() (string, bool) {
-	panic("gpui: unimplemented windowA11y.debugTreeJSON")
-}
-
-func (a *windowA11y) isActive() bool {
-	return a.activeThisFrame
-}
-
-func (a *windowA11y) setWindowTitle(title SharedString) {
-	a.windowTitle = Some(title)
-}
-
-func (a *windowA11y) syncActiveFlag() {}
-
-func (a *windowA11y) beginFrame() {
-	panic("gpui: unimplemented windowA11y.beginFrame")
-}
-
-func (a *windowA11y) endFrame(frame frameDebugInfo) a11y.TreeUpdate {
-	panic("gpui: unimplemented windowA11y.endFrame")
-}
-
-type frameDebugInfo struct {
-	viewportSize Size[Pixels]
-	scaleFactor  float32
-	tabStopCount int
-}
-
-func (w *Window) syncNativeViewFocus() {
-	w.nativeViews = slices.DeleteFunc(w.nativeViews, func(view weak.Pointer[nativeViewState]) bool { return view.Value() == nil })
-	if len(w.nativeViews) == 0 {
-		return
-	}
-	panic("gpui: unimplemented Window.syncNativeViewFocus")
-}
-
-func (w *Window) endCompositionBeforeFocusingNativeView(focus FocusID, cx *App) {
-	if len(w.nativeViews) == 0 {
-		return
-	}
-	panic("gpui: unimplemented Window.endCompositionBeforeFocusingNativeView")
-}
-
-type a11yNodeBuilder struct{}
-
-func (b *a11yNodeBuilder) push(id a11y.NodeID, node a11y.Node) bool {
-	panic("gpui: unimplemented a11yNodeBuilder.push")
-}
-
-func (b *a11yNodeBuilder) pop() {
-	panic("gpui: unimplemented a11yNodeBuilder.pop")
-}
-
-func (b *a11yNodeBuilder) recordNodeInfo(id a11y.NodeID, info nodeDebugInfo) {
-	panic("gpui: unimplemented a11yNodeBuilder.recordNodeInfo")
-}
-
-type nodeDebugInfo struct {
-	synthetic      bool
-	view           Option[string]
-	elementID      Option[string]
-	sourceLocation *SourceLocation
-}
-
-type nodeCreator struct {
-	view           Option[string]
-	elementID      Option[string]
-	sourceLocation *SourceLocation
-}
-
-func (a *windowA11y) setFocusable(nodeID a11y.NodeID, focusID FocusID) {
-	panic("gpui: unimplemented windowA11y.setFocusable")
-}
-
-func (a *windowA11y) setFocus(nodeID a11y.NodeID) {
-	panic("gpui: unimplemented windowA11y.setFocus")
-}
-
-func (a *windowA11y) noteFocusWithoutNode(focusID FocusID, reason string) {
-	panic("gpui: unimplemented windowA11y.noteFocusWithoutNode")
-}
-
-func (a *windowA11y) setActiveDescendant(nodeID a11y.NodeID) {
-	panic("gpui: unimplemented windowA11y.setActiveDescendant")
-}
 
 // HangDetector detects hangs from the foreground journal (M3-profiler-hang ports it).
 type HangDetector struct{}
@@ -218,22 +78,6 @@ func NewVisualTestPlatform(platform Platform, seed uint64) *VisualTestPlatform {
 // Dispatcher returns the platform's test dispatcher (M3-root-capture ports it).
 func (p *VisualTestPlatform) Dispatcher() *TestDispatcher {
 	panic("gpui: unimplemented VisualTestPlatform.Dispatcher")
-}
-
-const rootNodeID a11y.NodeID = 0
-
-type nativeViewState struct{}
-
-func (w *Window) hitTestNativeView(position Point[Pixels]) (NativeViewID, bool) {
-	panic("gpui: unimplemented Window.hitTestNativeView")
-}
-
-func (w *Window) dispatchKeyDownBeforeNativeView(event KeyDownEvent, cx *App) bool {
-	panic("gpui: unimplemented Window.dispatchKeyDownBeforeNativeView")
-}
-
-func (w *Window) focusNativeView(id NativeViewID, cx *App) {
-	panic("gpui: unimplemented Window.focusNativeView")
 }
 
 // DebugFrameOverlay draws frame timings over the window (M3-profiler-hang ports it).
