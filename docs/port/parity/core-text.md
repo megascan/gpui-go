@@ -10,30 +10,32 @@ Go target: `svg_renderer.go` (package `gpui`), tests in `svg_renderer_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `SMOOTH_SVG_SCALE_FACTOR` | const | 84 |  | `SmoothSvgScaleFactor` | todo |
-| `RenderSvgParams` | struct | 88 |  | `RenderSvgParams` | todo |
-| `SvgRenderer` | struct | 95 |  | `SvgRenderer` | todo |
-| `ParsedSvg` | struct | 106 |  | `ParsedSvg` | todo |
-| `SvgTextFont` | struct | 110 |  | `SvgTextFont` | todo |
-| `SvgSize` | enum | 123 |  | `SvgSize` | todo |
-| `SvgRenderer::new` | assoc-fn | 140 |  | `NewSvgRenderer` | todo |
-| `SvgRenderer::parse_svg` | method | 225 |  | `(SvgRenderer).ParseSvg` | todo |
-| `SvgRenderer::measure_text_width` | method | 230 |  | `(SvgRenderer).MeasureTextWidth` | todo |
-| `SvgRenderer::render_parsed` | method | 253 |  | `(SvgRenderer).RenderParsed` | todo |
-| `SvgRenderer::render_single_frame` | method | 280 |  | `(SvgRenderer).RenderSingleFrame` | todo |
+| `SMOOTH_SVG_SCALE_FACTOR` | const | 84 |  | `SmoothSvgScaleFactor` | done |
+| `RenderSvgParams` | struct | 88 |  | `RenderSvgParams` | done |
+| `SvgRenderer` | struct | 95 |  | `SvgRenderer` | done |
+| `ParsedSvg` | struct | 106 |  | `ParsedSvg` | done |
+| `SvgTextFont` | struct | 110 |  | `SvgTextFont` | done |
+| `SvgSize` | enum | 123 |  | `SvgSize` | done |
+| `SvgRenderer::new` | assoc-fn | 140 |  | `NewSvgRenderer` | done |
+| `SvgRenderer::parse_svg` | method | 225 |  | `(SvgRenderer).ParseSvg` | done |
+| `SvgRenderer::measure_text_width` | method | 230 |  | `(SvgRenderer).MeasureTextWidth` | done |
+| `SvgRenderer::render_parsed` | method | 253 |  | `(SvgRenderer).RenderParsed` | done |
+| `SvgRenderer::render_single_frame` | method | 280 |  | `(SvgRenderer).RenderSingleFrame` | done |
+| `impl From<f32> for SvgSize` | impl | 132 |  | `SvgSizeScaleFactor` | dev:D-INTO |
+| `FontDatabase`, `owned_face`, `cached_fallback_face`, `underline_width`, `load_bundled_fonts`, `fix_generic_font_families` (text and embedded images in SVG through okage) | struct | 371 |  | `fontDatabase` | dev:L-SVGTEXT |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `renders_parsed_svg_at_requested_size` | test | 558 |  | `TestSvgRenderer_RendersParsedSvgAtRequestedSize` | todo |
-| `preserves_aspect_ratio_for_width_constrained_size` | test | 571 |  | `TestSvgRenderer_PreservesAspectRatioForWidthConstrainedSize` | todo |
-| `measured_text_width_matches_rasterized_advance` | test | 586 |  | `TestSvgRenderer_MeasuredTextWidthMatchesRasterizedAdvance` | todo |
-| `owns_font_bytes_within_budget` | test | 614 |  | `TestSvgRenderer_OwnsFontBytesWithinBudget` | todo |
-| `fallback_faces_are_remembered_until_excluded` | test | 653 |  | `TestSvgRenderer_FallbackFacesAreRememberedUntilExcluded` | todo |
-| `text_with_split_glyph_clusters_in_mixed_fonts_does_not_panic` | test | 690 |  | `TestSvgRenderer_TextWithSplitGlyphClustersInMixedFontsDoesNotPanic` | todo |
-| `test_is_emoji_presentation` | test | 715 |  | `TestSvgRenderer_IsEmojiPresentation` | todo |
-| `fix_generic_font_families_sets_all_families` | test | 746 |  | `TestSvgRenderer_FixGenericFontFamiliesSetsAllFamilies` | todo |
-| `test_select_emoji_font_skips_family_without_glyph` | test | 771 |  | `TestSvgRenderer_SelectEmojiFontSkipsFamilyWithoutGlyph` | todo |
-| `fix_generic_font_families_monospace_resolves_to_lilex` | test | 798 |  | `TestSvgRenderer_FixGenericFontFamiliesMonospaceResolvesToLilex` | todo |
+| `renders_parsed_svg_at_requested_size` | test | 558 |  | `TestSvgRenderer_RendersParsedSvgAtRequestedSize` | done |
+| `preserves_aspect_ratio_for_width_constrained_size` | test | 571 |  | `TestSvgRenderer_PreservesAspectRatioForWidthConstrainedSize` | done |
+| `measured_text_width_matches_rasterized_advance` | test | 586 |  | `TestSvgRenderer_MeasuredTextWidthMatchesRasterizedAdvance` | done |
+| `owns_font_bytes_within_budget` | test | 614 |  | `TestSvgRenderer_OwnsFontBytesWithinBudget` | done |
+| `fallback_faces_are_remembered_until_excluded` | test | 653 |  | `TestSvgRenderer_FallbackFacesAreRememberedUntilExcluded` | done |
+| `text_with_split_glyph_clusters_in_mixed_fonts_does_not_panic` | test | 690 |  | `TestSvgRenderer_TextWithSplitGlyphClustersInMixedFontsDoesNotPanic` | done |
+| `test_is_emoji_presentation` | test | 715 |  | `TestSvgRenderer_IsEmojiPresentation` | done |
+| `fix_generic_font_families_sets_all_families` | test | 746 |  | `TestSvgRenderer_FixGenericFontFamiliesSetsAllFamilies` | done |
+| `test_select_emoji_font_skips_family_without_glyph` | test | 771 |  | `TestSvgRenderer_SelectEmojiFontSkipsFamilyWithoutGlyph` | done |
+| `fix_generic_font_families_monospace_resolves_to_lilex` | test | 798 |  | `TestSvgRenderer_FixGenericFontFamiliesMonospaceResolvesToLilex` | done |
 
 ## gpui/src/text_system.rs
 

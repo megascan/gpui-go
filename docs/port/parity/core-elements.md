@@ -330,27 +330,30 @@ Go target: `elements_image_cache.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `image_cache` | fn | 14 |  | `NewImageCache` | todo |
-| `AnyImageCache` | struct | 24 |  | `AnyImageCache` | todo |
-| `AnyImageCache::load` | method | 46 |  | `(AnyImageCache).Load` | todo |
-| `ImageCacheElement` | struct | 71 |  | `ImageCacheElement` | todo |
-| `ImageCacheItem` | struct | 159 |  | `ImageCacheItem` | todo |
-| `ImageCacheItem::new` | assoc-fn | 171 |  | `NewImageCacheItem` | todo |
-| `ImageCacheItem::get` | method | 177 |  | `(ImageCacheItem).Get` | todo |
-| `ImageCacheItem::use_image` | method | 182 |  | `(ImageCacheItem).UseImage` | todo |
-| `ImageCache` | trait | 189 |  | `ImageCache` | todo |
-| `ImageCache::load` | trait-method | 192 |  | `ImageCache.Load` | todo |
-| `ImageCacheProvider` | trait | 202 |  | `ImageCacheProvider` | todo |
-| `ImageCacheProvider::provide` | trait-method | 204 |  | `ImageCacheProvider.Provide` | todo |
-| `RetainAllImageCache` | struct | 214 |  | `RetainAllImageCache` | todo |
-| `RetainAllImageCache::new` | assoc-fn | 227 |  | `NewRetainAllImageCache` | todo |
-| `RetainAllImageCache::load` | method | 243 |  | `(RetainAllImageCache).Load` | todo |
-| `RetainAllImageCache::clear` | method | 258 |  | `(RetainAllImageCache).Clear` | todo |
-| `RetainAllImageCache::remove` | method | 267 |  | `(RetainAllImageCache).Remove` | todo |
-| `RetainAllImageCache::len` | method | 277 |  | `(RetainAllImageCache).Len` | todo |
-| `RetainAllImageCache::is_empty` | method | 282 |  | `(RetainAllImageCache).IsEmpty` | todo |
-| `retain_all` | fn | 299 |  | `RetainAll` | todo |
-| `RetainAllImageCacheProvider` | struct | 304 |  | `RetainAllImageCacheProvider` | todo |
+| `image_cache` | fn | 14 |  | `NewImageCache` | done |
+| `AnyImageCache` | struct | 24 |  | `AnyImageCache` | dev:D-WEAKIMAGECACHE |
+| `AnyImageCache::load` | method | 46 |  | `(AnyImageCache).Load` | done |
+| `ImageCacheElement` | struct | 71 |  | `ImageCacheElement` | done |
+| `ImageCacheItem` | struct | 159 |  | `ImageCacheItem` | done |
+| `ImageCacheItem::new` | assoc-fn | 171 |  | `NewImageCacheItem` | done |
+| `ImageCacheItem::get` | method | 177 |  | `(ImageCacheItem).Get` | done |
+| `ImageCacheItem::use_image` | method | 182 |  | `(ImageCacheItem).UseImage` | done |
+| `ImageCache` | trait | 189 |  | `ImageCache` | done |
+| `ImageCache::load` | trait-method | 192 |  | `ImageCache.Load` | done |
+| `ImageCacheProvider` | trait | 202 |  | `ImageCacheProvider` | done |
+| `ImageCacheProvider::provide` | trait-method | 204 |  | `ImageCacheProvider.Provide` | done |
+| `RetainAllImageCache` | struct | 214 |  | `RetainAllImageCache` | done |
+| `RetainAllImageCache::new` | assoc-fn | 227 |  | `NewRetainAllImageCache` | done |
+| `RetainAllImageCache::load` | method | 243 |  | `(RetainAllImageCache).Load` | done |
+| `RetainAllImageCache::clear` | method | 258 |  | `(RetainAllImageCache).Clear` | done |
+| `RetainAllImageCache::remove` | method | 267 |  | `(RetainAllImageCache).Remove` | done |
+| `RetainAllImageCache::len` | method | 277 |  | `(RetainAllImageCache).Len` | done |
+| `RetainAllImageCache::is_empty` | method | 282 |  | `(RetainAllImageCache).IsEmpty` | done |
+| `retain_all` | fn | 299 |  | `RetainAll` | done |
+| `RetainAllImageCacheProvider` | struct | 304 |  | `RetainAllImageCacheProvider` | done |
+| `impl From<Entity<I>> for AnyImageCache` | impl | 34 |  | `AnyImageCacheFromEntity` | dev:D-IMAGECACHEENTITY |
+| `impl ImageCacheProvider for Entity<T>` | impl | 207 |  | `(AnyImageCache).Provide` | dev:D-IMAGECACHEENTITY |
+| `impl Drop for ImageCacheItem` (drop cancels the load) | impl | 159 |  | `(*ImageCacheItem).Release` | dev:D-RAII |
 
 ## gpui/src/elements/img.rs
 
@@ -358,33 +361,38 @@ Go target: `elements_img.go` (package `gpui`), tests in `elements_img_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `LOADING_DELAY` | const | 28 |  | `LoadingDelay` | todo |
-| `ImgResourceLoader` | type | 34 |  | `ImgResourceLoader` | todo |
-| `ImageSource` | enum | 38 |  | `ImageSource` | todo |
-| `ImageStyle` | struct | 125 |  | `ImageStyle` | todo |
-| `StyledImage` | trait | 144 |  | `StyledImage` | todo |
-| `StyledImage::image_style` | trait-method | 146 |  | `StyledImage.ImageStyle` | todo |
-| `StyledImage::grayscale` | trait-method | 149 |  | `StyledImage.Grayscale` | todo |
-| `StyledImage::object_fit` | trait-method | 155 |  | `StyledImage.ObjectFit` | todo |
-| `StyledImage::with_fallback` | trait-method | 162 |  | `StyledImage.WithFallback` | todo |
-| `StyledImage::with_loading` | trait-method | 169 |  | `StyledImage.WithLoading` | todo |
-| `Img` | struct | 188 |  | `Img` | todo |
-| `img` | fn | 197 |  | `NewImg` | todo |
-| `Img::extensions` | assoc-fn | 208 |  | `ImgExtensions` | todo |
-| `Img::image_cache` | method | 226 |  | `(Img).ImageCache` | todo |
-| `ImgLayoutState` | struct | 256 |  | `ImgLayoutState` | todo |
-| `ImageSource::remove_asset` | method | 565 |  | `(ImageSource).RemoveAsset` | todo |
-| `ImageSource::is_asset_cached` | method | 578 | feat:test-support | `(ImageSource).IsAssetCached` | todo |
-| `ImageAssetLoader` | enum | 605 |  | `ImageAssetLoader` | todo |
-| `ImageCacheError` | enum | 676 |  | `ImageCacheError` | todo |
+| `LOADING_DELAY` | const | 28 |  | `LoadingDelay` | done |
+| `ImgResourceLoader` | type | 34 |  | `ImgResourceLoader` | done |
+| `ImageSource` | enum | 38 |  | `ImageSource` | done |
+| `ImageStyle` | struct | 125 |  | `ImageStyle` | done |
+| `StyledImage` | trait | 144 |  | `StyledImage` | done |
+| `StyledImage::image_style` | trait-method | 146 |  | `(*Img).ImageStyle` | done |
+| `StyledImage::grayscale` | trait-method | 149 |  | `StyledImage.Grayscale` | done |
+| `StyledImage::object_fit` | trait-method | 155 |  | `StyledImage.ObjectFit` | done |
+| `StyledImage::with_fallback` | trait-method | 162 |  | `StyledImage.WithFallback` | done |
+| `StyledImage::with_loading` | trait-method | 169 |  | `StyledImage.WithLoading` | done |
+| `Img` | struct | 188 |  | `Img` | done |
+| `img` | fn | 197 |  | `NewImg` | done |
+| `Img::extensions` | assoc-fn | 208 |  | `ImgExtensions` | done |
+| `Img::image_cache` | method | 226 |  | `(*Img).ImageCache` | dev:D-IMAGECACHEENTITY |
+| `ImgLayoutState` | struct | 256 |  | `ImgLayoutState` | done |
+| `ImageSource::remove_asset` | method | 565 |  | `(ImageSource).RemoveAsset` | done |
+| `ImageSource::is_asset_cached` | method | 578 | feat:test-support | `(ImageSource).IsAssetCached` | done |
+| `ImageAssetLoader` | enum | 605 |  | `ImageAssetLoader` | done |
+| `ImageCacheError` | enum | 676 |  | `ImageCacheError` | done |
+| `impl From<SharedUri/&str/String/SharedString/&Path/Arc<Path>/PathBuf/Arc<RenderImage>/Arc<Image>/Fn> for ImageSource` | impl | 53 |  | `ImageSourceFromSharedURI`, `ImageSourceFromString`, `ImageSourceFromSharedString`, `ImageSourceFromPath`, `ImageSourceFromRenderImage`, `ImageSourceFromImage`, `ImageSourceFromFunc` | dev:D-INTO |
+| `impl StyledImage for Stateful<Img>`, `impl Deref/DerefMut for Stateful<Img>` | impl | 181 |  | `StyledImage[*Img]` (call before `ID`) | dev:D-STATEFULIMG |
+| `impl Element for Img` | impl | 261 |  | `(*Img).RequestLayout` | done |
+| `ImageAssetLoader::load` (JPEG through `decode_static_image`) | impl | 611 |  | `(ImageAssetLoader).Load` | dev:L-JPEG |
+| `ImageDecoder` | enum | 588 |  | `imageDecoderAsset` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `zero_frame_image_does_not_panic_on_paint` | gpui::test | 766 |  | `TestImg_ZeroFrameImageDoesNotPanicOnPaint` | todo |
-| `image_object_fit_cover_crops_to_element_bounds` | gpui::test | 774 |  | `TestImg_ImageObjectFitCoverCropsToElementBounds` | todo |
-| `explicit_aspect_ratio_is_not_overridden_by_intrinsic_ratio` | gpui::test | 829 |  | `TestImg_ExplicitAspectRatioIsNotOverriddenByIntrinsicRatio` | todo |
-| `image_object_fit_cover_clamps_corner_radii_to_visible_bounds` | gpui::test | 867 |  | `TestImg_ImageObjectFitCoverClampsCornerRadiiToVisibleBounds` | todo |
-| `stale_frame_index_is_clamped_when_image_changes` | gpui::test | 892 |  | `TestImg_StaleFrameIndexIsClampedWhenImageChanges` | todo |
+| `zero_frame_image_does_not_panic_on_paint` | gpui::test | 766 |  | `TestImg_ZeroFrameImageDoesNotPanicOnPaint` | done |
+| `image_object_fit_cover_crops_to_element_bounds` | gpui::test | 774 |  | `TestImg_ImageObjectFitCoverCropsToElementBounds` | done |
+| `explicit_aspect_ratio_is_not_overridden_by_intrinsic_ratio` | gpui::test | 829 |  | `TestImg_ExplicitAspectRatioIsNotOverriddenByIntrinsicRatio` | done |
+| `image_object_fit_cover_clamps_corner_radii_to_visible_bounds` | gpui::test | 867 |  | `TestImg_ImageObjectFitCoverClampsCornerRadiiToVisibleBounds` | done |
+| `stale_frame_index_is_clamped_when_image_changes` | gpui::test | 892 |  | `TestImg_StaleFrameIndexIsClampedWhenImageChanges` | done |
 
 ## gpui/src/elements/list.rs
 
@@ -497,42 +505,46 @@ Go target: `elements_svg.go` (package `gpui`), tests in `elements_svg_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Svg` | struct | 19 |  | `Svg` | todo |
-| `svg` | fn | 30 |  | `NewSvg` | todo |
-| `Svg::path` | method | 43 |  | `(Svg).Path` | todo |
-| `Svg::external_path` | method | 49 |  | `(Svg).ExternalPath` | todo |
-| `Svg::data` | method | 56 |  | `(Svg).Data` | todo |
-| `Svg::with_transformation` | method | 69 |  | `(Svg).WithTransformation` | todo |
-| `Svg::with_timed_transformation` | method | 83 |  | `(Svg).WithTimedTransformation` | todo |
-| `Transformation` | struct | 244 |  | `Transformation` | todo |
-| `Transformation::scale` | assoc-fn | 264 |  | `TransformationScale` | todo |
-| `Transformation::translate` | assoc-fn | 272 |  | `TransformationTranslate` | todo |
-| `Transformation::rotate` | assoc-fn | 280 |  | `TransformationRotate` | todo |
-| `Transformation::alpha` | assoc-fn | 289 |  | `TransformationAlpha` | todo |
-| `Transformation::with_alpha` | method | 298 |  | `(Transformation).WithAlpha` | todo |
-| `Transformation::with_scaling` | method | 308 |  | `(Transformation).WithScaling` | todo |
-| `Transformation::with_translation` | method | 314 |  | `(Transformation).WithTranslation` | todo |
-| `Transformation::with_rotation` | method | 320 |  | `(Transformation).WithRotation` | todo |
-| `Easing` | enum | 341 |  | `Easing` | todo |
-| `TimedTransformation` | struct | 375 |  | `TimedTransformation` | todo |
-| `TimedTransformation::new` | assoc-fn | 390 |  | `NewTimedTransformation` | todo |
-| `TimedTransformation::rotation` | assoc-fn | 406 |  | `TimedTransformationRotation` | todo |
-| `TimedTransformation::from` | method | 417 |  | `(TimedTransformation).From` | todo |
-| `TimedTransformation::to` | method | 423 |  | `(TimedTransformation).To` | todo |
-| `TimedTransformation::with_easing` | method | 429 |  | `(TimedTransformation).WithEasing` | todo |
-| `TimedTransformation::with_scale_easing` | method | 438 |  | `(TimedTransformation).WithScaleEasing` | todo |
-| `TimedTransformation::with_translation_easing` | method | 444 |  | `(TimedTransformation).WithTranslationEasing` | todo |
-| `TimedTransformation::with_rotation_easing` | method | 450 |  | `(TimedTransformation).WithRotationEasing` | todo |
-| `TimedTransformation::with_alpha_easing` | method | 456 |  | `(TimedTransformation).WithAlphaEasing` | todo |
-| `TimedTransformation::alternate` | method | 463 |  | `(TimedTransformation).Alternate` | todo |
-| `TimedTransformation::with_max_fps` | method | 471 |  | `(TimedTransformation).WithMaxFps` | todo |
+| `Svg` | struct | 19 |  | `Svg` | done |
+| `svg` | fn | 30 |  | `NewSvg` | done |
+| `Svg::path` | method | 43 |  | `(Svg).Path` | done |
+| `Svg::external_path` | method | 49 |  | `(Svg).ExternalPath` | done |
+| `Svg::data` | method | 56 |  | `(Svg).Data` | done |
+| `Svg::with_transformation` | method | 69 |  | `(Svg).WithTransformation` | done |
+| `Svg::with_timed_transformation` | method | 83 |  | `(Svg).WithTimedTransformation` | done |
+| `Transformation` | struct | 244 |  | `Transformation` | done |
+| `Transformation::scale` | assoc-fn | 264 |  | `TransformationScale` | done |
+| `Transformation::translate` | assoc-fn | 272 |  | `TransformationTranslate` | done |
+| `Transformation::rotate` | assoc-fn | 280 |  | `TransformationRotate` | done |
+| `Transformation::alpha` | assoc-fn | 289 |  | `TransformationAlpha` | done |
+| `Transformation::with_alpha` | method | 298 |  | `(Transformation).WithAlpha` | done |
+| `Transformation::with_scaling` | method | 308 |  | `(Transformation).WithScaling` | done |
+| `Transformation::with_translation` | method | 314 |  | `(Transformation).WithTranslation` | done |
+| `Transformation::with_rotation` | method | 320 |  | `(Transformation).WithRotation` | done |
+| `Easing` | enum | 341 |  | `Easing` | done |
+| `TimedTransformation` | struct | 375 |  | `TimedTransformation` | done |
+| `TimedTransformation::new` | assoc-fn | 390 |  | `NewTimedTransformation` | done |
+| `TimedTransformation::rotation` | assoc-fn | 406 |  | `TimedTransformationRotation` | done |
+| `TimedTransformation::from` | method | 417 |  | `(TimedTransformation).From` | done |
+| `TimedTransformation::to` | method | 423 |  | `(TimedTransformation).To` | done |
+| `TimedTransformation::with_easing` | method | 429 |  | `(TimedTransformation).WithEasing` | done |
+| `TimedTransformation::with_scale_easing` | method | 438 |  | `(TimedTransformation).WithScaleEasing` | done |
+| `TimedTransformation::with_translation_easing` | method | 444 |  | `(TimedTransformation).WithTranslationEasing` | done |
+| `TimedTransformation::with_rotation_easing` | method | 450 |  | `(TimedTransformation).WithRotationEasing` | done |
+| `TimedTransformation::with_alpha_easing` | method | 456 |  | `(TimedTransformation).WithAlphaEasing` | done |
+| `TimedTransformation::alternate` | method | 463 |  | `(TimedTransformation).Alternate` | done |
+| `TimedTransformation::with_max_fps` | method | 471 |  | `(TimedTransformation).WithMaxFps` | done |
+| `impl Default for Transformation` | impl | 251 |  | `DefaultTransformation` | done |
+| `impl From<Transformation> for TimedTransformation` | impl | 539 |  | `TimedTransformationFromTransformation` | dev:D-INTO |
+| `impl Element for Svg` | impl | 88 |  | `(*Svg).RequestLayout` | done |
+| `SvgAsset` | enum | 547 |  | `svgAsset` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_rotation_advances_without_rerendering` | crate::test | 635 |  | `TestSvg_RotationAdvancesWithoutRerendering` | todo |
-| `test_timed_transformation_eases_each_value_separately` | crate::test | 664 |  | `TestSvg_TimedTransformationEasesEachValueSeparately` | todo |
-| `test_heartbeat_returns_to_its_start` | crate::test | 687 |  | `TestSvg_HeartbeatReturnsToItsStart` | todo |
-| `test_scene_presents_as_often_as_its_least_capped_animation` | crate::test | 704 |  | `TestSvg_ScenePresentsAsOftenAsItsLeastCappedAnimation` | todo |
+| `test_rotation_advances_without_rerendering` | crate::test | 635 |  | `TestSvg_RotationAdvancesWithoutRerendering` | done |
+| `test_timed_transformation_eases_each_value_separately` | crate::test | 664 |  | `TestSvg_TimedTransformationEasesEachValueSeparately` | done |
+| `test_heartbeat_returns_to_its_start` | crate::test | 687 |  | `TestSvg_HeartbeatReturnsToItsStart` | done |
+| `test_scene_presents_as_often_as_its_least_capped_animation` | crate::test | 704 |  | `TestSvg_ScenePresentsAsOftenAsItsLeastCappedAnimation` | done |
 
 ## gpui/src/elements/text.rs
 
@@ -635,3 +647,6 @@ Go target: `elements_uniform_list.go` (package `gpui`), tests in `elements_unifo
 | D-UNIFORMDECOR | `impl UniformListDecoration for Entity<T>` is the adapter `UniformListDecorationFromEntity[T, *T](entity)`, which borrows the handle | `gpui/src/elements/uniform_list.rs:590-614` | Go cannot implement an interface on `Entity[T]` conditionally on `T` |
 | D-SURFACE | `SurfaceSource` is a struct holding the `CVPixelBufferRef` as `uintptr`, and `NewSurface` exists on every platform; `Paint` draws only on darwin / ios and reads the buffer size through a function the Apple platform registers with `RegisterSurfaceSourceSize`, since the root package may not call CoreVideo | `gpui/src/elements/surface.rs:13-35`, `:95-119` | root import rules (DESIGN 4); `Window.PaintSurface` already takes a `uintptr` |
 | D-LISTCELL | `ListState`'s tuple field `.0` (`Rc<RefCell<StateInner>>`) is an unexported pointer shared by copies, with no `RefCell` borrow tracking: a scroll handler or measurement-readiness predicate that calls back into the same `ListState` while the list holds it does not panic with `already borrowed` as upstream does; `SpliceFocusable` takes over the passed focus handles and releases those of removed items | `gpui/src/elements/list.rs:54`, `:497-538` | Go has no `RefCell`; D-RAII for the moved `FocusHandle`s |
+| D-WEAKIMAGECACHE | `AnyImageCache` holds an `AnyWeakEntity` and upgrades it on `Load` (panicking with `Option::unwrap` if the entity is gone), instead of a counted `AnyEntity`: Go copies the value into `Window.imageCacheStack` and `Div.provideImageCache` without a drop point, so a strong handle would leak; the caller (or the element state of `RetainAll`) keeps the entity alive | `gpui/src/elements/image_cache.rs:24-41` | D-RAII has no implicit drop for copied values |
+| D-IMAGECACHEENTITY | `impl From<Entity<I>> for AnyImageCache` and `impl ImageCacheProvider for Entity<T>` are `AnyImageCacheFromEntity[I, *I](entity)`, and `AnyImageCache` is its own `ImageCacheProvider`; `Img::image_cache(&Entity<I>)` takes that `AnyImageCache` | `gpui/src/elements/image_cache.rs:34-41`, `:207-211`, `gpui/src/elements/img.rs:226` | Go cannot implement an interface on `Entity[T]` conditionally on `T` |
+| D-STATEFULIMG | `StyledImage` is the mixin `StyledImage[*Img]`; `Stateful[*Img]` (from `ID`) does not carry it or deref to `Img`, so image style methods are called before `ID` | `gpui/src/elements/img.rs:181-246` | `Stateful[E]`'s mixins are fixed in elements_div_paint.go (D-COND) |

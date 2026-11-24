@@ -10,64 +10,8 @@ import (
 	"github.com/megascan/gpui-go/scheduler"
 )
 
-// RenderSvgParams identifies a rasterized SVG in the sprite atlas (M0-elements-media ports it).
-type RenderSvgParams struct {
-	// Path is the SVG's asset path.
-	Path SharedString
-	// Size is the rasterized size.
-	Size Size[DevicePixels]
-}
-
 // NativeViewID identifies a native view within its window (M0-window-a11y ports it).
 type NativeViewID uint64
-
-// SvgRenderer renders SVGs into images (M0-elements-media ports it).
-type SvgRenderer struct {
-	assetSource AssetSource
-}
-
-// NewSvgRenderer creates an SVG renderer loading referenced assets from assetSource (M0-elements-media ports it).
-// The placeholder body only stores the source, so App construction works before M0-elements-media.
-func NewSvgRenderer(assetSource AssetSource) SvgRenderer {
-	return SvgRenderer{assetSource: assetSource}
-}
-
-// RenderSingleFrame renders an SVG into a single-frame image (M0-elements-media ports it).
-func (r SvgRenderer) RenderSingleFrame(bytes []byte, scaleFactor float32) (*RenderImage, error) {
-	panic("gpui: unimplemented SvgRenderer.RenderSingleFrame")
-}
-
-// ImageSource is a source of image content (M0-elements-media ports it).
-type ImageSource interface {
-	isImageSource()
-}
-
-// ImageSourceImage is cached image data (M0-elements-media ports it).
-type ImageSourceImage struct {
-	// Image is the image.
-	Image *Image
-}
-
-func (ImageSourceImage) isImageSource() {}
-
-// AnyImageCache is a type-erased image cache (M0-elements-media ports it).
-type AnyImageCache struct{}
-
-func imageSourceUseData(source ImageSource, cache Option[AnyImageCache], window *Window, cx *App) (*RenderImage, bool, error) {
-	panic("gpui: unimplemented imageSourceUseData")
-}
-
-func imageSourceGetData(source ImageSource, cache Option[AnyImageCache], window *Window, cx *App) (*RenderImage, bool, error) {
-	panic("gpui: unimplemented imageSourceGetData")
-}
-
-func imageSourceRemoveAsset(source ImageSource, cx *App) {
-	panic("gpui: unimplemented imageSourceRemoveAsset")
-}
-
-func imageSourceIsAssetCached(source ImageSource, cx *App) bool {
-	panic("gpui: unimplemented imageSourceIsAssetCached")
-}
 
 // A11ySubtreeBuilder adds synthetic accessibility nodes below an element (M0-window-a11y ports it).
 type A11ySubtreeBuilder struct {
@@ -159,13 +103,6 @@ func (w *Window) endCompositionBeforeFocusingNativeView(focus FocusID, cx *App) 
 	panic("gpui: unimplemented Window.endCompositionBeforeFocusingNativeView")
 }
 
-// SmoothSvgScaleFactor is the factor SVGs are rasterized at above their device size (M0-elements-media ports svg_renderer.rs).
-const SmoothSvgScaleFactor float32 = 2.
-
-func (r SvgRenderer) renderAlphaMask(params RenderSvgParams, bytes []byte) (Size[DevicePixels], []byte, bool, error) {
-	panic("gpui: unimplemented SvgRenderer.renderAlphaMask")
-}
-
 type a11yNodeBuilder struct{}
 
 func (b *a11yNodeBuilder) push(id a11y.NodeID, node a11y.Node) bool {
@@ -193,11 +130,6 @@ type nodeCreator struct {
 	sourceLocation *SourceLocation
 }
 
-// ImageCacheProvider creates an image cache during request layout (M0-elements-media ports it).
-type ImageCacheProvider interface {
-	Provide(window *Window, cx *App) AnyImageCache
-}
-
 func (a *windowA11y) setFocusable(nodeID a11y.NodeID, focusID FocusID) {
 	panic("gpui: unimplemented windowA11y.setFocusable")
 }
@@ -212,28 +144,6 @@ func (a *windowA11y) noteFocusWithoutNode(focusID FocusID, reason string) {
 
 func (a *windowA11y) setActiveDescendant(nodeID a11y.NodeID) {
 	panic("gpui: unimplemented windowA11y.setActiveDescendant")
-}
-
-// TimedTransformation is a transformation animated over time (M0-elements-media ports it).
-type TimedTransformation struct{}
-
-func (t TimedTransformation) minFrameInterval() (time.Duration, bool) {
-	panic("gpui: unimplemented TimedTransformation.minFrameInterval")
-}
-
-func (t TimedTransformation) at(elapsed time.Duration) Transformation {
-	panic("gpui: unimplemented TimedTransformation.at")
-}
-
-// Transformation is a scale, translation, rotation and alpha applied to an SVG (M0-elements-media ports it).
-type Transformation struct{}
-
-func (t Transformation) alphaFactor() float32 {
-	panic("gpui: unimplemented Transformation.alphaFactor")
-}
-
-func (t Transformation) intoMatrix(center Point[Pixels], scaleFactor float32) TransformationMatrix {
-	panic("gpui: unimplemented Transformation.intoMatrix")
 }
 
 // HangDetector detects hangs from the foreground journal (M3-profiler-hang ports it).
