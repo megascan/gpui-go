@@ -29,9 +29,8 @@ Stub owners (the stage that replaces the symbol):
 | `LineWrapper`, `Boundary`, `charWidthCache`, `defaultCharWidthCache`, `newLineWrapper`, `intoCharWidths`, `lineWrapperBreakIndices` (real bodies, see section 8) | M0-line-wrapper |
 | `ShapedLine`, `WrappedLine`, `DecorationRun` | M0-text-elements |
 | `UnderlineStyle`, `StrikethroughStyle` | M0-style |
-| `EntityID`, `AnyEntity`, `AnyWeakEntity`, `Entity`, `WeakEntity`, `slot`, `entityFromAny`, `Subscription` | M0-entities |
 | `BackgroundExecutor`, `ForegroundExecutor` | M0-executors |
-| `App` (type), `AppCell`, `AppRef`, `AppRefMut`, `(App).FindDisplay`, `PrimaryDisplay`, `Spawn`, `OpenWindow`, `WithWindow` | M0-app-core |
+| `App` (type; the stub carries the final field `entities *entityMap`, which `Entity.Read` uses), `AppCell`, `AppRef`, `AppRefMut`, `(App).FindDisplay`, `PrimaryDisplay`, `Spawn`, `OpenWindow`, `WithWindow` | M0-app-core |
 | `GpuiBorrow`, `newGpuiBorrow`, `globalLease`, `(App).SetGlobal`, `DefaultGlobal`, `leaseGlobal`, `endGlobalLease`, `Observe`, `Defer`, the unexported `App` primitives | M0-app-effects |
 | `Context`, `newContext`, `AsyncApp`, `(App).New`, `ReserveEntity`, `InsertEntity`, `AsMut`, `ReadWindow`, `BackgroundSpawn`, `ReadGlobal`, `TestOption`, `Seed`, `Seeds`, `Iterations`, `Retries`, `OnFailure`, `RunTest`, `TestRun` | M0-app-contexts |
 | `TestAppContext` | M0-test-contexts |
@@ -120,6 +119,15 @@ func NewDiv() *Div {
 - Drop table (DESIGN 5.2): `AnyEntity` / `Entity` / `FocusHandle` `Release`; `Subscription` `Unsubscribe` / `Detach`; `Task` `Cancel` / `Detach`; `AppRef` / `AppRefMut` `Release` (ends the borrow group); `GpuiBorrow` `Release` (notify, end the lease, finish the update); `LeaseInner` checked by `EndLease`; executor `Scope` `Close`; queue senders and receivers `Close`; `MissingGlyphReceiver` `Close`, `LineWrapperHandle` `Release`; profiler guards `Release` / `End` / `Close`; journal guards `End`; `HeadlessAppContext` `Close`; `LeakDetector` `Report`; `ScapStream` `Stop`; `Deferred` `Run` / `Abort`; platform owners `Close` / `Destroy`; scope guards `End` / `Close`; bench helpers `Close` / `End`.
 - `AppCell.Borrow` / `BorrowMut` / `TryBorrowMut` return guards; callers `defer g.Release()`. A conflicting borrow panics with upstream's text; `TryBorrowMut` returns the error instead.
 - `AppRefMut` embeds `*App` (upstream's `DerefMut`), so it is an `AppContext` and `BorrowAppContext`. `AppRef` (upstream's `Deref` to `&App`) holds the App in an unexported field and exposes only `Get() *App` and `Release()`: it implements neither interface, so a shared borrow cannot be passed to `SetGlobal` / `UpdateGlobal` / `AppContextNew` or call mutating methods by promotion. Code behind `Get()` only reads (fields, `&self` methods); anything that mutates takes `BorrowMut`. `TestContracts_SealedInterfaces` pins this.
+
+### 4.1 Entity map and subscriber sets (app_entity_map.go, subscription.go)
+
+- `App.entities *entityMap` (from `newEntityMap()`). Primitives for the App stages: `reserveErased(t) AnyEntity`, `insertErased(slot, state any) AnyEntity` (state is the `*T`), `leaseErased(h, typeName) *leaseInner` / `endLeaseErased(id, lease)`, `readErased(h) any`; typed forms `reserve[T]`, `insert[T]`, `lease[T]` / `endLease[T]` (`lease[T].get() *T`), `read[T]`. Access tracking: `pushAccessScope`, `popAccessScope`, `takeAccessed`, `restoreAccessed`, `extendAccessed([]EntityID)`, `clearAccessed`. `takeDropped() []droppedEntity{entityID, entity}` drains the dropped-ids queue in release order; the App runs release observers and `Drop(cx)` on the returned states.
+- A nested update or read panics with upstream's "cannot {update|read} {type} while it is already being updated". `endLeaseErased` on an ended lease panics.
+- Handles: zero `Entity` / `AnyEntity` values are allowed (`var e Entity[T]`); `Release` on them is a no-op, every other method panics. Equality of entities is `a.EntityID() == b.EntityID()`; `==` on strong handles is handle identity. `AnyWeakEntity` / `WeakEntity` are plain values. `WeakEntity.Update` / `UpdateR` / `UpdateIn` / `UpdateInR` / `ReadWith` upgrade, run, and release the strong handle; errors "entity released" and "entity has no current window".
+- Leak detection: `GPUI_LEAK_DETECTION` unset in a test binary or `strict` = strict; set otherwise (not `0`) or any test binary = on; else off. Evaluated once per process. The harness ends a run with `cx.entities.report()` (upstream `LeakDetector::drop`), after quitting, draining tasks and GC. Strict reports (handles, subscriptions, leases collected without their drop method) are process-global, so tests that check them must not run in parallel with tests that leak.
+- `subscriberSet[K comparable, C any]` (`newSubscriberSet`) and `singleSubscriberSet[C]` (`newSingleSubscriberSet`): `insert`, `insertPending` (returns `(Subscription, activate func())`), `remove` (`iter.Seq[C]`, lazily filtered to active subscribers), `retain(f func(*C) bool)`. No lock; main thread only, as upstream's `Rc<RefCell>`.
+- `Subscription`: `NewSubscription(func())`, `Unsubscribe` (Drop, idempotent), `Detach`, `SubscriptionJoin(a, b)`. Store subscriptions an entity owns in its state and unsubscribe them in its `Drop(cx *App)`.
 
 ## 5. Naming
 

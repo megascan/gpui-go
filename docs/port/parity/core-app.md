@@ -429,21 +429,21 @@ Go target: `subscription.go` (package `gpui`), tests in `subscription_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Subscription` | struct | 262 |  | `Subscription` | todo |
-| `Subscription::new` | assoc-fn | 269 |  | `NewSubscription` | todo |
-| `Subscription::detach` | method | 278 |  | `(Subscription).Detach` | todo |
-| `Subscription::join` | assoc-fn | 284 |  | `SubscriptionJoin` | todo |
+| `Subscription` | struct | 262 |  | `Subscription` | done |
+| `Subscription::new` | assoc-fn | 269 |  | `NewSubscription` | done |
+| `Subscription::detach` | method | 278 |  | `(Subscription).Detach` | done |
+| `Subscription::join` | assoc-fn | 284 |  | `SubscriptionJoin` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_immediate_and_pending_insertions` | test | 320 |  | `TestSubscription_ImmediateAndPendingInsertions` | todo |
-| `test_single_immediate_and_pending_insertions` | test | 345 |  | `TestSubscription_SingleImmediateAndPendingInsertions` | todo |
-| `test_activation_after_drop_during_retain` | test | 370 |  | `TestSubscription_ActivationAfterDropDuringRetain` | todo |
-| `test_single_activation_after_drop_during_retain` | test | 393 |  | `TestSubscription_SingleActivationAfterDropDuringRetain` | todo |
-| `test_unsubscribe_during_callback_with_insert` | test | 416 |  | `TestSubscription_UnsubscribeDuringCallbackWithInsert` | todo |
-| `test_callback_dropped_by_earlier_callback_does_not_fire` | test | 467 |  | `TestSubscription_CallbackDroppedByEarlierCallbackDoesNotFire` | todo |
-| `test_self_drop_during_callback` | test | 507 |  | `TestSubscription_SelfDropDuringCallback` | todo |
-| `test_subscription_drop` | test | 536 |  | `TestSubscription_SubscriptionDrop` | todo |
+| `test_immediate_and_pending_insertions` | test | 320 |  | `TestSubscription_ImmediateAndPendingInsertions` | done |
+| `test_single_immediate_and_pending_insertions` | test | 345 |  | `TestSubscription_SingleImmediateAndPendingInsertions` | done |
+| `test_activation_after_drop_during_retain` | test | 370 |  | `TestSubscription_ActivationAfterDropDuringRetain` | done |
+| `test_single_activation_after_drop_during_retain` | test | 393 |  | `TestSubscription_SingleActivationAfterDropDuringRetain` | done |
+| `test_unsubscribe_during_callback_with_insert` | test | 416 |  | `TestSubscription_UnsubscribeDuringCallbackWithInsert` | blocked:M0-test-contexts |
+| `test_callback_dropped_by_earlier_callback_does_not_fire` | test | 467 |  | `TestSubscription_CallbackDroppedByEarlierCallbackDoesNotFire` | blocked:M0-test-contexts |
+| `test_self_drop_during_callback` | test | 507 |  | `TestSubscription_SelfDropDuringCallback` | blocked:M0-test-contexts |
+| `test_subscription_drop` | test | 536 |  | `TestSubscription_SubscriptionDrop` | blocked:M0-test-contexts |
 
 ## gpui/src/test.rs
 
@@ -546,45 +546,45 @@ Go target: `app_entity_map.go` (package `gpui`), tests in `app_entity_map_test.g
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `EntityId` | struct | 30 |  | `EntityID` | todo |
-| `EntityId::as_non_zero_u64` | method | 41 |  | `(EntityID).AsNonZeroU64` | todo |
-| `EntityId::as_u64` | method | 46 |  | `(EntityID).AsU64` | todo |
-| `AnyEntity` | struct | 347 |  | `AnyEntity` | todo |
-| `AnyEntity::entity_id` | method | 379 |  | `(AnyEntity).EntityID` | todo |
-| `AnyEntity::entity_type` | method | 385 |  | `(AnyEntity).EntityType` | todo |
-| `AnyEntity::downgrade` | method | 390 |  | `(AnyEntity).Downgrade` | todo |
-| `AnyEntity::downcast` | method | 400 |  | `(AnyEntity).Downcast` | todo |
-| `Entity` | struct | 515 |  | `Entity` | todo |
-| `Entity::entity_id` | method | 544 |  | `(Entity).EntityID` | todo |
-| `Entity::downgrade` | method | 550 |  | `(Entity).Downgrade` | todo |
-| `Entity::into_any` | method | 559 |  | `(Entity).IntoAny` | todo |
-| `Entity::read` | method | 565 |  | `(Entity).Read` | todo |
-| `Entity::read_with` | method | 571 |  | `(Entity).ReadWith` | todo |
-| `Entity::update` | method | 577 |  | `(Entity).Update` | todo |
-| `Entity::as_mut` | method | 587 |  | `(Entity).AsMut` | todo |
-| `Entity::write` | method | 592 |  | `(Entity).Write` | todo |
-| `Entity::update_in` | method | 603 |  | `(Entity).UpdateIn` | todo |
-| `AnyWeakEntity` | struct | 670 |  | `AnyWeakEntity` | todo |
-| `AnyWeakEntity::entity_id` | method | 679 |  | `(AnyWeakEntity).EntityID` | todo |
-| `AnyWeakEntity::is_upgradable` | method | 684 |  | `(AnyWeakEntity).IsUpgradable` | todo |
-| `AnyWeakEntity::upgrade` | method | 694 |  | `(AnyWeakEntity).Upgrade` | todo |
-| `AnyWeakEntity::assert_released` | method | 749 | feat:test-support | `(AnyWeakEntity).AssertReleased` | todo |
-| `AnyWeakEntity::new_invalid` | assoc-fn | 773 |  | `NewAnyWeakEntityInvalid` | todo |
-| `WeakEntity` | struct | 845 |  | `WeakEntity` | todo |
-| `WeakEntity::upgrade` | method | 872 |  | `(WeakEntity).Upgrade` | todo |
-| `WeakEntity::update` | method | 883 |  | `(WeakEntity).Update` | todo |
-| `WeakEntity::update_in` | method | 899 |  | `(WeakEntity).UpdateIn` | todo |
-| `WeakEntity::read_with` | method | 918 |  | `(WeakEntity).ReadWith` | todo |
-| `WeakEntity::new_invalid` | assoc-fn | 928 |  | `NewWeakEntityInvalid` | todo |
-| `LeakDetectorSnapshot` | struct | 1053 | feat:test-support | `LeakDetectorSnapshot` | todo |
+| `EntityId` | struct | 30 |  | `EntityID` | done |
+| `EntityId::as_non_zero_u64` | method | 41 |  | `(EntityID).AsNonZeroU64` | done |
+| `EntityId::as_u64` | method | 46 |  | `(EntityID).AsU64` | done |
+| `AnyEntity` | struct | 347 |  | `AnyEntity` | done |
+| `AnyEntity::entity_id` | method | 379 |  | `(AnyEntity).EntityID` | done |
+| `AnyEntity::entity_type` | method | 385 |  | `(AnyEntity).EntityType` | done |
+| `AnyEntity::downgrade` | method | 390 |  | `(AnyEntity).Downgrade` | done |
+| `AnyEntity::downcast` | method | 400 |  | `(AnyEntity).Downcast` | done |
+| `Entity` | struct | 515 |  | `Entity` | done |
+| `Entity::entity_id` | method | 544 |  | `(Entity).EntityID` | done |
+| `Entity::downgrade` | method | 550 |  | `(Entity).Downgrade` | done |
+| `Entity::into_any` | method | 559 |  | `(Entity).IntoAny` | done |
+| `Entity::read` | method | 565 |  | `(Entity).Read` | done |
+| `Entity::read_with` | method | 571 |  | `(Entity).ReadWith` | done |
+| `Entity::update` | method | 577 |  | `(Entity).Update` | done |
+| `Entity::as_mut` | method | 587 |  | `(Entity).AsMut` | done |
+| `Entity::write` | method | 592 |  | `(Entity).Write` | done |
+| `Entity::update_in` | method | 603 |  | `(Entity).UpdateIn` | done |
+| `AnyWeakEntity` | struct | 670 |  | `AnyWeakEntity` | done |
+| `AnyWeakEntity::entity_id` | method | 679 |  | `(AnyWeakEntity).EntityID` | done |
+| `AnyWeakEntity::is_upgradable` | method | 684 |  | `(AnyWeakEntity).IsUpgradable` | done |
+| `AnyWeakEntity::upgrade` | method | 694 |  | `(AnyWeakEntity).Upgrade` | done |
+| `AnyWeakEntity::assert_released` | method | 749 | feat:test-support | `(AnyWeakEntity).AssertReleased` | done |
+| `AnyWeakEntity::new_invalid` | assoc-fn | 773 |  | `NewAnyWeakEntityInvalid` | done |
+| `WeakEntity` | struct | 845 |  | `WeakEntity` | done |
+| `WeakEntity::upgrade` | method | 872 |  | `(WeakEntity).Upgrade` | done |
+| `WeakEntity::update` | method | 883 |  | `(WeakEntity).Update` | done |
+| `WeakEntity::update_in` | method | 899 |  | `(WeakEntity).UpdateIn` | done |
+| `WeakEntity::read_with` | method | 918 |  | `(WeakEntity).ReadWith` | done |
+| `WeakEntity::new_invalid` | assoc-fn | 928 |  | `NewWeakEntityInvalid` | done |
+| `LeakDetectorSnapshot` | struct | 1053 | feat:test-support | `LeakDetectorSnapshot` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_accessed_entity_scopes` | test | 1305 |  | `TestEntityMap_AccessedEntityScopes` | todo |
-| `test_entity_map_slot_assignment_before_cleanup` | test | 1337 |  | `TestEntityMap_EntityMapSlotAssignmentBeforeCleanup` | todo |
-| `test_entity_map_weak_upgrade_before_cleanup` | test | 1360 |  | `TestEntityMap_EntityMapWeakUpgradeBeforeCleanup` | todo |
-| `test_leak_detector_snapshot_no_leaks` | test | 1385 |  | `TestEntityMap_LeakDetectorSnapshotNoLeaks` | todo |
-| `test_leak_detector_snapshot_detects_new_leak` | test | 1404 |  | `TestEntityMap_LeakDetectorSnapshotDetectsNewLeak` | todo |
+| `test_accessed_entity_scopes` | test | 1305 |  | `TestEntityMap_AccessedEntityScopes` | done |
+| `test_entity_map_slot_assignment_before_cleanup` | test | 1337 |  | `TestEntityMap_EntityMapSlotAssignmentBeforeCleanup` | done |
+| `test_entity_map_weak_upgrade_before_cleanup` | test | 1360 |  | `TestEntityMap_EntityMapWeakUpgradeBeforeCleanup` | done |
+| `test_leak_detector_snapshot_no_leaks` | test | 1385 |  | `TestEntityMap_LeakDetectorSnapshotNoLeaks` | done |
+| `test_leak_detector_snapshot_detects_new_leak` | test | 1404 |  | `TestEntityMap_LeakDetectorSnapshotDetectsNewLeak` | done |
 
 ## gpui/src/app/headless_app_context.rs
 
@@ -833,6 +833,11 @@ Go target: `app_visual_test_context.go` (package `gpui`)
 - `ActionBuildErrorBuildError.Unwrap` returns `errors.Unwrap(Err)`, upstream's `error.source()`.
 - assets.rs: `NoAssets` is `impl AssetSource for ()`; `RenderImage.String` is the Debug impl; `renderSize` is crate-private.
 - seeds.rs: `CalculateSeeds` returns `(iter.Seq[uint64], bool)`; panics "invalid ITERATIONS variable: ..." / "invalid SEED variable as integer: ...".
+- entity_map.rs: crate-private items are unexported: `entityMap` (`newEntityMap`, generic `reserve` / `insert` / `lease` / `endLease` / `read` plus erased `reserveErased` / `insertErased` / `leaseErased` / `endLeaseErased` / `readErased` for the AppContext primitives, access scopes, `takeDropped() []droppedEntity`, `leakDetectorSnapshot`, `assertNoNewLeaks`, `report`), `entityRefCounts` (slotmap port `entitySlotMap`: sentinel slot 0, key `version<<32|idx`, odd version while occupied), `leaseInner`, `lease[T]`, `slot[T]`, `leakDetector`, `handleID`. Entity state is stored as `*T` in `map[EntityID]any`. `extendAccessed` takes `[]EntityID`.
+- `AnyEntity.Downcast[T]() (Entity[T], bool)`: false leaves the handle with the caller (upstream's `Err(self)`). `AsNonZeroU64` returns `uint64` and panics on 0. `EntityID.String` is Display; the Debug form `EntityId(1v1)` is used in leak messages.
+- Handles per DESIGN 5.2: `AnyEntity{h *entityHandle}`; `Release` is idempotent and a no-op on the zero value; every other method panics on a zero or released handle. `runtime.AddCleanup` on each handle runs upstream's Drop path when a handle is collected without `Release`. `==` on strong handles compares handle identity; compare `EntityID()` for upstream's Eq / Ord / Hash. `AnyWeakEntity` is a plain value (id, `reflect.Type`, `weak.Pointer[entityRefCounts]`).
+- Leak detection (`cfg(any(test, gpui_leak_detection))`) is runtime: on in test binaries and when `GPUI_LEAK_DETECTION` is non-empty and not `0`; strict when it is `strict` or unset in a test binary. Strict mode also records entity handles, subscriptions and leases collected without `Release` / `Unsubscribe` / `Detach` / `endLease`; `report` (upstream `LeakDetector::drop`) panics with "Exited with leaked handles:" listing both. `LEAK_BACKTRACE` captures `runtime.Callers`; frames from `testing.tRunner` on are stripped as upstream strips `test::run_test_in_process`.
+- subscription.rs: `subscriberSet[K comparable, C]` / `singleSubscriberSet[C]` keep one id-ordered list per emitter in a Go map (nothing iterates across emitters, so `Ord` on the key is not needed); `remove` returns an `iter.Seq[C]` that checks `Active` when iterated, as upstream's lazy `filter_map`; `retain` takes `func(*C) bool`. `Subscription` aliases one handle: `Unsubscribe` (Drop) is idempotent, `Detach` clears it, the zero value is empty. The four TestApp tests wait for `TestApp` (M0-test-contexts).
 
 ## Deviations registered here
 

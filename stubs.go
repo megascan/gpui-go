@@ -11,7 +11,9 @@ import (
 )
 
 // App is the GPUI application context (M0-app-core ports it).
-type App struct{}
+type App struct {
+	entities *entityMap
+}
 
 // FindDisplay returns the display with the given id, or nil (M0-app-core ports it).
 func (cx *App) FindDisplay(id DisplayID) PlatformDisplay {
@@ -273,160 +275,9 @@ const (
 // NativeViewID identifies a native view within its window (M0-window-a11y ports it).
 type NativeViewID uint64
 
-// EntityID is the identifier of an entity (M0-entities ports it).
-type EntityID uint64
-
-// AnyEntity is a type-erased strong handle to an entity (M0-entities ports it).
-type AnyEntity struct {
-	entityID EntityID
-}
-
-// EntityID returns the id of the entity (M0-entities ports it).
-func (a AnyEntity) EntityID() EntityID {
-	panic("gpui: unimplemented AnyEntity.EntityID")
-}
-
-// EntityType returns the type of the entity's state (M0-entities ports it).
-func (a AnyEntity) EntityType() reflect.Type {
-	panic("gpui: unimplemented AnyEntity.EntityType")
-}
-
-// Clone returns a new counted handle to the same entity (M0-entities ports it).
-func (a AnyEntity) Clone() AnyEntity {
-	panic("gpui: unimplemented AnyEntity.Clone")
-}
-
-// Release drops this handle (M0-entities ports it).
-func (a AnyEntity) Release() {
-	panic("gpui: unimplemented AnyEntity.Release")
-}
-
-// Downgrade returns a weak handle to the entity (M0-entities ports it).
-func (a AnyEntity) Downgrade() AnyWeakEntity {
-	panic("gpui: unimplemented AnyEntity.Downgrade")
-}
-
-// AnyWeakEntity is a type-erased weak handle to an entity (M0-entities ports it).
-type AnyWeakEntity struct {
-	entityID EntityID
-}
-
-// EntityID returns the id of the entity (M0-entities ports it).
-func (w AnyWeakEntity) EntityID() EntityID {
-	panic("gpui: unimplemented AnyWeakEntity.EntityID")
-}
-
-// Upgrade returns a strong handle if the entity is still alive (M0-entities ports it).
-func (w AnyWeakEntity) Upgrade() (AnyEntity, bool) {
-	panic("gpui: unimplemented AnyWeakEntity.Upgrade")
-}
-
-// Entity is a strong handle to an entity of type T (M0-entities ports it).
-type Entity[T any] struct {
-	AnyEntity
-}
-
-func entityFromAny[T any](handle AnyEntity) Entity[T] {
-	panic("gpui: unimplemented entityFromAny")
-}
-
-// EntityID returns the id of the entity (M0-entities ports it).
-func (e Entity[T]) EntityID() EntityID {
-	panic("gpui: unimplemented Entity.EntityID")
-}
-
-// Clone returns a new counted handle to the same entity (M0-entities ports it).
-func (e Entity[T]) Clone() Entity[T] {
-	panic("gpui: unimplemented Entity.Clone")
-}
-
-// Release drops this handle (M0-entities ports it).
-func (e Entity[T]) Release() {
-	panic("gpui: unimplemented Entity.Release")
-}
-
-// Downgrade returns a weak handle to the entity (M0-entities ports it).
-func (e Entity[T]) Downgrade() WeakEntity[T] {
-	panic("gpui: unimplemented Entity.Downgrade")
-}
-
-// IntoAny returns this handle as an AnyEntity; both values alias one counted handle (M0-entities ports it).
-func (e Entity[T]) IntoAny() AnyEntity {
-	panic("gpui: unimplemented Entity.IntoAny")
-}
-
-// Read returns the entity's state (M0-entities ports it).
-func (e Entity[T]) Read(cx *App) *T {
-	panic("gpui: unimplemented Entity.Read")
-}
-
-// ReadWith reads the entity's state with a callback (M0-entities ports it).
-func (e Entity[T]) ReadWith[R any](cx AppContext, f func(entity *T, cx *App) R) R {
-	panic("gpui: unimplemented Entity.ReadWith")
-}
-
-// Update updates the entity's state (M0-entities ports it).
-func (e Entity[T]) Update(cx AppContext, update func(entity *T, cx *Context[T])) {
-	panic("gpui: unimplemented Entity.Update")
-}
-
-// UpdateR updates the entity's state and returns the callback's result (M0-entities ports it).
-func (e Entity[T]) UpdateR[R any](cx AppContext, update func(entity *T, cx *Context[T]) R) R {
-	panic("gpui: unimplemented Entity.UpdateR")
-}
-
-// UpdateIn updates the entity's state with access to the context's window (M0-entities ports it).
-func (e Entity[T]) UpdateIn(cx VisualContext, update func(entity *T, window *Window, cx *Context[T])) error {
-	panic("gpui: unimplemented Entity.UpdateIn")
-}
-
-// UpdateInR updates the entity's state with access to the window and returns the result (M0-entities ports it).
-func (e Entity[T]) UpdateInR[R any](cx VisualContext, update func(entity *T, window *Window, cx *Context[T]) R) (R, error) {
-	panic("gpui: unimplemented Entity.UpdateInR")
-}
-
 // IntoAnyElement renders the entity as a view; *T must implement Render[T] (M0-element ports it).
 func (e Entity[T]) IntoAnyElement() AnyElement {
 	panic("gpui: unimplemented Entity.IntoAnyElement")
-}
-
-// WeakEntity is a weak handle to an entity of type T (M0-entities ports it).
-type WeakEntity[T any] struct {
-	AnyWeakEntity
-}
-
-// Upgrade returns a strong handle if the entity is still alive (M0-entities ports it).
-func (w WeakEntity[T]) Upgrade() (Entity[T], bool) {
-	panic("gpui: unimplemented WeakEntity.Upgrade")
-}
-
-// Update updates the entity's state if it is still alive (M0-entities ports it).
-func (w WeakEntity[T]) Update(cx AppContext, update func(entity *T, cx *Context[T])) error {
-	panic("gpui: unimplemented WeakEntity.Update")
-}
-
-// UpdateR updates the entity's state if it is still alive and returns the result (M0-entities ports it).
-func (w WeakEntity[T]) UpdateR[R any](cx AppContext, update func(entity *T, cx *Context[T]) R) (R, error) {
-	panic("gpui: unimplemented WeakEntity.UpdateR")
-}
-
-type slot[T any] struct {
-	Entity[T]
-}
-
-// Subscription keeps a callback registered until Unsubscribe or Detach (M0-entities ports it).
-type Subscription struct {
-	unsubscribe func()
-}
-
-// Unsubscribe removes the callback, as dropping the Subscription does upstream (M0-entities ports it).
-func (s Subscription) Unsubscribe() {
-	panic("gpui: unimplemented Subscription.Unsubscribe")
-}
-
-// Detach keeps the callback registered for the lifetime of its emitter (M0-entities ports it).
-func (s Subscription) Detach() {
-	panic("gpui: unimplemented Subscription.Detach")
 }
 
 // BackgroundExecutor spawns tasks on background threads (M0-executors ports it).
