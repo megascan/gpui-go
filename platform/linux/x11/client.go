@@ -324,6 +324,11 @@ func (c *X11Connection) Close() {
 		state.xdpSource = nil
 	}
 	for _, window := range state.windows {
+		if ws := window.window.state; ws != nil && ws.renderer != nil {
+			renderer := ws.renderer
+			ws.renderer = nil
+			renderer.Destroy()
+		}
 		if rs := window.refreshState; rs != nil {
 			window.refreshState = nil
 			if rs.periodic {
@@ -2547,3 +2552,7 @@ func (t ximTransport) SendClientMessage(window, messageType uint32, format uint8
 }
 
 func (t ximTransport) Flush() error { return nil }
+
+func scapScreenSources(executor gpui.ForegroundExecutor) *scheduler.OneshotReceiver[scheduler.Result[[]gpui.ScreenCaptureSource]] {
+	panic("gpui: unimplemented ScapScreenSources")
+}

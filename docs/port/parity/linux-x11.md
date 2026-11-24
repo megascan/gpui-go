@@ -39,8 +39,10 @@ Go target: `platform/linux/x11/clipboard.go` (package `x11`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `ClipboardKind` | enum | 1182 |  | `ClipboardKind` | todo |
-| `Error` | enum | 1218 |  | `Error` | todo |
+| `ClipboardKind` | enum | 1182 |  | `ClipboardKind` | done |
+| `Error` | enum | 1218 |  | `Error` | done |
+| `Inner::handle_selection_request` | method | 671 |  | `clipboardInner.handleSelectionRequest` | dev:D-X11-CLIPBOARD |
+| `Clipboard::set_image` | method | 1012 |  | `Clipboard.SetImage` | dev:D-X11-CLIPBOARD |
 
 ## gpui_linux/src/linux/x11/event.rs
 
@@ -56,9 +58,9 @@ Go target: `platform/linux/x11/window.go` (package `x11`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Callbacks` | struct | 245 |  | `Callbacks` | todo |
-| `X11WindowState` | struct | 259 |  | `X11WindowState` | todo |
-| `X11WindowState::new` | assoc-fn | 464 |  | `NewX11WindowState` | todo |
+| `Callbacks` | struct | 245 |  | `Callbacks` | done |
+| `X11WindowState` | struct | 259 |  | `X11WindowState` | done |
+| `X11WindowState::new` | assoc-fn | 464 |  | `NewX11WindowState` | done |
 
 ## gpui_linux/src/linux/x11/xim_handler.rs
 
@@ -70,3 +72,8 @@ Go target: `platform/linux/x11/xim_handler.go` (package `x11`)
 | `XimHandler` | struct | 12 |  | `XimHandler` | done |
 | `XimHandler::new` | assoc-fn | 21 |  | `NewXimHandler` | done |
 
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-X11-CLIPBOARD | Selection serving answers the advertised text/plain;charset=utf-8 / UTF-8 targets from UTF8_STRING data, uses the target as the property for ICCCM requests with property None, and sends data larger than the server's request limit (capped at 256 KiB) through INCR; reading caps INCR at 512 MiB and 30 s and reports INCR TARGETS replies as ATOM; SetImage offers the image under its own format's MIME atom instead of always image/png. A failed dialog setup also removes the dialog from its parent's children | `gpui_linux/src/linux/x11/clipboard.rs:671`, `:1012`, read_single; `x11/window.rs` X11WindowState::new | Upstream bugs found in review: refused pastes, BadLength connection loss, unbounded memory, mislabelled image bytes, parent left blocked |
