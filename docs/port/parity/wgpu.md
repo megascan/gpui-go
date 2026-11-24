@@ -39,13 +39,13 @@ Go target: `render/wgpu/wgpu_context.go` (package `wgpu`), tests in `wgpu_contex
 | `DeviceErrorState::observe_error` | method | 70 |  | `(DeviceErrorState).ObserveError` | done |
 | `DeviceErrorState::current_generation` | method | 81 |  | `(DeviceErrorState).CurrentGeneration` | done |
 | `WgpuBackend` | enum | 87 |  | `WgpuBackend` | done |
-| `WebBackendPreference` | enum | 95 | wasm | `WebBackendPreference` | blocked:M4-web-wgpu-js |
-| `PreparedWebGraphics` | struct | 103 | wasm | `PreparedWebGraphics` | blocked:M4-web-wgpu-js |
+| `WebBackendPreference` | enum | 95 | wasm | `WebBackendPreference` | done |
+| `PreparedWebGraphics` | struct | 103 | wasm | `PreparedWebGraphics` | done |
 | `CompositorGpuHint` | struct | 126 |  | `CompositorGPUHint` | done |
 | `WgpuContext::new` | assoc-fn | 133 | wasm | `NewWgpuContext` | dev:D-WGPUCONFIGURE |
 | `WgpuContext::new_rejecting_software` | assoc-fn | 143 | wasm | `NewWgpuContextRejectingSoftware` | dev:D-WGPUCONFIGURE |
 | `WgpuContext::supports_transient_attachments` | method | 341 |  | `(WgpuContext).SupportsTransientAttachments` | dev:L-WGPUVER |
-| `WgpuContext::new_web` | assoc-fn | 354 | wasm | `NewWgpuContextWeb` | blocked:M4-web-wgpu-js |
+| `WgpuContext::new_web` | assoc-fn | 354 | wasm | `NewWgpuContextWeb` | dev:D-WEBGLPENDING |
 | `WgpuContext::instance` | assoc-fn | 486 | wasm | `WgpuContextInstance` | done |
 | `WgpuContext::check_compatible_with_surface` | method | 496 |  | `(WgpuContext).CheckCompatibleWithSurface` | done |
 | `WgpuContext::backend` | method | 731 |  | `(WgpuContext).Backend` | done |
@@ -71,7 +71,7 @@ Go target: `render/wgpu/wgpu_renderer.go` (package `wgpu`), tests in `wgpu_rende
 | `GpuContext` | type | 182 |  | `GPUContext` | done |
 | `WgpuRenderer` | struct | 253 |  | `WgpuRenderer` | done |
 | `WgpuRenderer::new` | assoc-fn | 299 | wasm | `NewWgpuRenderer` | done |
-| `WgpuRenderer::new_from_canvas` | assoc-fn | 365 | wasm | `NewWgpuRendererFromCanvas` | blocked:M4-web-wgpu-js |
+| `WgpuRenderer::new_from_canvas` | assoc-fn | 365 | wasm | `NewWgpuRendererFromCanvas` | done |
 | `WgpuRenderer::new_from_surface` | assoc-fn | 379 | wasm | `NewWgpuRendererFromSurface` | done |
 | `WgpuRenderer::update_drawable_size` | method | 1003 |  | `(WgpuRenderer).UpdateDrawableSize` | done |
 | `WgpuRenderer::set_subpixel_layout` | method | 1028 |  | `(WgpuRenderer).SetSubpixelLayout` | done |
@@ -111,3 +111,4 @@ Go target: `render/wgpu/wgpu_renderer.go` (package `wgpu`), tests in `wgpu_rende
 | D-WGPUCAPS | wgpu-native's C API has no adapter texture-format-features or downlevel-capabilities query; the webgpu facade answers `GetTextureFormatFeatures` from the usages WebGPU guarantees for the formats gpui uses (Bgra8Unorm, Rgba8Unorm, R8Unorm, Rgba32Uint, Depth32Float) and `GetDownlevelCapabilities` on GL from `MaxStorageBuffersPerShaderStage > 0` (VERTEX_STORAGE and FRAGMENT_STORAGE together). Affects `select_color_texture_format`, `headless_target_format` and `requires_texture_instance_data` | `gpui_wgpu/src/wgpu_context.rs:279-293`, `:693-747` | `render/wgpu/internal/gpu/webgpu/webgpu.go` |
 | D-WGPUCONFIGURE | wgpu-native v29 handles every `wgpuSurfaceConfigure` error with `handle_error_fatal` (process abort) instead of the device error sink, and the binding has no uncaptured-error callback. The webgpu facade's `Surface.Configure` therefore runs wgpu-core's `configure_surface` / `validate_surface_configuration` checks in Go first (view formats differing only in sRGB-ness, TooLarge against the device's `max_texture_dimension_2d`, present mode with Undefined as Fifo, format, alpha mode with Auto falling back to Opaque / Inherit, ZeroArea, in that order and with wgpu-core's messages) and reports a failure into the device's error scope without calling wgpu-native, so `try_adapter_with_surface` falls through to the next adapter as upstream. Not pre-checked, still fatal: the usage check (the binding drops `SurfaceCapabilities::usages`), the SURFACE_VIEW_FORMATS downlevel flag, colour space, and hal-level configure / GPU-wait failures | `gpui_wgpu/src/wgpu_context.rs:657-691`; `wgpu-core/src/device/resource.rs` `configure_surface`, `device/surface_config.rs`; wgpu-native v29.0.1.1 `src/lib.rs` `wgpuSurfaceConfigure` | `render/wgpu/wgpu_context.go`, `render/wgpu/internal/gpu/webgpu/webgpu.go` |
 | D-WGPUATLASBOUNDS | `insert` rejects a tile whose bytes are fewer than width x height x bytes-per-pixel (1 for monochrome, 4 otherwise) with an error before allocating, instead of queueing a short upload that fails later in `write_texture`; `allocate` returns None for a tile larger than `max_texture_dimension_2d` without creating a texture, and drops a freshly pushed texture when its first allocation fails, where upstream keeps an empty clamped texture in storage forever | `gpui_wgpu/src/wgpu_atlas.rs:128-137`, `:162-185`, `:256-265` | `render/wgpu/wgpu_atlas.go` |
+| D-WEBGLPENDING | `NewWgpuContextWeb` (in wgpu_context_js.go) awaits adapter and device promises on a goroutine and parks the caller's `scheduler.Awaiter` on a oneshot. Until M4-web-webgl, the WebGL2 branch (preference WebGl, or Auto without `navigator.gpu`) returns `errWebGlUnavailable` instead of a GL context. M4-web-webgl replaces `wgpuContextNewWebGl` and moves the row to `done` | `gpui_wgpu/src/wgpu_context.rs:354-434` | `render/wgpu/wgpu_context_js.go` |

@@ -1,4 +1,4 @@
-//go:build linux
+//go:build linux || js
 
 // Package webgpu implements the gpu facade over github.com/oliverbestmann/webgpu (wgpu-native).
 package webgpu
@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"slices"
 	"sync"
-	"unsafe"
 
 	"github.com/megascan/gpui-go/render/wgpu/internal/gpu"
 	"github.com/oliverbestmann/webgpu/wgpu"
@@ -78,26 +77,14 @@ func (i *instance) RequestAdapter(options *gpu.RequestAdapterOptions) (gpu.Adapt
 }
 
 func (i *instance) CreateSurface(target gpu.SurfaceTarget) (gpu.Surface, error) {
-	desc := &wgpu.SurfaceDescriptor{}
-	switch {
-	case target.WaylandSurface != 0:
-		desc.WaylandSurface = &wgpu.SurfaceSourceWaylandSurface{
-			Display: nativePointer(&target.WaylandDisplay),
-			Surface: nativePointer(&target.WaylandSurface),
-		}
-	case target.XcbWindow != 0:
-		desc.XcbWindow = &wgpu.SurfaceSourceXcbWindow{
-			Connection: nativePointer(&target.XcbConnection),
-			Window:     target.XcbWindow,
-		}
-	case target.XlibWindow != 0:
-		desc.XlibWindow = &wgpu.SurfaceSourceXlibWindow{
-			Display: nativePointer(&target.XlibDisplay),
-			Window:  target.XlibWindow,
-		}
-	default:
-		return nil, errors.New("unsupported surface target")
+	desc, err := surfaceDescriptor(target)
+	if err != nil {
+		return nil, err
 	}
+	return i.createSurface(desc)
+}
+
+func (i *instance) createSurface(desc *wgpu.SurfaceDescriptor) (gpu.Surface, error) {
 	var created *wgpu.Surface
 	var err error
 	func() {
@@ -112,10 +99,6 @@ func (i *instance) CreateSurface(target gpu.SurfaceTarget) (gpu.Surface, error) 
 		return nil, err
 	}
 	return &surface{raw: created}, nil
-}
-
-func nativePointer(handle *uintptr) unsafe.Pointer {
-	return *(*unsafe.Pointer)(unsafe.Pointer(handle))
 }
 
 func (i *instance) Release() {
@@ -135,7 +118,7 @@ func (a *adapter) GetInfo() gpu.AdapterInfo {
 		DeviceType: deviceType(info.AdapterType),
 		Driver:     info.Vendor,
 		DriverInfo: info.Description,
-		Backend:    backend(info.BackendType),
+		Backend:    adapterBackend(info),
 	}
 }
 
@@ -194,7 +177,7 @@ func (a *adapter) GetTextureFormatFeatures(format gpu.TextureFormat) gpu.Texture
 
 func (a *adapter) GetDownlevelCapabilities() gpu.DownlevelCapabilities {
 	flags := gpu.DownlevelFlagsVertexStorage | gpu.DownlevelFlagsFragmentStorage
-	if backend(a.raw.GetInfo().BackendType) == gpu.BackendGl && a.raw.GetLimits().MaxStorageBuffersPerShaderStage == 0 {
+	if adapterBackend(a.raw.GetInfo()) == gpu.BackendGl && a.raw.GetLimits().MaxStorageBuffersPerShaderStage == 0 {
 		flags = 0
 	}
 	return gpu.DownlevelCapabilities{Flags: flags}
