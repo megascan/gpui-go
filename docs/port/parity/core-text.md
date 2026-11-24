@@ -41,85 +41,101 @@ Go target: `text_system.go` (package `gpui`), tests in `text_system_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `FontId` | struct | 44 |  | `FontID` | todo |
-| `FontFamilyId` | struct | 48 |  | `FontFamilyID` | todo |
-| `SUBPIXEL_VARIANTS_X` | const | 51 |  | `SubpixelVariantsX` | todo |
-| `SUBPIXEL_VARIANTS_Y` | const | 54 |  | `SubpixelVariantsY` | todo |
-| `underline_y_offset` | fn | 60 |  | `UnderlineYOffset` | todo |
-| `FallbackFontClass` | enum | 69 |  | `FallbackFontClass` | todo |
-| `MissingGlyph` | struct | 78 |  | `MissingGlyph` | todo |
-| `MissingGlyph::new` | assoc-fn | 85 |  | `NewMissingGlyph` | todo |
-| `MissingGlyph::grapheme` | method | 93 |  | `(MissingGlyph).Grapheme` | todo |
-| `MissingGlyph::font_class` | method | 98 |  | `(MissingGlyph).FontClass` | todo |
-| `MissingGlyphSink` | trait | 104 |  | `MissingGlyphSink` | todo |
-| `MissingGlyphSink::report` | trait-method | 106 |  | `MissingGlyphSink.Report` | todo |
-| `TextSystem` | struct | 232 |  | `TextSystem` | todo |
-| `TextSystem::new` | assoc-fn | 253 |  | `NewTextSystem` | todo |
-| `TextSystem::all_font_names` | method | 291 |  | `(TextSystem).AllFontNames` | todo |
-| `TextSystem::add_fonts` | method | 302 |  | `(TextSystem).AddFonts` | todo |
-| `TextSystem::get_font_for_id` | method | 336 |  | `(TextSystem).GetFontForID` | todo |
-| `TextSystem::resolve_font` | method | 352 |  | `(TextSystem).ResolveFont` | todo |
-| `TextSystem::prewarm_fonts` | method | 366 |  | `(TextSystem).PrewarmFonts` | todo |
-| `TextSystem::bounding_box` | method | 380 |  | `(TextSystem).BoundingBox` | todo |
-| `TextSystem::typographic_bounds` | method | 385 |  | `(TextSystem).TypographicBounds` | todo |
-| `TextSystem::advance` | method | 404 |  | `(TextSystem).Advance` | todo |
-| `TextSystem::layout_width` | method | 417 |  | `(TextSystem).LayoutWidth` | todo |
-| `TextSystem::em_width` | method | 435 |  | `(TextSystem).EmWidth` | todo |
-| `TextSystem::em_advance` | method | 442 |  | `(TextSystem).EmAdvance` | todo |
-| `TextSystem::ch_width` | method | 449 |  | `(TextSystem).ChWidth` | todo |
-| `TextSystem::ch_advance` | method | 456 |  | `(TextSystem).ChAdvance` | todo |
-| `TextSystem::units_per_em` | method | 463 |  | `(TextSystem).UnitsPerEm` | todo |
-| `TextSystem::cap_height` | method | 468 |  | `(TextSystem).CapHeight` | todo |
-| `TextSystem::x_height` | method | 473 |  | `(TextSystem).XHeight` | todo |
-| `TextSystem::ascent` | method | 478 |  | `(TextSystem).Ascent` | todo |
-| `TextSystem::descent` | method | 484 |  | `(TextSystem).Descent` | todo |
-| `TextSystem::baseline_offset` | method | 489 |  | `(TextSystem).BaselineOffset` | todo |
-| `TextSystem::line_wrapper` | method | 516 |  | `(TextSystem).LineWrapper` | todo |
-| `WindowTextSystem` | struct | 635 |  | `WindowTextSystem` | todo |
-| `WindowTextSystem::new` | assoc-fn | 644 |  | `NewWindowTextSystem` | todo |
-| `WindowTextSystem::shape_line` | method | 673 |  | `(WindowTextSystem).ShapeLine` | todo |
-| `WindowTextSystem::shape_text` | method | 717 |  | `(WindowTextSystem).ShapeText` | todo |
-| `WindowTextSystem::layout_line` | method | 853 |  | `(WindowTextSystem).LayoutLine` | todo |
-| `WindowTextSystem::layout_width` | method | 909 |  | `(WindowTextSystem).LayoutWidth` | todo |
-| `WindowTextSystem::em_layout_width` | method | 926 |  | `(WindowTextSystem).EmLayoutWidth` | todo |
-| `LineWrapperHandle` | struct | 938 |  | `LineWrapperHandle` | todo |
-| `FontWeight` | struct | 975 |  | `FontWeight` | todo |
-| `FontWeight::THIN` | assoc-const | 1006 |  | `FontWeightThin` | todo |
-| `FontWeight::EXTRA_LIGHT` | assoc-const | 1008 |  | `FontWeightExtraLight` | todo |
-| `FontWeight::LIGHT` | assoc-const | 1010 |  | `FontWeightLight` | todo |
-| `FontWeight::NORMAL` | assoc-const | 1012 |  | `FontWeightNormal` | todo |
-| `FontWeight::MEDIUM` | assoc-const | 1014 |  | `FontWeightMedium` | todo |
-| `FontWeight::SEMIBOLD` | assoc-const | 1016 |  | `FontWeightSemibold` | todo |
-| `FontWeight::BOLD` | assoc-const | 1018 |  | `FontWeightBold` | todo |
-| `FontWeight::EXTRA_BOLD` | assoc-const | 1020 |  | `FontWeightExtraBold` | todo |
-| `FontWeight::BLACK` | assoc-const | 1022 |  | `FontWeightBlack` | todo |
-| `FontWeight::ALL` | assoc-const | 1025 |  | `FontWeightAll` | todo |
-| `FontStyle` | enum | 1057 |  | `FontStyle` | todo |
-| `TextRun` | struct | 1075 |  | `TextRun` | todo |
-| `GlyphId` | struct | 1102 |  | `GlyphID` | todo |
-| `RenderGlyphParams` | struct | 1111 |  | `RenderGlyphParams` | todo |
-| `Font` | struct | 1139 |  | `Font` | todo |
-| `font` | fn | 1165 |  | `NewFont` | todo |
-| `Font::bold` | method | 1177 |  | `(Font).Bold` | todo |
-| `Font::italic` | method | 1183 |  | `(Font).Italic` | todo |
-| `FontMetrics` | struct | 1192 |  | `FontMetrics` | todo |
-| `FontMetrics::ascent` | method | 1225 |  | `(FontMetrics).Ascent` | todo |
-| `FontMetrics::descent` | method | 1230 |  | `(FontMetrics).Descent` | todo |
-| `FontMetrics::line_gap` | method | 1235 |  | `(FontMetrics).LineGap` | todo |
-| `FontMetrics::underline_position` | method | 1240 |  | `(FontMetrics).UnderlinePosition` | todo |
-| `FontMetrics::underline_thickness` | method | 1245 |  | `(FontMetrics).UnderlineThickness` | todo |
-| `FontMetrics::cap_height` | method | 1250 |  | `(FontMetrics).CapHeight` | todo |
-| `FontMetrics::x_height` | method | 1255 |  | `(FontMetrics).XHeight` | todo |
-| `FontMetrics::bounding_box` | method | 1260 |  | `(FontMetrics).BoundingBox` | todo |
-| `font_name_with_fallbacks` | fn | 1267 |  | `FontNameWithFallbacks` | todo |
-| `font_name_with_fallbacks_shared` | fn | 1281 |  | `FontNameWithFallbacksShared` | todo |
+| `FontId` | struct | 44 |  | `FontID` | done |
+| `FontFamilyId` | struct | 48 |  | `FontFamilyID` | done |
+| `SUBPIXEL_VARIANTS_X` | const | 51 |  | `SubpixelVariantsX` | done |
+| `SUBPIXEL_VARIANTS_Y` | const | 54 |  | `SubpixelVariantsY` | done |
+| `underline_y_offset` | fn | 60 |  | `UnderlineYOffset` | done |
+| `FallbackFontClass` | enum | 69 |  | `FallbackFontClass` | done |
+| `MissingGlyph` | struct | 78 |  | `MissingGlyph` | done |
+| `MissingGlyph::new` | assoc-fn | 85 |  | `NewMissingGlyph` | done |
+| `MissingGlyph::grapheme` | method | 93 |  | `(MissingGlyph).Grapheme` | done |
+| `MissingGlyph::font_class` | method | 98 |  | `(MissingGlyph).FontClass` | done |
+| `MissingGlyphSink` | trait | 104 |  | `MissingGlyphSink` | done |
+| `MissingGlyphSink::report` | trait-method | 106 |  | `MissingGlyphSink.Report` | done |
+| `TextSystem` | struct | 232 |  | `TextSystem` | done |
+| `TextSystem::new` | assoc-fn | 253 |  | `NewTextSystem` | done |
+| `TextSystem::all_font_names` | method | 291 |  | `(TextSystem).AllFontNames` | done |
+| `TextSystem::add_fonts` | method | 302 |  | `(TextSystem).AddFonts` | done |
+| `TextSystem::get_font_for_id` | method | 336 |  | `(TextSystem).GetFontForID` | done |
+| `TextSystem::resolve_font` | method | 352 |  | `(TextSystem).ResolveFont` | done |
+| `TextSystem::prewarm_fonts` | method | 366 |  | `(TextSystem).PrewarmFonts` | done |
+| `TextSystem::bounding_box` | method | 380 |  | `(TextSystem).BoundingBox` | done |
+| `TextSystem::typographic_bounds` | method | 385 |  | `(TextSystem).TypographicBounds` | done |
+| `TextSystem::advance` | method | 404 |  | `(TextSystem).Advance` | done |
+| `TextSystem::layout_width` | method | 417 |  | `(TextSystem).LayoutWidth` | done |
+| `TextSystem::em_width` | method | 435 |  | `(TextSystem).EmWidth` | done |
+| `TextSystem::em_advance` | method | 442 |  | `(TextSystem).EmAdvance` | done |
+| `TextSystem::ch_width` | method | 449 |  | `(TextSystem).ChWidth` | done |
+| `TextSystem::ch_advance` | method | 456 |  | `(TextSystem).ChAdvance` | done |
+| `TextSystem::units_per_em` | method | 463 |  | `(TextSystem).UnitsPerEm` | done |
+| `TextSystem::cap_height` | method | 468 |  | `(TextSystem).CapHeight` | done |
+| `TextSystem::x_height` | method | 473 |  | `(TextSystem).XHeight` | done |
+| `TextSystem::ascent` | method | 478 |  | `(TextSystem).Ascent` | done |
+| `TextSystem::descent` | method | 484 |  | `(TextSystem).Descent` | done |
+| `TextSystem::baseline_offset` | method | 489 |  | `(TextSystem).BaselineOffset` | done |
+| `TextSystem::line_wrapper` | method | 516 |  | `(TextSystem).LineWrapper` | done |
+| `WindowTextSystem` | struct | 635 |  | `WindowTextSystem` | done |
+| `WindowTextSystem::new` | assoc-fn | 644 |  | `NewWindowTextSystem` | done |
+| `WindowTextSystem::shape_line` | method | 673 |  | `(WindowTextSystem).ShapeLine` | done |
+| `WindowTextSystem::shape_text` | method | 717 |  | `(WindowTextSystem).ShapeText` | done |
+| `WindowTextSystem::layout_line` | method | 853 |  | `(WindowTextSystem).LayoutLine` | done |
+| `WindowTextSystem::layout_width` | method | 909 |  | `(WindowTextSystem).LayoutWidth` | done |
+| `WindowTextSystem::em_layout_width` | method | 926 |  | `(WindowTextSystem).EmLayoutWidth` | done |
+| `LineWrapperHandle` | struct | 938 |  | `LineWrapperHandle` | done |
+| `FontWeight` | struct | 975 |  | `FontWeight` | done |
+| `FontWeight::THIN` | assoc-const | 1006 |  | `FontWeightThin` | done |
+| `FontWeight::EXTRA_LIGHT` | assoc-const | 1008 |  | `FontWeightExtraLight` | done |
+| `FontWeight::LIGHT` | assoc-const | 1010 |  | `FontWeightLight` | done |
+| `FontWeight::NORMAL` | assoc-const | 1012 |  | `FontWeightNormal` | done |
+| `FontWeight::MEDIUM` | assoc-const | 1014 |  | `FontWeightMedium` | done |
+| `FontWeight::SEMIBOLD` | assoc-const | 1016 |  | `FontWeightSemibold` | done |
+| `FontWeight::BOLD` | assoc-const | 1018 |  | `FontWeightBold` | done |
+| `FontWeight::EXTRA_BOLD` | assoc-const | 1020 |  | `FontWeightExtraBold` | done |
+| `FontWeight::BLACK` | assoc-const | 1022 |  | `FontWeightBlack` | done |
+| `FontWeight::ALL` | assoc-const | 1025 |  | `FontWeightAll` | done |
+| `FontStyle` | enum | 1057 |  | `FontStyle` | done |
+| `TextRun` | struct | 1075 |  | `TextRun` | done |
+| `GlyphId` | struct | 1102 |  | `GlyphID` | done |
+| `RenderGlyphParams` | struct | 1111 |  | `RenderGlyphParams` | done |
+| `Font` | struct | 1139 |  | `Font` | done |
+| `font` | fn | 1165 |  | `NewFont` | done |
+| `Font::bold` | method | 1177 |  | `(Font).Bold` | done |
+| `Font::italic` | method | 1183 |  | `(Font).Italic` | done |
+| `FontMetrics` | struct | 1192 |  | `FontMetrics` | done |
+| `FontMetrics::ascent` | method | 1225 |  | `(FontMetrics).AscentPixels` | dev:D-FIELDMETHOD |
+| `FontMetrics::descent` | method | 1230 |  | `(FontMetrics).DescentPixels` | dev:D-FIELDMETHOD |
+| `FontMetrics::line_gap` | method | 1235 |  | `(FontMetrics).LineGapPixels` | dev:D-FIELDMETHOD |
+| `FontMetrics::underline_position` | method | 1240 |  | `(FontMetrics).UnderlinePositionPixels` | dev:D-FIELDMETHOD |
+| `FontMetrics::underline_thickness` | method | 1245 |  | `(FontMetrics).UnderlineThicknessPixels` | dev:D-FIELDMETHOD |
+| `FontMetrics::cap_height` | method | 1250 |  | `(FontMetrics).CapHeightPixels` | dev:D-FIELDMETHOD |
+| `FontMetrics::x_height` | method | 1255 |  | `(FontMetrics).XHeightPixels` | dev:D-FIELDMETHOD |
+| `FontMetrics::bounding_box` | method | 1260 |  | `(FontMetrics).BoundingBoxPixels` | dev:D-FIELDMETHOD |
+| `font_name_with_fallbacks` | fn | 1267 |  | `FontNameWithFallbacks` | done |
+| `font_name_with_fallbacks_shared` | fn | 1281 |  | `FontNameWithFallbacksShared` | done |
+| `MissingGlyphReceiver` | struct | 165 |  | `MissingGlyphReceiver` | done |
+| `MissingGlyphReceiver::recv` | method | 177 |  | `(MissingGlyphReceiver).Recv` | done |
+| `impl Drop for MissingGlyphReceiver` | impl | 224 |  | `(MissingGlyphReceiver).Close` | done |
+| `impl Drop for LineWrapperHandle` | impl | 943 |  | `(LineWrapperHandle).Release` | done |
+| `impl Deref for LineWrapperHandle` | impl | 957 |  | `LineWrapperHandle` | done |
+| `impl Deref for WindowTextSystem` | impl | 633 |  | `WindowTextSystem` | done |
+| `impl Display for FontWeight` | impl | 977 |  | `(FontWeight).String` | done |
+| `impl FromStr for FontWeight` | impl | 974 |  | `FontWeightFromStr` | done |
+| `impl Default for FontWeight` | impl | 989 |  | `DefaultFontWeight` | done |
+| `impl JsonSchema for FontWeight` | impl | 1037 |  | `(FontWeight).JSONSchema` | dev:D-SCHEMAKW |
+| `impl Display for FontStyle` | impl | 1068 |  | `(FontStyle).String` | done |
+| `impl Serialize for FontStyle` | impl | 1056 |  | `(FontStyle).MarshalText` | done |
+| `impl Deserialize for FontStyle` | impl | 1056 |  | `(FontStyle).UnmarshalText` | done |
+| `impl Default for TextRun` | impl | 1074 |  | `DefaultTextRun` | done |
+| `impl Default for Font` | impl | 1158 |  | `DefaultFont` | done |
+| `impl Hash for RenderGlyphParams` | impl | 1124 |  | `RenderGlyphParams` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `caches_resolved_font_fallbacks` | test | 1302 |  | `TestTextSystemFontResolutionTests_CachesResolvedFontFallbacks` | todo |
-| `pooled_line_wrappers_do_not_retain_text_system` | test | 1329 |  | `TestTextSystemLineWrapperPoolTests_PooledLineWrappersDoNotRetainTextSystem` | todo |
-| `bounds_retained_missing_glyphs` | test | 1351 |  | `TestTextSystemMissingGlyphTests_BoundsRetainedMissingGlyphs` | todo |
-| `dropping_receiver_closes_and_clears_reports` | test | 1373 |  | `TestTextSystemMissingGlyphTests_DroppingReceiverClosesAndClearsReports` | todo |
+| `caches_resolved_font_fallbacks` | test | 1302 |  | `TestTextSystemFontResolutionTests_CachesResolvedFontFallbacks` | done |
+| `pooled_line_wrappers_do_not_retain_text_system` | test | 1329 |  | `TestTextSystemLineWrapperPoolTests_PooledLineWrappersDoNotRetainTextSystem` | blocked:M0-line-wrapper |
+| `bounds_retained_missing_glyphs` | test | 1351 |  | `TestTextSystemMissingGlyphTests_BoundsRetainedMissingGlyphs` | done |
+| `dropping_receiver_closes_and_clears_reports` | test | 1373 |  | `TestTextSystemMissingGlyphTests_DroppingReceiverClosesAndClearsReports` | done |
 
 ## gpui/src/text_system/font_fallbacks.rs
 
@@ -127,9 +143,12 @@ Go target: `text_system_font_fallbacks.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `FontFallbacks` | struct | 9 |  | `FontFallbacks` | todo |
-| `FontFallbacks::fallback_list` | method | 13 |  | `(FontFallbacks).FallbackList` | todo |
-| `FontFallbacks::from_fonts` | assoc-fn | 18 |  | `FontFallbacksFromFonts` | todo |
+| `FontFallbacks` | struct | 9 |  | `FontFallbacks` | done |
+| `FontFallbacks::fallback_list` | method | 13 |  | `(FontFallbacks).FallbackList` | done |
+| `FontFallbacks::from_fonts` | assoc-fn | 18 |  | `FontFallbacksFromFonts` | done |
+| `impl Serialize for FontFallbacks` | impl | 8 |  | `(FontFallbacks).MarshalJSONTo` | done |
+| `impl Deserialize for FontFallbacks` | impl | 8 |  | `(FontFallbacks).UnmarshalJSONFrom` | done |
+| `impl JsonSchema for FontFallbacks` | impl | 8 |  | `(FontFallbacks).JSONSchema` | done |
 
 ## gpui/src/text_system/font_features.rs
 
@@ -137,10 +156,15 @@ Go target: `text_system_font_features.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `FontFeatures` | struct | 8 |  | `FontFeatures` | todo |
-| `FontFeatures::disable_ligatures` | assoc-fn | 21 |  | `FontFeaturesDisableLigatures` | todo |
-| `FontFeatures::tag_value_list` | method | 27 |  | `(FontFeatures).TagValueList` | todo |
-| `FontFeatures::is_calt_enabled` | method | 34 |  | `(FontFeatures).IsCaltEnabled` | todo |
+| `FontFeatures` | struct | 8 |  | `FontFeatures` | done |
+| `FontFeatures::disable_ligatures` | assoc-fn | 21 |  | `FontFeaturesDisableLigatures` | done |
+| `FontFeatures::tag_value_list` | method | 27 |  | `(FontFeatures).TagValueList` | done |
+| `FontFeatures::is_calt_enabled` | method | 34 |  | `(FontFeatures).IsCaltEnabled` | done |
+| `impl Default for FontFeatures` | impl | 10 |  | `DefaultFontFeatures` | done |
+| `impl Debug for FontFeatures` | impl | 44 |  | `(FontFeatures).String` | done |
+| `impl Deserialize for FontFeatures` | impl | 62 |  | `(FontFeatures).UnmarshalJSONFrom` | done |
+| `impl Serialize for FontFeatures` | impl | 131 |  | `(FontFeatures).MarshalJSONTo` | done |
+| `impl JsonSchema for FontFeatures` | impl | 146 |  | `(FontFeatures).JSONSchema` | dev:D-SCHEMAKW |
 
 ## gpui/src/text_system/line.rs
 
@@ -190,42 +214,46 @@ Go target: `text_system_line_layout.go` (package `gpui`), tests in `text_system_
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `LineLayout` | struct | 20 |  | `LineLayout` | todo |
-| `ShapedRun` | struct | 37 |  | `ShapedRun` | todo |
-| `ShapedGlyph` | struct | 46 |  | `ShapedGlyph` | todo |
-| `LineLayout::index_for_x` | method | 62 |  | `(LineLayout).IndexForX` | todo |
-| `LineLayout::closest_index_for_x` | method | 79 |  | `(LineLayout).ClosestIndexForX` | todo |
-| `LineLayout::x_for_index` | method | 109 |  | `(LineLayout).XForIndex` | todo |
-| `LineLayout::font_id_for_index` | method | 121 |  | `(LineLayout).FontIDForIndex` | todo |
-| `LineLayout::split_at` | method | 139 |  | `(LineLayout).SplitAt` | todo |
-| `WrappedLineLayout` | struct | 297 |  | `WrappedLineLayout` | todo |
-| `WrapBoundary` | struct | 310 |  | `WrapBoundary` | todo |
-| `WrappedLineLayout::len` | method | 319 |  | `(WrappedLineLayout).Len` | todo |
-| `WrappedLineLayout::width` | method | 324 |  | `(WrappedLineLayout).Width` | todo |
-| `WrappedLineLayout::size` | method | 332 |  | `(WrappedLineLayout).Size` | todo |
-| `WrappedLineLayout::ascent` | method | 340 |  | `(WrappedLineLayout).Ascent` | todo |
-| `WrappedLineLayout::descent` | method | 345 |  | `(WrappedLineLayout).Descent` | todo |
-| `WrappedLineLayout::wrap_boundaries` | method | 350 |  | `(WrappedLineLayout).WrapBoundaries` | todo |
-| `WrappedLineLayout::font_size` | method | 355 |  | `(WrappedLineLayout).FontSize` | todo |
-| `WrappedLineLayout::runs` | method | 360 |  | `(WrappedLineLayout).Runs` | todo |
-| `WrappedLineLayout::index_for_position` | method | 367 |  | `(WrappedLineLayout).IndexForPosition` | todo |
-| `WrappedLineLayout::closest_index_for_position` | method | 380 |  | `(WrappedLineLayout).ClosestIndexForPosition` | todo |
-| `WrappedLineLayout::position_for_index` | method | 447 |  | `(WrappedLineLayout).PositionForIndex` | todo |
-| `FontRun` | struct | 780 |  | `FontRun` | todo |
+| `LineLayout` | struct | 20 |  | `LineLayout` | done |
+| `ShapedRun` | struct | 37 |  | `ShapedRun` | done |
+| `ShapedGlyph` | struct | 46 |  | `ShapedGlyph` | done |
+| `LineLayout::index_for_x` | method | 62 |  | `(LineLayout).IndexForX` | done |
+| `LineLayout::closest_index_for_x` | method | 79 |  | `(LineLayout).ClosestIndexForX` | done |
+| `LineLayout::x_for_index` | method | 109 |  | `(LineLayout).XForIndex` | done |
+| `LineLayout::font_id_for_index` | method | 121 |  | `(LineLayout).FontIDForIndex` | done |
+| `LineLayout::split_at` | method | 139 |  | `(LineLayout).SplitAt` | done |
+| `WrappedLineLayout` | struct | 297 |  | `WrappedLineLayout` | done |
+| `WrapBoundary` | struct | 310 |  | `WrapBoundary` | done |
+| `WrappedLineLayout::len` | method | 319 |  | `(WrappedLineLayout).Len` | done |
+| `WrappedLineLayout::width` | method | 324 |  | `(WrappedLineLayout).Width` | done |
+| `WrappedLineLayout::size` | method | 332 |  | `(WrappedLineLayout).Size` | done |
+| `WrappedLineLayout::ascent` | method | 340 |  | `(WrappedLineLayout).Ascent` | done |
+| `WrappedLineLayout::descent` | method | 345 |  | `(WrappedLineLayout).Descent` | done |
+| `WrappedLineLayout::wrap_boundaries` | method | 350 |  | `WrappedLineLayout` | n/a:D-GETTER |
+| `WrappedLineLayout::font_size` | method | 355 |  | `(WrappedLineLayout).FontSize` | done |
+| `WrappedLineLayout::runs` | method | 360 |  | `(WrappedLineLayout).Runs` | done |
+| `WrappedLineLayout::index_for_position` | method | 367 |  | `(WrappedLineLayout).IndexForPosition` | done |
+| `WrappedLineLayout::closest_index_for_position` | method | 380 |  | `(WrappedLineLayout).ClosestIndexForPosition` | done |
+| `WrappedLineLayout::position_for_index` | method | 447 |  | `(WrappedLineLayout).PositionForIndex` | done |
+| `FontRun` | struct | 780 |  | `FontRun` | done |
+| `LineLayoutCache` | struct | 498 |  | `LineLayoutCache` | done |
+| `LineLayoutCache::new` | assoc-fn | 532 |  | `NewLineLayoutCache` | done |
+| `LineLayoutIndex` | struct | 524 |  | `LineLayoutIndex` | done |
+| `apply_force_width_to_layout` | fn | 755 |  | `applyForceWidthToLayout` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `shape_line_shares_its_text_with_the_layout_cache` | test | 863 |  | `TestLineLayout_ShapeLineSharesItsTextWithTheLayoutCache` | todo |
-| `test_wrap_preserves_shaped_clusters` | test | 912 |  | `TestLineLayout_WrapPreservesShapedClusters` | todo |
-| `test_wrap_right_to_left_text` | test | 942 |  | `TestLineLayout_WrapRightToLeftText` | todo |
-| `test_wrap_ignores_breaks_inside_shaped_clusters` | test | 971 |  | `TestLineLayout_WrapIgnoresBreaksInsideShapedClusters` | todo |
-| `test_force_width_latin_unchanged` | test | 993 |  | `TestLineLayout_ForceWidthLatinUnchanged` | todo |
-| `test_force_width_combining_marks_not_advanced` | test | 1004 |  | `TestLineLayout_ForceWidthCombiningMarksNotAdvanced` | todo |
-| `test_force_width_base_after_combining_mark` | test | 1019 |  | `TestLineLayout_ForceWidthBaseAfterCombiningMark` | todo |
-| `test_force_width_multiple_combining_marks` | test | 1030 |  | `TestLineLayout_ForceWidthMultipleCombiningMarks` | todo |
-| `test_force_width_corrects_drifted_base_positions` | test | 1047 |  | `TestLineLayout_ForceWidthCorrectsDriftedBasePositions` | todo |
-| `test_force_width_combining_mark_after_within_tolerance_base` | test | 1063 |  | `TestLineLayout_ForceWidthCombiningMarkAfterWithinToleranceBase` | todo |
-| `test_wrap_ignores_the_sign_of_a_zero_wrap_width_in_the_cache` | test | 1076 |  | `TestLineLayout_WrapIgnoresTheSignOfAZeroWrapWidthInTheCache` | todo |
+| `shape_line_shares_its_text_with_the_layout_cache` | test | 863 |  | `TestLineLayout_ShapeLineSharesItsTextWithTheLayoutCache` | done |
+| `test_wrap_preserves_shaped_clusters` | test | 912 |  | `TestLineLayout_WrapPreservesShapedClusters` | done |
+| `test_wrap_right_to_left_text` | test | 942 |  | `TestLineLayout_WrapRightToLeftText` | done |
+| `test_wrap_ignores_breaks_inside_shaped_clusters` | test | 971 |  | `TestLineLayout_WrapIgnoresBreaksInsideShapedClusters` | done |
+| `test_force_width_latin_unchanged` | test | 993 |  | `TestLineLayout_ForceWidthLatinUnchanged` | done |
+| `test_force_width_combining_marks_not_advanced` | test | 1004 |  | `TestLineLayout_ForceWidthCombiningMarksNotAdvanced` | done |
+| `test_force_width_base_after_combining_mark` | test | 1019 |  | `TestLineLayout_ForceWidthBaseAfterCombiningMark` | done |
+| `test_force_width_multiple_combining_marks` | test | 1030 |  | `TestLineLayout_ForceWidthMultipleCombiningMarks` | done |
+| `test_force_width_corrects_drifted_base_positions` | test | 1047 |  | `TestLineLayout_ForceWidthCorrectsDriftedBasePositions` | done |
+| `test_force_width_combining_mark_after_within_tolerance_base` | test | 1063 |  | `TestLineLayout_ForceWidthCombiningMarkAfterWithinToleranceBase` | done |
+| `test_wrap_ignores_the_sign_of_a_zero_wrap_width_in_the_cache` | test | 1076 |  | `TestLineLayout_WrapIgnoresTheSignOfAZeroWrapWidthInTheCache` | done |
 
 ## gpui/src/text_system/line_wrapper.rs
 
@@ -269,4 +297,11 @@ Go target: `text_system_line_wrapper.go` (package `gpui`), tests in `text_system
 | `test_multiline_truncation_trailing_newline` | test | 1757 |  | `TestLineWrapper_MultilineTruncationTrailingNewline` | todo |
 | `test_multiline_truncation_newline_fits_exactly` | test | 1784 |  | `TestLineWrapper_MultilineTruncationNewlineFitsExactly` | todo |
 | `test_extra_columns_overflow_guard` | test | 1812 |  | `TestLineWrapper_ExtraColumnsOverflowGuard` | todo |
+
+## Deviations registered here
+
+| Id | Deviation | Upstream | Go |
+|---|---|---|---|
+| D-FIELDMETHOD | Go forbids a field and a method of the same name: `FontMetrics`' pixel-scaling methods (`ascent`, `descent`, `line_gap`, `underline_position`, `underline_thickness`, `cap_height`, `x_height`, `bounding_box`) get a `Pixels` suffix; the fields keep upstream's names | `gpui/src/text_system.rs:1224-1262` | `text_system.go` |
+| D-SCHEMAKW | internal/jsonschema.Schema has no `patternProperties`, `multipleOf` or `default`: `FontFeatures`' schema is a plain `object` and `FontWeight`'s omits `default: 400` (handoff M0-text-system) | `gpui/src/text_system/font_features.rs:146-162`, `gpui/src/text_system.rs:1037-1052` | `text_system_font_features.go`, `text_system.go` |
 

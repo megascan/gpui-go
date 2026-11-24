@@ -26,7 +26,9 @@ Stub owners (the stage that replaces the symbol):
 | `NativeViewID` | M0-window-a11y |
 | `ClickEvent`, `PlatformInput`, `Modifiers`, `Keystroke`, `KeystrokeParse`, `Action`, `ActionData`, `RegisterAction`, `Fluent`, `BindFluent`, `(Fluent).When`, `(Fluent).Map` | M0-input-types |
 | `TextSystem`, `WindowTextSystem`, `Font`, `FontRun`, `TextRun`, `FontMetrics`, `LineLayout`, `ShapedRun`, `ShapedGlyph`, `WrappedLineLayout`, `LineLayoutCache`, `FontID`, `GlyphID`, `RenderGlyphParams`, `MissingGlyphSink`, `MissingGlyph` | M0-text-system |
-| `LineWrapper`, `Boundary` | M0-line-wrapper |
+| `LineWrapper`, `Boundary`, `charWidthCache`, `defaultCharWidthCache`, `newLineWrapper`, `intoCharWidths`, `lineWrapperBreakIndices` (real bodies, see section 8) | M0-line-wrapper |
+| `ShapedLine`, `WrappedLine`, `DecorationRun` | M0-text-elements |
+| `UnderlineStyle`, `StrikethroughStyle` | M0-style |
 | `EntityID`, `AnyEntity`, `AnyWeakEntity`, `Entity`, `WeakEntity`, `slot`, `entityFromAny`, `Subscription` | M0-entities |
 | `BackgroundExecutor`, `ForegroundExecutor` | M0-executors |
 | `App` (type), `AppCell`, `AppRef`, `AppRefMut`, `(App).FindDisplay`, `PrimaryDisplay`, `Spawn`, `OpenWindow`, `WithWindow` | M0-app-core |
@@ -167,3 +169,17 @@ Built by M0-scene; DESIGN 6.8 and 6.9 give the reasons.
 - `PaintSurface.ImageBuffer` is a `uintptr` CVPixelBufferRef on macOS and iOS, zero elsewhere (D-SURFACEBUF); the Apple back end retains it when painting and releases it when the scene is cleared.
 - Paths: `PathBuilderFill()` / `PathBuilderStroke(width)` return `*PathBuilder`; the drawing methods mutate it, `WithStyle` / `DashArray` return it, `Build() (Path, error)`. `PathStyle` is `PathStyleStroke{StrokeOptions}` or `PathStyleFill{FillOptions}`. `Transform`, `FillRule`, `LineCap`, `LineJoin` alias internal/lyon with their variant constants re-declared in gpui. `NewPaintedPath(path, scaleFactor, ContentMask[Pixels], Background)` bins a path for painting (`Window.PaintPath`).
 - `render.Renderer` (package `render`, imports only gpui) is the method set platform windows hold: `Draw`, `UpdateDrawableSize`, `UpdateTransparency`, `SetSubpixelLayout`, `SpriteAtlas`, `SupportsDualSourceBlending`, `GPUSpecs`, `DeviceLost`, `Recover(RawWindowHandle) error`, `Destroy`. `Destroy` runs before the window's surface and display connection close.
+
+## 8. Text system (text_system*.go)
+
+Built by M0-text-system.
+
+- `NewTextSystem(PlatformTextSystem) *TextSystem` is shared and safe for concurrent use; `NewWindowTextSystem(*TextSystem) *WindowTextSystem` embeds it (upstream's Deref) and is used from its window's thread only. Unexported crate-level hooks for later root stages: `(*TextSystem).getRasterBounds`, `rasterizeGlyph`, `glyphDilationForColor`, `recommendedRenderingMode`, `takeMissingGlyphReceiver`, `enableMissingGlyphReporting`, `disableMissingGlyphReporting`; `(*WindowTextSystem).layoutIndex`, `reuseLayouts(start, end LineLayoutIndex)` (upstream's `Range<LineLayoutIndex>`), `truncateLayouts`, `finishFrame`.
+- `Font` is comparable by value and is a map key. `FontFeatures` and `FontFallbacks` intern their lists by content (`NewFontFeatures`, `FontFallbacksFromFonts`), so equal lists compare equal; `TagValueList` and `FallbackList` return the shared interned slice, which is read-only; the zero `FontFeatures` is `DefaultFontFeatures()`. Zero values are not upstream's defaults: use `DefaultFont()` (".SystemUIFont", weight 400), `NewFont(family)`, `DefaultFontWeight()`, `DefaultTextRun()`.
+- `FontFeature{Tag, Value}` is upstream's `(String, u32)`. `FontStyle` and `FallbackFontClass` are `uint8` enums; `FontWeight` is `float32`.
+- `FontMetrics` keeps upstream's field names; its pixel methods are `AscentPixels`, `DescentPixels`, ..., `BoundingBoxPixels` (D-FIELDMETHOD). `WrappedLineLayout::wrap_boundaries` is not declared; read the `WrapBoundaries` field (D-GETTER).
+- Layouts are shared pointers: `LayoutLine` returns `*LineLayout`, `ShapeText` returns `[]WrappedLine` with `*WrappedLineLayout`. `ShapedLine` embeds `*LineLayout` and `WrappedLine` embeds `*WrappedLineLayout` (upstream's Deref); both carry `Text` and the unexported `decorationRuns []DecorationRun`. Their zero values embed nil layouts and panic on use, unlike upstream's `Default` (M0-text-elements decides whether to add a default constructor).
+- Returned options: `(LineLayout).IndexForX`, `FontIDForIndex`, `(WrappedLineLayout).PositionForIndex` return `(T, bool)`; `IndexForPosition` / `ClosestIndexForPosition` return `(int, bool)` where `false` carries upstream's `Err` index. `ShapeText`'s `line_clamp` is `Option[int]`; `force_width` / `wrap_width` are `Option[Pixels]`.
+- Offsets are UTF-8 byte offsets throughout (`TextRun.Len`, `FontRun.Len`, `ShapedGlyph.Index`).
+- Drop: `MissingGlyphReceiver.Close` closes and drains the channel; `LineWrapperHandle.Release` returns the wrapper's character widths to the pool (idempotent; the embedded `*LineWrapper` is nil afterwards). `MissingGlyphReceiver.Recv(cx scheduler.Awaiter)` returns `scheduler.ErrClosed` when the channel is closed.
+- Forward stubs for M0-line-wrapper in stubs.go: `LineWrapper` (`textSystem`, `fontID`, `fontSize`, `charWidths`), `charWidthCache`, `defaultCharWidthCache`, `newLineWrapper`, `intoCharWidths` and a working `lineWrapperBreakIndices(text) iter.Seq[int]` (go-text segmenter, yields 0, each break offset and `len(text)`, as ICU's `segment_str`). For M0-text-elements: `DecorationRun`; for M0-style: `UnderlineStyle`, `StrikethroughStyle` with upstream's fields.

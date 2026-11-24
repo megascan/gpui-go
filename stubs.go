@@ -1,6 +1,9 @@
 package gpui
 
 import (
+	"iter"
+
+	"github.com/go-text/typesetting/segmenter"
 	"math/rand/v2"
 	"reflect"
 	"testing"
@@ -237,40 +240,6 @@ type GestureTuning struct{}
 
 // GestureKinds is the set of gesture kinds a platform recognizes natively (M0-gestures-spring ports it).
 type GestureKinds struct{}
-
-// FontID is an opaque identifier for a font (M0-text-system ports it).
-type FontID uint
-
-// GlyphID is an identifier for a glyph (M0-text-system ports it).
-type GlyphID uint32
-
-// RenderGlyphParams are the parameters for rendering a glyph; they must stay comparable (M0-text-system ports it).
-type RenderGlyphParams struct {
-	// FontID is the font.
-	FontID FontID
-	// GlyphID is the glyph.
-	GlyphID GlyphID
-	// FontSize is the font size.
-	FontSize Pixels
-	// SubpixelVariant is the subpixel variant on each axis.
-	SubpixelVariant PointOf[uint8]
-	// ScaleFactor is the window scale factor.
-	ScaleFactor float32
-	// IsEmoji reports whether the glyph is an emoji.
-	IsEmoji bool
-	// SubpixelRendering reports whether the glyph uses subpixel rendering.
-	SubpixelRendering bool
-	// Dilation is the dilation level.
-	Dilation uint8
-}
-
-// MissingGlyphSink accepts missing glyphs detected by a platform text system (M0-text-system ports it).
-type MissingGlyphSink interface {
-	Report(missingGlyphs []MissingGlyph)
-}
-
-// MissingGlyph is a grapheme cluster that exhausted font fallback (M0-text-system ports it).
-type MissingGlyph struct{}
 
 // RenderSvgParams identifies a rasterized SVG in the sprite atlas (M0-elements-media ports it).
 type RenderSvgParams struct {
@@ -1171,96 +1140,105 @@ func (t Transformation) intoMatrix(center Point[Pixels], scaleFactor float32) Tr
 	panic("gpui: unimplemented Transformation.intoMatrix")
 }
 
-// TextSystem is the application's text system (M0-text-system ports it).
-type TextSystem struct{}
-
-// WindowTextSystem is a window's view of the text system (M0-text-system ports it).
-type WindowTextSystem struct{}
-
-// Font is a font family with weight, style and features (M0-text-system ports it).
-type Font struct{}
-
-// FontRun is a run of text in one font (M0-text-system ports it).
-type FontRun struct{}
-
-// TextRun is a run of text with one style (M0-text-system ports it).
-type TextRun struct{}
-
-// FontMetrics are the metrics of a font (M0-text-system ports it).
-type FontMetrics struct {
-	// UnitsPerEm is the number of font units in the em square.
-	UnitsPerEm uint32
-	// Ascent is the distance from the baseline to the top of the glyph covers, in font units.
-	Ascent float32
-	// Descent is the distance from the baseline to the bottom of the glyph covers, in font units.
-	Descent float32
-	// LineGap is the recommended additional space between lines.
-	LineGap float32
-	// UnderlinePosition is the suggested position of the underline.
-	UnderlinePosition float32
-	// UnderlineThickness is the suggested thickness of the underline.
-	UnderlineThickness float32
-	// CapHeight is the height of a capital letter.
-	CapHeight float32
-	// XHeight is the height of a lowercase x.
-	XHeight float32
-	// BoundingBox is the outer limits of the area that the font covers.
-	BoundingBox Bounds[float32]
-}
-
-// LineLayout is a shaped line of text (M0-text-system ports it).
-type LineLayout struct {
-	// FontSize is the font size of the line.
-	FontSize Pixels
-	// Width is the width of the line.
-	Width Pixels
-	// Ascent is the ascent of the line.
-	Ascent Pixels
-	// Descent is the descent of the line.
-	Descent Pixels
-	// Runs are the shaped runs of the line.
-	Runs []ShapedRun
-	// Len is the length of the line in UTF-8 bytes.
-	Len int
-}
-
-// ShapedRun is a run of shaped glyphs in one font (M0-text-system ports it).
-type ShapedRun struct {
-	// FontID is the font of the run.
-	FontID FontID
-	// Glyphs are the glyphs of the run.
-	Glyphs []ShapedGlyph
-}
-
-// ShapedGlyph is one shaped glyph (M0-text-system ports it).
-type ShapedGlyph struct {
-	// ID is the glyph id.
-	ID GlyphID
-	// Position is the position of the glyph in its line.
-	Position Point[Pixels]
-	// Index is the byte index of the glyph in the original text.
-	Index int
-	// IsEmoji reports whether the glyph is an emoji.
-	IsEmoji bool
-}
-
-// WrappedLineLayout is a shaped line with wrap boundaries (M0-text-system ports it).
-type WrappedLineLayout struct{}
-
-// LineLayoutCache caches line layouts between frames (M0-text-system ports it).
-type LineLayoutCache struct{}
-
 // LineWrapper wraps lines of text (M0-line-wrapper ports it).
-type LineWrapper struct{}
+type LineWrapper struct {
+	textSystem *TextSystem
+	fontID     FontID
+	fontSize   Pixels
+	charWidths charWidthCache
+}
+
+type charWidthCache struct {
+	ascii [128]Option[Pixels]
+	other map[rune]Pixels
+}
+
+func defaultCharWidthCache() charWidthCache {
+	return charWidthCache{other: map[rune]Pixels{}}
+}
+
+func newLineWrapper(fontID FontID, fontSize Pixels, textSystem *TextSystem, charWidths charWidthCache) *LineWrapper {
+	return &LineWrapper{textSystem: textSystem, fontID: fontID, fontSize: fontSize, charWidths: charWidths}
+}
+
+func (w *LineWrapper) intoCharWidths() charWidthCache {
+	return w.charWidths
+}
+
+func lineWrapperBreakIndices(text string) iter.Seq[int] {
+	return func(yield func(int) bool) {
+		if !yield(0) {
+			return
+		}
+		var seg segmenter.Segmenter
+		seg.Init([]rune(text))
+		lines := seg.LineIterator()
+		offset := 0
+		for lines.Next() {
+			line := lines.Line()
+			offset = line.OffsetInBytes + line.LengthInBytes
+			if offset == 0 {
+				continue
+			}
+			if !yield(offset) {
+				return
+			}
+		}
+	}
+}
 
 // Boundary is a wrap boundary in a line (M0-line-wrapper ports it).
 type Boundary struct{}
 
-// ShapedLine is a line ready to paint (M0-text-elements ports it).
-type ShapedLine struct{}
+// ShapedLine is a line of text that has been shaped and decorated; it embeds its layout
+// (upstream's Deref) (M0-text-elements ports it).
+type ShapedLine struct {
+	*LineLayout
+	// Text is the text that was shaped for this line.
+	Text           SharedString
+	decorationRuns []DecorationRun
+}
 
-// WrappedLine is a wrapped line ready to paint (M0-text-elements ports it).
-type WrappedLine struct{}
+// WrappedLine is a line of text that has been shaped, decorated and wrapped; it embeds its
+// layout (upstream's Deref) (M0-text-elements ports it).
+type WrappedLine struct {
+	*WrappedLineLayout
+	// Text is the text that was shaped for this line.
+	Text           SharedString
+	decorationRuns []DecorationRun
+}
+
+// DecorationRun sets the text decoration for a run of text (M0-text-elements ports it).
+type DecorationRun struct {
+	// Len is the length of the run in UTF-8 bytes.
+	Len uint32
+	// Color is the color of the run.
+	Color Hsla
+	// BackgroundColor is the background color of the run.
+	BackgroundColor Option[Hsla]
+	// Underline is the underline style of the run.
+	Underline Option[UnderlineStyle]
+	// Strikethrough is the strikethrough style of the run.
+	Strikethrough Option[StrikethroughStyle]
+}
+
+// UnderlineStyle is the properties of an underline (M0-style ports it).
+type UnderlineStyle struct {
+	// Thickness is the thickness of the underline.
+	Thickness Pixels
+	// Color is the color of the underline.
+	Color Option[Hsla]
+	// Wavy reports whether the underline is wavy, like in a spell checker.
+	Wavy bool
+}
+
+// StrikethroughStyle is the properties of a strikethrough (M0-style ports it).
+type StrikethroughStyle struct {
+	// Thickness is the thickness of the strikethrough.
+	Thickness Pixels
+	// Color is the color of the strikethrough.
+	Color Option[Hsla]
+}
 
 // TestOption configures RunTest (M0-app-contexts ports it).
 type TestOption struct {
