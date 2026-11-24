@@ -10,8 +10,8 @@ Go target: `internal/cmd/(index)` (package `-`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Action` | proc-macro-derive | 20 |  | `see DESIGN §9 (Action)` | todo |
-| `register_action` | proc-macro | 28 |  | `see DESIGN §9 (register_action)` | todo |
+| `Action` | proc-macro-derive | 20 |  | `see DESIGN §9 (Action)` | dev:D-MACRO |
+| `register_action` | proc-macro | 28 |  | `see DESIGN §9 (register_action)` | dev:D-MACRO |
 | `IntoElement` | proc-macro-derive | 35 |  | `see DESIGN §9 (IntoElement)` | todo |
 | `Render` | proc-macro-derive | 41 |  | `see DESIGN §9 (Render)` | todo |
 | `AppContext` | proc-macro-derive | 59 |  | `see DESIGN §9 (AppContext)` | todo |

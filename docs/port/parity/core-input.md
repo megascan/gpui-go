@@ -74,29 +74,29 @@ Go target: `input.go` (package `gpui`), tests in `input_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `EntityInputHandler` | trait | 26 |  | `EntityInputHandler` | todo |
-| `EntityInputHandler::text_for_range` | trait-method | 28 |  | `EntityInputHandler.TextForRange` | todo |
-| `EntityInputHandler::selected_text_range` | trait-method | 37 |  | `EntityInputHandler.SelectedTextRange` | todo |
-| `EntityInputHandler::marked_text_range` | trait-method | 45 |  | `EntityInputHandler.MarkedTextRange` | todo |
-| `EntityInputHandler::unmark_text` | trait-method | 52 |  | `EntityInputHandler.UnmarkText` | todo |
-| `EntityInputHandler::paste` | trait-method | 55 |  | `EntityInputHandler.Paste` | todo |
-| `EntityInputHandler::replace_text_in_range` | trait-method | 62 |  | `EntityInputHandler.ReplaceTextInRange` | todo |
-| `EntityInputHandler::replace_and_mark_text_in_range` | trait-method | 71 |  | `EntityInputHandler.ReplaceAndMarkTextInRange` | todo |
-| `EntityInputHandler::bounds_for_range` | trait-method | 81 |  | `EntityInputHandler.BoundsForRange` | todo |
-| `EntityInputHandler::selection_bounds_for_range` | trait-method | 90 |  | `EntityInputHandler.SelectionBoundsForRange` | todo |
-| `EntityInputHandler::character_index_for_point` | trait-method | 101 |  | `EntityInputHandler.CharacterIndexForPoint` | todo |
-| `EntityInputHandler::set_selected_text_range` | trait-method | 109 |  | `EntityInputHandler.SetSelectedTextRange` | todo |
-| `EntityInputHandler::text_length_utf16` | trait-method | 118 |  | `EntityInputHandler.TextLengthUTF16` | todo |
-| `EntityInputHandler::accepts_text_input` | trait-method | 127 |  | `EntityInputHandler.AcceptsTextInput` | todo |
-| `EntityInputHandler::text_input_configuration` | trait-method | 132 |  | `EntityInputHandler.TextInputConfiguration` | todo |
-| `EntityInputHandler::text_input_editable_range` | trait-method | 141 |  | `EntityInputHandler.TextInputEditableRange` | todo |
-| `ElementInputHandler` | struct | 152 |  | `ElementInputHandler` | todo |
-| `ElementInputHandler::new` | assoc-fn | 161 |  | `NewElementInputHandler` | todo |
+| `EntityInputHandler` | trait | 26 |  | `EntityInputHandler` | done |
+| `EntityInputHandler::text_for_range` | trait-method | 28 |  | `EntityInputHandler.TextForRange` | done |
+| `EntityInputHandler::selected_text_range` | trait-method | 37 |  | `EntityInputHandler.SelectedTextRange` | done |
+| `EntityInputHandler::marked_text_range` | trait-method | 45 |  | `EntityInputHandler.MarkedTextRange` | done |
+| `EntityInputHandler::unmark_text` | trait-method | 52 |  | `EntityInputHandler.UnmarkText` | done |
+| `EntityInputHandler::paste` | trait-method | 55 |  | `EntityInputHandler.Paste` | done |
+| `EntityInputHandler::replace_text_in_range` | trait-method | 62 |  | `EntityInputHandler.ReplaceTextInRange` | done |
+| `EntityInputHandler::replace_and_mark_text_in_range` | trait-method | 71 |  | `EntityInputHandler.ReplaceAndMarkTextInRange` | done |
+| `EntityInputHandler::bounds_for_range` | trait-method | 81 |  | `EntityInputHandler.BoundsForRange` | done |
+| `EntityInputHandler::selection_bounds_for_range` | trait-method | 90 |  | `EntityInputHandler.SelectionBoundsForRange` | done |
+| `EntityInputHandler::character_index_for_point` | trait-method | 101 |  | `EntityInputHandler.CharacterIndexForPoint` | done |
+| `EntityInputHandler::set_selected_text_range` | trait-method | 109 |  | `EntityInputHandler.SetSelectedTextRange` | done |
+| `EntityInputHandler::text_length_utf16` | trait-method | 118 |  | `EntityInputHandler.TextLengthUTF16` | done |
+| `EntityInputHandler::accepts_text_input` | trait-method | 127 |  | `EntityInputHandler.AcceptsTextInput` | done |
+| `EntityInputHandler::text_input_configuration` | trait-method | 132 |  | `EntityInputHandler.TextInputConfiguration` | done |
+| `EntityInputHandler::text_input_editable_range` | trait-method | 141 |  | `EntityInputHandler.TextInputEditableRange` | done |
+| `ElementInputHandler` | struct | 152 |  | `ElementInputHandler` | done |
+| `ElementInputHandler::new` | assoc-fn | 161 |  | `NewElementInputHandler` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `text_input_configuration_and_focus_state_are_forwarded_on_change` | gpui::test | 331 |  | `TestInput_TextInputConfigurationAndFocusStateAreForwardedOnChange` | todo |
-| `text_notifications_require_a_focused_input_and_track_field_changes` | gpui::test | 421 |  | `TestInput_TextNotificationsRequireAFocusedInputAndTrackFieldChanges` | todo |
+| `text_input_configuration_and_focus_state_are_forwarded_on_change` | gpui::test | 331 |  | `TestInput_TextInputConfigurationAndFocusStateAreForwardedOnChange` | blocked:M0-blocked-tests |
+| `text_notifications_require_a_focused_input_and_track_field_changes` | gpui::test | 421 |  | `TestInput_TextNotificationsRequireAFocusedInputAndTrackFieldChanges` | blocked:M0-blocked-tests |
 
 ## gpui/src/interactive.rs
 
@@ -104,67 +104,67 @@ Go target: `interactive.go` (package `gpui`), tests in `interactive_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `InputEvent` | trait | 9 |  | `InputEvent` | todo |
-| `InputEvent::to_platform_input` | trait-method | 11 |  | `InputEvent.ToPlatformInput` | todo |
-| `KeyEvent` | trait | 15 |  | `KeyEvent` | todo |
-| `MouseEvent` | trait | 18 |  | `MouseEvent` | todo |
-| `GestureEvent` | trait | 21 |  | `GestureEvent` | todo |
-| `KeyDownEvent` | struct | 25 |  | `KeyDownEvent` | todo |
-| `KeyUpEvent` | struct | 47 |  | `KeyUpEvent` | todo |
-| `ModifiersChangedEvent` | struct | 62 |  | `ModifiersChangedEvent` | todo |
-| `TouchPhase` | enum | 88 |  | `TouchPhase` | todo |
-| `TouchId` | struct | 109 |  | `TouchID` | todo |
-| `TouchEvent` | struct | 119 |  | `TouchEvent` | todo |
-| `MouseDownEvent` | struct | 148 |  | `MouseDownEvent` | todo |
-| `MouseDownEvent::is_focusing` | method | 175 |  | `(MouseDownEvent).IsFocusing` | todo |
-| `MouseUpEvent` | struct | 185 |  | `MouseUpEvent` | todo |
-| `MouseUpEvent::is_focusing` | method | 210 |  | `(MouseUpEvent).IsFocusing` | todo |
-| `MouseClickEvent` | struct | 220 |  | `MouseClickEvent` | todo |
-| `PressureStage` | enum | 230 |  | `PressureStage` | todo |
-| `MousePressureEvent` | struct | 243 |  | `MousePressureEvent` | todo |
-| `KeyboardClickEvent` | struct | 264 |  | `KeyboardClickEvent` | todo |
-| `TouchClickEvent` | struct | 275 |  | `TouchClickEvent` | todo |
-| `ClickEvent` | enum | 290 |  | `ClickEvent` | todo |
-| `ClickEvent::modifiers` | method | 310 |  | `(ClickEvent).Modifiers` | todo |
-| `ClickEvent::position` | method | 328 |  | `(ClickEvent).Position` | todo |
-| `ClickEvent::mouse_position` | method | 341 |  | `(ClickEvent).MousePosition` | todo |
-| `ClickEvent::is_right_click` | method | 353 |  | `(ClickEvent).IsRightClick` | todo |
-| `ClickEvent::is_middle_click` | method | 367 |  | `(ClickEvent).IsMiddleClick` | todo |
-| `ClickEvent::is_secondary` | method | 381 |  | `(ClickEvent).IsSecondary` | todo |
-| `ClickEvent::standard_click` | method | 396 |  | `(ClickEvent).StandardClick` | todo |
-| `ClickEvent::first_focus` | method | 411 |  | `(ClickEvent).FirstFocus` | todo |
-| `ClickEvent::click_count` | method | 424 |  | `(ClickEvent).ClickCount` | todo |
-| `ClickEvent::is_keyboard` | method | 433 |  | `(ClickEvent).IsKeyboard` | todo |
-| `KeyboardButton` | enum | 443 |  | `KeyboardButton` | todo |
-| `MouseButton` | enum | 453 |  | `MouseButton` | todo |
-| `MouseButton::all` | assoc-fn | 470 |  | `MouseButtonAll` | todo |
-| `NavigationDirection` | enum | 483 |  | `NavigationDirection` | todo |
-| `MouseMoveEvent` | struct | 494 |  | `MouseMoveEvent` | todo |
-| `MouseMoveEvent::dragging` | method | 515 |  | `(MouseMoveEvent).Dragging` | todo |
-| `ScrollEvent` | struct | 522 |  | `ScrollEvent` | todo |
-| `ScrollWheelEvent` | type | 542 |  | `ScrollWheelEvent` | todo |
-| `ScrollSource` | enum | 546 |  | `ScrollSource` | todo |
-| `ScrollDelta` | enum | 575 |  | `ScrollDelta` | todo |
-| `PinchEvent` | struct | 592 |  | `PinchEvent` | todo |
-| `ScrollDelta::precise` | method | 627 |  | `(ScrollDelta).Precise` | todo |
-| `ScrollDelta::pixel_delta` | method | 635 |  | `(ScrollDelta).PixelDelta` | todo |
-| `ScrollDelta::coalesce` | method | 646 |  | `(ScrollDelta).Coalesce` | todo |
-| `MouseExitEvent` | struct | 687 |  | `MouseExitEvent` | todo |
-| `ExternalPaths` | struct | 715 |  | `ExternalPaths` | todo |
-| `ExternalPaths::paths` | method | 719 |  | `(ExternalPaths).Paths` | todo |
-| `ExternalDragPayload` | enum | 727 |  | `ExternalDragPayload` | todo |
-| `FileDragPaths` | struct | 735 |  | `FileDragPaths` | todo |
-| `FileDragPaths::new` | assoc-fn | 739 |  | `NewFileDragPaths` | todo |
-| `FileDragPaths::entries` | method | 744 |  | `(FileDragPaths).Entries` | todo |
-| `FileDropEvent` | enum | 758 |  | `FileDropEvent` | todo |
-| `PlatformInput` | enum | 792 |  | `PlatformInput` | todo |
-| `PlatformInput::kind_name` | method | 869 |  | `(PlatformInput).KindName` | todo |
-| `PlatformInput::touch_event` | method | 890 |  | `(PlatformInput).TouchEvent` | todo |
+| `InputEvent` | trait | 9 |  | `InputEvent` | done |
+| `InputEvent::to_platform_input` | trait-method | 11 |  | `InputEvent.ToPlatformInput` | done |
+| `KeyEvent` | trait | 15 |  | `KeyEvent` | done |
+| `MouseEvent` | trait | 18 |  | `MouseEvent` | done |
+| `GestureEvent` | trait | 21 |  | `GestureEvent` | done |
+| `KeyDownEvent` | struct | 25 |  | `KeyDownEvent` | done |
+| `KeyUpEvent` | struct | 47 |  | `KeyUpEvent` | done |
+| `ModifiersChangedEvent` | struct | 62 |  | `ModifiersChangedEvent` | done |
+| `TouchPhase` | enum | 88 |  | `TouchPhase` (zero value Moved) | dev:D-FLATENUM |
+| `TouchId` | struct | 109 |  | `TouchID` | done |
+| `TouchEvent` | struct | 119 |  | `TouchEvent` | done |
+| `MouseDownEvent` | struct | 148 |  | `MouseDownEvent` | done |
+| `MouseDownEvent::is_focusing` | method | 175 |  | `(MouseDownEvent).IsFocusing` | done |
+| `MouseUpEvent` | struct | 185 |  | `MouseUpEvent` | done |
+| `MouseUpEvent::is_focusing` | method | 210 |  | `(MouseUpEvent).IsFocusing` | done |
+| `MouseClickEvent` | struct | 220 |  | `MouseClickEvent` | done |
+| `PressureStage` | enum | 230 |  | `PressureStage` | done |
+| `MousePressureEvent` | struct | 243 |  | `MousePressureEvent` | done |
+| `KeyboardClickEvent` | struct | 264 |  | `KeyboardClickEvent` | done |
+| `TouchClickEvent` | struct | 275 |  | `TouchClickEvent` | done |
+| `ClickEvent` | enum | 290 |  | `ClickEvent` | done |
+| `ClickEvent::modifiers` | method | 310 |  | `(ClickEvent).Modifiers` | done |
+| `ClickEvent::position` | method | 328 |  | `(ClickEvent).Position` | done |
+| `ClickEvent::mouse_position` | method | 341 |  | `(ClickEvent).MousePosition` | done |
+| `ClickEvent::is_right_click` | method | 353 |  | `(ClickEvent).IsRightClick` | done |
+| `ClickEvent::is_middle_click` | method | 367 |  | `(ClickEvent).IsMiddleClick` | done |
+| `ClickEvent::is_secondary` | method | 381 |  | `(ClickEvent).IsSecondary` | done |
+| `ClickEvent::standard_click` | method | 396 |  | `(ClickEvent).StandardClick` | done |
+| `ClickEvent::first_focus` | method | 411 |  | `(ClickEvent).FirstFocus` | done |
+| `ClickEvent::click_count` | method | 424 |  | `(ClickEvent).ClickCount` | done |
+| `ClickEvent::is_keyboard` | method | 433 |  | `(ClickEvent).IsKeyboard` | done |
+| `KeyboardButton` | enum | 443 |  | `KeyboardButton` | done |
+| `MouseButton` | enum | 453 |  | `MouseButton` (Navigate flattened) | dev:D-FLATENUM |
+| `MouseButton::all` | assoc-fn | 470 |  | `MouseButtonAll` | done |
+| `NavigationDirection` | enum | 483 |  | `NavigationDirection` | done |
+| `MouseMoveEvent` | struct | 494 |  | `MouseMoveEvent` | done |
+| `MouseMoveEvent::dragging` | method | 515 |  | `(MouseMoveEvent).Dragging` | done |
+| `ScrollEvent` | struct | 522 |  | `ScrollEvent` | done |
+| `ScrollWheelEvent` | type | 542 |  | `ScrollWheelEvent` | done |
+| `ScrollSource` | enum | 546 |  | `ScrollSource` | done |
+| `ScrollDelta` | enum | 575 |  | `ScrollDelta` | done |
+| `PinchEvent` | struct | 592 |  | `PinchEvent` | done |
+| `ScrollDelta::precise` | method | 627 |  | `(ScrollDelta).Precise` | done |
+| `ScrollDelta::pixel_delta` | method | 635 |  | `(ScrollDelta).PixelDelta` | done |
+| `ScrollDelta::coalesce` | method | 646 |  | `(ScrollDelta).Coalesce` | done |
+| `MouseExitEvent` | struct | 687 |  | `MouseExitEvent` | done |
+| `ExternalPaths` | struct | 715 |  | `ExternalPaths` | done |
+| `ExternalPaths::paths` | method | 719 |  | `(ExternalPaths).Paths` | done |
+| `ExternalDragPayload` | enum | 727 |  | `ExternalDragPayload` | done |
+| `FileDragPaths` | struct | 735 |  | `FileDragPaths` | done |
+| `FileDragPaths::new` | assoc-fn | 739 |  | `NewFileDragPaths` | done |
+| `FileDragPaths::entries` | method | 744 |  | `(FileDragPaths).Entries` | done |
+| `FileDropEvent` | enum | 758 |  | `FileDropEvent` | done |
+| `PlatformInput` | enum | 792 |  | `PlatformInput` | done |
+| `PlatformInput::kind_name` | method | 869 |  | `(PlatformInput).KindName` | done |
+| `PlatformInput::touch_event` | method | 890 |  | `(PlatformInput).TouchEvent` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_on_events` | gpui::test | 937 |  | `TestInteractive_OnEvents` | todo |
-| `test_multi_modifier_gesture_does_not_dispatch_standalone_modifier_binding` | gpui::test | 972 |  | `TestInteractive_MultiModifierGestureDoesNotDispatchStandaloneModifierBinding` | todo |
+| `test_on_events` | gpui::test | 937 |  | `TestInteractive_OnEvents` | blocked:M0-blocked-tests |
+| `test_multi_modifier_gesture_does_not_dispatch_standalone_modifier_binding` | gpui::test | 972 |  | `TestInteractive_MultiModifierGestureDoesNotDispatchStandaloneModifierBinding` | blocked:M0-blocked-tests |
 
 ## gpui/src/key_dispatch.rs
 
@@ -344,47 +344,59 @@ Go target: `platform_keystroke.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `AsKeystroke` | trait | 11 |  | `AsKeystroke` | todo |
-| `AsKeystroke::as_keystroke` | trait-method | 13 |  | `AsKeystroke.AsKeystroke` | todo |
-| `Keystroke` | struct | 18 |  | `Keystroke` | todo |
-| `KeybindingKeystroke` | struct | 37 |  | `KeybindingKeystroke` | todo |
-| `InvalidKeystrokeError` | struct | 51 |  | `InvalidKeystrokeError` | todo |
-| `KEYSTROKE_PARSE_EXPECTED_MESSAGE` | const | 69 |  | `KeystrokeParseExpectedMessage` | todo |
-| `Keystroke::should_match` | method | 82 |  | `(Keystroke).ShouldMatch` | todo |
-| `Keystroke::parse` | assoc-fn | 120 |  | `KeystrokeParse` | todo |
-| `Keystroke::parse_with_os` | assoc-fn | 125 |  | `KeystrokeParseWithOs` | todo |
-| `Keystroke::unparse` | method | 241 |  | `(Keystroke).Unparse` | todo |
-| `Keystroke::display` | method | 246 |  | `(Keystroke).Display` | todo |
-| `Keystroke::is_ime_in_progress` | method | 256 |  | `(Keystroke).IsIMEInProgress` | todo |
-| `Keystroke::with_simulated_ime` | method | 268 |  | `(Keystroke).WithSimulatedIME` | todo |
-| `Keystroke::is_modifier_key` | method | 293 |  | `(Keystroke).IsModifierKey` | todo |
-| `KeybindingKeystroke::display` | method | 303 |  | `(KeybindingKeystroke).Display` | todo |
-| `KeybindingKeystroke::new` | assoc-fn | 313 | windows | `NewKeybindingKeystroke` | todo |
-| `KeybindingKeystroke::new_with_mapper` | assoc-fn | 322 |  | `NewKeybindingKeystrokeWithMapper` | todo |
-| `KeybindingKeystroke::from_keystroke` | assoc-fn | 331 |  | `KeybindingKeystrokeFromKeystroke` | todo |
-| `KeybindingKeystroke::inner` | method | 349 |  | `(KeybindingKeystroke).Inner` | todo |
-| `KeybindingKeystroke::modifiers` | method | 359 |  | `(KeybindingKeystroke).Modifiers` | todo |
-| `KeybindingKeystroke::key` | method | 375 |  | `(KeybindingKeystroke).Key` | todo |
-| `KeybindingKeystroke::set_modifiers` | method | 387 |  | `(KeybindingKeystroke).SetModifiers` | todo |
-| `KeybindingKeystroke::set_key` | method | 396 |  | `(KeybindingKeystroke).SetKey` | todo |
-| `KeybindingKeystroke::unparse` | method | 405 |  | `(KeybindingKeystroke).Unparse` | todo |
-| `KeybindingKeystroke::remove_key_char` | method | 417 |  | `(KeybindingKeystroke).RemoveKeyChar` | todo |
-| `KeystrokeDisplay` | struct | 477 |  | `KeystrokeDisplay` | todo |
-| `Modifiers` | struct | 492 |  | `Modifiers` | todo |
-| `Modifiers::modified` | method | 519 |  | `(Modifiers).Modified` | todo |
-| `Modifiers::secondary` | method | 527 |  | `(Modifiers).Secondary` | todo |
-| `Modifiers::number_of_modifiers` | method | 536 |  | `(Modifiers).NumberOfModifiers` | todo |
-| `Modifiers::none` | assoc-fn | 545 |  | `ModifiersNone` | todo |
-| `Modifiers::command` | assoc-fn | 550 |  | `ModifiersCommand` | todo |
-| `Modifiers::secondary_key` | assoc-fn | 558 |  | `ModifiersSecondaryKey` | todo |
-| `Modifiers::windows` | assoc-fn | 573 |  | `ModifiersWindows` | todo |
-| `Modifiers::super_key` | assoc-fn | 581 |  | `ModifiersSuperKey` | todo |
-| `Modifiers::control` | assoc-fn | 589 |  | `ModifiersControl` | todo |
-| `Modifiers::alt` | assoc-fn | 597 |  | `ModifiersAlt` | todo |
-| `Modifiers::shift` | assoc-fn | 605 |  | `ModifiersShift` | todo |
-| `Modifiers::function` | assoc-fn | 613 |  | `ModifiersFunction` | todo |
-| `Modifiers::command_shift` | assoc-fn | 621 |  | `ModifiersCommandShift` | todo |
-| `Modifiers::control_shift` | assoc-fn | 630 |  | `ModifiersControlShift` | todo |
-| `Modifiers::is_subset_of` | method | 639 |  | `(Modifiers).IsSubsetOf` | todo |
-| `Capslock` | struct | 701 |  | `Capslock` | todo |
+| `AsKeystroke` | trait | 11 |  | `AsKeystroke` | done |
+| `AsKeystroke::as_keystroke` | trait-method | 13 |  | `AsKeystroke.AsKeystroke` | done |
+| `Keystroke` | struct | 18 |  | `Keystroke` | done |
+| `KeybindingKeystroke` | struct | 37 |  | `KeybindingKeystroke` | done |
+| `InvalidKeystrokeError` | struct | 51 |  | `InvalidKeystrokeError` | done |
+| `KEYSTROKE_PARSE_EXPECTED_MESSAGE` | const | 69 |  | `KeystrokeParseExpectedMessage` | done |
+| `Keystroke::should_match` | method | 82 |  | `(Keystroke).ShouldMatch` | done |
+| `Keystroke::parse` | assoc-fn | 120 |  | `KeystrokeParse` | done |
+| `Keystroke::parse_with_os` | assoc-fn | 125 |  | `KeystrokeParseWithOs` | done |
+| `Keystroke::unparse` | method | 241 |  | `(Keystroke).Unparse` | done |
+| `Keystroke::display` | method | 246 |  | `(Keystroke).Display` | done |
+| `Keystroke::is_ime_in_progress` | method | 256 |  | `(Keystroke).IsIMEInProgress` | done |
+| `Keystroke::with_simulated_ime` | method | 268 |  | `(Keystroke).WithSimulatedIME` | done |
+| `Keystroke::is_modifier_key` | method | 293 |  | `(Keystroke).IsModifierKey` | done |
+| `KeybindingKeystroke::display` | method | 303 |  | `(KeybindingKeystroke).Display` | done |
+| `KeybindingKeystroke::new` | assoc-fn | 313 | windows | `NewKeybindingKeystroke` | done |
+| `KeybindingKeystroke::new_with_mapper` | assoc-fn | 322 |  | `NewKeybindingKeystrokeWithMapper` | done |
+| `KeybindingKeystroke::from_keystroke` | assoc-fn | 331 |  | `KeybindingKeystrokeFromKeystroke` | done |
+| `KeybindingKeystroke::inner` | method | 349 |  | `(KeybindingKeystroke).Inner` | done |
+| `KeybindingKeystroke::modifiers` | method | 359 |  | `(KeybindingKeystroke).Modifiers` | done |
+| `KeybindingKeystroke::key` | method | 375 |  | `(KeybindingKeystroke).Key` | done |
+| `KeybindingKeystroke::set_modifiers` | method | 387 |  | `(KeybindingKeystroke).SetModifiers` | done |
+| `KeybindingKeystroke::set_key` | method | 396 |  | `(KeybindingKeystroke).SetKey` | done |
+| `KeybindingKeystroke::unparse` | method | 405 |  | `(KeybindingKeystroke).Unparse` | done |
+| `KeybindingKeystroke::remove_key_char` | method | 417 |  | `(KeybindingKeystroke).RemoveKeyChar` | done |
+| `KeystrokeDisplay` | struct | 477 |  | `KeystrokeDisplay` | done |
+| `Modifiers` | struct | 492 |  | `Modifiers` | done |
+| `Modifiers::modified` | method | 519 |  | `(Modifiers).Modified` | done |
+| `Modifiers::secondary` | method | 527 |  | `(Modifiers).Secondary` | done |
+| `Modifiers::number_of_modifiers` | method | 536 |  | `(Modifiers).NumberOfModifiers` | done |
+| `Modifiers::none` | assoc-fn | 545 |  | `ModifiersNone` | done |
+| `Modifiers::command` | assoc-fn | 550 |  | `ModifiersCommand` | done |
+| `Modifiers::secondary_key` | assoc-fn | 558 |  | `ModifiersSecondaryKey` | done |
+| `Modifiers::windows` | assoc-fn | 573 |  | `ModifiersWindows` | done |
+| `Modifiers::super_key` | assoc-fn | 581 |  | `ModifiersSuperKey` | done |
+| `Modifiers::control` | assoc-fn | 589 |  | `ModifiersControl` | done |
+| `Modifiers::alt` | assoc-fn | 597 |  | `ModifiersAlt` | done |
+| `Modifiers::shift` | assoc-fn | 605 |  | `ModifiersShift` | done |
+| `Modifiers::function` | assoc-fn | 613 |  | `ModifiersFunction` | done |
+| `Modifiers::command_shift` | assoc-fn | 621 |  | `ModifiersCommandShift` | done |
+| `Modifiers::control_shift` | assoc-fn | 630 |  | `ModifiersControlShift` | done |
+| `Modifiers::is_subset_of` | method | 639 |  | `(Modifiers).IsSubsetOf` | done |
+| `Capslock` | struct | 701 |  | `Capslock` | done |
 
+
+## Notes (M0-input-types)
+
+- keystroke.rs: `cfg(target_os = "windows")` parts are runtime branches on `runtime.GOOS == "windows"` (`targetWindows`): `KeybindingKeystroke` carries the display fields on every OS and `NewKeybindingKeystroke` exists everywhere (on other OSes the display fields are never read). Parsing uses ASCII-only case folding as upstream (`eq_ignore_ascii_case`, `make_ascii_lowercase`). `KeystrokeDisplay` formats with `String()`. Modifier `BitOr` / `BitXor` / `BitAnd` (+`Assign`) are methods. JSON tags follow serde's field names.
+- interactive.rs: `PlatformInput` is a sealed interface whose variants are the event structs themselves (`KindName`, `TouchEvent` are interface methods; the crate-private `mouse_event` / `keyboard_event` are `platformInputMouseEvent` / `platformInputKeyboardEvent` returning a pointer to a copy, or nil). `InputEvent` / `KeyEvent` / `MouseEvent` / `GestureEvent` are sealed interfaces implemented by value. Events with `Deref<Target = Modifiers>` (`ModifiersChangedEvent`, `ScrollEvent`, `PinchEvent`, `MouseExitEvent`) embed `Modifiers`. `ClickEvent` is a tagged struct (`Kind`, zero value = Keyboard, upstream's default); `ScrollDelta` a tagged struct whose zero value is `Lines(0,0)`. `FileDropEvent` variants are `FileDropEventEntered`, `...Pending`, `...Submit`, `...Exited`, `...Ended`. `FileDragPaths` entries are `FileDragPath{Path, IsDir}` (D-TUPLE). The `LongPressEvent` / `TouchDragEvent` / `BackGestureEvent` PlatformInput methods live in interactive.go; M0-gestures-spring replaces their stub types and adds their `InputEvent` impls in gestures.go.
+- input.rs: `EntityInputHandler[T]` is implemented by `*T`; provided methods come from `EntityInputHandlerDefaults[T]` (bind with `BindEntityInputHandlerDefaults`). `NewElementInputHandler` panics if `*V` does not implement it (D-COND) and returns `*ElementInputHandler[V]`, which embeds `InputHandlerDefaults` for `ApplePressAndHoldEnabled`.
+
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-FLATENUM | `MouseButton::Navigate(NavigationDirection)` is flattened into `MouseButtonNavigateBack` / `MouseButtonNavigateForward` of one comparable `uint8` enum (`MouseButtonNavigate(dir)`, `(MouseButton).Navigation()`); `TouchPhase` puts `Moved` first so the zero value is upstream's `#[default]` (no `Ord` is derived, so order carries no meaning) | `gpui/src/interactive.rs:88-101`, `:453-480` | Keeps the button usable in `switch`, as a map key and as a constant; keeps zero-valued events equal to upstream's `Default` |

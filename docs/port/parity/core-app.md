@@ -10,25 +10,25 @@ Go target: `action.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `actions` | macro | 24 |  | `see DESIGN §9 (actions!)` | todo |
-| `Action` | trait | 117 |  | `Action` | todo |
-| `Action::boxed_clone` | trait-method | 119 |  | `Action.BoxedClone` | todo |
-| `Action::partial_eq` | trait-method | 122 |  | `Action.PartialEq` | todo |
-| `Action::name` | trait-method | 125 |  | `Action.Name` | todo |
-| `Action::name_for_type` | trait-method | 128 |  | `Action.NameForType` | todo |
-| `Action::build` | trait-method | 134 |  | `Action.Build` | todo |
-| `Action::action_json_schema` | trait-method | 139 |  | `Action.ActionJSONSchema` | todo |
-| `Action::deprecated_aliases` | trait-method | 149 |  | `Action.DeprecatedAliases` | todo |
-| `Action::deprecation_message` | trait-method | 158 |  | `Action.DeprecationMessage` | todo |
-| `Action::documentation` | trait-method | 167 |  | `Action.Documentation` | todo |
-| `Action::as_any` | method | 185 |  | `(Action).AsAny` | todo |
-| `ActionBuildError` | enum | 193 |  | `ActionBuildError` | todo |
-| `MacroActionBuilder` | struct | 267 |  | `MacroActionBuilder` | todo |
-| `MacroActionData` | struct | 272 |  | `MacroActionData` | todo |
-| `generate_list_of_all_registered_actions` | fn | 417 |  | `GenerateListOfAllRegisteredActions` | todo |
-| `Unbind` | struct | 445 |  | `Unbind` | todo |
-| `is_no_action` | fn | 448 |  | `IsNoAction` | todo |
-| `is_unbind` | fn | 453 |  | `IsUnbind` | todo |
+| `actions` | macro | 24 |  | `see DESIGN §9 (actions!)` | dev:D-MACRO |
+| `Action` | trait | 117 |  | `Action` | done |
+| `Action::boxed_clone` | trait-method | 119 |  | `Action.BoxedClone` | done |
+| `Action::partial_eq` | trait-method | 122 |  | `Action.PartialEq` | done |
+| `Action::name` | trait-method | 125 |  | `Action.Name` | done |
+| `Action::name_for_type` | trait-method | 128 |  | `ActionData.Name` | dev:D-ACTIONDATA |
+| `Action::build` | trait-method | 134 |  | `ActionData.Build` | dev:D-ACTIONDATA |
+| `Action::action_json_schema` | trait-method | 139 |  | `ActionData.JSONSchema` | dev:D-ACTIONDATA |
+| `Action::deprecated_aliases` | trait-method | 149 |  | `ActionData.DeprecatedAliases` | dev:D-ACTIONDATA |
+| `Action::deprecation_message` | trait-method | 158 |  | `ActionData.DeprecationMessage` | dev:D-ACTIONDATA |
+| `Action::documentation` | trait-method | 167 |  | `ActionData.Documentation` | dev:D-ACTIONDATA |
+| `Action::as_any` | method | 185 |  | type assertion on `Action` | n/a:D-ACTIONDATA |
+| `ActionBuildError` | enum | 193 |  | `ActionBuildError` | done |
+| `MacroActionBuilder` | struct | 267 |  | `RegisterAction` | n/a:D-ACTIONDATA |
+| `MacroActionData` | struct | 272 |  | `ActionData` | dev:D-ACTIONDATA |
+| `generate_list_of_all_registered_actions` | fn | 417 |  | `GenerateListOfAllRegisteredActions` | done |
+| `Unbind` | struct | 445 |  | `Unbind` | done |
+| `is_no_action` | fn | 448 |  | `IsNoAction` | done |
+| `is_unbind` | fn | 453 |  | `IsUnbind` | done |
 
 ## gpui/src/app.rs
 
@@ -280,21 +280,21 @@ Go target: `assets.go` (package `gpui`), tests in `assets_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `AssetSource` | trait | 13 |  | `AssetSource` | todo |
-| `AssetSource::load` | trait-method | 15 |  | `AssetSource.Load` | todo |
-| `AssetSource::list` | trait-method | 18 |  | `AssetSource.List` | todo |
-| `ImageId` | struct | 33 |  | `ImageID` | todo |
-| `RenderImageParams` | struct | 37 |  | `RenderImageParams` | todo |
-| `RenderImage` | struct | 43 |  | `RenderImage` | todo |
-| `RenderImage::new` | assoc-fn | 61 |  | `NewRenderImage` | todo |
-| `RenderImage::as_bytes` | method | 72 |  | `(RenderImage).AsBytes` | todo |
-| `RenderImage::size` | method | 79 |  | `(RenderImage).Size` | todo |
-| `RenderImage::delay` | method | 96 |  | `(RenderImage).Delay` | todo |
-| `RenderImage::frame_count` | method | 104 |  | `(RenderImage).FrameCount` | todo |
+| `AssetSource` | trait | 13 |  | `AssetSource` | done |
+| `AssetSource::load` | trait-method | 15 |  | `AssetSource.Load` | done |
+| `AssetSource::list` | trait-method | 18 |  | `AssetSource.List` | done |
+| `ImageId` | struct | 33 |  | `ImageID` | done |
+| `RenderImageParams` | struct | 37 |  | `RenderImageParams` | done |
+| `RenderImage` | struct | 43 |  | `RenderImage` | done |
+| `RenderImage::new` | assoc-fn | 61 |  | `NewRenderImage` | done |
+| `RenderImage::as_bytes` | method | 72 |  | `(RenderImage).AsBytes` | done |
+| `RenderImage::size` | method | 79 |  | `(RenderImage).Size` | done |
+| `RenderImage::delay` | method | 96 |  | `(RenderImage).Delay` | done |
+| `RenderImage::frame_count` | method | 104 |  | `(RenderImage).FrameCount` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `empty_render_image_does_not_panic` | test | 124 |  | `TestAssets_EmptyRenderImageDoesNotPanic` | todo |
+| `empty_render_image_does_not_panic` | test | 124 |  | `TestAssets_EmptyRenderImageDoesNotPanic` | done |
 
 ## gpui/src/executor.rs
 
@@ -357,12 +357,12 @@ Go target: `global.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Global` | trait | 22 |  | `Global` | todo |
-| `ReadGlobal` | trait | 30 |  | `ReadGlobal` | todo |
-| `ReadGlobal::global` | trait-method | 34 |  | `ReadGlobal.Global` | todo |
-| `UpdateGlobal` | trait | 44 |  | `UpdateGlobal` | todo |
-| `UpdateGlobal::update_global` | trait-method | 48 |  | `UpdateGlobal.UpdateGlobal` | todo |
-| `UpdateGlobal::set_global` | trait-method | 54 |  | `UpdateGlobal.SetGlobal` | todo |
+| `Global` | trait | 22 |  | none (marker trait dropped) | n/a:D-GLOBAL |
+| `ReadGlobal` | trait | 30 |  | `Global[G]` (func) | dev:D-GLOBAL |
+| `ReadGlobal::global` | trait-method | 34 |  | `Global[G]` (func) | dev:D-GLOBAL |
+| `UpdateGlobal` | trait | 44 |  | `UpdateGlobal` / `UpdateGlobalR` / `SetGlobal` (gpui.go funcs) | dev:D-GLOBAL |
+| `UpdateGlobal::update_global` | trait-method | 48 |  | `UpdateGlobal` / `UpdateGlobalR` (gpui.go) | dev:D-GLOBAL |
+| `UpdateGlobal::set_global` | trait-method | 54 |  | `SetGlobal` (gpui.go) | dev:D-GLOBAL |
 
 ## gpui/src/platform_scheduler.rs
 
@@ -417,11 +417,11 @@ Go target: `seeds.go` (package `gpui`), tests in `seeds_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `calculate_seeds` | fn | 15 |  | `CalculateSeeds` | todo |
+| `calculate_seeds` | fn | 15 |  | `CalculateSeeds` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `seeds_follow_iterations_explicit_seeds_and_seed_variable` | test | 55 |  | `TestSeeds_SeedsFollowIterationsExplicitSeedsAndSeedVariable` | todo |
+| `seeds_follow_iterations_explicit_seeds_and_seed_variable` | test | 55 |  | `TestSeeds_SeedsFollowIterationsExplicitSeedsAndSeedVariable` | done |
 
 ## gpui/src/subscription.rs
 
@@ -825,3 +825,18 @@ Go target: `app_visual_test_context.go` (package `gpui`)
 | `VisualTestAppContext::capture_screenshot` | method | 385 | feat:test-support | `(VisualTestAppContext).CaptureScreenshot` | todo |
 | `VisualTestAppContext::wait_for_animations` | method | 390 |  | `(VisualTestAppContext).WaitForAnimations` | todo |
 
+
+## Notes (M0-input-types)
+
+- action.rs: `RegisterAction` only appends to a package inventory (upstream `inventory::submit!`); the registry (`actionRegistry`, built by `newActionRegistry` = `ActionRegistry::default` + `load_actions`) panics on duplicate names with upstream's text when an App builds it. Its methods are unexported (`buildActionType`, `tryResolveAction`, `buildAction(name, Option[jsontext.Value])` defaulting to `{}`, `allActionNames`, `actionSchemas`, `actionSchemaByName`, `deprecatedAliasesMap`, `deprecationMessagesMap`, `documentationMap`). Schema functions take no generator (ActionData contract); a nil `JSONSchema` is upstream's `None`.
+- `NoAction` and `Unbind` are hand-written in action.go (no `action_gen.go`): names `zed::NoAction`, `zed::Unbind`; `Unbind` is `type Unbind SharedString`, so its JSON is a bare string as serde's newtype.
+- `ActionBuildErrorBuildError.Unwrap` returns `errors.Unwrap(Err)`, upstream's `error.source()`.
+- assets.rs: `NoAssets` is `impl AssetSource for ()`; `RenderImage.String` is the Debug impl; `renderSize` is crate-private.
+- seeds.rs: `CalculateSeeds` returns `(iter.Seq[uint64], bool)`; panics "invalid ITERATIONS variable: ..." / "invalid SEED variable as integer: ...".
+
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-ACTIONDATA | The `Self: Sized` associated functions of `Action` (`name_for_type`, `build`, `action_json_schema`, `deprecated_aliases`, `deprecation_message`, `documentation`) are fields of the `ActionData` registration record (upstream's `MacroActionData`); `MacroActionBuilder` / `inventory` are `RegisterAction` from `init`; `as_any` is a Go type assertion | `gpui/src/action.rs:117-190`, `:267-290` | Go interfaces have no static methods; DESIGN 6.4 |
+| D-GLOBAL | global.rs's blanket traits are free generic functions: `ReadGlobal::global` is `Global[G](cx)`, `UpdateGlobal::update_global` / `set_global` are gpui.go's `UpdateGlobal` / `UpdateGlobalR` / `SetGlobal`; the `Global` marker trait is dropped (any type can be a global) | `gpui/src/global.rs:22-75` | marker traits are dropped (DESIGN 5.4); blanket impls cannot be expressed |

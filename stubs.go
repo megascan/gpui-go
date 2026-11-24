@@ -1,7 +1,6 @@
 package gpui
 
 import (
-	"encoding/json/jsontext"
 	"iter"
 	"math/rand/v2"
 	"reflect"
@@ -9,7 +8,6 @@ import (
 	"time"
 
 	"github.com/megascan/gpui-go/a11y"
-	"github.com/megascan/gpui-go/internal/jsonschema"
 	"github.com/megascan/gpui-go/scheduler"
 )
 
@@ -225,39 +223,6 @@ const profilerFeatureEnabled = false
 
 // DefaultWindowSize is the default size of a new window (M0-window-core ports it).
 var DefaultWindowSize = NewSize(Px(1536.), Px(1095.))
-
-// Capslock is the state of the capslock key (M0-input-types ports it).
-type Capslock struct {
-	// On reports whether capslock is on.
-	On bool
-}
-
-// KeybindingKeystroke is a keystroke used in keybindings and displayed to the user (M0-input-types ports it).
-type KeybindingKeystroke struct{}
-
-// KeybindingKeystrokeFromKeystroke wraps a keystroke (M0-input-types ports it).
-func KeybindingKeystrokeFromKeystroke(keystroke Keystroke) KeybindingKeystroke {
-	panic("gpui: unimplemented KeybindingKeystrokeFromKeystroke")
-}
-
-// KeyDownEvent is a key press from the platform (M0-input-types ports it).
-type KeyDownEvent struct{}
-
-// ExternalDragPayload is data offered to the platform for a native drag session (M0-input-types ports it).
-type ExternalDragPayload interface {
-	isExternalDragPayload()
-}
-
-// RenderImageParams identifies a decoded image frame in the sprite atlas (M0-input-types ports it).
-type RenderImageParams struct {
-	// ImageID is the image.
-	ImageID ImageID
-	// FrameIndex is the frame of the image.
-	FrameIndex int
-}
-
-// ImageID is a unique identifier for the image cache (M0-input-types ports it).
-type ImageID uint
 
 // Keymap is a collection of key bindings (M0-keymap ports it).
 type Keymap struct{}
@@ -727,63 +692,6 @@ func (cx *AsyncApp) upgradeApp() (*AppCell, bool) {
 	panic("gpui: unimplemented AsyncApp.upgradeApp")
 }
 
-// NoAction is the action that disables a binding (M0-input-types ports it).
-type NoAction struct{}
-
-// Name returns the action's name (M0-input-types ports it).
-func (NoAction) Name() string {
-	panic("gpui: unimplemented NoAction.Name")
-}
-
-// BoxedClone clones the action (M0-input-types ports it).
-func (NoAction) BoxedClone() Action {
-	panic("gpui: unimplemented NoAction.BoxedClone")
-}
-
-// PartialEq compares the action with another (M0-input-types ports it).
-func (NoAction) PartialEq(other Action) bool {
-	panic("gpui: unimplemented NoAction.PartialEq")
-}
-
-// ExternalPaths is a list of paths dragged or pasted from outside the app (M0-input-types ports it).
-type ExternalPaths []string
-
-// RenderImage is a decoded image in BGRA format (M0-input-types ports it).
-type RenderImage struct{}
-
-// AsBytes returns the BGRA bytes of a frame (M0-input-types ports it).
-func (r *RenderImage) AsBytes(frameIndex int) ([]byte, bool) {
-	panic("gpui: unimplemented RenderImage.AsBytes")
-}
-
-// Size returns the size of a frame in pixels (M0-input-types ports it).
-func (r *RenderImage) Size(frameIndex int) Size[DevicePixels] {
-	panic("gpui: unimplemented RenderImage.Size")
-}
-
-// Delay returns the delay of a frame from the previous one (M0-input-types ports it).
-func (r *RenderImage) Delay(frameIndex int) time.Duration {
-	panic("gpui: unimplemented RenderImage.Delay")
-}
-
-// FrameCount returns the number of frames (M0-input-types ports it).
-func (r *RenderImage) FrameCount() int {
-	panic("gpui: unimplemented RenderImage.FrameCount")
-}
-
-// AssetSource loads embedded assets (M0-input-types ports it).
-type AssetSource interface {
-	// Load loads the asset at path; ok is false when there is none.
-	Load(path string) (data []byte, ok bool, err error)
-	// List lists the assets under path.
-	List(path string) ([]SharedString, error)
-}
-
-// NewRenderImage creates a render image from decoded frames (M0-input-types ports it).
-func NewRenderImage(data []ImageFrame) *RenderImage {
-	panic("gpui: unimplemented NewRenderImage")
-}
-
 // Hash is a quick, non-cryptographic hash used to identify data (M0-app-contexts ports it).
 func Hash[T any](data T) uint64 {
 	panic("gpui: unimplemented Hash")
@@ -1173,26 +1081,6 @@ func (p *Parent[S]) ChildText(text string) S {
 	panic("gpui: unimplemented Parent.ChildText")
 }
 
-// Fluent is the FluentBuilder mixin; bind it with BindFluent (M0-input-types ports it).
-type Fluent[S any] struct {
-	self S
-}
-
-// BindFluent binds a Fluent mixin to the element that embeds it.
-func BindFluent[S any](m *Fluent[S], self S) {
-	m.self = self
-}
-
-// When conditionally modifies self with the given closure (M0-input-types ports it).
-func (f *Fluent[S]) When(condition bool, then func(this S) S) S {
-	panic("gpui: unimplemented Fluent.When")
-}
-
-// Map applies a function to self (M0-input-types ports it).
-func (f *Fluent[S]) Map[U any](fn func(this S) U) U {
-	panic("gpui: unimplemented Fluent.Map")
-}
-
 // Div is the basic container element (M0-div-api ports it).
 type Div struct {
 	Styled[*Div]
@@ -1257,73 +1145,6 @@ func (s *Stateful[E]) Extend(elements []AnyElement) {
 // IntoAnyElement returns the inner element's AnyElement (M0-div-paint ports it).
 func (s *Stateful[E]) IntoAnyElement() AnyElement {
 	panic("gpui: unimplemented Stateful.IntoAnyElement")
-}
-
-// ClickEvent is a mouse click on an element (M0-input-types ports it).
-type ClickEvent struct{}
-
-// PlatformInput is an input event from the platform (M0-input-types ports it).
-type PlatformInput interface {
-	isPlatformInput()
-}
-
-// Modifiers is the state of the modifier keys (M0-input-types ports it).
-type Modifiers struct {
-	// Control is the control key.
-	Control bool
-	// Alt is the alt key, Option on macOS.
-	Alt bool
-	// Shift is the shift key.
-	Shift bool
-	// Platform is the command key on macOS, the windows key on Windows, the super key on Linux.
-	Platform bool
-	// Function is the function key.
-	Function bool
-}
-
-// Keystroke is a key press with its modifiers (M0-input-types ports it).
-type Keystroke struct {
-	// Modifiers is the modifier state of the keystroke.
-	Modifiers Modifiers
-	// Key is the key that was pressed.
-	Key string
-	// KeyChar is the character the key would produce, if any.
-	KeyChar Option[string]
-}
-
-// KeystrokeParse parses a keystroke from its source form (M0-input-types ports it).
-func KeystrokeParse(source string) (Keystroke, error) {
-	panic("gpui: unimplemented KeystrokeParse")
-}
-
-// Action is an action that can be bound to keystrokes and dispatched (M0-input-types ports it).
-type Action interface {
-	Name() string
-	BoxedClone() Action
-	PartialEq(other Action) bool
-}
-
-// ActionData is the registration record of an action type (M0-input-types ports it).
-type ActionData struct {
-	// Name is the action's qualified name.
-	Name string
-	// Type is the action's Go type.
-	Type reflect.Type
-	// Build builds the action from its JSON value.
-	Build func(value jsontext.Value) (Action, error)
-	// JSONSchema returns the JSON schema of the action's value.
-	JSONSchema func() *jsonschema.Schema
-	// DeprecatedAliases are other names the action can be built from.
-	DeprecatedAliases []string
-	// DeprecationMessage is shown when the action is used.
-	DeprecationMessage string
-	// Documentation is the action's documentation.
-	Documentation string
-}
-
-// RegisterAction registers an action type; call it from init (M0-input-types ports it).
-func RegisterAction(data ActionData) {
-	panic("gpui: unimplemented RegisterAction")
 }
 
 // Scene is the list of primitives painted in one frame (M0-scene ports it).
@@ -1497,3 +1318,40 @@ type TestAppContext struct{}
 func (s SharedString) IntoAnyElement() AnyElement {
 	panic("gpui: unimplemented SharedString.IntoAnyElement")
 }
+
+// PlatformInfo returns information about the host platform (M0-app-effects ports it).
+func (cx *App) PlatformInfo() PlatformInfo {
+	panic("gpui: unimplemented App.PlatformInfo")
+}
+
+// Global returns the global of type G; it panics if none has been set (M0-app-effects ports it).
+func (cx *App) Global[G any]() *G {
+	panic("gpui: unimplemented App.Global")
+}
+
+// Appearance returns the window's appearance (M0-window-paint ports it).
+func (w *Window) Appearance() WindowAppearance {
+	panic("gpui: unimplemented Window.Appearance")
+}
+
+// Empty is an element that renders nothing (M0-element ports it).
+type Empty struct{}
+
+// IntoAnyElement converts the element into an AnyElement (M0-element ports it).
+func (Empty) IntoAnyElement() AnyElement {
+	panic("gpui: unimplemented Empty.IntoAnyElement")
+}
+
+// Timer returns a task that completes after duration (M0-executors ports it).
+func (e BackgroundExecutor) Timer(duration time.Duration) *Task[struct{}] {
+	panic("gpui: unimplemented BackgroundExecutor.Timer")
+}
+
+// LongPressEvent is a long-press gesture recognized from touch input (M0-gestures-spring ports it).
+type LongPressEvent struct{}
+
+// TouchDragEvent is a direct touch drag claimed by an element (M0-gestures-spring ports it).
+type TouchDragEvent struct{}
+
+// BackGestureEvent is a back-navigation gesture recognized by the platform (M0-gestures-spring ports it).
+type BackGestureEvent struct{}

@@ -111,15 +111,15 @@ Go target: `colors.go` (package `gpui`)
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `Colors` | struct | 10 |  | `Colors` | todo |
-| `Colors::for_appearance` | assoc-fn | 37 |  | `ColorsForAppearance` | todo |
-| `Colors::dark` | assoc-fn | 45 |  | `ColorsDark` | todo |
-| `Colors::light` | assoc-fn | 59 |  | `ColorsLight` | todo |
-| `Colors::get_global` | assoc-fn | 73 |  | `ColorsGetGlobal` | todo |
-| `GlobalColors` | struct | 80 |  | `GlobalColors` | todo |
-| `DefaultColors` | trait | 93 |  | `DefaultColors` | todo |
-| `DefaultColors::default_colors` | trait-method | 95 |  | `DefaultColors.DefaultColors` | todo |
-| `DefaultAppearance` | enum | 108 |  | `DefaultAppearance` | todo |
+| `Colors` | struct | 10 |  | `Colors` | done |
+| `Colors::for_appearance` | assoc-fn | 37 |  | `ColorsForAppearance` | done |
+| `Colors::dark` | assoc-fn | 45 |  | `ColorsDark` | done |
+| `Colors::light` | assoc-fn | 59 |  | `ColorsLight` | done |
+| `Colors::get_global` | assoc-fn | 73 |  | `ColorsGetGlobal` | done |
+| `GlobalColors` | struct | 80 |  | `GlobalColors` | done |
+| `DefaultColors` | trait | 93 |  | `DefaultColors` | done |
+| `DefaultColors::default_colors` | trait-method | 95 |  | `DefaultColors.DefaultColors` | done |
+| `DefaultAppearance` | enum | 108 |  | `DefaultAppearance` | done |
 
 ## gpui/src/geometry.rs
 
@@ -321,23 +321,23 @@ Go target: `util.go` (package `gpui`), tests in `util_test.go`
 
 | Upstream item | Kind | Line | Cfg | Go symbol | Status |
 |---|---|---|---|---|---|
-| `FluentBuilder` | trait | 11 |  | `Fluent[S] mixin` | todo |
-| `FluentBuilder::map` | trait-method | 13 |  | `(Fluent[S]).Map` | todo |
-| `FluentBuilder::when` | trait-method | 21 |  | `(Fluent[S]).When` | todo |
-| `FluentBuilder::when_else` | trait-method | 29 |  | `(Fluent[S]).WhenElse` | todo |
-| `FluentBuilder::when_some` | trait-method | 42 |  | `(Fluent[S]).WhenSome` | todo |
-| `FluentBuilder::when_none` | trait-method | 55 |  | `(Fluent[S]).WhenNone` | todo |
-| `FutureExt` | trait | 64 |  | `FutureExt` | todo |
-| `FutureExt::with_timeout` | trait-method | 67 |  | `FutureExt.WithTimeout` | todo |
-| `WithTimeout` | struct | 85 |  | `WithTimeout` | todo |
-| `Timeout` | struct | 95 |  | `Timeout` | todo |
+| `FluentBuilder` | trait | 11 |  | `Fluent[S] mixin` | done |
+| `FluentBuilder::map` | trait-method | 13 |  | `(Fluent[S]).Map` | done |
+| `FluentBuilder::when` | trait-method | 21 |  | `(Fluent[S]).When` | done |
+| `FluentBuilder::when_else` | trait-method | 29 |  | `(Fluent[S]).WhenElse` | done |
+| `FluentBuilder::when_some` | trait-method | 42 |  | `(Fluent[S]).WhenSome` | done |
+| `FluentBuilder::when_none` | trait-method | 55 |  | `(Fluent[S]).WhenNone` | done |
+| `FutureExt` | trait | 64 |  | `FutureWithTimeout` (func) | dev:D-FUTUREEXT |
+| `FutureExt::with_timeout` | trait-method | 67 |  | `FutureWithTimeout` (func) | dev:D-FUTUREEXT |
+| `WithTimeout` | struct | 85 |  | `WithTimeout` | done |
+| `Timeout` | struct | 95 |  | `Timeout` | done |
 
 | Upstream test | Attr | Line | Cfg | Go test | Status |
 |---|---|---|---|---|---|
-| `test_round_half_toward_zero` | test | 170 |  | `TestUtil_RoundHalfTowardZero` | todo |
-| `test_device_pixel_helpers` | test | 192 |  | `TestUtil_DevicePixelHelpers` | todo |
-| `test_round_half_toward_zero_f64` | test | 220 |  | `TestUtil_RoundHalfTowardZeroF64` | todo |
-| `test_with_timeout` | gpui::test | 229 |  | `TestUtil_WithTimeout` | todo |
+| `test_round_half_toward_zero` | test | 170 |  | `TestUtil_RoundHalfTowardZero` | done |
+| `test_device_pixel_helpers` | test | 192 |  | `TestUtil_DevicePixelHelpers` | done |
+| `test_round_half_toward_zero_f64` | test | 220 |  | `TestUtil_RoundHalfTowardZeroF64` | done |
+| `test_with_timeout` | gpui::test | 229 |  | `TestUtil_WithTimeout` | blocked:M0-blocked-tests |
 
 
 ## Notes (M0-geometry)
@@ -371,3 +371,9 @@ Go target: `util.go` (package `gpui`), tests in `util_test.go`
 |---|---|---|---|
 | D-CTX | Generic methods of the context traits (`AppContext`, `VisualContext`, `BorrowAppContext`) become free generic functions over a sealed interface of unexported, type-erased primitives (`AppContextNew`, `VisualContextFocus`, `SetGlobal`, ...); each concrete context also has the upstream-named generic methods as delegates. The `Sealed` marker has no Go symbol: the unexported primitives seal the interface | `gpui/src/gpui.rs:169-339` | A Go interface cannot declare generic methods (DESIGN 5.4, 6.2) |
 | D-IDMIXIN | `InteractiveElement::id` lives on its own mixin `InteractiveID[S]` (bound with `BindInteractiveID`), which `Div` and the other interactive elements embed and `Stateful[E]` does not; `Stateful<E>::id` (re-wrapping) is absent | `gpui/src/elements/div.rs:803` | `Interactive[S].ID` returning `*Stateful[S]` while `Stateful[E]` embeds `Interactive[*Stateful[E]]` is an instantiation cycle the Go type checker rejects; re-wrapping a Stateful only re-sets the id on the shared Interactivity |
+| D-FUTUREEXT | `FutureExt::with_timeout` (a blanket extension trait on every Future) is the free function `FutureWithTimeout(future, timeout, executor)` returning `*WithTimeout[T]`, a `scheduler.Future[scheduler.Result[T]]` whose error is `Timeout` | `gpui/src/util.rs:64-112` | Go cannot add methods to an interface's implementors |
+
+## Notes (M0-input-types)
+
+- util.rs: `Fluent[S]` has `Map`, `When`, `WhenElse`, `WhenSome[T]`, `WhenNone[T]`; `WhenNone` takes `Option[T]` by value. The crate-private rounding helpers (`roundHalfTowardZero`, `...F64`, `roundToDevicePixel`, `roundStrokeToDevicePixel`, `floorToDevicePixel`, `ceilToDevicePixel`) and `atomicIncrIfNotZero` (`*atomic.Uint64`) are unexported in util.go. `TestUtil_WithTimeout` needs TestAppContext (blocked on M0-blocked-tests, which owns util_test.go).
+- colors.rs: `GlobalColors` embeds `*Colors` (Deref); `DefaultColors` is an interface implemented by `(*App).DefaultColors`; `impl Default for Colors` has no Go function (the name `DefaultColors` is the trait's), `ColorsLight` is the default; `From<WindowAppearance>` is `(WindowAppearance).ToDefaultAppearance`.
