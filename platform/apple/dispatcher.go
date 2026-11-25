@@ -5,6 +5,7 @@ package apple
 import (
 	"errors"
 	"fmt"
+	"runtime"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -18,14 +19,29 @@ import (
 	"github.com/megascan/gpui-go/scheduler"
 )
 
-// AppleDispatcher is the PlatformDispatcher on Grand Central Dispatch.
+// AppleDispatcher is the PlatformDispatcher: background runnables run on Go worker goroutines,
+// main-thread runnables run on GCD's main queue and timers on time.AfterFunc. Upstream uses GCD's
+// global queues; Go callbacks from GCD threads are locked to foreign OS threads, and an iter.Pull
+// coroutine resumed on another GCD thread is a fatal error.
 type AppleDispatcher struct {
 	gpui.PlatformDispatcherDefaults
+	backgroundSender *gpui.PriorityQueueSender[gpui.RunnableVariant]
 }
 
-// NewAppleDispatcher returns a dispatcher on GCD's main and global queues.
+// NewAppleDispatcher returns a dispatcher with a worker pool and GCD's main queue.
 func NewAppleDispatcher() *AppleDispatcher {
-	d := &AppleDispatcher{}
+	backgroundSender, backgroundReceiver := gpui.NewPriorityQueueReceiver[gpui.RunnableVariant]()
+	for range max(runtime.NumCPU(), minWorkerThreads) {
+		receiver := backgroundReceiver.Clone()
+		go func() {
+			for runnable := range receiver.Iter() {
+				executeRunnable(runnable)
+			}
+		}()
+	}
+	backgroundReceiver.Close()
+
+	d := &AppleDispatcher{backgroundSender: backgroundSender}
 	gpui.BindPlatformDispatcherDefaults(&d.PlatformDispatcherDefaults, d)
 	return d
 }
@@ -35,24 +51,12 @@ func (d *AppleDispatcher) IsMainThread() bool {
 	return objc.IsMainThread()
 }
 
-// Dispatch runs runnable on the global queue matching priority.
+// Dispatch runs runnable on a worker goroutine in priority order.
 func (d *AppleDispatcher) Dispatch(runnable gpui.RunnableVariant, priority gpui.Priority) {
-	context := runnables.Insert(runnable)
-
-	var queuePriority gcd.QueuePriority
-	switch priority {
-	case scheduler.PriorityRealtimeAudio:
-		runnables.Take(context)
+	if priority == scheduler.PriorityRealtimeAudio {
 		panic("RealtimeAudio priority should use spawn_realtime, not dispatch")
-	case scheduler.PriorityHigh:
-		queuePriority = gcd.QueuePriorityHigh
-	case scheduler.PriorityMedium:
-		queuePriority = gcd.QueuePriorityDefault
-	case scheduler.PriorityLow:
-		queuePriority = gcd.QueuePriorityLow
 	}
-
-	gcd.GlobalQueue(queuePriority).ExecAsyncF(context, trampolineFunction())
+	gpuiutil.LogErr(d.backgroundSender.Send(priority, runnable))
 }
 
 // DispatchOnMainThread runs runnable on the main queue.
@@ -61,12 +65,11 @@ func (d *AppleDispatcher) DispatchOnMainThread(runnable gpui.RunnableVariant, pr
 	gcd.MainQueue().ExecAsyncF(context, trampolineFunction())
 }
 
-// DispatchAfter runs runnable on the high-priority global queue after duration.
+// DispatchAfter runs runnable on a timer goroutine after duration.
 func (d *AppleDispatcher) DispatchAfter(duration time.Duration, runnable gpui.RunnableVariant) {
-	context := runnables.Insert(runnable)
-	queue := gcd.GlobalQueue(gcd.QueuePriorityHigh)
-	when := gcd.TimeNow.Time(duration.Nanoseconds())
-	gcd.ExecAfterF(when, queue, context, trampolineFunction())
+	time.AfterFunc(max(duration, 0), func() {
+		executeRunnable(runnable)
+	})
 }
 
 // SpawnRealtime runs f on a new OS thread with audio-thread scheduling.
@@ -222,6 +225,8 @@ func setAudioThreadPriority() error {
 	return nil
 }
 
+const minWorkerThreads = 2
+
 var (
 	runnables       gcd.Handles[gpui.RunnableVariant]
 	trampolineOnce  sync.Once
@@ -254,7 +259,10 @@ func trampoline(context uintptr) {
 	if !ok {
 		return
 	}
+	executeRunnable(runnable)
+}
 
+func executeRunnable(runnable gpui.RunnableVariant) {
 	thread := currentProfilerThread()
 	location := runnable.Metadata().Location
 	spawned := runnable.Metadata().Spawned
