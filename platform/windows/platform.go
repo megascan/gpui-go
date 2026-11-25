@@ -580,6 +580,7 @@ func (p *WindowsPlatform) Run(onFinishLaunching func()) {
 			win32.TranslateMessage(&msg)
 			win32.DispatchMessageW(&msg)
 		}
+		p.inner.dispatcher.RepostDeferredWake()
 	}
 
 	withCallback(&p.inner.state.callbacks.quit, func(callback func() bool) {
@@ -1241,7 +1242,7 @@ func (i *windowsPlatformInner) translateAccelerator(msg *win32.MSG) bool {
 		return false
 	}
 	window, ok := i.windowFromHwnd(msg.Hwnd)
-	if !ok {
+	if !ok || window.state.released {
 		return false
 	}
 	result := window.handleKeydownMsg(msg.WParam, msg.LParam)
@@ -1350,6 +1351,10 @@ func (i *windowsPlatformInner) closeOneWindow(targetWindow HWND) bool {
 const mainTaskTimeout = 10 * time.Millisecond
 
 func (i *windowsPlatformInner) runForegroundTask() gpui.Option[uintptr] {
+	if scheduler.CallbackDepth() != foregroundCallbackDepth {
+		i.dispatcher.ForegroundDeferred.Store(true)
+		return gpui.Some[uintptr](0)
+	}
 	start := time.Now()
 tasks:
 	for {

@@ -36,11 +36,19 @@ GitHub Actions refuses to start the ci workflow's jobs on megascan/gpui-go: ubun
 
 ## WIN-REAL
 
-From the Windows 11 / RTX 3080 run of ebd634b (results in `~/.cache/gpui-win/results/`). Fixed on fix/windows-native, re-test on real Windows: counter hover (LogErr(nil) crash), image_example / image_loading / image_gallery / gif_viewer / toggle_headless (coro fatal), a11y/windows TestSimple_ElementFromPointAndRangeValueSetValue, close-time stderr noise (placement, ScreenToClient, ShowWindowAsync, RevokeDragDrop, DestroyWindow, RedrawWindow).
-- Never verified on real Windows: clipboard, IME (composition/candidate window), Narrator, toast notifications, mixed-DPI (per-monitor scale changes while moving a window).
-- Main-thread coroutines: iter.Pull requires each resume at the same OS-thread lock depth as creation. Main-thread runnables run inside the message window's wndproc (one callback level); a runnable first polled inside a nested modal loop (window move/size, dialogs) and resumed outside it, or the reverse, would hit the same fatal. Not observed; needs a real-Windows drag/resize test with a pending foreground task.
-- platform/apple dispatcher moved background runnables to Go worker goroutines and DispatchAfter to time.AfterFunc (fix/macos-dispatcher); only cross-compiled, untested on real macOS. Run TestDispatcher_* in platform/apple and an image/async example on a Mac. Main-thread runnables still run in GCD main-queue callbacks (same lock-depth caveat as Windows above).
+From the Windows 11 / RTX 3080 runs of ebd634b and 2feb18e (results in `~/.cache/gpui-win/`). Re-test on real Windows:
+- fix/windows-native: counter hover (LogErr(nil) crash), image_example / image_loading / image_gallery / gif_viewer / toggle_headless coro fatal (background runnables), a11y/windows TestSimple_ElementFromPointAndRangeValueSetValue, close-time stderr noise (placement, ScreenToClient, ShowWindowAsync, RevokeDragDrop, DestroyWindow, RedrawWindow).
+- fix/windows-modal-loop (D-WINMODALLOOP): drag the title bar and resize the border of image_loading while images load, 6+ times; no coro fatal, frames keep drawing during the drag, pending images appear once the mouse is released. Also open a file dialog / prompt while a task is pending.
+- fix/windows-modal-loop (D-FRAMEBORROW): system_notifications post / replace / dismiss log no `RefCell already borrowed`.
+- fix/windows-modal-loop (D-WINRELEASED): toggle_headless `open` then `close` logs no `window not found`; closing a window with its own close button still quits / removes it cleanly.
+- Narrator caret and selection reporting in text inputs: unverified.
+- Toast banners and action-button / body callbacks: unverified (notification delivery was disabled on the test machine).
+- IME composition and candidate window: unverified (the test produced Latin input only).
+- Mixed DPI: moving a window between monitors with different scales: unverified.
+- Clipboard: never verified on real Windows.
+- platform/apple dispatcher (fix/macos-dispatcher, D-APPLE-NESTEDLOOP): only cross-compiled. On a Mac run TestDispatcher_* in platform/apple, then live-resize and title-drag an image/async example while tasks are pending; no coro fatal, tasks resume after the drag.
 - `logLastError` reads `GetLastError` after the call returns; the Go runtime may clear it in between, so failures can log "X failed" with no cause. Convert the bool-returning win32 wrappers (ScreenToClient, ShowWindowAsync, ValidateRect, Imm*, FlashWindowEx, EnumThreadWindows) to return the error captured by `proc.Call`.
+- Foreground tasks pause during nested modal loops (D-WINMODALLOOP, D-APPLE-NESTEDLOOP) where upstream keeps running them. Lifting this needs foreground futures that are not iter.Pull coroutines.
 
 ## WINE-TEST
 

@@ -104,6 +104,9 @@ func screenToClient(handle HWND, point *win32.POINT) {
 }
 
 func (w *WindowsWindowInner) handleMsg(handle HWND, msg uint32, wparam win32.WPARAM, lparam win32.LPARAM) win32.LRESULT {
+	if w.state.released {
+		return w.handleReleasedMsg(handle, msg, wparam, lparam)
+	}
 	var result msgResult
 	switch msg {
 	case win32.WM_MOUSEACTIVATE:
@@ -207,6 +210,20 @@ func (w *WindowsWindowInner) handleMsg(handle HWND, msg uint32, wparam win32.WPA
 	return win32.DefWindowProcW(handle, msg, wparam, lparam)
 }
 
+func (w *WindowsWindowInner) handleReleasedMsg(handle HWND, msg uint32, wparam win32.WPARAM, lparam win32.LPARAM) win32.LRESULT {
+	switch msg {
+	case win32.WM_DESTROY:
+		return win32.LRESULT(w.handleDestroyMsg(handle).value)
+	case win32.WM_EXITSIZEMOVE, win32.WM_EXITMENULOOP:
+		w.handleSizeMoveLoopExit(handle)
+	case win32.WM_ACTIVATE:
+		if loword(wparam) == 0 {
+			w.state.cursorVisible.Store(true)
+		}
+	}
+	return win32.DefWindowProcW(handle, msg, wparam, lparam)
+}
+
 func (w *WindowsWindowInner) handleMoveMsg(handle HWND, lparam win32.LPARAM) msgResult {
 	origin := logicalPoint(float32(signedLoword(lparam)), float32(signedHiword(lparam)), w.state.scaleFactor)
 	w.state.origin = origin
@@ -306,11 +323,13 @@ func (w *WindowsWindowInner) handleSizeMoveLoopExit(handle HWND) msgResult {
 
 func (w *WindowsWindowInner) handleTimerMsg(handle HWND, wparam win32.WPARAM) msgResult {
 	if uintptr(wparam) == sizeMoveLoopTimerID {
-		for runnable, err := range w.mainReceiver.Clone().TryIter() {
-			if err != nil {
-				break
+		if scheduler.CallbackDepth() == foregroundCallbackDepth {
+			for runnable, err := range w.mainReceiver.Clone().TryIter() {
+				if err != nil {
+					break
+				}
+				WindowsDispatcherExecuteRunnable(runnable)
 			}
-			WindowsDispatcherExecuteRunnable(runnable)
 		}
 		return w.handlePaintMsg(handle)
 	}
@@ -804,7 +823,7 @@ func (w *WindowsWindowInner) handleActivateMsg(wparam win32.WPARAM) msgResult {
 	}
 
 	w.executor.Spawn(func(*scheduler.Scope) (struct{}, error) {
-		if fn := w.state.callbacks.activeStatusChange; fn != nil {
+		if fn := w.state.callbacks.activeStatusChange; fn != nil && !w.state.released {
 			w.state.callbacks.activeStatusChange = nil
 			fn(activated)
 			w.state.callbacks.activeStatusChange = fn
@@ -895,7 +914,7 @@ func (w *WindowsWindowInner) handleDisplayChangeMsg(handle HWND) msgResult {
 func (w *WindowsWindowInner) setDisplay(display *WindowsDisplay) {
 	w.state.display = display
 	w.executor.Spawn(func(*scheduler.Scope) (struct{}, error) {
-		if callback := w.state.callbacks.displayChanged; callback != nil {
+		if callback := w.state.callbacks.displayChanged; callback != nil && !w.state.released {
 			w.state.callbacks.displayChanged = nil
 			callback()
 			w.state.callbacks.displayChanged = callback
@@ -1177,7 +1196,7 @@ func (w *WindowsWindowInner) reportVisibility() {
 			return struct{}{}, nil
 		}
 		w.state.lastVisibility = gpui.Some(visibility)
-		if callback := w.state.callbacks.visibilityChange; callback != nil {
+		if callback := w.state.callbacks.visibilityChange; callback != nil && !w.state.released {
 			w.state.callbacks.visibilityChange = nil
 			callback(visibility)
 			w.state.callbacks.visibilityChange = callback

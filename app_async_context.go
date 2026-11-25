@@ -41,6 +41,11 @@ func (cx *AsyncApp) upgradeApp() (*AppCell, bool) {
 	return app, app != nil
 }
 
+func (cx *AsyncApp) appBorrowed() bool {
+	app, ok := cx.upgradeApp()
+	return ok && app.borrowFlag != 0
+}
+
 func (cx *AsyncApp) clone() *AsyncApp {
 	child := *cx
 	child.Scope = nil

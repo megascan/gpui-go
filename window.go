@@ -1898,7 +1898,7 @@ func newWindow(handle AnyWindowHandle, options WindowOptions, cx *App) (*Window,
 					Source:    requestFrameOptions.SignalSource,
 				})
 			}
-			if drawInProgress() {
+			if drawInProgress() || frameCx.appBorrowed() {
 				slog.Debug("deferring re-entrant window draw request")
 				deferredForceRender = deferredForceRender || requestFrameOptions.ForceRender
 				if profilerFeatureEnabled {
