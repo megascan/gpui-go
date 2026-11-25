@@ -360,7 +360,7 @@ func (w *LineWrapper) shouldTruncateLineMiddle(line string, truncateWidth Pixels
 			break
 		}
 		frontWidth += charWidth
-		frontEndIx = ix + utf8.RuneLen(c)
+		frontEndIx = ix + runeSizeAt(line, ix)
 	}
 
 	backWidth := Px(0.)
@@ -527,7 +527,7 @@ func (w *LineWrapper) TruncateWrappedLine(text SharedString, wrapWidth Pixels, m
 			}
 		} else {
 			if width+affixWidth <= wrapWidth {
-				truncateIx = ix + utf8.RuneLen(c)
+				truncateIx = ix + runeSizeAt(str, ix)
 			}
 
 			if width > wrapWidth {
@@ -537,6 +537,11 @@ func (w *LineWrapper) TruncateWrappedLine(text SharedString, wrapWidth Pixels, m
 	}
 
 	return text, runs
+}
+
+func runeSizeAt(s string, ix int) int {
+	_, size := utf8.DecodeRuneInString(s[ix:])
+	return size
 }
 
 func lineWrapperBreakIndices(text string) iter.Seq[int] {

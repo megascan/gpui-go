@@ -898,9 +898,22 @@ func (s *cosmicTextSystemState) renderGlyphImage(params gpui.RenderGlyphParams) 
 	if params.GlyphID > 0xFFFF {
 		return swashImage{}, fmt.Errorf("out of range integral type conversion attempted")
 	}
-	image, ok := renderer.render(scaler, uint16(params.GlyphID))
+	image, ok, err := renderGlyph(&renderer, scaler, uint16(params.GlyphID))
+	if err != nil {
+		return swashImage{}, err
+	}
 	if !ok {
 		return swashImage{}, fmt.Errorf("unable to render glyph via swash for %+v", params)
 	}
 	return image, nil
+}
+
+func renderGlyph(renderer *swashRender, scaler *swashScaler, glyphID uint16) (image swashImage, ok bool, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			image, ok, err = swashImage{}, false, fmt.Errorf("malformed font data while rendering glyph %d: %v", glyphID, r)
+		}
+	}()
+	image, ok = renderer.render(scaler, glyphID)
+	return image, ok, nil
 }

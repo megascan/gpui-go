@@ -500,12 +500,12 @@ func (p Position) ForwardToParagraphEnd() Position {
 func (p Position) BackwardToParagraphStart() Position {
 	current := p
 	for {
-		current = current.BackwardToLineStart()
-		if current.IsParagraphStart() {
-			break
+		next := current.BackwardToLineStart()
+		if next.IsParagraphStart() || compareComparable(next.inner.comparable(p.rootNode), current.inner.comparable(p.rootNode)) >= 0 {
+			return next
 		}
+		current = next
 	}
-	return current
 }
 
 // ForwardToPageStart returns the start of the next page.

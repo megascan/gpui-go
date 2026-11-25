@@ -674,3 +674,4 @@ Go target: `a11y/consumer/text.go`, tests in `text_test.go`. `Position`, `Range`
 |---|---|---|
 | `D-CDEBUG` | Rust's derived `Debug` for `Tree` and `State` has no Go counterpart; no caller formats them. | M3-a11y-consumer-tree |
 | `D-CSIZEHINT` | Rust iterator trait plumbing (`size_hint` on non-exact iterators, `FusedIterator` markers) has no Go counterpart; Go iterator structs stay exhausted once they return false. | M3-a11y-consumer-node |
+| `D-SEC-A11YPARA` | `Position.BackwardToParagraphStart` stops when a backward line step makes no progress (an empty text run linked by `next_on_line`), instead of looping forever while holding the tree read lock (SEC-040). | security sweep round 1 |

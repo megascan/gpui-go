@@ -98,11 +98,16 @@ func fetchFont(cx *gpui.AsyncApp, httpClient gpui.HTTPClient) ([]byte, error) {
 	return body, nil
 }
 
+const maxFontBodyBytes = 32 << 20
+
 func readBodyOffTask(cx scheduler.Awaiter, body io.ReadCloser) ([]byte, error) {
 	sender, receiver := scheduler.Oneshot[bodyResult]()
 	go func() {
 		defer body.Close()
-		bytes, err := io.ReadAll(body)
+		bytes, err := io.ReadAll(io.LimitReader(body, maxFontBodyBytes+1))
+		if err == nil && len(bytes) > maxFontBodyBytes {
+			bytes, err = nil, fmt.Errorf("font response exceeds %d bytes", maxFontBodyBytes)
+		}
 		_ = sender.Send(bodyResult{bytes: bytes, err: err})
 	}()
 	result, err := receiver.Recv(cx)

@@ -4,26 +4,32 @@ import (
 	"encoding/binary"
 	"encoding/json/jsontext"
 	"encoding/json/v2"
-	"strings"
-	"sync"
+	"unique"
 
 	"github.com/megascan/gpui-go/jsonschema"
 )
 
 // FontFallbacks are the fallback font family names configured for a font. Equal lists share
-// one interned backing list, so FontFallbacks is comparable by content.
+// one interned key, so FontFallbacks is comparable by content. Interned keys are released once
+// no FontFallbacks refers to them.
 type FontFallbacks struct {
-	list *[]string
+	key unique.Handle[string]
 }
-
-var fontFallbacksIntern sync.Map
 
 // FallbackList returns the fallback font family names.
 func (f FontFallbacks) FallbackList() []string {
-	if f.list == nil {
-		return []string{}
+	fonts := []string{}
+	if f.key == (unique.Handle[string]{}) {
+		return fonts
 	}
-	return *f.list
+	key := f.key.Value()
+	for key != "" {
+		length, n := binary.Uvarint([]byte(key[:min(len(key), binary.MaxVarintLen64)]))
+		key = key[n:]
+		fonts = append(fonts, key[:length])
+		key = key[length:]
+	}
+	return fonts
 }
 
 // FontFallbacksFromFonts creates font fallbacks from a list of family names.
@@ -31,14 +37,12 @@ func FontFallbacksFromFonts(fonts []string) FontFallbacks {
 	if len(fonts) == 0 {
 		return FontFallbacks{}
 	}
-	var key strings.Builder
+	var key []byte
 	for _, name := range fonts {
-		key.Write(binary.AppendUvarint(nil, uint64(len(name))))
-		key.WriteString(name)
+		key = binary.AppendUvarint(key, uint64(len(name)))
+		key = append(key, name...)
 	}
-	list := append([]string(nil), fonts...)
-	actual, _ := fontFallbacksIntern.LoadOrStore(key.String(), &list)
-	return FontFallbacks{list: actual.(*[]string)}
+	return FontFallbacks{key: unique.Make(string(key))}
 }
 
 // MarshalJSONTo encodes the fallbacks as an array of family names.

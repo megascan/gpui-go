@@ -1,9 +1,15 @@
 package gpui
 
 import (
+	"bytes"
+	"compress/gzip"
 	"errors"
 	"fmt"
 	"image"
+	"image/gif"
+	"image/jpeg"
+	"image/png"
+	"io"
 	"io/fs"
 	"log/slog"
 	"math"
@@ -21,6 +27,7 @@ import (
 	"github.com/xo/okage"
 	okagepath "github.com/xo/okage/path"
 	"github.com/xo/okage/svg"
+	"golang.org/x/image/webp"
 )
 
 func emojiFontFamilies() []string {
@@ -244,9 +251,11 @@ func NewSvgRenderer(assetSource AssetSource) SvgRenderer {
 		if !ok {
 			return 0, false
 		}
-		fontdb.mu.Lock()
-		ownedFace := fontdb.ownedFace(db, face)
-		fontdb.mu.Unlock()
+		ownedFace := func() svg.FontID {
+			fontdb.mu.Lock()
+			defer fontdb.mu.Unlock()
+			return fontdb.ownedFace(db, face)
+		}()
 		if slices.Contains(fonts, ownedFace) {
 			return face, true
 		}
@@ -264,9 +273,193 @@ func NewSvgRenderer(assetSource AssetSource) SvgRenderer {
 	}
 }
 
+func (r SvgRenderer) parseOptions() []svg.Option {
+	budget := newImageDecodeBudget()
+	var resolveData svg.ImageHrefDataResolverFn
+	options := append(slices.Clip(r.usvgOptions), svg.WithImageHrefResolver(svg.ImageHrefResolver{
+		ResolveData: func(mime string, data []byte) (svg.ImageKind, bool) {
+			return resolveData(mime, data)
+		},
+		ResolveString: func(string) (svg.ImageKind, bool) {
+			return nil, false
+		},
+	}))
+	var defaultData svg.ImageHrefDataResolverFn
+	resolveData = func(mime string, data []byte) (svg.ImageKind, bool) {
+		if defaultData == nil {
+			defaultData = svg.DefaultDataResolver(options...)
+		}
+		if bytes.HasPrefix(data, []byte{0x1f, 0x8b}) && (mime == "image/svg+xml" || mime == "text/plain") {
+			plain, err := decompressSvgz(data)
+			if err != nil {
+				return nil, false
+			}
+			data, mime = plain, "image/svg+xml"
+		}
+		if r.checkTextPaths(data) != nil {
+			return nil, false
+		}
+		kind, ok := defaultData(mime, data)
+		if !ok || reserveSvgRasterImage(budget, kind) != nil {
+			return nil, false
+		}
+		return kind, true
+	}
+	return options
+}
+
+func reserveSvgRasterImage(budget *imageDecodeBudget, kind svg.ImageKind) error {
+	var config image.Config
+	var err error
+	buffers := []uint64{4}
+	switch data := kind.(type) {
+	case svg.ImageKindPNG:
+		config, err = png.DecodeConfig(bytes.NewReader(data))
+		buffers = []uint64{colorModelBytesPerPixel(config.ColorModel)}
+	case svg.ImageKindJPEG:
+		config, err = jpeg.DecodeConfig(bytes.NewReader(data))
+		buffers = jpegDecodeBuffers(data, config)
+	case svg.ImageKindGIF:
+		config, err = gif.DecodeConfig(bytes.NewReader(data))
+		buffers = []uint64{1}
+	case svg.ImageKindWEBP:
+		config, err = webp.DecodeConfig(bytes.NewReader(data))
+	default:
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	if config.Width < 0 || config.Height < 0 {
+		return errImageLimitsExceeded
+	}
+	width, height := uint64(config.Width), uint64(config.Height)
+	for _, bytesPerPixel := range append(buffers, 4, 4) {
+		if err := budget.reserve(width, height, bytesPerPixel); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+const (
+	svgFilterMaxWork        float64 = 1 << 28
+	svgFilterMaxRegionArea  float64 = 1 << 26
+	svgNestedImageMaxPixels float64 = 1 << 27
+)
+
+var (
+	errSvgFilterWorkExceeded  = errors.New("SVG filters exceed the rendering work limit")
+	errSvgNestedImageExceeded = errors.New("SVG nested images exceed the rendering pixel limit")
+)
+
+type svgFilterWork struct {
+	canvasLeft, canvasTop, canvasRight, canvasBottom float64
+	canvasArea                                       float64
+	total                                            float64
+	nested                                           float64
+	regionExceeded                                   bool
+}
+
+func newSvgFilterWork(width, height uint32) *svgFilterWork {
+	w, h := float64(width), float64(height)
+	return &svgFilterWork{canvasLeft: -2 * w, canvasTop: -2 * h, canvasRight: 3 * w, canvasBottom: 3 * h, canvasArea: w * h}
+}
+
+func (w *svgFilterWork) err() error {
+	switch {
+	case w.regionExceeded || w.total > svgFilterMaxWork:
+		return errSvgFilterWorkExceeded
+	case w.nested > svgNestedImageMaxPixels:
+		return errSvgNestedImageExceeded
+	}
+	return nil
+}
+
+func checkSvgRenderWork(tree *svg.Tree, transform svg.Transform, width, height uint32) error {
+	work := newSvgFilterWork(width, height)
+	work.walk(tree.Root(), transform, false, work.canvasArea)
+	return work.err()
+}
+
+func (w *svgFilterWork) region(filter *svg.Filter, transform svg.Transform, full bool) (float64, float64) {
+	if full {
+		return w.canvasRight - w.canvasLeft, w.canvasBottom - w.canvasTop
+	}
+	rect, ok := filter.Rect().Transform(transform)
+	if !ok {
+		return 0, 0
+	}
+	left := max(float64(rect.Left()), w.canvasLeft)
+	top := max(float64(rect.Top()), w.canvasTop)
+	right := min(float64(rect.Right()), w.canvasRight)
+	bottom := min(float64(rect.Bottom()), w.canvasBottom)
+	if right <= left || bottom <= top {
+		return 0, 0
+	}
+	return math.Ceil(right - left), math.Ceil(bottom - top)
+}
+
+func svgFilterPrimitiveWork(kind svg.KindFilter, transform svg.Transform, width, height float64) float64 {
+	sx, sy := transform.GetScale()
+	switch k := kind.(type) {
+	case *svg.GaussianBlurFilter, *svg.DropShadowFilter:
+		return 5
+	case *svg.TurbulenceFilter:
+		return 1 + float64(k.NumOctaves())/2
+	case *svg.MorphologyFilter:
+		rx := min(math.Round(float64(k.RadiusX())*math.Abs(float64(sx))), width)
+		ry := min(math.Round(float64(k.RadiusY())*math.Abs(float64(sy))), height)
+		return 1 + (2*rx+1)*(2*ry+1)/10
+	case *svg.ConvolveMatrixFilter:
+		return 1 + float64(k.Matrix().Columns())*float64(k.Matrix().Rows())/16
+	}
+	return 1
+}
+
+func (w *svgFilterWork) walk(group *svg.Group, base svg.Transform, full bool, layer float64) {
+	transform := base.PreConcat(group.AbsTransform())
+	for _, filter := range group.Filters() {
+		width, height := w.region(filter, transform, full)
+		if width*height > svgFilterMaxRegionArea {
+			w.regionExceeded = true
+		}
+		layer = max(layer, width*height)
+		work := 1.0
+		for _, primitive := range filter.Primitives() {
+			work += svgFilterPrimitiveWork(primitive.Kind(), transform, width, height)
+		}
+		w.total += work * width * height
+	}
+	group.Subroots(func(g *svg.Group) {
+		w.walk(g, transform, full, layer)
+	})
+	for _, child := range group.Children() {
+		switch c := child.(type) {
+		case *svg.Group:
+			w.walk(c, base, full, layer)
+		case *svg.Text:
+			c.Subroots(func(g *svg.Group) {
+				w.walk(g, base, full, layer)
+			})
+		case *svg.Image:
+			if _, ok := c.Kind().(svg.ImageKindSVG); ok {
+				w.nested += layer
+			}
+			c.Subroots(func(g *svg.Group) {
+				w.walk(g, transform, true, layer)
+			})
+		default:
+			c.Subroots(func(g *svg.Group) {
+				w.walk(g, transform, true, layer)
+			})
+		}
+	}
+}
+
 // ParseSvg parses SVG data into a ParsedSvg that can be rasterized at any scale.
 func (r SvgRenderer) ParseSvg(bytes []byte) (*ParsedSvg, error) {
-	tree, err := svg.FromData(bytes, r.usvgOptions...)
+	tree, err := r.parseTree(bytes)
 	if err != nil {
 		return nil, err
 	}
@@ -287,7 +480,7 @@ func (r SvgRenderer) MeasureTextWidth(text string, font SvgTextFont) (float32, e
 	pushXMLEscaped(&b, text)
 	b.WriteString("</text></svg>")
 
-	tree, err := svg.FromStr(b.String(), r.usvgOptions...)
+	tree, err := svg.FromStr(b.String(), r.parseOptions()...)
 	if err != nil {
 		return 0, err
 	}
@@ -361,8 +554,44 @@ func (r SvgRenderer) renderAlphaMask(params RenderSvgParams, bytes []byte) (Size
 	return Size[DevicePixels]{}, nil, false, nil
 }
 
+const svgzMaxDecompressedBytes = 32 << 20
+
+var errSvgzTooLarge = errors.New("SVGZ data decompresses beyond the size limit")
+
+func decompressSvgz(data []byte) ([]byte, error) {
+	if !bytes.HasPrefix(data, []byte{0x1f, 0x8b}) {
+		return data, nil
+	}
+	zr, err := gzip.NewReader(bytes.NewReader(data))
+	if err != nil {
+		return nil, okage.ErrSVGMalformedGZip
+	}
+	zr.Multistream(false)
+	decoded, err := io.ReadAll(io.LimitReader(zr, svgzMaxDecompressedBytes+1))
+	switch {
+	case err != nil:
+		return nil, okage.ErrSVGMalformedGZip
+	case len(decoded) > svgzMaxDecompressedBytes:
+		return nil, errSvgzTooLarge
+	case bytes.HasPrefix(decoded, []byte{0x1f, 0x8b}):
+		return nil, okage.ErrSVGNotAnUTF8Str
+	}
+	return decoded, nil
+}
+
+func (r SvgRenderer) parseTree(data []byte) (*svg.Tree, error) {
+	data, err := decompressSvgz(data)
+	if err != nil {
+		return nil, err
+	}
+	if err := r.checkTextPaths(data); err != nil {
+		return nil, err
+	}
+	return svg.FromData(data, r.parseOptions()...)
+}
+
 func (r SvgRenderer) renderPixmap(bytes []byte, size SvgSize) (*okage.Pixmap, error) {
-	tree, err := svg.FromData(bytes, r.usvgOptions...)
+	tree, err := r.parseTree(bytes)
 	if err != nil {
 		return nil, err
 	}
@@ -405,12 +634,15 @@ func rasterizeTree(tree *svg.Tree, size SvgSize) (*okage.Pixmap, error) {
 	width *= scale
 	height *= scale
 
+	transform := okagepath.TransformFromScale(width/svgSize.Width(), height/svgSize.Height())
+	if err := checkSvgRenderWork(tree, transform, f32AsU32(width), f32AsU32(height)); err != nil {
+		return nil, err
+	}
+
 	pixmap, ok := okage.NewPixmap(f32AsU32(width), f32AsU32(height))
 	if !ok {
 		return nil, okage.ErrSVGInvalidSize
 	}
-
-	transform := okagepath.TransformFromScale(width/svgSize.Width(), height/svgSize.Height())
 
 	pixmapMut := pixmap.AsMut()
 	svg.Render(tree, transform, &pixmapMut)

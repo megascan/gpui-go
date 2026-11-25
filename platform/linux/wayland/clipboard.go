@@ -59,7 +59,7 @@ func NewDataOffer[T ReceiveData](offer T) DataOffer[T] {
 
 // AddMimeType records a mime type the offer advertised.
 func (o *DataOffer[T]) AddMimeType(mimeType string) {
-	o.mimeTypes = append(slices.Clip(o.mimeTypes), mimeType)
+	o.mimeTypes = append(o.mimeTypes, mimeType)
 }
 
 func (o *DataOffer[T]) hasMimeType(mimeType string) bool {
@@ -113,8 +113,7 @@ func (o *DataOffer[T]) readImage(connection *wl.Display) (gpui.ClipboardItem, bo
 			continue
 		}
 		if bytes, ok := o.readBytes(connection, mimeType); ok {
-			id := gpui.Hash(bytes)
-			return gpui.ClipboardItem{Entries: []gpui.ClipboardEntry{gpui.ClipboardEntryImage{Image: gpui.Image{Format: format, Bytes: bytes, ID: id}}}}, true
+			return gpui.ClipboardItem{Entries: []gpui.ClipboardEntry{gpui.ClipboardEntryImage{Image: gpui.ImageFromBytes(format, bytes)}}}, true
 		}
 	}
 	return gpui.ClipboardItem{}, false

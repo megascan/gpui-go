@@ -2,6 +2,7 @@ package gpui
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"os"
 	"strings"
 	"time"
+	"unicode"
 	"unicode/utf8"
 
 	"github.com/megascan/gpui-go/gpuiutil"
@@ -591,14 +593,16 @@ func (ImageAssetLoader) Load(source Resource, cx *App) func(s *scheduler.Scope) 
 		var data []byte
 		switch source.Kind {
 		case ResourceKindPath:
-			read, err := os.ReadFile(source.Path)
+			read, err := readImageFile(source.Path)
 			if err != nil {
 				return fail(&ImageCacheError{Kind: ImageCacheErrorKindIo, Err: err})
 			}
 			data = read
 		case ResourceKindURI:
 			uri := source.URI
-			request, err := http.NewRequest(http.MethodGet, string(uri), nil)
+			ctx, cancel := context.WithTimeout(context.Background(), imageRequestTimeout)
+			defer cancel()
+			request, err := http.NewRequestWithContext(ctx, http.MethodGet, string(uri), nil)
 			if err != nil {
 				return fail(&ImageCacheError{Kind: ImageCacheErrorKindOther, Err: fmt.Errorf("loading image asset from %q: %w", string(uri), err)})
 			}
@@ -606,22 +610,20 @@ func (ImageAssetLoader) Load(source Resource, cx *App) func(s *scheduler.Scope) 
 			if err != nil {
 				return fail(&ImageCacheError{Kind: ImageCacheErrorKindOther, Err: fmt.Errorf("loading image asset from %q: %w", string(uri), err)})
 			}
-			body, err := io.ReadAll(response.Body)
-			_ = response.Body.Close()
-			if err != nil {
-				return fail(&ImageCacheError{Kind: ImageCacheErrorKindIo, Err: err})
-			}
 			if response.StatusCode < 200 || response.StatusCode > 299 {
-				text := strings.ToValidUTF8(string(body), string(utf8.RuneError))
-				firstLine, _, _ := strings.Cut(text, "\n")
-				firstLine = strings.TrimSuffix(firstLine, "\r")
-				firstLine = strings.TrimRightFunc(firstLine, isRustWhitespace)
+				body, _ := io.ReadAll(io.LimitReader(response.Body, imageErrorBodyReadBytes))
+				_ = response.Body.Close()
 				return fail(&ImageCacheError{
 					Kind:   ImageCacheErrorKindBadStatus,
 					URI:    uri,
 					Status: response.StatusCode,
-					Body:   firstLine,
+					Body:   imageErrorBodyFirstLine(body),
 				})
+			}
+			body, err := readImageBody(response.Body, imageAssetMaxBytes)
+			_ = response.Body.Close()
+			if err != nil {
+				return fail(&ImageCacheError{Kind: ImageCacheErrorKindIo, Err: err})
 			}
 			data = body
 		case ResourceKindEmbedded:
@@ -658,6 +660,77 @@ func (ImageAssetLoader) Load(source Resource, cx *App) func(s *scheduler.Scope) 
 		}
 		return scheduler.Result[*RenderImage]{Value: image}
 	}
+}
+
+const (
+	imageAssetMaxBytes      = 512 << 20
+	imageErrorBodyReadBytes = 4096
+	imageErrorBodyMaxBytes  = 1024
+	imageRequestTimeout     = 60 * time.Second
+)
+
+var errImageAssetTooLarge = fmt.Errorf("image asset exceeds %d bytes", imageAssetMaxBytes)
+
+func readImageFile(path string) ([]byte, error) {
+	info, err := os.Stat(path)
+	if err != nil {
+		return nil, err
+	}
+	if !info.Mode().IsRegular() {
+		return nil, fmt.Errorf("loading image asset from %q: not a regular file", path)
+	}
+	if info.Size() > imageAssetMaxBytes {
+		return nil, fmt.Errorf("loading image asset from %q: %w", path, errImageAssetTooLarge)
+	}
+	file, err := os.OpenFile(path, os.O_RDONLY|imageOpenNonblockFlag, 0)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	opened, err := file.Stat()
+	if err != nil {
+		return nil, err
+	}
+	if !opened.Mode().IsRegular() || !os.SameFile(info, opened) {
+		return nil, fmt.Errorf("loading image asset from %q: file changed while opening", path)
+	}
+	data, err := readImageBody(file, imageAssetMaxBytes)
+	if err != nil {
+		return nil, fmt.Errorf("loading image asset from %q: %w", path, err)
+	}
+	return data, nil
+}
+
+func readImageBody(r io.Reader, limit int64) ([]byte, error) {
+	data, err := io.ReadAll(io.LimitReader(r, limit+1))
+	if err != nil {
+		return nil, err
+	}
+	if int64(len(data)) > limit {
+		return nil, errImageAssetTooLarge
+	}
+	return data, nil
+}
+
+func imageErrorBodyFirstLine(body []byte) string {
+	text := strings.ToValidUTF8(string(body), string(utf8.RuneError))
+	firstLine, _, _ := strings.Cut(text, "\n")
+	firstLine = strings.TrimSuffix(firstLine, "\r")
+	firstLine = strings.TrimRightFunc(firstLine, isRustWhitespace)
+	firstLine = strings.Map(func(r rune) rune {
+		if unicode.IsControl(r) || unicode.Is(unicode.Bidi_Control, r) {
+			return utf8.RuneError
+		}
+		return r
+	}, firstLine)
+	if len(firstLine) > imageErrorBodyMaxBytes {
+		cut := imageErrorBodyMaxBytes
+		for cut > 0 && !utf8.RuneStart(firstLine[cut]) {
+			cut--
+		}
+		firstLine = firstLine[:cut] + "…"
+	}
+	return firstLine
 }
 
 func isRustWhitespace(r rune) bool {

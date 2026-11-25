@@ -70,6 +70,10 @@ func MonitorPowerMode(ctx context.Context, conn *godbus.Conn, onChange func(gpui
 		}
 	}()
 
+	pins := make(map[string]*OwnerPin, len(powerProfilesServices))
+	for _, s := range powerProfilesServices {
+		pins[s.service] = NewOwnerPin(conn, s.service)
+	}
 	previous := gpui.None[gpui.PowerMode]()
 	for {
 		mode := gpui.PowerModeUnknown
@@ -88,7 +92,7 @@ func MonitorPowerMode(ctx context.Context, conn *godbus.Conn, onChange func(gpui
 			}
 			previous = gpui.Some(mode)
 		}
-		if !waitPowerChange(ctx, signals) {
+		if !waitPowerChange(ctx, signals, pins) {
 			if ctx.Err() != nil {
 				return ctx.Err()
 			}
@@ -100,7 +104,7 @@ func MonitorPowerMode(ctx context.Context, conn *godbus.Conn, onChange func(gpui
 	}
 }
 
-func waitPowerChange(ctx context.Context, signals <-chan *godbus.Signal) bool {
+func waitPowerChange(ctx context.Context, signals <-chan *godbus.Signal, pins map[string]*OwnerPin) bool {
 	for {
 		select {
 		case <-ctx.Done():
@@ -109,17 +113,17 @@ func waitPowerChange(ctx context.Context, signals <-chan *godbus.Signal) bool {
 			if !ok {
 				return false
 			}
-			if isPowerSignal(sig) {
+			if isPowerSignal(sig, pins) {
 				return true
 			}
 		}
 	}
 }
 
-func isPowerSignal(sig *godbus.Signal) bool {
+func isPowerSignal(sig *godbus.Signal, pins map[string]*OwnerPin) bool {
 	switch sig.Name {
 	case "org.freedesktop.DBus.NameOwnerChanged":
-		if len(sig.Body) > 0 {
+		if sig.Sender == BusDriverName && len(sig.Body) > 0 {
 			if name, ok := sig.Body[0].(string); ok {
 				for _, s := range powerProfilesServices {
 					if name == s.service {
@@ -130,7 +134,7 @@ func isPowerSignal(sig *godbus.Signal) bool {
 		}
 	case "org.freedesktop.DBus.Properties.PropertiesChanged":
 		for _, s := range powerProfilesServices {
-			if sig.Path == s.path {
+			if sig.Path == s.path && pins[s.service].Matches(sig.Sender) {
 				return true
 			}
 		}

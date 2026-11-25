@@ -13,6 +13,9 @@ Hacks, workarounds and known issues. Remove entries when resolved. Stages write 
 | WINE-TEST | windows tests | Windows test failures that only happen under Wine (local substitute for CI) |
 | M0-EXIT-OPEN | root | handoff items M0-exit left open |
 | STAGE-DEBT | all | per-stage debt folded below |
+| SEC-PLAUSIBLE | windows, macos, web | security findings that need a real host to confirm |
+| SEC-FOLLOWUP | root, text/gotext, platform, NOTICE | follow-ups from the round 1 and 2 security fixes |
+| SEC-INFO | root, jsonschema, platform/linux, platform/windows | INFO security findings left unfixed by design (SEC-028, 038, 039, 088) |
 
 ## L-WGPUVER
 
@@ -744,3 +747,27 @@ Folded by M0-exit from docs/port/debt/<stage>.md for every stage with a docs/por
 
 ## PENDING-REAL-OS-TESTS
 M4-ci-macos, M4-ci-windows, M4-exit not run: GitHub Actions blocked by account billing (2026-11-24). macOS/iOS/Windows verified only by cross vet + `go test -c`; Windows also under Wine (see WINE-TEST). Resume: fix billing or provide Mac/Windows hosts, re-run CI on feat/port, then the three stages.
+
+## SEC-PLAUSIBLE (security sweep round 1, needs a Windows or macOS host)
+These are unverified, found by static review only. Details are in docs/security/LEDGER.md.
+- **SEC-018 (non-Linux):** OpenURL has no scheme allowlist on Windows (ShellExecuteW), macOS, iOS or web. The web build's window.open also lacks noopener.
+- **SEC-019:** Windows RevealPath/OpenWithSystem accept UNC paths, which can leak NTLM credentials.
+- **SEC-042:** bare-name LoadLibraryA of amd_ags_x64.dll and nvapi64.dll allows DLL planting (platform/windows/util.go:158).
+- **SEC-043:** the UIA COM adapters have no recover, so a panic from a UIA client crashes the app (a11y/windows/node.go, text.go).
+
+## SEC-FOLLOWUP (security sweep round 1 and 2 fixes)
+- **Text layout perf:** harness TestS03_07 went from 3.95 s to 7.9 s after the gotext panic-recovery changes (shape.go/font.go defers). The integration rerun measured 3.82 s (machine under gate load earlier). Re-measure on a quiet machine; if the regression is real, move the recover out of the per-glyph `charmap` path.
+- **NOTICE gaps (SEC-041 partial):** licence texts for taffy, lyon and accesskit are still missing. scap's licence has a non-standard clause and the xkbcommon-rs attribution is unclear: owner decision needed.
+- **SVG textPath false refusals:** `checkTextPaths` (svg_textpath_guard.go) refuses with `errSvgTextPathUnmeasured` when it cannot locate a probe: textPaths reached through `switch`, `marker`, `defs`+`use`, `display=none` guide paths, style sheets with complex selectors (`:`, `+`, `~`, `[`), and machines with no fonts (no text tree to measure). Legitimate SVGs in these shapes fail to render. Measure those cases instead of refusing.
+- **Asset cache can exceed its cap:** entries that are loading or used in the current or last drawn frame of a window are pinned (asset_cache.go `pinned`), so a visible set larger than 1 GiB / 4096 entries keeps the cache above `maxAssetCacheBytes` until it scrolls out. Bounded by what the app draws, not by an attacker beyond that; consider a hard ceiling that degrades to placeholders.
+- **SVG-embedded rasters bypass the decode semaphore:** `data:` images inside an SVG reserve against the per-image budget (`reserveSvgRasterImage`) but okage decodes them outside `imageDecodeMemory` (image_decode_limits.go), so many concurrent SVG renders can still exceed the 1 GiB process-wide in-flight cap.
+- **FV-5, Linux OpenURL allowlist has no opt-out:** D-SEC-OPENURL hard-codes http/https/mailto in `OpenURIInternal` (platform/linux/internal/common/common.go) and D-SEC-R2-11 restricts `OpenWithSystem` to existing paths. An app that must open its own custom scheme (`myapp://`, `zed://`) or another trusted scheme has no hook to extend the allowlist and no way to bypass it. Add an app-level allowlist setter or per-call option.
+- **OpenURL scheme allowlist is Linux-only:** D-SEC-OPENURL / D-SEC-R2-11 (http/https/mailto only, mailto field filter, OpenWithSystem absolute existing paths) apply on Linux; Windows `ShellExecuteW`, macOS, iOS and web still open any scheme (SEC-018 non-Linux parts PLAUSIBLE), so platforms now behave differently. Port the allowlist when those platforms can be tested.
+- **Background panics are swallowed:** D-SEC-TASKPANIC turns a background panic into a `*PanicError` (stderr log only). A caller that drops the error, or waits on state the panicking task would have produced, now hangs or misbehaves where the process used to crash. Audit `Detach()`ed background tasks and consider a process-wide panic hook / counter for apps that prefer crash-on-panic.
+
+## SEC-INFO (security sweep INFO findings, unfixed by design)
+Details and repros are in docs/security/LEDGER.md. None crosses a trust boundary today; fix them if the input source changes.
+- **SEC-028:** the Wayland, X11 and portal file-URL converters (wayland/client_input.go `fileURLToPath`, x11/client.go `urlToFilePath`, platform/linux/platform.go `fileURIToPath`) accept NUL, `..` and `%2F`. The paths are what the drag source names. s05/02-04 log the differential lines only. Reject NUL and normalise if paths are ever joined with a trusted base.
+- **SEC-038:** `jsonschema.Reflect` overflows the stack (fatal, not recoverable) on recursive non-struct types (`type T []T`, `map[string]T`, pointer cycles through non-struct types) (jsonschema/reflect.go:89/122/299). The types are the app's own. s13 `TestS13_SchemaRecursiveNonStruct` logs it as INFO. Add a visited set if schemas are ever built from types an untrusted party picks.
+- **SEC-039:** bidi override characters (U+202A-U+202E, U+2066-U+2069) are rendered and reorder glyphs, so a label can display text in a different order from its bytes (Trojan Source style) (text_system_line*.go). Every text renderer does this. s19 `TestS19_BidiOverrideReordersGlyphs` is log-only. Offer an opt-in to show or strip override controls in untrusted labels.
+- **SEC-088:** the Windows clipboard image decode (`platform/windows/clipboard.go:414`) has no `imageDecodeBudget`. User-initiated paste from a same-session owner. Route it through the raster decode budget when Windows can be tested (CI-BILLING).

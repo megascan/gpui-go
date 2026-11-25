@@ -345,8 +345,7 @@ func readImage(format uint32) (gpui.ClipboardEntry, bool) {
 		}
 		data, imageFormat = bytes.Clone(locked.bytes()), f
 	}
-	id := gpui.Hash(data)
-	return gpui.ClipboardEntryImage{Image: gpui.Image{Format: imageFormat, Bytes: data, ID: id}}, true
+	return gpui.ClipboardEntryImage{Image: gpui.ImageFromBytes(imageFormat, data)}, true
 }
 
 func readFiles() (gpui.ClipboardEntry, bool) {

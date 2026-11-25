@@ -169,15 +169,15 @@ func (p *SimpleLruCacheProvider) Provide(window *gpui.Window, cx *gpui.App) gpui
 // SimpleLruCache keeps the most recently used images and drops the oldest.
 type SimpleLruCache struct {
 	maxItems int
-	usages   []uint64
-	cache    map[uint64]*gpui.ImageCacheItem
+	usages   []gpui.Resource
+	cache    map[gpui.Resource]*gpui.ImageCacheItem
 }
 
 // NewSimpleLruCache creates a cache holding at most maxItems images.
 func NewSimpleLruCache(maxItems int, cx *gpui.Context[SimpleLruCache]) *SimpleLruCache {
 	cx.OnRelease(func(simpleCache *SimpleLruCache, cx *gpui.App) {
 		cache := simpleCache.cache
-		simpleCache.cache = map[uint64]*gpui.ImageCacheItem{}
+		simpleCache.cache = map[gpui.Resource]*gpui.ImageCacheItem{}
 		for _, item := range cache {
 			if image, ok, err := item.Get(); ok && err == nil {
 				cx.DropImage(image, nil)
@@ -188,8 +188,8 @@ func NewSimpleLruCache(maxItems int, cx *gpui.Context[SimpleLruCache]) *SimpleLr
 
 	return &SimpleLruCache{
 		maxItems: maxItems,
-		usages:   make([]uint64, 0, maxItems),
-		cache:    make(map[uint64]*gpui.ImageCacheItem, maxItems),
+		usages:   make([]gpui.Resource, 0, maxItems),
+		cache:    make(map[gpui.Resource]*gpui.ImageCacheItem, maxItems),
 	}
 }
 
@@ -202,7 +202,7 @@ func (c *SimpleLruCache) Load(resource gpui.Resource, window *gpui.Window, cx *g
 		panic("assertion failed: self.cache.len() <= self.max_items")
 	}
 
-	hash := gpui.Hash(resource)
+	hash := resource
 
 	if item, ok := c.cache[hash]; ok {
 		currentIx := slices.Index(c.usages, hash)

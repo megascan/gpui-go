@@ -5,14 +5,20 @@
 package xrm
 
 import (
+	"io"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"syscall"
 	"unicode/utf8"
 )
 
 const maxInclusionDepth = 100
+
+const maxIncludeFiles = 64
+
+const maxIncludeFileBytes = 1 << 20
 
 // AtomResourceManager is the RESOURCE_MANAGER atom.
 const AtomResourceManager = 23
@@ -60,19 +66,19 @@ func NewFromDefault(format uint8, value []byte, hostname string) *Database {
 	} else if home, ok := os.LookupEnv("HOME"); ok {
 		data, err := os.ReadFile(filepath.Join(home, ".Xresources"))
 		if err == nil {
-			parseDataWithBaseDirectory(&entries, data, home, 0)
+			parseDataWithBaseDirectory(&entries, data, home)
 		} else if data, err := os.ReadFile(filepath.Join(home, ".Xdefaults")); err == nil {
-			parseDataWithBaseDirectory(&entries, data, home, 0)
+			parseDataWithBaseDirectory(&entries, data, home)
 		}
 	}
 	if xenv, ok := os.LookupEnv("XENVIRONMENT"); ok {
 		if data, err := os.ReadFile(xenv); err == nil {
-			parseDataWithBaseDirectory(&entries, data, parentOr(xenv), 0)
+			parseDataWithBaseDirectory(&entries, data, parentOr(xenv))
 		}
 	} else {
 		path := filepath.Join(os.Getenv("HOME"), ".Xdefaults-"+hostname)
 		if data, err := os.ReadFile(path); err == nil {
-			parseDataWithBaseDirectory(&entries, data, parentOr(path), 0)
+			parseDataWithBaseDirectory(&entries, data, parentOr(path))
 		}
 	}
 	return &Database{entries: entries}
@@ -98,14 +104,14 @@ func NewFromGetPropertyReply(format uint8, value []byte) (*Database, bool) {
 // NewFromData parses data with "." as the base directory of includes.
 func NewFromData(data []byte) *Database {
 	var entries []entry
-	parseDataWithBaseDirectory(&entries, data, ".", 0)
+	parseDataWithBaseDirectory(&entries, data, ".")
 	return &Database{entries: entries}
 }
 
 // NewFromDataWithBaseDirectory parses data, resolving includes against basePath.
 func NewFromDataWithBaseDirectory(data []byte, basePath string) *Database {
 	var entries []entry
-	parseDataWithBaseDirectory(&entries, data, basePath, 0)
+	parseDataWithBaseDirectory(&entries, data, basePath)
 	return &Database{entries: entries}
 }
 
@@ -193,24 +199,47 @@ func parseRustFloat(s string) (float32, error) {
 	return float32(v), nil
 }
 
-func parseDataWithBaseDirectory(result *[]entry, data []byte, basePath string, depth uint8) {
+func parseDataWithBaseDirectory(result *[]entry, data []byte, basePath string) {
+	budget := maxIncludeFiles
+	parseDataWithIncludes(result, data, basePath, 0, &budget)
+}
+
+func parseDataWithIncludes(result *[]entry, data []byte, basePath string, depth uint8, budget *int) {
 	if depth > maxInclusionDepth {
 		return
 	}
 	parseDatabase(data, result, func(path []byte, entries *[]entry) {
-		if !utf8.Valid(path) {
+		if !utf8.Valid(path) || *budget <= 0 {
 			return
 		}
+		*budget--
 		full := filepath.Join(basePath, string(path))
 		if filepath.IsAbs(string(path)) {
 			full = string(path)
 		}
-		newData, err := os.ReadFile(full)
-		if err != nil {
+		newData, ok := readIncludeFile(full)
+		if !ok {
 			return
 		}
-		parseDataWithBaseDirectory(entries, newData, parentOr(full), depth+1)
+		parseDataWithIncludes(entries, newData, parentOr(full), depth+1, budget)
 	})
+}
+
+func readIncludeFile(path string) ([]byte, bool) {
+	f, err := os.OpenFile(path, os.O_RDONLY|syscall.O_NONBLOCK, 0)
+	if err != nil {
+		return nil, false
+	}
+	defer f.Close()
+	st, err := f.Stat()
+	if err != nil || !st.Mode().IsRegular() || st.Size() > maxIncludeFileBytes {
+		return nil, false
+	}
+	data, err := io.ReadAll(io.LimitReader(f, maxIncludeFileBytes+1))
+	if err != nil || len(data) > maxIncludeFileBytes {
+		return nil, false
+	}
+	return data, true
 }
 
 func toBool(data string) (bool, bool) {

@@ -2,6 +2,33 @@ package gotext
 
 import "math"
 
+const (
+	maxGlyphImageDim   = 16384
+	maxGlyphImageBytes = 256 << 20
+)
+
+func glyphImageBytes(width, height, channels uint32) (int, bool) {
+	if width > maxGlyphImageDim || height > maxGlyphImageDim {
+		return 0, false
+	}
+	n := uint64(width) * uint64(height) * uint64(channels)
+	if n > maxGlyphImageBytes {
+		return 0, false
+	}
+	return int(n), true
+}
+
+func glyphDim(v float64) (uint32, bool) {
+	if !(v >= 0 && v <= maxGlyphImageDim) {
+		return 0, false
+	}
+	return uint32(v), true
+}
+
+func scaleGlyphDim(v uint32, scale float32) (uint32, bool) {
+	return glyphDim(float64(float32(v) * scale))
+}
+
 func swashBlit(mask []byte, maskWidth, maskHeight uint32, x, y int32, color [4]byte, target []byte, targetWidth, targetHeight uint32) {
 	if maskWidth == 0 || maskHeight == 0 || targetWidth == 0 || targetHeight == 0 {
 		return
@@ -78,13 +105,18 @@ func swashResize(img []byte, width, height, channels uint32, target []byte, targ
 	if scratch == nil {
 		scratch = &tmp
 	}
-	if len(img) < int(width*height*channels) {
+	srcSize, ok := glyphImageBytes(width, height, channels)
+	if !ok || len(img) < srcSize {
 		return false
 	}
-	if len(target) < int(targetWidth*targetHeight*channels) {
+	dstSize, ok := glyphImageBytes(targetWidth, targetHeight, channels)
+	if !ok || len(target) < dstSize {
 		return false
 	}
-	scratchSize := int(targetWidth * height * channels)
+	scratchSize, ok := glyphImageBytes(targetWidth, height, channels)
+	if !ok {
+		return false
+	}
 	*scratch = resizeBytes(*scratch, scratchSize)
 	switch filter {
 	case swashFilterNearest:

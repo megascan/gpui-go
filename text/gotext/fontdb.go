@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -72,12 +73,12 @@ func (db *fontDatabase) loadFontFile(path string) {
 }
 
 func (db *fontDatabase) loadSource(source *faceSource, resource ot.Resource) {
-	loaders, err := ot.NewLoaders(resource)
+	loaders, err := newLoaders(resource)
 	if err != nil {
 		return
 	}
 	for index, loader := range loaders {
-		info, ok := parseFaceInfo(loader)
+		info, ok := safeParseFaceInfo(loader)
 		if !ok {
 			continue
 		}
@@ -86,6 +87,24 @@ func (db *fontDatabase) loadSource(source *faceSource, resource ot.Resource) {
 		info.index = index
 		db.faces = append(db.faces, info)
 	}
+}
+
+func newLoaders(resource ot.Resource) (loaders []*ot.Loader, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			loaders, err = nil, fmt.Errorf("invalid font resource: %v", r)
+		}
+	}()
+	return ot.NewLoaders(resource)
+}
+
+func safeParseFaceInfo(loader *ot.Loader) (info faceInfo, ok bool) {
+	defer func() {
+		if r := recover(); r != nil {
+			info, ok = faceInfo{}, false
+		}
+	}()
+	return parseFaceInfo(loader)
 }
 
 func (db *fontDatabase) loadSystemFonts() {
@@ -149,7 +168,7 @@ func (db *fontDatabase) loadFont(id faceID) (*font.Font, *ot.Loader, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	loaders, err := ot.NewLoaders(bytes.NewReader(data))
+	loaders, err := newLoaders(bytes.NewReader(data))
 	if err != nil {
 		return nil, nil, err
 	}

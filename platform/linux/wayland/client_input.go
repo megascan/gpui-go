@@ -20,8 +20,6 @@ import (
 	"github.com/megascan/gpui-go/scheduler"
 )
 
-const unwrapNone = "called `Option::unwrap()` on a `None` value"
-
 const knownSeatCapabilities = wlproto.WlSeatCapabilityPointer | wlproto.WlSeatCapabilityKeyboard | wlproto.WlSeatCapabilityTouch
 
 func (p WaylandClientStatePtr) seatListener(seat *wlproto.WlSeat) wlproto.WlSeatListener {
@@ -116,9 +114,11 @@ func (p WaylandClientStatePtr) keyboardListener() wlproto.WlKeyboardListener {
 			keymap, err := xkb.NewKeymapFromFd(xkbContext, fd, int(size), xkb.KeymapFormatTextV1, xkb.KeymapCompileNoFlags)
 			if err != nil {
 				slog.Error(err.Error())
+				return
 			}
 			if keymap == nil {
-				panic("Failed to create keymap")
+				slog.Error("Failed to create keymap")
+				return
 			}
 			if state.keymapState != nil {
 				state.keymapState.Close()
@@ -167,7 +167,7 @@ func (p WaylandClientStatePtr) keyboardListener() wlproto.WlKeyboardListener {
 
 			keymapState := state.keymapState
 			if keymapState == nil {
-				panic(unwrapNone)
+				return
 			}
 			oldLayout := keymapState.SerializeLayout(xkb.StateLayoutEffective)
 			keymapState.UpdateMask(xkb.ModMask(modsDepressed), xkb.ModMask(modsLatched), xkb.ModMask(modsLocked), 0, 0, xkb.LayoutIndex(group))
@@ -213,7 +213,7 @@ func (p WaylandClientStatePtr) handleKey(serial, key uint32, keyState wlproto.Wl
 
 	keymapState := state.keymapState
 	if keymapState == nil {
-		panic(unwrapNone)
+		return
 	}
 	keycode := xkb.Keycode(key + minKeycode)
 	keysym := keymapState.KeyGetOneSym(keycode)

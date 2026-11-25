@@ -12,6 +12,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -330,8 +331,9 @@ func listenForSystemPowerEvents(conn *godbus.Conn, powerSender *ChannelSender[Sy
 	signals := make(chan *godbus.Signal, 16)
 	conn.Signal(signals)
 	defer conn.RemoveSignal(signals)
+	pin := dbus.NewOwnerPin(conn, login1Service)
 	for message := range signals {
-		if message.Path != login1Path || message.Name != login1Interface+".PrepareForSleep" {
+		if message.Path != login1Path || message.Name != login1Interface+".PrepareForSleep" || !pin.Matches(message.Sender) {
 			continue
 		}
 		if len(message.Body) != 1 {
@@ -411,6 +413,7 @@ func portalCall(conn *godbus.Conn, method string, options map[string]godbus.Vari
 	if handle != "" {
 		path = handle
 	}
+	pin := dbus.NewOwnerPin(conn, portalService)
 	timer := time.NewTimer(PortalResponseTimeout)
 	defer timer.Stop()
 	for {
@@ -425,7 +428,7 @@ func portalCall(conn *godbus.Conn, method string, options map[string]godbus.Vari
 		if !open {
 			return portalRequest{}, errors.New("D-Bus connection closed")
 		}
-		if signal.Path != path || signal.Name != portalRequestInterface+".Response" || len(signal.Body) < 1 {
+		if signal.Path != path || signal.Name != portalRequestInterface+".Response" || len(signal.Body) < 1 || !pin.Matches(signal.Sender) {
 			continue
 		}
 		response, _ := signal.Body[0].(uint32)
@@ -466,15 +469,23 @@ func spawnDetached(executor gpui.BackgroundExecutor, body func()) {
 	}).Detach()
 }
 
+var openURISchemes = []string{"http", "https", "mailto"}
+
 // OpenURIInternal opens uri with the desktop's launchers, falling back to the OpenURI portal.
 func OpenURIInternal(executor gpui.BackgroundExecutor, bus func() (*godbus.Conn, error), uri string, activationToken gpui.Option[string], environment gpui.GraphicalEnvironment) {
 	parsed, err := url.Parse(uri)
 	if err == nil && !parsed.IsAbs() {
 		err = fmt.Errorf("relative URL without a base: %q", uri)
 	}
+	if err == nil && !slices.Contains(openURISchemes, parsed.Scheme) {
+		err = fmt.Errorf("refusing to open URL with scheme %q: %q", parsed.Scheme, uri)
+	}
 	if err != nil {
 		slog.Error(err.Error())
 		return
+	}
+	if parsed.Scheme == "mailto" {
+		parsed.RawQuery = filterMailtoQuery(parsed.RawQuery)
 	}
 	spawnDetached(executor, func() {
 		opened := runOpenCommands(parsed.String(), activationToken, environment)
@@ -490,16 +501,34 @@ func OpenURIInternal(executor gpui.BackgroundExecutor, bus func() (*godbus.Conn,
 	})
 }
 
+var mailtoAllowedFields = []string{"to", "cc", "bcc", "subject", "body"}
+
+func filterMailtoQuery(raw string) string {
+	var kept []string
+	for field := range strings.SplitSeq(raw, "&") {
+		key, _, _ := strings.Cut(field, "=")
+		name, err := url.QueryUnescape(key)
+		if err != nil {
+			continue
+		}
+		if slices.Contains(mailtoAllowedFields, strings.ToLower(name)) {
+			kept = append(kept, field)
+		}
+	}
+	return strings.Join(kept, "&")
+}
+
 // RevealPathInternal opens the directory of path with the OpenURI portal, falling back to the
 // desktop's launchers.
 func RevealPathInternal(executor gpui.BackgroundExecutor, bus func() (*godbus.Conn, error), path string, activationToken gpui.Option[string], environment gpui.GraphicalEnvironment) {
 	spawnDetached(executor, func() {
-		dir, err := os.Open(path)
+		dir, err := openRevealTarget(path)
 		if err != nil {
 			slog.Error(err.Error())
 			return
 		}
 		defer dir.Close()
+		path = dir.Name()
 		conn, err := bus()
 		if err == nil {
 			err = openDirectoryRequestSend(conn, dir, activationToken)
@@ -517,6 +546,23 @@ func RevealPathInternal(executor gpui.BackgroundExecutor, bus func() (*godbus.Co
 		}
 		runOpenCommands(directory, activationToken, environment)
 	})
+}
+
+func openRevealTarget(path string) (*os.File, error) {
+	file, err := os.OpenFile(path, os.O_RDONLY|unix.O_NONBLOCK, 0)
+	if err != nil {
+		return nil, err
+	}
+	info, err := file.Stat()
+	if err != nil {
+		file.Close()
+		return nil, err
+	}
+	if info.IsDir() || info.Mode().IsRegular() {
+		return file, nil
+	}
+	file.Close()
+	return os.OpenFile(filepath.Dir(path), os.O_RDONLY|unix.O_NONBLOCK, 0)
 }
 
 type launcherSpec struct {
@@ -623,18 +669,28 @@ const PipeReadTimeout = 4 * time.Second
 // MaxPipeReadSize caps the bytes ReadFdWithTimeout accepts from one pipe.
 const MaxPipeReadSize = 256 << 20
 
-// ReadFdWithTimeout reads fd until end of file, failing when no data arrives for timeout or more
-// than MaxPipeReadSize bytes arrive. It takes ownership of fd and closes it.
+// PipeReadDeadlineFactor bounds a whole ReadFdWithTimeout call to this many per-chunk timeouts.
+const PipeReadDeadlineFactor = 5
+
+// ReadFdWithTimeout reads fd until end of file, failing when no data arrives for timeout, when the
+// whole read takes longer than PipeReadDeadlineFactor times timeout, or when more than
+// MaxPipeReadSize bytes arrive. It takes ownership of fd and closes it.
 func ReadFdWithTimeout(fd int, timeout time.Duration) ([]byte, error) {
 	defer unix.Close(fd)
 	if err := unix.SetNonblock(fd, true); err != nil {
 		return nil, err
 	}
+	total := timeout * PipeReadDeadlineFactor
+	deadline := time.Now().Add(total)
 	buffer := []byte{}
 	var chunk [8192]byte
 	for {
+		remaining := time.Until(deadline)
+		if remaining <= 0 {
+			return nil, fmt.Errorf("timed out reading pipe after %v", total)
+		}
 		pollFds := []unix.PollFd{{Fd: int32(fd), Events: unix.POLLIN}}
-		ready, err := unix.Poll(pollFds, int(timeout.Milliseconds()))
+		ready, err := unix.Poll(pollFds, int(min(timeout, remaining).Milliseconds()))
 		if err != nil {
 			if errors.Is(err, unix.EINTR) {
 				continue
@@ -642,6 +698,9 @@ func ReadFdWithTimeout(fd int, timeout time.Duration) ([]byte, error) {
 			return nil, err
 		}
 		if ready == 0 {
+			if remaining < timeout {
+				return nil, fmt.Errorf("timed out reading pipe after %v", total)
+			}
 			return nil, fmt.Errorf("timed out waiting for data on pipe after %v", timeout)
 		}
 		n, err := unix.Read(fd, chunk[:])

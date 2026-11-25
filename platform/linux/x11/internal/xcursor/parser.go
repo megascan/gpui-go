@@ -55,7 +55,9 @@ func (s stream) u32s(n int) ([]uint32, error) {
 	return out, nil
 }
 
-func parseImg(s stream) (Image, error) {
+const maxDecodedBytes = 256 << 20
+
+func parseImg(s stream, decoded *uint64) (Image, error) {
 	if err := s.tag([4]byte{0x24, 0, 0, 0}); err != nil {
 		return Image{}, err
 	}
@@ -83,11 +85,38 @@ func parseImg(s stream) (Image, error) {
 	if xhot > width || yhot > height {
 		return Image{}, errors.New("Hotspot outside image")
 	}
+	remaining, err := remainingBytes(s.r)
+	if err != nil {
+		return Image{}, err
+	}
+	need := uint64(4) * uint64(width) * uint64(height)
+	if need > uint64(remaining) {
+		return Image{}, errors.New("Image larger than the file")
+	}
+	if *decoded+need > maxDecodedBytes {
+		return Image{}, errors.New("Xcursor images exceed the decoded size budget")
+	}
+	*decoded += need
 	rgba := make([]byte, 4*width*height)
 	if _, err := io.ReadFull(s.r, rgba); err != nil {
 		return Image{}, err
 	}
 	return Image{Size: size, Width: width, Height: height, Xhot: xhot, Yhot: yhot, Delay: delay, PixelsRGBA: rgba, PixelsARGB: rgbaToARGB(rgba)}, nil
+}
+
+func remainingBytes(r io.ReadSeeker) (int64, error) {
+	cur, err := r.Seek(0, io.SeekCurrent)
+	if err != nil {
+		return 0, err
+	}
+	end, err := r.Seek(0, io.SeekEnd)
+	if err != nil {
+		return 0, err
+	}
+	if _, err := r.Seek(cur, io.SeekStart); err != nil {
+		return 0, err
+	}
+	return end - cur, nil
 }
 
 func rgbaToARGB(in []byte) []byte {
@@ -129,11 +158,12 @@ func ParseXcursorStream(input io.ReadSeeker) ([]Image, error) {
 		}
 	}
 	imgs := make([]Image, 0, len(indices))
+	var decoded uint64
 	for _, index := range indices {
 		if _, err := input.Seek(int64(index), io.SeekStart); err != nil {
 			return nil, err
 		}
-		img, err := parseImg(s)
+		img, err := parseImg(s, &decoded)
 		if err != nil {
 			return nil, err
 		}

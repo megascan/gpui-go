@@ -1,6 +1,7 @@
 package gpui
 
 import (
+	"errors"
 	"log/slog"
 	"os"
 	"runtime"
@@ -100,17 +101,18 @@ func (e BackgroundExecutor) spawnWithPriorityAt[R any](location scheduler.Locati
 
 // Scoped runs the background tasks f spawns into its Scope and waits for all of them. If the
 // awaiting task is canceled, the scoped tasks are canceled and Scoped waits for their bodies to
-// finish before unwinding.
-func (e BackgroundExecutor) Scoped(cx scheduler.Awaiter, f func(scope *Scope)) {
-	e.scopedPriority(cx, scheduler.DefaultPriority(), f)
+// finish before unwinding. It returns the joined errors of the scoped tasks; a panicking task
+// contributes a *scheduler.PanicError.
+func (e BackgroundExecutor) Scoped(cx scheduler.Awaiter, f func(scope *Scope)) error {
+	return e.scopedPriority(cx, scheduler.DefaultPriority(), f)
 }
 
 // ScopedPriority is Scoped with the scoped tasks spawned at priority.
-func (e BackgroundExecutor) ScopedPriority(cx scheduler.Awaiter, priority Priority, f func(scope *Scope)) {
-	e.scopedPriority(cx, priority, f)
+func (e BackgroundExecutor) ScopedPriority(cx scheduler.Awaiter, priority Priority, f func(scope *Scope)) error {
+	return e.scopedPriority(cx, priority, f)
 }
 
-func (e BackgroundExecutor) scopedPriority(cx scheduler.Awaiter, priority Priority, f func(scope *Scope)) {
+func (e BackgroundExecutor) scopedPriority(cx scheduler.Awaiter, priority Priority, f func(scope *Scope)) error {
 	scope := newScope(e, priority)
 	defer scope.Close()
 	f(scope)
@@ -124,10 +126,14 @@ func (e BackgroundExecutor) scopedPriority(cx scheduler.Awaiter, priority Priori
 	for _, future := range scope.futures {
 		spawned = append(spawned, e.SpawnWithPriority(scope.priority, future.run))
 	}
+	var errs []error
 	for i, task := range spawned {
-		_, _ = task.Await(cx)
+		if _, err := task.Await(cx); err != nil {
+			errs = append(errs, err)
+		}
 		awaited = i + 1
 	}
+	return errors.Join(errs...)
 }
 
 // Now returns the current time on the scheduler's clock, so tests can use fake timers.

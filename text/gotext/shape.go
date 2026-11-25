@@ -343,7 +343,22 @@ func (g *shapeGlyph) width(fontSize float32) float32 {
 	return float32(fontSize * g.xAdvance)
 }
 
-func shapeFallback(buffer *harfbuzz.Buffer, glyphs []shapeGlyph, f *cosmicFont, line string, list *attrsList, startRun, endRun int, spanRTL bool) ([]shapeGlyph, []int) {
+func (fs *fontSystem) markUnloadable(id faceID) {
+	fs.fontCache[id] = nil
+	fs.buffer = harfbuzz.NewBuffer()
+}
+
+func shapeBuffer(buffer *harfbuzz.Buffer, font *harfbuzz.Font, features []harfbuzz.Feature) (ok bool) {
+	defer func() {
+		if r := recover(); r != nil {
+			ok = false
+		}
+	}()
+	buffer.Shape(font, features)
+	return true
+}
+
+func shapeFallback(buffer *harfbuzz.Buffer, glyphs []shapeGlyph, f *cosmicFont, line string, list *attrsList, startRun, endRun int, spanRTL bool) ([]shapeGlyph, []int, bool) {
 	run := line[startRun:endRun]
 	fontScale := f.metrics.unitsPerEm
 	ascent := float32(f.metrics.ascent / fontScale)
@@ -380,7 +395,9 @@ func shapeFallback(buffer *harfbuzz.Buffer, glyphs []shapeGlyph, f *cosmicFont, 
 			End:   harfbuzz.FeatureGlobalEnd,
 		})
 	}
-	buffer.Shape(f.shaper, features)
+	if !shapeBuffer(buffer, f.shaper, features) {
+		return glyphs, nil, false
+	}
 
 	var missing []int
 	glyphStart := len(glyphs)
@@ -424,7 +441,7 @@ func shapeFallback(buffer *harfbuzz.Buffer, glyphs []shapeGlyph, f *cosmicFont, 
 			}
 		}
 	}
-	return glyphs, missing
+	return glyphs, missing, true
 }
 
 func harfbuzzTag(tag [4]byte) ot.Tag {
@@ -450,14 +467,29 @@ func shapeRun(glyphs []shapeGlyph, fs *fontSystem, line string, list *attrsList,
 		panic("no default font found")
 	}
 	glyphStart := len(glyphs)
-	glyphs, missing := shapeFallback(fs.buffer, glyphs, f, line, list, startRun, endRun, spanRTL)
+	var missing []int
+	for {
+		var shaped bool
+		glyphs, missing, shaped = shapeFallback(fs.buffer, glyphs, f, line, list, startRun, endRun, spanRTL)
+		if shaped {
+			break
+		}
+		fs.markUnloadable(f.id)
+		if f, ok = iter.next(); !ok {
+			return glyphs
+		}
+	}
 	for len(missing) > 0 {
 		f, ok := iter.next()
 		if !ok {
 			break
 		}
 		var fbGlyphs []shapeGlyph
-		fbGlyphs, fbMissing := shapeFallback(fs.buffer, fbGlyphs, f, line, list, startRun, endRun, spanRTL)
+		fbGlyphs, fbMissing, shaped := shapeFallback(fs.buffer, fbGlyphs, f, line, list, startRun, endRun, spanRTL)
+		if !shaped {
+			fs.markUnloadable(f.id)
+			continue
+		}
 		fbI := 0
 		for fbI < len(fbGlyphs) {
 			start, end := fbGlyphs[fbI].start, fbGlyphs[fbI].end
@@ -611,7 +643,10 @@ func newShapeSpan(fs *fontSystem, line string, list *attrsList, spanStart, spanE
 				keys := fs.getFontMatches(a)
 				iter := newFontFallbackIter(fs, keys, a.family, nil)
 				if f, ok := iter.next(); ok {
-					probeGlyphs, _ := shapeFallback(fs.buffer, nil, f, probe, list, 0, len(probe), false)
+					probeGlyphs, _, shaped := shapeFallback(fs.buffer, nil, f, probe, list, 0, len(probe), false)
+					if !shaped {
+						fs.markUnloadable(f.id)
+					}
 					if len(probeGlyphs) < 2 {
 						continue
 					}

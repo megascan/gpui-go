@@ -171,18 +171,40 @@ func NewKeymapFromFile(ctx *Context, file *os.File, format KeymapFormat, flags K
 	return NewKeymapFromString(ctx, string(data), format, flags)
 }
 
-// NewKeymapFromFd maps fd privately and read-only for size bytes, compiles the buffer without its trailing NUL and closes fd. A nil keymap with a nil error means libxkbcommon rejected the keymap.
+// MaxKeymapFdBytes caps the keymap size NewKeymapFromFd reads from a compositor fd.
+const MaxKeymapFdBytes = 16 << 20
+
+// NewKeymapFromFd reads size bytes of fd into a private buffer, compiles it without its trailing NUL and closes fd. A nil keymap with a nil error means libxkbcommon rejected the keymap.
 func NewKeymapFromFd(ctx *Context, fd int, size int, format KeymapFormat, flags KeymapCompileFlags) (*Keymap, error) {
 	mustLoad()
 	defer unix.Close(fd)
 	if size <= 0 {
-		return nil, fmt.Errorf("xkb: map keymap fd: %w", unix.EINVAL)
+		return nil, fmt.Errorf("xkb: read keymap fd: %w", unix.EINVAL)
 	}
-	data, err := unix.Mmap(fd, 0, size, unix.PROT_READ, unix.MAP_PRIVATE)
-	if err != nil {
-		return nil, fmt.Errorf("xkb: map keymap fd: %w", err)
+	var st unix.Stat_t
+	if err := unix.Fstat(fd, &st); err != nil {
+		return nil, fmt.Errorf("xkb: stat keymap fd: %w", err)
 	}
-	defer unix.Munmap(data)
+	if st.Size < int64(size) {
+		return nil, fmt.Errorf("xkb: keymap fd holds %d bytes, declared %d: %w", st.Size, size, unix.EINVAL)
+	}
+	if size > MaxKeymapFdBytes {
+		return nil, fmt.Errorf("xkb: keymap of %d bytes exceeds %d: %w", size, MaxKeymapFdBytes, unix.EFBIG)
+	}
+	data := make([]byte, size)
+	for read := 0; read < size; {
+		n, err := unix.Pread(fd, data[read:], int64(read))
+		if err == unix.EINTR {
+			continue
+		}
+		if err != nil {
+			return nil, fmt.Errorf("xkb: read keymap fd: %w", err)
+		}
+		if n == 0 {
+			return nil, fmt.Errorf("xkb: keymap fd shrank to %d bytes, declared %d: %w", read, size, unix.EINVAL)
+		}
+		read += n
+	}
 	p := xkb_keymap_new_from_buffer(ctx.ptr, uintptrOf(&data[0]), uintptr(size-1), format, flags)
 	runtime.KeepAlive(data)
 	if p == 0 {

@@ -5,6 +5,7 @@ package dbus
 import (
 	"bytes"
 	"crypto/rand"
+	"errors"
 	"fmt"
 	"math/big"
 	"sync"
@@ -210,6 +211,17 @@ func TestSecretService_CredentialsRoundTrip(t *testing.T) {
 			}
 			conn := connectTestBus(t, address)
 			const url = "https://example.invalid"
+			if plainOnly {
+				if err := WriteCredentials(conn, url, "user", []byte("first")); !errors.Is(err, ErrPlainSessionRefused) {
+					t.Fatalf("WriteCredentials over a plain-only service = %v", err)
+				}
+				fake.mu.Lock()
+				defer fake.mu.Unlock()
+				if len(fake.items) != 0 {
+					t.Fatalf("items = %+v", fake.items)
+				}
+				return
+			}
 			if _, _, ok, err := ReadCredentials(conn, url); err != nil || ok {
 				t.Fatalf("ReadCredentials before write = %v, %v", ok, err)
 			}

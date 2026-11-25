@@ -728,8 +728,13 @@ func TestExecutor_SpawnRealtimePanicIsIsolated(t *testing.T) {
 	check := goroutineBaseline(t)
 	s := newFIFOScheduler()
 	task := s.background().SpawnRealtime(func(*Scope) (int, error) { panic("boom") }).Fallible()
-	if r := BlockOn[Result[int]](task); !errors.Is(r.Err, ErrCanceled) {
-		t.Fatalf("panicking realtime task: %v", r)
+	r := BlockOn[Result[int]](task)
+	var panicErr *PanicError
+	if !errors.As(r.Err, &panicErr) {
+		t.Fatalf("panicking realtime task: %v, want a *PanicError", r)
+	}
+	if panicErr.Value != "boom" {
+		t.Fatalf("PanicError.Value = %v, want boom", panicErr.Value)
 	}
 	check()
 }
