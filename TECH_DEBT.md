@@ -37,11 +37,11 @@ GitHub Actions refuses to start the ci workflow's jobs on megascan/gpui-go: ubun
 ## WIN-REAL
 
 From the Windows 11 / RTX 3080 runs of ebd634b and 2feb18e (results in `~/.cache/gpui-win/`). Re-test on real Windows:
-- Confirmed on 30f9e72 (2026-11-25): counter hover, image examples, a11y SetValue, close-time stderr, drag/resize during image_loading, toast RefCell, toggle_headless. Still open: a file dialog / prompt opened while a task is pending.
-- Narrator caret and selection reporting in text inputs: unverified.
-- Toast banners and action-button / body callbacks: unverified (notification delivery was disabled on the test machine).
-- IME composition and candidate window: unverified (the test produced Latin input only).
-- Mixed DPI: moving a window between monitors with different scales: unverified.
+- Confirmed on 30f9e72 (2026-11-25): counter hover, image examples, a11y SetValue, close-time stderr, drag/resize during image_loading, toast RefCell, toggle_headless, file dialog / prompt opened while a task is pending.
+- Narrator caret and selection reporting in text inputs: confirmed via UIA on 30f9e72; Narrator's spoken output unverified.
+- Toast banners: on 30f9e72 the system_notifications demo posted, replaced and dismissed without errors but Windows showed no banner (notifications on, DND off). The port matches upstream exactly (WinRT IIDs and vtable slots checked against windows-rs 0.62; AUMID = SetCurrentProcessExplicitAppUserModelID + HKCU\Software\Classes\AppUserModelId\<id> DisplayName only, no shortcut or COM activator), so upstream gpui likely has the same limitation. Re-test on fix/windows-dpi-toast: banner shown? entry in Action Center? "GPUI Notifications" under Settings > System > Notifications with banners on? Action-button / body callbacks still unverified. If no banner, compare with upstream's own system_notifications example before deviating.
+- IME composition and candidate window: unverified (the 30f9e72 trace showed only Latin commits).
+- DPI: 30f9e72 ran DPI-unaware (no manifest; bitmap-scaled at 125%). fix/windows-dpi-toast links upstream's manifest (D-WINMANIFEST). Re-test: Task Manager's DPI awareness column reads "Per-monitor (v2)"; moving hello_world to the 125% display gives crisp text and a corrected size (WM_DPICHANGED); file dialogs and prompts still work with common controls v6.
 - Clipboard: never verified on real Windows.
 - platform/apple dispatcher (fix/macos-dispatcher, D-APPLE-NESTEDLOOP): only cross-compiled. On a Mac run TestDispatcher_* in platform/apple, then live-resize and title-drag an image/async example while tasks are pending; no coro fatal, tasks resume after the drag.
 - `logLastError` reads `GetLastError` after the call returns; the Go runtime may clear it in between, so failures can log "X failed" with no cause. Convert the bool-returning win32 wrappers (ScreenToClient, ShowWindowAsync, ValidateRect, Imm*, FlashWindowEx, EnumThreadWindows) to return the error captured by `proc.Call`.

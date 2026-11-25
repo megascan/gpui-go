@@ -323,7 +323,6 @@ func TestSimple_ElementFromPointAndRangeValueSetValue(t *testing.T) {
 		for {
 			select {
 			case request := <-handler.requests:
-				// Real UIA calls the provider's SetFocus on the slider before SetValue; Wine does not.
 				if request.Action == a11y.ActionFocus && request.TargetNode == sliderID {
 					continue
 				}
