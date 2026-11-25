@@ -11,3 +11,5 @@
 /wlgen
 internal/securityharness/**/logs/
 internal/securityharness/**/evidence/
+internal/securityharness/**/*.lock
+internal/securityharness/**/.*.lock
