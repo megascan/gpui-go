@@ -37,10 +37,7 @@ GitHub Actions refuses to start the ci workflow's jobs on megascan/gpui-go: ubun
 ## WIN-REAL
 
 From the Windows 11 / RTX 3080 runs of ebd634b and 2feb18e (results in `~/.cache/gpui-win/`). Re-test on real Windows:
-- fix/windows-native: counter hover (LogErr(nil) crash), image_example / image_loading / image_gallery / gif_viewer / toggle_headless coro fatal (background runnables), a11y/windows TestSimple_ElementFromPointAndRangeValueSetValue, close-time stderr noise (placement, ScreenToClient, ShowWindowAsync, RevokeDragDrop, DestroyWindow, RedrawWindow).
-- fix/windows-modal-loop (D-WINMODALLOOP): drag the title bar and resize the border of image_loading while images load, 6+ times; no coro fatal, frames keep drawing during the drag, pending images appear once the mouse is released. Also open a file dialog / prompt while a task is pending.
-- fix/windows-modal-loop (D-FRAMEBORROW): system_notifications post / replace / dismiss log no `RefCell already borrowed`.
-- fix/windows-modal-loop (D-WINRELEASED): toggle_headless `open` then `close` logs no `window not found`; closing a window with its own close button still quits / removes it cleanly.
+- Confirmed on 30f9e72 (2026-11-25): counter hover, image examples, a11y SetValue, close-time stderr, drag/resize during image_loading, toast RefCell, toggle_headless. Still open: a file dialog / prompt opened while a task is pending.
 - Narrator caret and selection reporting in text inputs: unverified.
 - Toast banners and action-button / body callbacks: unverified (notification delivery was disabled on the test machine).
 - IME composition and candidate window: unverified (the test produced Latin input only).
