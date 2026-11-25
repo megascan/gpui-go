@@ -11,7 +11,7 @@ The port follows upstream GPUI at Zed commit [`6501df15`](https://github.com/zed
 | Platform | State |
 |---|---|
 | Linux (Wayland, X11) | Tested. Every example runs, and each is checked with a screenshot. |
-| Windows | Tested on Windows 11. The full test suite passes, and the examples run. IME composition and toast banners are unconfirmed. |
+| Windows | Tested on Windows 11. The full test suite passes, and the examples run. Per-monitor DPI scaling, IME composition and toast banners are unconfirmed. |
 | macOS | Ported and cross-compiled. Not yet run on real hardware. |
 | iOS, web (`GOOS=js`) | Ported and cross-compiled. Not yet run on a device or in a browser. |
 
