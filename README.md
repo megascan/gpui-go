@@ -11,10 +11,11 @@ The port follows upstream GPUI at Zed commit [`6501df15`](https://github.com/zed
 | Platform | State |
 |---|---|
 | Linux (Wayland, X11) | Tested. Every example runs, and each is checked with a screenshot. |
-| macOS, Windows | Ported and cross-compiled. Not yet run on real hardware. |
+| Windows | Tested on Windows 11. The full test suite passes, and the examples run. IME composition and toast banners are unconfirmed. |
+| macOS | Ported and cross-compiled. Not yet run on real hardware. |
 | iOS, web (`GOOS=js`) | Ported and cross-compiled. Not yet run on a device or in a browser. |
 
-The non-Linux backends are checked by cross-compiling, `go vet` and building their tests. Windows unit tests also run under Wine. Expect bugs on those platforms until they have been run on real machines; the open items are tracked in [TECH_DEBT.md](TECH_DEBT.md#pending-real-os-tests), and known limits are in [Platforms](docs/guide/platforms.md#known-limits).
+macOS, iOS and web are checked by cross-compiling, `go vet` and building their tests. Expect bugs there until they have been run on real machines; the open items are tracked in [TECH_DEBT.md](TECH_DEBT.md#pending-real-os-tests), and known limits are in [Platforms](docs/guide/platforms.md#known-limits).
 
 There is no tagged release yet, and the API may still change.
 

@@ -81,7 +81,7 @@ Status: not yet run on a Mac. The code is checked by cross-compiling, `go vet` a
 - Importing `platform/windows` links upstream gpui's application manifest into your binary: per-monitor-v2 DPI awareness, common controls v6 and the segment heap. A binary holds only one manifest, so if you need your own, build with `-tags gpui_no_manifest` and copy those settings into it. Without per-monitor-v2 awareness Windows bitmap-scales the window on displays above 100%. To regenerate the `.syso` files, run `platform/windows/winmanifest/gen.sh` (needs `llvm-windres`).
 - System notifications need `cx.SetAppIdentity(id, name)` at startup. Unpackaged apps get an AppUserModelID registered under `HKCU\Software\Classes\AppUserModelId\<id>` with a `DisplayName`, the same as upstream gpui. Nothing else is registered: no Start-menu shortcut and no COM activator. Whether Windows shows a banner for an app registered this way is unconfirmed (see TECH_DEBT WIN-REAL).
 
-Status: not yet run on Windows. Unit tests run under Wine, where a few tests fail because Wine lacks some DirectWrite, UI Automation and WinRT functions (see [TECH_DEBT.md](../../TECH_DEBT.md#wine-test)).
+Status: tested on Windows 11 (x64). The full test suite passes and the examples run, including dialogs, clipboard, Narrator and mixed-DPI moves. IME composition and toast banners are unconfirmed. Unit tests also run under Wine, where a few tests fail because Wine lacks some DirectWrite, UI Automation and WinRT functions (see [TECH_DEBT.md](../../TECH_DEBT.md#wine-test)).
 
 ## Web (GOOS=js)
 
