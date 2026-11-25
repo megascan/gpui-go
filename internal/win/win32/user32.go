@@ -88,6 +88,8 @@ var (
 	procSetFocus                            = user32.NewProc("SetFocus")
 	procSetForegroundWindow                 = user32.NewProc("SetForegroundWindow")
 	procSetProcessDpiAwarenessContext       = user32.NewProc("SetProcessDpiAwarenessContext")
+	procGetThreadDpiAwarenessContext        = user32.NewProc("GetThreadDpiAwarenessContext")
+	procAreDpiAwarenessContextsEqual        = user32.NewProc("AreDpiAwarenessContextsEqual")
 	procSetPropW                            = user32.NewProc("SetPropW")
 	procSetTimer                            = user32.NewProc("SetTimer")
 	procSetWindowLongPtrW                   = user32.NewProc("SetWindowLongPtrW")
@@ -628,6 +630,18 @@ func SetForegroundWindow(hwnd HWND) bool {
 // SetProcessDpiAwarenessContext sets the process's DPI awareness.
 func SetProcessDpiAwarenessContext(context uintptr) error {
 	return boolResult(procSetProcessDpiAwarenessContext.Call(context))
+}
+
+// GetThreadDpiAwarenessContext returns the calling thread's DPI awareness context.
+func GetThreadDpiAwarenessContext() uintptr {
+	r, _, _ := procGetThreadDpiAwarenessContext.Call()
+	return r
+}
+
+// AreDpiAwarenessContextsEqual reports whether two DPI awareness contexts are equal.
+func AreDpiAwarenessContextsEqual(a, b uintptr) bool {
+	r, _, _ := procAreDpiAwarenessContextsEqual.Call(a, b)
+	return r != 0
 }
 
 // SetPropW sets a window property.
