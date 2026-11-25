@@ -1,0 +1,3 @@
+M1-linux-screencap: sh docs/port/verify.sh M1-linux-screencap exited 0 (2026-11-24, after the final edits).
+Gated runs also passed on this machine: GPUI_TEST_DISPLAY=1 TestPw_StreamConnectsToDaemon (live PipeWire, no autoconnect), TestX11_CapturesADisplayFrame (Xwayland :0, explicit RandR target, MIT-SHM path asserted).
+paritycheck -area ext-scap-linux -all-done: 174 rows checked.

@@ -1,0 +1,1 @@
+M2-gotext-layout: sh docs/port/verify.sh M2-gotext-layout exit 0 (2026-11-24); paritycheck -area gotext -all-done -allow-blocked passes; paritycheck -lint has no text/gotext findings; CGO_ENABLED=0 vet + test -c pass for darwin, windows, js/wasm, linux/arm64 (ios vet fails repo-wide on external linking).

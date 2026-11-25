@@ -1,0 +1,1 @@
+M0-contracts: sh docs/port/verify.sh M0-contracts exited 0 (go build/vet/test ., gofmt clean, paritycheck -area core-geometry -done gpui/src/gpui.rs: 267 rows checked). Also CGO_ENABLED=0 go vet . for darwin, windows and js/wasm passed; paritycheck -lint reports nothing in the root package.

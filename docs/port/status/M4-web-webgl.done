@@ -1,0 +1,4 @@
+M4-web-webgl: sh docs/port/verify.sh M4-web-webgl exit 0 (2026-11-24). Run with env -i HOME PATH GOPATH GOCACHE because go_js_wasm_exec rejects environments over Go's wasm size limit; see handoff/M4-web-webgl.md.
+- GOOS=js vet/build/test -c ./render/..., native go build/test ./render/..., gofmt: ok
+- go_js_wasm_exec ./render/wgpu/internal/gpu/webgl2/...: ok (11 tests)
+- paritycheck -area wgpu -done gpui_wgpu/src/: 70 rows checked

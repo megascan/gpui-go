@@ -1,0 +1,1 @@
+M0-platform-types: sh docs/port/verify.sh M0-platform-types exit 0 (go build/vet/test ., gofmt, paritycheck -area core-platform,core-input -done layer_shell.rs,platform_info.rs,keyboard.rs: 847 rows). Also CGO_ENABLED=0 go vet and go test -c -o /dev/null for darwin/arm64, windows/amd64, js/wasm; vet freebsd/amd64.

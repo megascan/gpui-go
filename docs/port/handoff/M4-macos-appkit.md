@@ -1,0 +1,5 @@
+# M4-macos-appkit handoff
+
+- platform/macos/platform.go already exists and holds only the Carbon / HIToolbox externs of platform.rs:1652-1680 (`loadCarbon`, `mustLoadCarbon`, `tisCopyCurrentKeyboardLayoutInputSource`, `tisCopyCurrentKeyboardInputSource`, `tisGetInputSourceProperty`, `ucKeyTranslate`, `lmGetKbdType`, `cfDataGetBytePtr`, `kTIS*`). M4-macos-platform extends this file with the rest of platform.rs; keep these symbols.
+- internal/apple/appkit is owned only by this stage. Later macOS stages own platform/macos only, so AppKit calls missing from appkit (NSAlert, NSOpenPanel/NSSavePanel, NSVisualEffectView, NSWorkspace, NSDocumentController, NSScroller, NSDragging*, NSButton) go through objc.Send directly in platform/macos or are added by an exit stage.
+- gpui_macos.rs re-exports `metal_renderer::{SurfaceBounds, MetalHeadlessRenderer}` (rows blocked:M4-apple-metal-renderer) and `MacPlatform` (blocked:M4-macos-platform): add `type SurfaceBounds = apple.SurfaceBounds` / `type MetalHeadlessRenderer = apple.MetalHeadlessRenderer` aliases in gpui_macos.go once those exist, and flip the rows.

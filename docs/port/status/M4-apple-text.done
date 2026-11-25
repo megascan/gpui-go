@@ -1,0 +1,1 @@
+verify.sh M4-apple-text: exit 0 (darwin arm64/amd64 vet + test -c, gofmt, paritycheck 74 rows). Tests not executed locally; first run in M4-ci-macos.

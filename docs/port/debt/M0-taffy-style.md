@@ -1,0 +1,7 @@
+# M0-taffy-style debt
+
+- internal/taffy/stubs.go: `FlexDirection` with a panicking `IsRow` (owner: M0-taffy-style-mod, style/flex.rs) and the style_helpers trait interfaces `TaffyZero`, `TaffyAuto`, `TaffyMinContent`, `TaffyMaxContent`, `TaffyFitContent`, `FromLength`, `FromPercent`, `FromFr` (owner: M0-taffy-style-grid, style_helpers.rs). Move them out when those files are ported; stubs.go is deleted by M0-taffy-grid-sizing.
+- geometry.go arithmetic on `Rect[T]` / `Size[T]` / `Point[T]` / `Line[T]` dispatches on the element type at run time (`add`, `sub`, `asF32Size`, `asF32Rect`; D-COND). It does not allocate, but costs a type switch per operation; revisit if layout profiling shows it.
+- `f32Min` / `f32Max` return the second operand for `(0.0, -0.0)` ties; LLVM's `minnum` / `maxnum` leave the sign of a zero result unspecified, so bit-exact parity on signed zeros is not guaranteed.
+- FMA: every float32 multiplication must be written `float32(a * b)` (rule in docs/port/parity/ext-taffy.md); this stage does so in ResolvedPercentageSize, ResolveToOption and SizeOptionF32MaybeApplyAspectRatio. Only the arm64 CI runner can show a miss.
+- The stub trait interfaces take methods on a value receiver, which `float32` and `Option[T]` cannot have. Upstream implements `TaffyZero` (and other style_helpers traits) for `f32` and `Option<T>`, so M0-taffy-style-grid's generic helpers (`zero::<T>()`, ...) need a separate path for those types (a type switch or dedicated functions).

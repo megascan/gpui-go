@@ -1,0 +1,1 @@
+M3-exit: 2026-11-24T15:34:57Z verify lines 1-5 pass (go vet/test, race, generate, cross-vets, paritycheck); CI see gh pr checks

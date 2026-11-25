@@ -1,0 +1,1 @@
+M3-a11y-consumer-tree: sh docs/port/verify.sh M3-a11y-consumer-tree exit 0 (build, vet, test, gofmt on a11y/consumer); paritycheck -area ext-a11y-consumer -all-done -allow-blocked: 108 rows; vet + test -c pass for darwin, windows, js/wasm.

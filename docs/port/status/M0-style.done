@@ -1,0 +1,1 @@
+M0-style: sh docs/port/verify.sh M0-style exit 0 (2026-11-24, rerun after GridTemplate json tags and 66 added parity rows). style.go/style_gen.go (refinegen), styled.go (115 hand-written methods), styled_gen.go (stylegen, 3099); 3 style tests + TestStyledGen_MethodSet pass; go generate byte-identical; paritycheck core-style (475 rows, style.rs and styled.rs done) and macros pass.

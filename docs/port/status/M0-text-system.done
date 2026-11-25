@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M0-text-system exit 0 (go build/vet/test ., gofmt, paritycheck core-text); CGO_ENABLED=0 go test -c -o /dev/null . for darwin/arm64, windows/amd64, js/wasm: ok

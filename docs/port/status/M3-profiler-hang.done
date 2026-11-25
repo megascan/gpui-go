@@ -1,0 +1,2 @@
+verify: sh docs/port/verify.sh M3-profiler-hang exit 0 (go build/vet/test ., gofmt, paritycheck core-profiler 332 rows)
+extra: go test -tags gpui_profiler . ok; -tags gpui_profiler -run 'TestHang_|TestDebugOverlay_' -count=5 ok

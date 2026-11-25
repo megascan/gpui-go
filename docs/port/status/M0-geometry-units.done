@@ -1,0 +1,1 @@
+M0-geometry-units: sh docs/port/verify.sh M0-geometry-units exit 0 (build, vet, test, gofmt, paritycheck core-geometry 267 rows). Root vet also clean for windows, darwin, js/wasm. go generate leaves geometry_gen.go byte-identical.

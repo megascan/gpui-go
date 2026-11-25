@@ -1,0 +1,1 @@
+M0-taffy-block: verify.sh exit 0. compute/block.rs and compute/float.rs ported (oof.rs was already done). Enabled block, blockflex, float, contain. Fixtures: flex 2552 pass, block 1112, blockflex 52, float 108, contain 32; remaining 20 flex, 4 block, 8 float skip as blocked:M0-taffy-grid-sizing (they lay out a grid box).

@@ -1,0 +1,1 @@
+verify.sh M4-windows-a11y: exit 0 (windows amd64+arm64 vet and test -c, gofmt, paritycheck -all-done 329 rows)

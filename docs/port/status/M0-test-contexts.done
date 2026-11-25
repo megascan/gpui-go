@@ -1,0 +1,1 @@
+verify.sh M0-test-contexts: exit 0 (build, vet, test, gofmt, paritycheck core-app 667 rows); cross-vet darwin/windows/js ok

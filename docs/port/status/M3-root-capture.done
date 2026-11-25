@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M3-root-capture exit 0 (2026-11-24)

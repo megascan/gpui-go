@@ -1,0 +1,1 @@
+M0-stylegen: sh docs/port/verify.sh M0-stylegen exit 0 (2026-11-24). Generates 3099 Styled[S] methods, names match styled-methods.tsv, type-checked against testdata/contract.

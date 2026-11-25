@@ -1,0 +1,1 @@
+M1-linux-common: sh docs/port/verify.sh M1-linux-common exit 0 (build, vet, test, gofmt, paritycheck 80 rows); also -race -count=3, CGO_ENABLED=0 vet and test -c; paritycheck -lint clean for internal/common

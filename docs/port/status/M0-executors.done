@@ -1,0 +1,1 @@
+M0-executors: sh docs/port/verify.sh M0-executors exited 0 (2026-11-24): go build/vet/test ., gofmt clean, go test -race -run 'Executor|Scheduler|Dispatcher|Queue' . ok (also -race -count=30 ok), paritycheck core-app,core-platform -done executor.rs,platform_scheduler.rs,threaded_dispatcher.rs,queue.rs ok. Cross: go test -c for darwin/arm64, windows/amd64, js/wasm ok.

@@ -1,0 +1,1 @@
+M0-lyon: sh docs/port/verify.sh M0-lyon exit 0 (go build, vet, test, gofmt on ./internal/lyon/...; paritycheck -area ext-lyon: 413 rows checked, -lint clean for internal/lyon; TestParity_RustGoldenEvents bit-exact vs Rust lyon on amd64, GOAMD64=v3 and arm64 under qemu; CGO_ENABLED=0 vet and test -c for darwin/arm64, windows/amd64, js/wasm)

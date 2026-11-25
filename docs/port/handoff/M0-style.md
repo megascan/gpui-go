@@ -1,0 +1,8 @@
+# M0-style handoff
+
+- New stubs in stubs.go (final signatures, concrete types for upstream's `impl Into<..>`): `NewQuad(bounds Bounds[Pixels], cornerRadii Corners[Pixels], background Background, borderWidths Edges[Pixels], borderColor Hsla, borderStyle BorderStyle) PaintQuad` and `Outline(bounds Bounds[Pixels], borderColor Hsla, borderStyle BorderStyle) PaintQuad` for M0-window-core (window.rs:8353, :8384; `quad` is `NewQuad` because scene.go owns `Quad`); `(*Window).PaintDropShadows` / `PaintInsetShadows(bounds Bounds[Pixels], cornerRadii Corners[Pixels], shadows []BoxShadow)` for M0-window-paint (window.rs:4979, :5019). `(*Style).Paint` calls all four.
+- Removed from stubs.go: `Style`, `StyleRefinement`, `Styler`, `Styled`, `BindStyled`, `(Styled).Flex`, `SizeFull`, `UnderlineStyle`, `StrikethroughStyle` (now in style.go, style_gen.go, styled.go, styled_gen.go).
+- M0-element: write the taffy conversions for `AlignItems`, `AlignContent`, `Display`, `FlexWrap`, `FlexDirection`, `Overflow`, `Position` (style.rs:1249-1329) in taffy.go. `Display`'s Go values are Flex=0, Block=1, Grid=2, None=3; switch on the constants, never on the numbers.
+- Elements declare `Style() *StyleRefinement` themselves; `Styled[S]` has no `Style` method (a promoted one would recurse). Shape summary in docs/api-contracts.md section 3.1.
+- stylegen needed no fixes: its contract matched the real types once `Style` used `PointOf`/`EdgesOf`/`SizeOf`/`CornersOf`.
+- Parity: 66 rows the scan missed were appended to the style.rs section of core-style.md (enum variants, Default and From impls, `impl Styled for StyleRefinement`, `impl Hash for HighlightStyle`). The taffy `From` impls (style.rs:1249-1329) have no rows yet; M0-element adds them with taffy.go.

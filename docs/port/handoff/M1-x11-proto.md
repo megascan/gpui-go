@@ -1,0 +1,4 @@
+# M1-x11-proto handoff
+
+- To M1-x11-client: connect with `xext.Dial(display)` (not `xgb.NewConn`) and read events with `conn.WaitForEvent()`/`PollForEvent()` so XInput 2 events arrive decoded (`XinputButtonPressEvent`, `XinputButtonReleaseEvent`, `XinputMotionEvent`, `XinputEnterEvent`, `XinputLeaveEvent`, `XinputHierarchyEvent`, `XinputDeviceChangedEvent`, `XinputGesturePinch{Begin,Update,End}Event`) and XKB events as `Xkb{StateNotify,MapNotify,NewKeyboardNotify}Event`. Call `xext.InitXinput/InitXkb/InitSync/InitDri3` on `conn.X` (x11rb's prefetch_extension_information) before selecting events. `xext.Dri3Open(conn, root, 0)` returns the device fd (caller closes it). Keymaps come from internal/linux/xkb (libxkbcommon-x11), so xext has no XKB GetMap.
+- Stage verify line 2 (xim) fails until the xim piece creates platform/linux/x11/internal/xim/; xext verify line passes.

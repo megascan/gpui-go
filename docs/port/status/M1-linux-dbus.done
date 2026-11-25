@@ -1,0 +1,1 @@
+M1-linux-dbus: sh docs/port/verify.sh M1-linux-dbus exit 0 (build, vet, test incl. private dbus-daemon fakes, gofmt, paritycheck -all-done 7 rows)

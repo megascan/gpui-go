@@ -1,0 +1,2 @@
+M4-ios-window: sh docs/port/verify.sh M4-ios-window exit 0 (ios-vet of internal/apple, platform/ios, platform; darwin/arm64 test -c; gofmt; paritycheck -area ios -all-done -allow-blocked: 24 rows).
+Extra: go.work purego workaround + `-tags ios` go test -c and go vet of ./platform/ios and ./examples/ios_ios pass for darwin/amd64 and darwin/arm64; plain darwin/amd64 test -c passes. Nothing iOS-tagged has run (owner checks in docs/port/owner-checks/M4-ios-window.md).

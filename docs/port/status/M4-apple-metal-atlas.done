@@ -1,0 +1,1 @@
+M4-apple-metal-atlas: sh docs/port/verify.sh M4-apple-metal-atlas exit 0 (darwin arm64/amd64 vet + test -c, metalhdr build/vet/test, gofmt). paritycheck -area apple -done gpui_apple/src/metal_atlas.rs passes. Metal runtime tests (mtl, metal_atlas, shader compile) run only on the macOS CI runner.

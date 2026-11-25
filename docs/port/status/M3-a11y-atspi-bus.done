@@ -1,0 +1,1 @@
+M3-a11y-atspi-bus: sh docs/port/verify.sh M3-a11y-atspi-bus exited 0 (build, vet, test incl. private dbus-daemon round trip with reply/signal signature checks, gofmt, paritycheck -area ext-a11y-atspi -all-done: 621 rows). Also: go test -race -count=3 ./a11y/atspi/bus ok; CGO_ENABLED=0 vet + test -c for darwin/arm64, windows/amd64, js/wasm ok.

@@ -1,0 +1,1 @@
+M0-keymap: verify.sh exit 0 (go build/vet/test ., gofmt, paritycheck core-input -done keymap.rs,keymap/,tab_stop.rs). Cross-vet darwin/windows/js-wasm OK.

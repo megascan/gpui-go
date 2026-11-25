@@ -1,0 +1,6 @@
+# M2-gotext-layout handoff
+
+- Root bug for M2-exit: `TextSystem.resolveFontUncached` (text_system.go) holds `fontIDsByFontMu.Lock()` across `platformTextSystem.FontID`, so a cached `ResolveFont` (RLock) blocks behind a cold lookup. Upstream (`gpui/src/text_system.rs:570`) holds an `upgradable_read` and only upgrades to insert. Repro: `GOTEXT_ROOT_RESOLVE_FONT_FIXED=1 go test -run TestCosmicTextSystem_CachedFontResolutionDoesNotWaitForColdLookups ./text/gotext/` (fails with "cached lookup blocked"). After the fix, drop the env gate in text/gotext/text_system_test.go and set the gotext.md row to `done`.
+- `TestCosmicTextSystem_ReportsGraphemesThatExhaustFontFallback` is a t.Skip until M0-test-contexts provides `TestAppContext` built with a text system (`build_with_text_system`) and `App.OnMissingGlyphs`.
+- Platform wiring: `gotext.NewTextSystem(systemFontFallback)` returns `*gotext.CosmicTextSystem` (implements `gpui.PlatformTextSystem`); `NewTextSystemWithoutSystemFonts` starts with an empty database. Extra API: `FontWeightAndStyle(FontID) (FontWeight, FontStyle, error)`, `MissingGlyphs(text, runs, indices []int)`.
+- For M2-gotext-raster: loaded faces are `cosmicFont` in font.go (`font *font.Font`, `face *font.Face`); `loadedFonts[id].font`.

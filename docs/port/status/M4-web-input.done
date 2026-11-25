@@ -1,0 +1,2 @@
+M4-web-input: verify.sh exit 0 (vet js/wasm, go test under go_js_wasm_exec: ok, gofmt clean). paritycheck -area web -done gpui_web/src/events.rs: 44 rows ok.
+Note: go_js_wasm_exec fails with "total length of command line and environment variables exceeds limit" when the shell env is large; run with a trimmed env (env -i PATH HOME GOCACHE GOPATH).

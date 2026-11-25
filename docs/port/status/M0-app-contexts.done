@@ -1,0 +1,1 @@
+M0-app-contexts: sh docs/port/verify.sh M0-app-contexts exit 0 (go build/vet/test ., gofmt clean, paritycheck core-app -done context.rs,async_context.rs: 666 rows). Also CGO_ENABLED=0 go vet . for darwin/arm64, windows/amd64, js/wasm.

@@ -1,0 +1,3 @@
+M2-gotext-raster done 2026-11-24
+verify: sh docs/port/verify.sh M2-gotext-raster exit 0
+paritycheck -area gotext -all-done -allow-blocked: pass (108 rows)

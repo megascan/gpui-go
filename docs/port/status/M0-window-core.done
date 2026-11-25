@@ -1,0 +1,6 @@
+M0-window-core: sh docs/port/verify.sh M0-window-core -> EXIT 0 (2026-11-24T06:24:02Z)
+
++ go build . && go vet . && go test . && test -z "$(gofmt -l *.go)"
+ok
+paritycheck -area core-window: 447 rows checked, exit 0
+EXIT 0

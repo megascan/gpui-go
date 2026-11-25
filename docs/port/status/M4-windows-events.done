@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M4-windows-events exit 0 (windows amd64/arm64 vet + test -c, gofmt clean); paritycheck -area windows passes

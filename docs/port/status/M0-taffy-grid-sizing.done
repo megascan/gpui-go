@@ -1,0 +1,1 @@
+M0-taffy-grid-sizing: sh docs/port/verify.sh M0-taffy-grid-sizing exit 0 (2026-11-24). TestXml: 6368 fixtures pass, 136 flex balance n/a skips; paritycheck -area ext-taffy 1378 rows ok.

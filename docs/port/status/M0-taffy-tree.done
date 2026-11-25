@@ -1,0 +1,1 @@
+M0-taffy-tree: sh docs/port/verify.sh M0-taffy-tree exit 0 (go build/vet/test ./internal/taffy/..., gofmt clean); paritycheck -area ext-taffy -done src/tree/cache.rs,src/tree/layout.rs,src/tree/node.rs,src/tree/traits.rs,src/util/ passes (-lint fails only on internal/linux/xcbshim/setup.go:5, not owned); CGO_ENABLED=0 go test -c for darwin, windows, js/wasm ok.

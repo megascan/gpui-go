@@ -1,0 +1,1 @@
+M0-gestures-spring: verify.sh exit 0 (go build/vet/test ., gofmt clean, paritycheck core-input,core-style -done gestures.rs,spring.rs: 705 rows). 48 tests (37 gestures + 11 spring) pass.

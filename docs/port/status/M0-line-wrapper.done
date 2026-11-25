@@ -1,0 +1,1 @@
+M0-line-wrapper: verify.sh exit 0 (go build/vet/test ., gofmt clean); 20 line_wrapper tests ported, 19 pass, test_wrap_shaped_line blocked:M0-blocked-tests (macOS + TestAppContext).

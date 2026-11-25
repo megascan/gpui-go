@@ -2,3 +2,14 @@
 *.test
 *.out
 .DS_Store
+/_ref
+/_ext
+/actiongen
+/glslgen
+/metalhdr
+/stylegen
+/wlgen
+internal/securityharness/**/logs/
+internal/securityharness/**/evidence/
+internal/securityharness/**/*.lock
+internal/securityharness/**/.*.lock

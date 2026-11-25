@@ -1,0 +1,1 @@
+M0-app-core: sh docs/port/verify.sh M0-app-core exit 0 (go build/vet/test ., gofmt clean). Also: CGO_ENABLED=0 go vet and go test -c for darwin/arm64, windows/amd64, js/wasm; go vet -tags gpui_profiler; paritycheck -area core-app (666 rows) ok; -lint fails only on pre-existing internal/linux/wl/display.go:285 and internal/linux/xcbshim/setup.go:5.

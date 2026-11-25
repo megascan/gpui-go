@@ -1,0 +1,1 @@
+M0-taffy-style-grid: verify.sh exit 0 (go build/vet/test ./internal/taffy/..., gofmt clean); paritycheck -area ext-taffy passes (1148 rows).

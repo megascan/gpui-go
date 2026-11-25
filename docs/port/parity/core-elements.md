@@ -1,0 +1,655 @@
+# Parity: core-elements
+
+Scope: gpui: elements/*. Milestone: M0/M3. Index and rules: [../PARITY.md](../PARITY.md).
+
+Status values: `todo`, `done`, `dev:<id>` (deviation registered in PARITY.md section 5), `n/a:<id>`. A row's Go symbol is the name derived by the naming rules (PARITY.md section 3); if a builder must deviate, edit the Go column and set `dev:<id>`.
+
+## gpui/src/elements/anchored.rs
+
+Go target: `elements_anchored.go` (package `gpui`), tests in `elements_anchored_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `AnchoredState` | struct | 12 |  | `AnchoredState` | done |
+| `Anchored` | struct | 18 |  | `Anchored` | done |
+| `anchored` | fn | 39 |  | `NewAnchored` | done |
+| `Anchored::anchor` | method | 52 |  | `(Anchored).Anchor` | done |
+| `Anchored::position` | method | 59 |  | `(Anchored).Position` | done |
+| `Anchored::attach` | method | 72 |  | `(Anchored).Attach` | done |
+| `Anchored::offset` | method | 79 |  | `(Anchored).Offset` | done |
+| `Anchored::position_mode` | method | 88 |  | `(Anchored).PositionMode` | done |
+| `Anchored::snap_to_window` | method | 94 |  | `(Anchored).SnapToWindow` | done |
+| `Anchored::snap_to_window_with_margin` | method | 100 |  | `(Anchored).SnapToWindowWithMargin` | done |
+| `AnchoredFitMode` | enum | 329 |  | `AnchoredFitMode` | done |
+| `AnchoredPositionMode` | enum | 340 |  | `AnchoredPositionMode` | done |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `test_anchored_position_without_scroll` | gpui::test | 416 |  | `TestAnchored_AnchoredPositionWithoutScroll` | done |
+| `test_anchored_position_when_scrolled` | gpui::test | 435 |  | `TestAnchored_AnchoredPositionWhenScrolled` | done |
+| `test_anchored_snaps_to_window` | gpui::test | 467 |  | `TestAnchored_AnchoredSnapsToWindow` | done |
+| `test_anchored_attach_moves_to_the_side_with_room` | gpui::test | 513 |  | `TestAnchored_AnchoredAttachMovesToTheSideWithRoom` | done |
+
+## gpui/src/elements/animation.rs
+
+Go target: `elements_animation.go` (package `gpui`), tests in `elements_animation_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Animation` | struct | 15 |  | `Animation` | done |
+| `Animation::new` | assoc-fn | 36 |  | `NewAnimation` | done |
+| `Animation::repeat` | method | 48 |  | `(Animation).Repeat` | done |
+| `Animation::repeat_synced` | method | 54 |  | `(Animation).RepeatSynced` | done |
+| `Animation::with_easing` | method | 64 |  | `(Animation).WithEasing` | done |
+| `Animation::with_max_fps` | method | 73 |  | `(Animation).WithMaxFps` | done |
+| `Animation::with_steps` | method | 82 |  | `(Animation).WithSteps` | done |
+| `AnimationExt` | trait | 95 |  | `WithAnimation`, `WithAnimations`, `WithSpring` | dev:D-ANIMEXT |
+| `AnimationExt::with_animation` | trait-method | 97 |  | `WithAnimation` | dev:D-ANIMEXT |
+| `AnimationExt::with_animations` | trait-method | 115 |  | `WithAnimations` | dev:D-ANIMEXT |
+| `AnimationExt::with_spring` | trait-method | 137 |  | `WithSpring` | dev:D-ANIMEXT |
+| `AnimationElement` | struct | 174 |  | `AnimationElement` | done |
+| `SpringAnimationElement` | struct | 182 |  | `SpringAnimationElement` | done |
+| `SpringAnimationElement::map_element` | method | 206 |  | `(SpringAnimationElement).MapElement` | done |
+| `AnimationElement::map_element` | method | 225 |  | `(AnimationElement).MapElement` | done |
+| `linear` | fn | 555 |  | `Linear` | done |
+| `quadratic` | fn | 560 |  | `Quadratic` | done |
+| `ease_in_out` | fn | 565 |  | `EaseInOut` | done |
+| `ease_out_quint` | fn | 575 |  | `EaseOutQuint` | done |
+| `heartbeat` | fn | 580 |  | `Heartbeat` | done |
+| `bounce` | fn | 589 |  | `Bounce` | done |
+| `pulsating_between` | fn | 600 |  | `PulsatingBetween` | done |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `test_animation_parent` | test | 738 |  | `TestAnimation_AnimationParent` | done |
+| `test_spring_animation_parent` | test | 757 |  | `TestAnimation_SpringAnimationParent` | done |
+| `test_spring_animation_preserves_velocity_when_retargeted` | gpui::test | 771 |  | `TestAnimation_SpringAnimationPreservesVelocityWhenRetargeted` | done |
+| `test_paused_spring_resumes_with_its_velocity` | gpui::test | 814 |  | `TestAnimation_PausedSpringResumesWithItsVelocity` | done |
+| `test_stopped_spring_resumes_without_velocity` | gpui::test | 865 |  | `TestAnimation_StoppedSpringResumesWithoutVelocity` | done |
+| `test_cancelled_and_completed_springs_resolve_their_endpoints` | gpui::test | 916 |  | `TestAnimation_CancelledAndCompletedSpringsResolveTheirEndpoints` | done |
+| `test_spring_animation_respects_reduced_motion` | gpui::test | 957 |  | `TestAnimation_SpringAnimationRespectsReducedMotion` | done |
+| `test_repeating_animation_schedules_animation_frames` | gpui::test | 976 |  | `TestAnimation_RepeatingAnimationSchedulesAnimationFrames` | done |
+| `test_max_fps_schedules_timer_driven_frames` | gpui::test | 988 |  | `TestAnimation_MaxFpsSchedulesTimerDrivenFrames` | done |
+| `test_synced_steps_render_once_each` | gpui::test | 1022 |  | `TestAnimation_SyncedStepsRenderOnceEach` | done |
+| `test_steps_finish_and_repeat_on_time` | gpui::test | 1040 |  | `TestAnimation_StepsFinishAndRepeatOnTime` | done |
+| `test_sooner_step_replaces_the_pending_one` | gpui::test | 1058 |  | `TestAnimation_SoonerStepReplacesThePendingOne` | done |
+| `test_synced_animations_share_phase_across_elements` | gpui::test | 1080 |  | `TestAnimation_SyncedAnimationsSharePhaseAcrossElements` | done |
+| `test_reduce_motion_renders_single_static_frame` | gpui::test | 1133 |  | `TestAnimation_ReduceMotionRendersSingleStaticFrame` | done |
+
+## gpui/src/elements/canvas.rs
+
+Go target: `elements_canvas.go` (package `gpui`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `canvas` | fn | 10 |  | `NewCanvas` | done |
+| `Canvas` | struct | 23 |  | `Canvas` | done |
+
+## gpui/src/elements/container_query.rs
+
+Go target: `elements_container_query.go` (package `gpui`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `container_query` | fn | 33 |  | `NewContainerQuery` | done |
+| `ContainerQuery` | struct | 52 |  | `ContainerQuery` | done |
+
+## gpui/src/elements/deferred.rs
+
+Go target: `elements_deferred.go` (package `gpui`), tests in `elements_deferred_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `deferred` | fn | 7 |  | `NewDeferred` | done |
+| `Deferred` | struct | 16 |  | `Deferred` | done |
+| `Deferred::with_priority` | method | 25 |  | `(Deferred).WithPriority` | done |
+| `Deferred::priority` | method | 84 |  | `(Deferred).Priority` | done |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `test_cached_reuse_keeps_entity_subscriptions` | gpui::test | 152 |  | `TestDeferred_CachedReuseKeepsEntitySubscriptions` | done |
+| `test_nested_deferred_draws_with_reused_views` | gpui::test | 261 |  | `TestDeferred_NestedDeferredDrawsWithReusedViews` | done |
+
+## gpui/src/elements/div.rs
+
+Go target: `elements_div.go` (package `gpui`), tests in `elements_div_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `GroupStyle` | struct | 57 |  | `GroupStyle` | done |
+| `DragMoveEvent` | struct | 67 |  | `DragMoveEvent` | done |
+| `DragMoveEvent::drag` | method | 79 |  | `(DragMoveEvent[T]).Drag` | done |
+| `DragMoveEvent::dragged_item` | method | 87 |  | `(DragMoveEvent[T]).DraggedItem` | done |
+| `Interactivity::new` | assoc-fn | 96 | feat:inspector,debug | `NewInteractivity` | done |
+| `Interactivity::new` | assoc-fn | 105 | feat:inspector,debug | `NewInteractivity` | done |
+| `Interactivity::source_location` | method | 110 |  | `(Interactivity).SourceLocation` | done |
+| `Interactivity::on_mouse_down` | method | 126 |  | `(Interactivity).OnMouseDown` | done |
+| `Interactivity::capture_any_mouse_down` | method | 146 |  | `(Interactivity).CaptureAnyMouseDown` | done |
+| `Interactivity::on_any_mouse_down` | method | 162 |  | `(Interactivity).OnAnyMouseDown` | done |
+| `Interactivity::on_mouse_pressure` | method | 178 |  | `(Interactivity).OnMousePressure` | done |
+| `Interactivity::capture_mouse_pressure` | method | 194 |  | `(Interactivity).CaptureMousePressure` | done |
+| `Interactivity::on_mouse_up` | method | 210 |  | `(Interactivity).OnMouseUp` | done |
+| `Interactivity::capture_any_mouse_up` | method | 230 |  | `(Interactivity).CaptureAnyMouseUp` | done |
+| `Interactivity::on_any_mouse_up` | method | 246 |  | `(Interactivity).OnAnyMouseUp` | done |
+| `Interactivity::on_mouse_down_out` | method | 263 |  | `(Interactivity).OnMouseDownOut` | done |
+| `Interactivity::on_mouse_up_out` | method | 283 |  | `(Interactivity).OnMouseUpOut` | done |
+| `Interactivity::on_mouse_move` | method | 303 |  | `(Interactivity).OnMouseMove` | done |
+| `Interactivity::on_mouse_exit` | method | 319 |  | `(Interactivity).OnMouseExit` | done |
+| `Interactivity::on_file_drop_exit` | method | 338 |  | `(Interactivity).OnFileDropExit` | done |
+| `Interactivity::on_drag_move` | method | 360 |  | `(Interactivity).OnDragMove` | done |
+| `Interactivity::on_scroll` | method | 390 |  | `(Interactivity).OnScroll` | done |
+| `Interactivity::on_scroll_wheel` | method | 401 |  | `(Interactivity).OnScrollWheel` | done |
+| `Interactivity::on_pinch` | method | 411 |  | `(Interactivity).OnPinch` | done |
+| `Interactivity::on_back_gesture` | method | 424 |  | `(Interactivity).OnBackGesture` | done |
+| `Interactivity::capture_pinch` | method | 441 |  | `(Interactivity).CapturePinch` | done |
+| `Interactivity::capture_action` | method | 459 |  | `(Interactivity).CaptureAction` | done |
+| `Interactivity::on_action` | method | 482 |  | `(Interactivity).OnAction` | done |
+| `Interactivity::on_boxed_action` | method | 500 |  | `(Interactivity).OnBoxedAction` | done |
+| `Interactivity::on_key_down` | method | 520 |  | `(Interactivity).OnKeyDown` | done |
+| `Interactivity::capture_key_down` | method | 536 |  | `(Interactivity).CaptureKeyDown` | done |
+| `Interactivity::on_key_up` | method | 552 |  | `(Interactivity).OnKeyUp` | done |
+| `Interactivity::capture_key_up` | method | 565 |  | `(Interactivity).CaptureKeyUp` | done |
+| `Interactivity::on_modifiers_changed` | method | 581 |  | `(Interactivity).OnModifiersChanged` | done |
+| `Interactivity::on_drop` | method | 592 |  | `(Interactivity).OnDrop` | done |
+| `Interactivity::can_drop` | method | 603 |  | `(Interactivity).CanDrop` | done |
+| `Interactivity::on_click` | method | 615 |  | `(Interactivity).OnClick` | done |
+| `Interactivity::on_aux_click` | method | 626 |  | `(Interactivity).OnAuxClick` | done |
+| `Interactivity::on_drag` | method | 639 |  | `(Interactivity).OnDrag` | done |
+| `Interactivity::external_drag_payload` | method | 665 |  | `(Interactivity).ExternalDragPayload` | done |
+| `Interactivity::on_hover` | method | 699 |  | `(Interactivity).OnHover` | done |
+| `Interactivity::hover_listener_mode` | method | 713 |  | `(Interactivity).HoverListenerMode` | done |
+| `Interactivity::tooltip` | method | 722 |  | `(Interactivity).Tooltip` | done |
+| `Interactivity::hoverable_tooltip` | method | 739 |  | `(Interactivity).HoverableTooltip` | done |
+| `Interactivity::tooltip_show_delay` | method | 759 |  | `(Interactivity).TooltipShowDelay` | done |
+| `Interactivity::occlude_mouse` | method | 767 |  | `(Interactivity).OccludeMouse` | done |
+| `Interactivity::window_control_area` | method | 773 |  | `(Interactivity).WindowControlArea` | done |
+| `Interactivity::block_mouse_except_scroll` | method | 781 |  | `(Interactivity).BlockMouseExceptScroll` | done |
+| `InteractiveElement` | trait | 792 |  | `Interactive[S] mixin + InteractiveElement interface` | done |
+| `InteractiveElement::interactivity` | trait-method | 794 |  | `(Div).Interactivity` | done |
+| `InteractiveElement::group` | trait-method | 797 |  | `(Interactive[S]).Group` | done |
+| `InteractiveElement::id` | trait-method | 803 |  | `(InteractiveID[S]).ID` | dev:D-IDMIXIN |
+| `InteractiveElement::track_focus` | trait-method | 812 |  | `(Interactive[S]).TrackFocus` | done |
+| `InteractiveElement::tab_stop` | trait-method | 824 |  | `(Interactive[S]).TabStop` | done |
+| `InteractiveElement::tab_index` | trait-method | 833 |  | `(Interactive[S]).TabIndex` | done |
+| `InteractiveElement::tab_group` | trait-method | 844 |  | `(Interactive[S]).TabGroup` | done |
+| `InteractiveElement::key_context` | trait-method | 854 |  | `(Interactive[S]).KeyContext` | done |
+| `InteractiveElement::hover` | trait-method | 866 |  | `(Interactive[S]).Hover` | done |
+| `InteractiveElement::group_hover` | trait-method | 876 |  | `(Interactive[S]).GroupHover` | done |
+| `InteractiveElement::on_mouse_down` | trait-method | 893 |  | `(Interactive[S]).OnMouseDown` | done |
+| `InteractiveElement::debug_selector` | trait-method | 909 | feat:test-support,debug | `(Interactive[S]).DebugSelector` | done |
+| `InteractiveElement::debug_selector` | trait-method | 922 | feat:test-support,debug | `(Interactive[S]).DebugSelector` | done |
+| `InteractiveElement::capture_any_mouse_down` | trait-method | 930 |  | `(Interactive[S]).CaptureAnyMouseDown` | done |
+| `InteractiveElement::on_any_mouse_down` | trait-method | 942 |  | `(Interactive[S]).OnAnyMouseDown` | done |
+| `InteractiveElement::on_mouse_up` | trait-method | 954 |  | `(Interactive[S]).OnMouseUp` | done |
+| `InteractiveElement::capture_any_mouse_up` | trait-method | 967 |  | `(Interactive[S]).CaptureAnyMouseUp` | done |
+| `InteractiveElement::on_mouse_pressure` | trait-method | 979 |  | `(Interactive[S]).OnMousePressure` | done |
+| `InteractiveElement::capture_mouse_pressure` | trait-method | 991 |  | `(Interactive[S]).CaptureMousePressure` | done |
+| `InteractiveElement::on_mouse_down_out` | trait-method | 1004 |  | `(Interactive[S]).OnMouseDownOut` | done |
+| `InteractiveElement::on_mouse_up_out` | trait-method | 1017 |  | `(Interactive[S]).OnMouseUpOut` | done |
+| `InteractiveElement::on_mouse_move` | trait-method | 1030 |  | `(Interactive[S]).OnMouseMove` | done |
+| `InteractiveElement::on_mouse_exit` | trait-method | 1042 |  | `(Interactive[S]).OnMouseExit` | done |
+| `InteractiveElement::on_file_drop_exit` | trait-method | 1057 |  | `(Interactive[S]).OnFileDropExit` | done |
+| `InteractiveElement::on_drag_move` | trait-method | 1072 |  | `(Interactive[S]).OnDragMove` | done |
+| `InteractiveElement::on_scroll` | trait-method | 1084 |  | `(Interactive[S]).OnScroll` | done |
+| `InteractiveElement::on_scroll_wheel` | trait-method | 1094 |  | `(Interactive[S]).OnScrollWheel` | done |
+| `InteractiveElement::on_pinch` | trait-method | 1105 |  | `(Interactive[S]).OnPinch` | done |
+| `InteractiveElement::on_back_gesture` | trait-method | 1116 |  | `(Interactive[S]).OnBackGesture` | done |
+| `InteractiveElement::capture_pinch` | trait-method | 1128 |  | `(Interactive[S]).CapturePinch` | done |
+| `InteractiveElement::capture_action` | trait-method | 1139 |  | `(Interactive[S]).CaptureAction` | done |
+| `InteractiveElement::on_action` | trait-method | 1153 |  | `(Interactive[S]).OnAction` | done |
+| `InteractiveElement::on_boxed_action` | trait-method | 1167 |  | `(Interactive[S]).OnBoxedAction` | done |
+| `InteractiveElement::on_key_down` | trait-method | 1180 |  | `(Interactive[S]).OnKeyDown` | done |
+| `InteractiveElement::capture_key_down` | trait-method | 1192 |  | `(Interactive[S]).CaptureKeyDown` | done |
+| `InteractiveElement::on_key_up` | trait-method | 1204 |  | `(Interactive[S]).OnKeyUp` | done |
+| `InteractiveElement::capture_key_up` | trait-method | 1216 |  | `(Interactive[S]).CaptureKeyUp` | done |
+| `InteractiveElement::on_modifiers_changed` | trait-method | 1229 |  | `(Interactive[S]).OnModifiersChanged` | done |
+| `InteractiveElement::drag_over` | trait-method | 1238 |  | `(Interactive[S]).DragOver` | done |
+| `InteractiveElement::group_drag_over` | trait-method | 1257 |  | `(Interactive[S]).GroupDragOver` | done |
+| `InteractiveElement::on_drop` | trait-method | 1276 |  | `(Interactive[S]).OnDrop` | done |
+| `InteractiveElement::can_drop` | trait-method | 1286 |  | `(Interactive[S]).CanDrop` | done |
+| `InteractiveElement::occlude` | trait-method | 1297 |  | `(Interactive[S]).Occlude` | done |
+| `InteractiveElement::window_control_area` | trait-method | 1304 |  | `(Interactive[S]).WindowControlArea` | done |
+| `InteractiveElement::block_mouse_except_scroll` | trait-method | 1313 |  | `(Interactive[S]).BlockMouseExceptScroll` | done |
+| `InteractiveElement::focus` | trait-method | 1320 |  | `(Interactive[S]).Focus` | done |
+| `InteractiveElement::in_focus` | trait-method | 1330 |  | `(Interactive[S]).InFocus` | done |
+| `InteractiveElement::focus_visible` | trait-method | 1342 |  | `(Interactive[S]).FocusVisible` | done |
+| `StatefulInteractiveElement` | trait | 1353 |  | `StatefulInteractive[S] mixin + StatefulInteractiveElement interface` | done |
+| `StatefulInteractiveElement::role` | trait-method | 1357 |  | `(StatefulInteractive[S]).Role` | done |
+| `StatefulInteractiveElement::accessibility_id` | trait-method | 1373 |  | `(StatefulInteractive[S]).AccessibilityID` | done |
+| `StatefulInteractiveElement::aria_label` | trait-method | 1379 |  | `(StatefulInteractive[S]).AriaLabel` | done |
+| `StatefulInteractiveElement::aria_description` | trait-method | 1388 |  | `(StatefulInteractive[S]).AriaDescription` | done |
+| `StatefulInteractiveElement::aria_keyshortcuts` | trait-method | 1398 |  | `(StatefulInteractive[S]).AriaKeyshortcuts` | done |
+| `StatefulInteractiveElement::aria_active_descendant` | trait-method | 1418 |  | `(StatefulInteractive[S]).AriaActiveDescendant` | done |
+| `StatefulInteractiveElement::a11y_synthetic_children` | trait-method | 1432 |  | `(StatefulInteractive[S]).A11ySyntheticChildren` | done |
+| `StatefulInteractiveElement::aria_selected` | trait-method | 1441 |  | `(StatefulInteractive[S]).AriaSelected` | done |
+| `StatefulInteractiveElement::aria_expanded` | trait-method | 1447 |  | `(StatefulInteractive[S]).AriaExpanded` | done |
+| `StatefulInteractiveElement::aria_toggled` | trait-method | 1453 |  | `(StatefulInteractive[S]).AriaToggled` | done |
+| `StatefulInteractiveElement::aria_numeric_value` | trait-method | 1459 |  | `(StatefulInteractive[S]).AriaNumericValue` | done |
+| `StatefulInteractiveElement::aria_numeric_value_step` | trait-method | 1466 |  | `(StatefulInteractive[S]).AriaNumericValueStep` | done |
+| `StatefulInteractiveElement::aria_value` | trait-method | 1473 |  | `(StatefulInteractive[S]).AriaValue` | done |
+| `StatefulInteractiveElement::aria_placeholder` | trait-method | 1480 |  | `(StatefulInteractive[S]).AriaPlaceholder` | done |
+| `StatefulInteractiveElement::aria_min_numeric_value` | trait-method | 1486 |  | `(StatefulInteractive[S]).AriaMinNumericValue` | done |
+| `StatefulInteractiveElement::aria_max_numeric_value` | trait-method | 1492 |  | `(StatefulInteractive[S]).AriaMaxNumericValue` | done |
+| `StatefulInteractiveElement::aria_orientation` | trait-method | 1498 |  | `(StatefulInteractive[S]).AriaOrientation` | done |
+| `StatefulInteractiveElement::aria_level` | trait-method | 1504 |  | `(StatefulInteractive[S]).AriaLevel` | done |
+| `StatefulInteractiveElement::aria_position_in_set` | trait-method | 1510 |  | `(StatefulInteractive[S]).AriaPositionInSet` | done |
+| `StatefulInteractiveElement::aria_size_of_set` | trait-method | 1516 |  | `(StatefulInteractive[S]).AriaSizeOfSet` | done |
+| `StatefulInteractiveElement::aria_row_index` | trait-method | 1522 |  | `(StatefulInteractive[S]).AriaRowIndex` | done |
+| `StatefulInteractiveElement::aria_column_index` | trait-method | 1528 |  | `(StatefulInteractive[S]).AriaColumnIndex` | done |
+| `StatefulInteractiveElement::aria_row_count` | trait-method | 1534 |  | `(StatefulInteractive[S]).AriaRowCount` | done |
+| `StatefulInteractiveElement::aria_column_count` | trait-method | 1540 |  | `(StatefulInteractive[S]).AriaColumnCount` | done |
+| `StatefulInteractiveElement::on_a11y_action` | trait-method | 1550 |  | `(StatefulInteractive[S]).OnA11yAction` | done |
+| `StatefulInteractiveElement::focusable` | trait-method | 1563 |  | `(StatefulInteractive[S]).Focusable` | done |
+| `StatefulInteractiveElement::overflow_scroll` | trait-method | 1569 |  | `(StatefulInteractive[S]).OverflowScroll` | done |
+| `StatefulInteractiveElement::overflow_x_scroll` | trait-method | 1576 |  | `(StatefulInteractive[S]).OverflowXScroll` | done |
+| `StatefulInteractiveElement::overflow_y_scroll` | trait-method | 1582 |  | `(StatefulInteractive[S]).OverflowYScroll` | done |
+| `StatefulInteractiveElement::restrict_scroll_to_axis` | trait-method | 1590 |  | `(StatefulInteractive[S]).RestrictScrollToAxis` | done |
+| `StatefulInteractiveElement::track_scroll` | trait-method | 1596 |  | `(StatefulInteractive[S]).TrackScroll` | done |
+| `StatefulInteractiveElement::anchor_scroll` | trait-method | 1602 |  | `(StatefulInteractive[S]).AnchorScroll` | done |
+| `StatefulInteractiveElement::active` | trait-method | 1608 |  | `(StatefulInteractive[S]).Active` | done |
+| `StatefulInteractiveElement::group_active` | trait-method | 1617 |  | `(StatefulInteractive[S]).GroupActive` | done |
+| `StatefulInteractiveElement::on_click` | trait-method | 1637 |  | `(StatefulInteractive[S]).OnClick` | done |
+| `StatefulInteractiveElement::on_aux_click` | trait-method | 1649 |  | `(StatefulInteractive[S]).OnAuxClick` | done |
+| `StatefulInteractiveElement::on_drag` | trait-method | 1667 |  | `(StatefulInteractive[S]).OnDrag` | done |
+| `StatefulInteractiveElement::external_drag_payload` | trait-method | 1686 |  | `(StatefulInteractive[S]).ExternalDragPayload` | done |
+| `StatefulInteractiveElement::on_hover` | trait-method | 1708 |  | `(StatefulInteractive[S]).OnHover` | done |
+| `StatefulInteractiveElement::hover_listener_mode` | trait-method | 1719 |  | `(StatefulInteractive[S]).HoverListenerMode` | done |
+| `StatefulInteractiveElement::tooltip` | trait-method | 1729 |  | `(StatefulInteractive[S]).Tooltip` | done |
+| `StatefulInteractiveElement::hoverable_tooltip` | trait-method | 1740 |  | `(StatefulInteractive[S]).HoverableTooltip` | done |
+| `StatefulInteractiveElement::tooltip_show_delay` | trait-method | 1755 |  | `(StatefulInteractive[S]).TooltipShowDelay` | done |
+| `HoverListenerMode` | enum | 1792 |  | `HoverListenerMode` | done |
+| `div` | fn | 1844 |  | `NewDiv` | done |
+| `Div` | struct | 1905 |  | `Div` | done |
+| `Div::on_children_prepainted` | method | 1918 |  | `(Div).OnChildrenPrepainted` | done |
+| `Div::image_cache` | method | 1927 |  | `(Div).ImageCache` | done |
+| `Div::with_dynamic_prepaint_order` | method | 1940 |  | `(Div).WithDynamicPrepaintOrder` | done |
+| `DivFrameState` | struct | 1955 |  | `DivFrameState` | done |
+| `DivInspectorState` | struct | 1961 |  | `DivInspectorState` | done |
+| `Interactivity` | struct | 2223 |  | `Interactivity` | done |
+| `Interactivity::request_layout` | method | 2300 |  | `(Interactivity).RequestLayout` | done |
+| `Interactivity::prepaint` | method | 2393 |  | `(Interactivity).Prepaint` | done |
+| `Interactivity::paint` | method | 2609 |  | `(Interactivity).Paint` | done |
+| `Interactivity::compute_style` | method | 3499 |  | `(Interactivity).ComputeStyle` | done |
+| `InteractiveElementState` | struct | 3718 |  | `InteractiveElementState` | done |
+| `ElementClickedState` | struct | 3740 |  | `ElementClickedState` | done |
+| `ElementHoverState` | struct | 3756 |  | `ElementHoverState` | done |
+| `Stateful` | struct | 4176 |  | `Stateful` | dev:D-COND |
+| `ScrollAnchor` | struct | 4293 |  | `ScrollAnchor` | done |
+| `ScrollAnchor::for_handle` | assoc-fn | 4300 |  | `ScrollAnchorForHandle` | done |
+| `ScrollAnchor::scroll_to` | method | 4307 |  | `(ScrollAnchor).ScrollTo` | done |
+| `ScrollHandle` | struct | 4347 |  | `ScrollHandle` | done |
+| `ScrollHandle::new` | assoc-fn | 4357 |  | `NewScrollHandle` | done |
+| `ScrollHandle::offset` | method | 4362 |  | `(ScrollHandle).Offset` | done |
+| `ScrollHandle::max_offset` | method | 4367 |  | `(ScrollHandle).MaxOffset` | done |
+| `ScrollHandle::top_item` | method | 4372 |  | `(ScrollHandle).TopItem` | done |
+| `ScrollHandle::bottom_item` | method | 4391 |  | `(ScrollHandle).BottomItem` | done |
+| `ScrollHandle::bounds` | method | 4410 |  | `(ScrollHandle).Bounds` | done |
+| `ScrollHandle::bounds_for_item` | method | 4415 |  | `(ScrollHandle).BoundsForItem` | done |
+| `ScrollHandle::scroll_to_item` | method | 4420 |  | `(ScrollHandle).ScrollToItem` | done |
+| `ScrollHandle::scroll_to_top_of_item` | method | 4430 |  | `(ScrollHandle).ScrollToTopOfItem` | done |
+| `ScrollHandle::scroll_to_bottom` | method | 4490 |  | `(ScrollHandle).ScrollToBottom` | done |
+| `ScrollHandle::set_offset` | method | 4498 |  | `(ScrollHandle).SetOffset` | done |
+| `ScrollHandle::logical_scroll_top` | method | 4504 |  | `(ScrollHandle).LogicalScrollTop` | done |
+| `ScrollHandle::logical_scroll_bottom` | method | 4519 |  | `(ScrollHandle).LogicalScrollBottom` | done |
+| `ScrollHandle::children_count` | method | 4534 |  | `(ScrollHandle).ChildrenCount` | done |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `group_hover_styles_update_only_on_transitions` | gpui::test | 4598 |  | `TestDiv_GroupHoverStylesUpdateOnlyOnTransitions` | done |
+| `default_hover_listener_updates_when_layout_changes_under_stationary_mouse` | gpui::test | 4672 |  | `TestDiv_DefaultHoverListenerUpdatesWhenLayoutChangesUnderStationaryMouse` | done |
+| `default_hover_listener_ends_after_key_press` | gpui::test | 4714 |  | `TestDiv_DefaultHoverListenerEndsAfterKeyPress` | done |
+| `input_modality_independent_hover_listener_updates_after_key_press` | gpui::test | 4762 |  | `TestDiv_InputModalityIndependentHoverListenerUpdatesAfterKeyPress` | done |
+| `default_hover_listener_remains_hovered_during_stationary_mouse_press` | gpui::test | 4819 |  | `TestDiv_DefaultHoverListenerRemainsHoveredDuringStationaryMousePress` | done |
+| `scroll_handle_aligns_wide_children_to_left_edge` | test | 4975 |  | `TestDiv_ScrollHandleAlignsWideChildrenToLeftEdge` | done |
+| `scroll_handle_aligns_tall_children_to_top_edge` | test | 4994 |  | `TestDiv_ScrollHandleAlignsTallChildrenToTopEdge` | done |
+| `long_press_shows_tooltip_until_touch_ends` | test | 5013 |  | `TestDiv_LongPressShowsTooltipUntilTouchEnds` | done |
+| `tooltip_waiting_for_show_is_released_when_its_owner_disappears` | test | 5151 |  | `TestDiv_TooltipWaitingForShowIsReleasedWhenItsOwnerDisappears` | done |
+| `tooltip_respects_custom_show_delay` | test | 5173 |  | `TestDiv_TooltipRespectsCustomShowDelay` | done |
+| `tooltip_is_released_when_its_owner_disappears` | test | 5202 |  | `TestDiv_TooltipIsReleasedWhenItsOwnerDisappears` | done |
+| `tooltip_hides_after_mouse_leaves_origin` | test | 5230 |  | `TestDiv_TooltipHidesAfterMouseLeavesOrigin` | done |
+| `mouse_down_out_is_suppressed_while_window_prompt_is_active` | test | 5281 |  | `TestDiv_MouseDownOutIsSuppressedWhileWindowPromptIsActive` | done |
+| `touch_tap_out_fires_once_after_release` | test | 5345 |  | `TestDiv_TouchTapOutFiresOnceAfterRelease` | done |
+| `touch_pan_and_cancel_do_not_fire_mouse_down_out` | crate::test | 5387 |  | `TestDiv_TouchPanAndCancelDoNotFireMouseDownOut` | done |
+| `test_accessibility_id_builder_writes_author_id` | test | 5435 |  | `TestDiv_AccessibilityIDBuilderWritesAuthorID` | done |
+| `test_write_a11y_info_string_and_numeric_properties` | test | 5447 |  | `TestDiv_WriteA11yInfoStringAndNumericProperties` | done |
+| `keyboard_activation_fires_click_on_same_element` | test | 5567 |  | `TestDiv_KeyboardActivationFiresClickOnSameElement` | done |
+| `keyboard_activation_does_not_leak_across_focus_change` | test | 5582 |  | `TestDiv_KeyboardActivationDoesNotLeakAcrossFocusChange` | done |
+| `keyboard_activation_does_not_leak_when_focus_returns` | test | 5603 |  | `TestDiv_KeyboardActivationDoesNotLeakWhenFocusReturns` | done |
+| `keyboard_activation_cleared_by_intervening_key_release` | test | 5625 |  | `TestDiv_KeyboardActivationClearedByInterveningKeyRelease` | done |
+| `keyboard_activation_does_not_distinguish_space_and_enter` | test | 5641 |  | `TestDiv_KeyboardActivationDoesNotDistinguishSpaceAndEnter` | done |
+| `keyboard_activation_cleared_by_intervening_keydown` | test | 5654 |  | `TestDiv_KeyboardActivationClearedByInterveningKeydown` | done |
+| `keyboard_activation_ignores_modified_keys` | test | 5668 |  | `TestDiv_KeyboardActivationIgnoresModifiedKeys` | done |
+| `focus_next_from_tab_group_container_enters_that_group` | test | 5706 |  | `TestDiv_FocusNextFromTabGroupContainerEntersThatGroup` | done |
+| `test_fractional_padding_does_not_make_a_fitting_container_scrollable` | gpui::test | 5744 |  | `TestDiv_FractionalPaddingDoesNotMakeAFittingContainerScrollable` | done |
+| `test_scrolls_to_an_item_requested_before_the_first_frame` | gpui::test | 5786 |  | `TestDiv_ScrollsToAnItemRequestedBeforeTheFirstFrame` | done |
+| `grid_cols_max_content_sizes_columns_to_their_content` | gpui::test | 5848 |  | `TestDiv_GridColsMaxContentSizesColumnsToTheirContent` | done |
+
+## gpui/src/elements/image_cache.rs
+
+Go target: `elements_image_cache.go` (package `gpui`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `image_cache` | fn | 14 |  | `NewImageCache` | done |
+| `AnyImageCache` | struct | 24 |  | `AnyImageCache` | dev:D-WEAKIMAGECACHE |
+| `AnyImageCache::load` | method | 46 |  | `(AnyImageCache).Load` | done |
+| `ImageCacheElement` | struct | 71 |  | `ImageCacheElement` | done |
+| `ImageCacheItem` | struct | 159 |  | `ImageCacheItem` | done |
+| `ImageCacheItem::new` | assoc-fn | 171 |  | `NewImageCacheItem` | done |
+| `ImageCacheItem::get` | method | 177 |  | `(ImageCacheItem).Get` | done |
+| `ImageCacheItem::use_image` | method | 182 |  | `(ImageCacheItem).UseImage` | done |
+| `ImageCache` | trait | 189 |  | `ImageCache` | done |
+| `ImageCache::load` | trait-method | 192 |  | `ImageCache.Load` | done |
+| `ImageCacheProvider` | trait | 202 |  | `ImageCacheProvider` | done |
+| `ImageCacheProvider::provide` | trait-method | 204 |  | `ImageCacheProvider.Provide` | done |
+| `RetainAllImageCache` | struct | 214 |  | `RetainAllImageCache` | done |
+| `RetainAllImageCache::new` | assoc-fn | 227 |  | `NewRetainAllImageCache` | done |
+| `RetainAllImageCache::load` | method | 243 |  | `(RetainAllImageCache).Load` | done |
+| `RetainAllImageCache::clear` | method | 258 |  | `(RetainAllImageCache).Clear` | done |
+| `RetainAllImageCache::remove` | method | 267 |  | `(RetainAllImageCache).Remove` | done |
+| `RetainAllImageCache::len` | method | 277 |  | `(RetainAllImageCache).Len` | done |
+| `RetainAllImageCache::is_empty` | method | 282 |  | `(RetainAllImageCache).IsEmpty` | done |
+| `retain_all` | fn | 299 |  | `RetainAll` | done |
+| `RetainAllImageCacheProvider` | struct | 304 |  | `RetainAllImageCacheProvider` | done |
+| `impl From<Entity<I>> for AnyImageCache` | impl | 34 |  | `AnyImageCacheFromEntity` | dev:D-IMAGECACHEENTITY |
+| `impl ImageCacheProvider for Entity<T>` | impl | 207 |  | `(AnyImageCache).Provide` | dev:D-IMAGECACHEENTITY |
+| `impl Drop for ImageCacheItem` (drop cancels the load) | impl | 159 |  | `(*ImageCacheItem).Release` | dev:D-RAII |
+
+## gpui/src/elements/img.rs
+
+Go target: `elements_img.go` (package `gpui`), tests in `elements_img_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `LOADING_DELAY` | const | 28 |  | `LoadingDelay` | done |
+| `ImgResourceLoader` | type | 34 |  | `ImgResourceLoader` | done |
+| `ImageSource` | enum | 38 |  | `ImageSource` | done |
+| `ImageStyle` | struct | 125 |  | `ImageStyle` | done |
+| `StyledImage` | trait | 144 |  | `StyledImage` | done |
+| `StyledImage::image_style` | trait-method | 146 |  | `(*Img).ImageStyle` | done |
+| `StyledImage::grayscale` | trait-method | 149 |  | `StyledImage.Grayscale` | done |
+| `StyledImage::object_fit` | trait-method | 155 |  | `StyledImage.ObjectFit` | done |
+| `StyledImage::with_fallback` | trait-method | 162 |  | `StyledImage.WithFallback` | done |
+| `StyledImage::with_loading` | trait-method | 169 |  | `StyledImage.WithLoading` | done |
+| `Img` | struct | 188 |  | `Img` | done |
+| `img` | fn | 197 |  | `NewImg` | done |
+| `Img::extensions` | assoc-fn | 208 |  | `ImgExtensions` | done |
+| `Img::image_cache` | method | 226 |  | `(*Img).ImageCache` | dev:D-IMAGECACHEENTITY |
+| `ImgLayoutState` | struct | 256 |  | `ImgLayoutState` | done |
+| `ImageSource::remove_asset` | method | 565 |  | `(ImageSource).RemoveAsset` | done |
+| `ImageSource::is_asset_cached` | method | 578 | feat:test-support | `(ImageSource).IsAssetCached` | done |
+| `ImageAssetLoader` | enum | 605 |  | `ImageAssetLoader` | done |
+| `ImageCacheError` | enum | 676 |  | `ImageCacheError` | done |
+| `impl From<SharedUri/&str/String/SharedString/&Path/Arc<Path>/PathBuf/Arc<RenderImage>/Arc<Image>/Fn> for ImageSource` | impl | 53 |  | `ImageSourceFromSharedURI`, `ImageSourceFromString`, `ImageSourceFromSharedString`, `ImageSourceFromPath`, `ImageSourceFromRenderImage`, `ImageSourceFromImage`, `ImageSourceFromFunc` | dev:D-INTO |
+| `impl StyledImage for Stateful<Img>`, `impl Deref/DerefMut for Stateful<Img>` | impl | 181 |  | `StyledImage[*Img]` (call before `ID`) | dev:D-STATEFULIMG |
+| `impl Element for Img` | impl | 261 |  | `(*Img).RequestLayout` | done |
+| `ImageAssetLoader::load` (JPEG through `decode_static_image`) | impl | 611 |  | `(ImageAssetLoader).Load` | dev:L-JPEG |
+| `ImageDecoder` | enum | 588 |  | `imageDecoderAsset` | done |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `zero_frame_image_does_not_panic_on_paint` | gpui::test | 766 |  | `TestImg_ZeroFrameImageDoesNotPanicOnPaint` | done |
+| `image_object_fit_cover_crops_to_element_bounds` | gpui::test | 774 |  | `TestImg_ImageObjectFitCoverCropsToElementBounds` | done |
+| `explicit_aspect_ratio_is_not_overridden_by_intrinsic_ratio` | gpui::test | 829 |  | `TestImg_ExplicitAspectRatioIsNotOverriddenByIntrinsicRatio` | done |
+| `image_object_fit_cover_clamps_corner_radii_to_visible_bounds` | gpui::test | 867 |  | `TestImg_ImageObjectFitCoverClampsCornerRadiiToVisibleBounds` | done |
+| `stale_frame_index_is_clamped_when_image_changes` | gpui::test | 892 |  | `TestImg_StaleFrameIndexIsClampedWhenImageChanges` | done |
+
+## gpui/src/elements/list.rs
+
+Go target: `elements_list.go` (package `gpui`), tests in `elements_list_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `list` | fn | 24 |  | `NewList` | done |
+| `List` | struct | 37 |  | `List` | done |
+| `List::with_sizing_behavior` | method | 46 |  | `(List).WithSizingBehavior` | done |
+| `ListState` | struct | 54 |  | `ListState` | dev:D-LISTCELL |
+| `FollowMode` | enum | 98 |  | `FollowMode` | done |
+| `ListAlignment` | enum | 149 |  | `ListAlignment` | done |
+| `ListScrollEvent` | struct | 157 |  | `ListScrollEvent` | done |
+| `ListSizingBehavior` | enum | 173 |  | `ListSizingBehavior` | done |
+| `ListMeasuringBehavior` | enum | 183 |  | `ListMeasuringBehavior` | done |
+| `ListHorizontalSizingBehavior` | enum | 203 |  | `ListHorizontalSizingBehavior` | done |
+| `ListPrepaintState` | struct | 224 |  | `ListPrepaintState` | done |
+| `ListState::new` | assoc-fn | 313 |  | `NewListState` | done |
+| `ListState::measure_all` | method | 335 |  | `(ListState).MeasureAll` | done |
+| `ListState::with_uniform_item_height` | method | 346 |  | `(ListState).WithUniformItemHeight` | done |
+| `ListState::reset` | method | 354 |  | `(ListState).Reset` | done |
+| `ListState::reset_with_uniform_height` | method | 370 |  | `(ListState).ResetWithUniformHeight` | done |
+| `ListState::remeasure` | method | 398 |  | `(ListState).Remeasure` | done |
+| `ListState::remeasure_items` | method | 410 |  | `(ListState).RemeasureItems` | done |
+| `ListState::item_count` | method | 464 |  | `(ListState).ItemCount` | done |
+| `ListState::is_scrolled_to_end` | method | 470 |  | `(ListState).IsScrolledToEnd` | done |
+| `ListState::splice` | method | 489 |  | `(ListState).Splice` | done |
+| `ListState::splice_focusable` | method | 497 |  | `(ListState).SpliceFocusable` | done |
+| `ListState::set_scroll_handler` | method | 541 |  | `(ListState).SetScrollHandler` | done |
+| `ListState::logical_scroll_top` | method | 549 |  | `(ListState).LogicalScrollTop` | done |
+| `ListState::scroll_by` | method | 554 |  | `(ListState).ScrollBy` | done |
+| `ListState::scroll_to_end` | method | 591 |  | `(ListState).ScrollToEnd` | done |
+| `ListState::set_follow_mode` | method | 604 |  | `(ListState).SetFollowMode` | done |
+| `ListState::pause_following_tail` | method | 636 |  | `(ListState).PauseFollowingTail` | done |
+| `ListState::set_item_measurement_readiness` | method | 649 |  | `(ListState).SetItemMeasurementReadiness` | done |
+| `ListState::is_following_tail` | method | 655 |  | `(ListState).IsFollowingTail` | done |
+| `ListState::scroll_to` | method | 663 |  | `(ListState).ScrollTo` | done |
+| `ListState::scroll_to_reveal_item` | method | 679 |  | `(ListState).ScrollToRevealItem` | done |
+| `ListState::bounds_for_item` | method | 712 |  | `(ListState).BoundsForItem` | done |
+| `ListState::scrollbar_drag_started` | method | 745 |  | `(ListState).ScrollbarDragStarted` | done |
+| `ListState::scrollbar_drag_ended` | method | 753 |  | `(ListState).ScrollbarDragEnded` | done |
+| `ListState::is_scrollbar_dragging` | method | 763 |  | `(ListState).IsScrollbarDragging` | done |
+| `ListState::set_offset_from_scrollbar` | method | 768 |  | `(ListState).SetOffsetFromScrollbar` | done |
+| `ListState::max_offset_for_scrollbar` | method | 774 |  | `(ListState).MaxOffsetForScrollbar` | done |
+| `ListState::scroll_px_offset_for_scrollbar` | method | 783 |  | `(ListState).ScrollPxOffsetForScrollbar` | done |
+| `ListState::viewport_bounds` | method | 801 |  | `(ListState).ViewportBounds` | done |
+| `ListState::item_is_above_viewport` | method | 812 |  | `(ListState).ItemIsAboveViewport` | done |
+| `ListState::item_is_below_viewport` | method | 831 |  | `(ListState).ItemIsBelowViewport` | done |
+| `ListOffset` | struct | 1448 |  | `ListOffset` | done |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `test_autoscroll_above_item_top_renders_items_above` | gpui::test | 1762 |  | `TestList_AutoscrollAboveItemTopRendersItemsAbove` | done |
+| `test_reset_after_paint_before_scroll` | gpui::test | 1815 |  | `TestList_ResetAfterPaintBeforeScroll` | done |
+| `test_scroll_by_positive_and_negative_distance` | gpui::test | 1858 |  | `TestList_ScrollByPositiveAndNegativeDistance` | done |
+| `test_child_scroll_handler_can_stop_list_scroll` | gpui::test | 1903 |  | `TestList_ChildScrollHandlerCanStopListScroll` | done |
+| `test_item_viewport_queries_return_none_before_layout` | gpui::test | 1957 |  | `TestList_ItemViewportQueriesReturnNoneBeforeLayout` | done |
+| `test_item_viewport_queries_before_logical_scroll_top` | gpui::test | 1965 |  | `TestList_ItemViewportQueriesBeforeLogicalScrollTop` | done |
+| `test_item_viewport_queries_measured_item_inside_viewport` | gpui::test | 1983 |  | `TestList_ItemViewportQueriesMeasuredItemInsideViewport` | done |
+| `test_item_viewport_queries_measured_item_above_viewport` | gpui::test | 2001 |  | `TestList_ItemViewportQueriesMeasuredItemAboveViewport` | done |
+| `test_item_viewport_queries_measured_item_below_viewport` | gpui::test | 2019 |  | `TestList_ItemViewportQueriesMeasuredItemBelowViewport` | done |
+| `test_item_viewport_queries_remain_stable_with_zero_height_viewport` | gpui::test | 2037 |  | `TestList_ItemViewportQueriesRemainStableWithZeroHeightViewport` | done |
+| `test_item_viewport_queries_after_scroll_to_end_before_layout` | gpui::test | 2068 |  | `TestList_ItemViewportQueriesAfterScrollToEndBeforeLayout` | done |
+| `test_measure_all_after_width_change` | gpui::test | 2085 |  | `TestList_MeasureAllAfterWidthChange` | done |
+| `test_remeasure` | gpui::test | 2120 |  | `TestList_Remeasure` | done |
+| `test_remeasure_item_preserves_scroll_offset` | gpui::test | 2186 |  | `TestList_RemeasureItemPreservesScrollOffset` | done |
+| `test_provisional_item_heights_keep_scroll_anchor` | gpui::test | 2240 |  | `TestList_ProvisionalItemHeightsKeepScrollAnchor` | done |
+| `test_unready_measurements_preserve_pending_fraction` | gpui::test | 2286 |  | `TestList_UnreadyMeasurementsPreservePendingFraction` | done |
+| `test_navigation_cancels_provisional_and_paints_destination` | gpui::test | 2337 |  | `TestList_NavigationCancelsProvisionalAndPaintsDestination` | done |
+| `test_unready_overdraw_and_backfill_preserve_scroll_anchor` | gpui::test | 2504 |  | `TestList_UnreadyOverdrawAndBackfillPreserveScrollAnchor` | done |
+| `test_unready_overdraw_stops_at_first_pending_item` | gpui::test | 2564 |  | `TestList_UnreadyOverdrawStopsAtFirstPendingItem` | done |
+| `test_scrollbar_and_reset_do_not_resurrect_provisional` | gpui::test | 2624 |  | `TestList_ScrollbarAndResetDoNotResurrectProvisional` | done |
+| `test_splice_preserves_only_surviving_scroll_offsets` | gpui::test | 2679 |  | `TestList_SplicePreservesOnlySurvivingScrollOffsets` | done |
+| `test_child_autoscroll_overrides_pending_and_release_fills_viewport` | gpui::test | 2742 |  | `TestList_ChildAutoscrollOverridesPendingAndReleaseFillsViewport` | done |
+| `test_remeasure_then_scroll_does_not_revert_scroll_position` | gpui::test | 2828 |  | `TestList_RemeasureThenScrollDoesNotRevertScrollPosition` | done |
+| `test_scroll_after_remeasure_clamps_to_shrunk_item_height` | gpui::test | 2884 |  | `TestList_ScrollAfterRemeasureClampsToShrunkItemHeight` | done |
+| `test_follow_tail_stays_at_bottom_as_items_grow` | gpui::test | 2932 |  | `TestList_FollowTailStaysAtBottomAsItemsGrow` | done |
+| `test_pause_following_tail_reengages_when_still_at_bottom` | gpui::test | 3001 |  | `TestList_PauseFollowingTailReengagesWhenStillAtBottom` | done |
+| `test_pause_following_tail_freezes_off_bottom` | gpui::test | 3042 |  | `TestList_PauseFollowingTailFreezesOffBottom` | done |
+| `test_follow_tail_disengages_on_user_scroll` | gpui::test | 3111 |  | `TestList_FollowTailDisengagesOnUserScroll` | done |
+| `test_follow_tail_disengages_on_scrollbar_reposition` | gpui::test | 3151 |  | `TestList_FollowTailDisengagesOnScrollbarReposition` | done |
+| `test_scrollbar_drag_with_growing_content` | gpui::test | 3201 |  | `TestList_ScrollbarDragWithGrowingContent` | done |
+| `test_set_follow_tail_snaps_to_bottom` | gpui::test | 3266 |  | `TestList_SetFollowTailSnapsToBottom` | done |
+| `test_bottom_aligned_scrollbar_offset_at_end` | gpui::test | 3317 |  | `TestList_BottomAlignedScrollbarOffsetAtEnd` | done |
+| `test_follow_tail_reengages_when_scrolled_back_to_bottom` | gpui::test | 3362 |  | `TestList_FollowTailReengagesWhenScrolledBackToBottom` | done |
+| `test_follow_tail_reengagement_not_fooled_by_unmeasured_items` | gpui::test | 3417 |  | `TestList_FollowTailReengagementNotFooledByUnmeasuredItems` | done |
+| `test_follow_tail_reengages_after_scrollbar_disengagement` | gpui::test | 3476 |  | `TestList_FollowTailReengagesAfterScrollbarDisengagement` | done |
+| `test_follow_tail_reengages_after_scrollbar_drag_to_bottom_while_growing` | gpui::test | 3518 |  | `TestList_FollowTailReengagesAfterScrollbarDragToBottomWhileGrowing` | done |
+| `test_horizontal_padding_insets_items` | gpui::test | 3567 |  | `TestList_HorizontalPaddingInsetsItems` | done |
+| `test_inferred_width_includes_horizontal_padding` | gpui::test | 3614 |  | `TestList_InferredWidthIncludesHorizontalPadding` | done |
+| `test_autoscroll_above_item_top_with_horizontal_padding` | gpui::test | 3668 |  | `TestList_AutoscrollAboveItemTopWithHorizontalPadding` | done |
+| `test_horizontal_padding_change_remeasures_items` | gpui::test | 3716 |  | `TestList_HorizontalPaddingChangeRemeasuresItems` | done |
+| `test_border_and_padding_inset_items` | gpui::test | 3752 |  | `TestList_BorderAndPaddingInsetItems` | done |
+
+## gpui/src/elements/surface.rs
+
+Go target: `elements_surface.go` (package `gpui`)
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `SurfaceSource` | enum | 13 |  | `SurfaceSource` | dev:D-SURFACE |
+| `Surface` | struct | 27 |  | `Surface` | done |
+| `surface` | fn | 35 | macos,ios | `NewSurface` | dev:D-SURFACE |
+| `Surface::object_fit` | method | 45 |  | `(Surface).ObjectFit` | done |
+
+## gpui/src/elements/svg.rs
+
+Go target: `elements_svg.go` (package `gpui`), tests in `elements_svg_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Svg` | struct | 19 |  | `Svg` | done |
+| `svg` | fn | 30 |  | `NewSvg` | done |
+| `Svg::path` | method | 43 |  | `(Svg).Path` | done |
+| `Svg::external_path` | method | 49 |  | `(Svg).ExternalPath` | done |
+| `Svg::data` | method | 56 |  | `(Svg).Data` | done |
+| `Svg::with_transformation` | method | 69 |  | `(Svg).WithTransformation` | done |
+| `Svg::with_timed_transformation` | method | 83 |  | `(Svg).WithTimedTransformation` | done |
+| `Transformation` | struct | 244 |  | `Transformation` | done |
+| `Transformation::scale` | assoc-fn | 264 |  | `TransformationScale` | done |
+| `Transformation::translate` | assoc-fn | 272 |  | `TransformationTranslate` | done |
+| `Transformation::rotate` | assoc-fn | 280 |  | `TransformationRotate` | done |
+| `Transformation::alpha` | assoc-fn | 289 |  | `TransformationAlpha` | done |
+| `Transformation::with_alpha` | method | 298 |  | `(Transformation).WithAlpha` | done |
+| `Transformation::with_scaling` | method | 308 |  | `(Transformation).WithScaling` | done |
+| `Transformation::with_translation` | method | 314 |  | `(Transformation).WithTranslation` | done |
+| `Transformation::with_rotation` | method | 320 |  | `(Transformation).WithRotation` | done |
+| `Easing` | enum | 341 |  | `Easing` | done |
+| `TimedTransformation` | struct | 375 |  | `TimedTransformation` | done |
+| `TimedTransformation::new` | assoc-fn | 390 |  | `NewTimedTransformation` | done |
+| `TimedTransformation::rotation` | assoc-fn | 406 |  | `TimedTransformationRotation` | done |
+| `TimedTransformation::from` | method | 417 |  | `(TimedTransformation).From` | done |
+| `TimedTransformation::to` | method | 423 |  | `(TimedTransformation).To` | done |
+| `TimedTransformation::with_easing` | method | 429 |  | `(TimedTransformation).WithEasing` | done |
+| `TimedTransformation::with_scale_easing` | method | 438 |  | `(TimedTransformation).WithScaleEasing` | done |
+| `TimedTransformation::with_translation_easing` | method | 444 |  | `(TimedTransformation).WithTranslationEasing` | done |
+| `TimedTransformation::with_rotation_easing` | method | 450 |  | `(TimedTransformation).WithRotationEasing` | done |
+| `TimedTransformation::with_alpha_easing` | method | 456 |  | `(TimedTransformation).WithAlphaEasing` | done |
+| `TimedTransformation::alternate` | method | 463 |  | `(TimedTransformation).Alternate` | done |
+| `TimedTransformation::with_max_fps` | method | 471 |  | `(TimedTransformation).WithMaxFps` | done |
+| `impl Default for Transformation` | impl | 251 |  | `DefaultTransformation` | done |
+| `impl From<Transformation> for TimedTransformation` | impl | 539 |  | `TimedTransformationFromTransformation` | dev:D-INTO |
+| `impl Element for Svg` | impl | 88 |  | `(*Svg).RequestLayout` | done |
+| `SvgAsset` | enum | 547 |  | `svgAsset` | done |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `test_rotation_advances_without_rerendering` | crate::test | 635 |  | `TestSvg_RotationAdvancesWithoutRerendering` | done |
+| `test_timed_transformation_eases_each_value_separately` | crate::test | 664 |  | `TestSvg_TimedTransformationEasesEachValueSeparately` | done |
+| `test_heartbeat_returns_to_its_start` | crate::test | 687 |  | `TestSvg_HeartbeatReturnsToItsStart` | done |
+| `test_scene_presents_as_often_as_its_least_capped_animation` | crate::test | 704 |  | `TestSvg_ScenePresentsAsOftenAsItsLeastCappedAnimation` | done |
+
+## gpui/src/elements/text.rs
+
+Go target: `elements_text.go` (package `gpui`), tests in `elements_text_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `Text` | struct | 67 |  | `Text` | done |
+| `Text::new` | assoc-fn | 78 |  | `NewText` | done |
+| `Text::new_inaccessible` | assoc-fn | 92 |  | `NewTextInaccessible` | done |
+| `Text::id` | method | 98 |  | `(Text).ElementID` | dev:D-NAME |
+| `Text::with_id` | method | 103 |  | `(Text).WithID` | done |
+| `Text::text` | method | 110 |  | `(Text).Text` | done |
+| `__hash_text_macro_location_unstable_do_not_use` | fn | 132 |  | `HashTextMacroLocationUnstableDoNotUse` | done |
+| `text` | macro | 160 |  | `TextMacro` | dev:D-MACRO |
+| `StyledText` | struct | 367 |  | `StyledText` | done |
+| `StyledText::new` | assoc-fn | 377 |  | `NewStyledText` | done |
+| `StyledText::layout` | method | 388 |  | `(StyledText).Layout` | done |
+| `StyledText::with_default_highlights` | method | 394 |  | `(StyledText).WithDefaultHighlights` | done |
+| `StyledText::with_highlights` | method | 409 |  | `(StyledText).WithHighlights` | done |
+| `StyledText::with_font_family_overrides` | method | 464 |  | `(StyledText).WithFontFamilyOverrides` | done |
+| `StyledText::with_runs` | method | 502 |  | `(StyledText).WithRuns` | done |
+| `TextLayout` | struct | 582 |  | `TextLayout` | done |
+| `TextLayout::paint_background` | method | 779 |  | `(TextLayout).PaintBackground` | done |
+| `TextLayout::paint_foreground` | method | 784 |  | `(TextLayout).PaintForeground` | done |
+| `TextLayout::index_for_position` | method | 834 |  | `(TextLayout).IndexForPosition` | done |
+| `TextLayout::position_for_index` | method | 868 |  | `(TextLayout).PositionForIndex` | done |
+| `TextLayout::line_layout_for_index` | method | 899 |  | `(TextLayout).LineLayoutForIndex` | done |
+| `TextLayout::line_layouts` | method | 922 |  | `(TextLayout).LineLayouts` | done |
+| `TextLayout::bounds` | method | 934 |  | `(TextLayout).Bounds` | done |
+| `TextLayout::line_height` | method | 939 |  | `(TextLayout).LineHeight` | done |
+| `TextLayout::len` | method | 944 |  | `(TextLayout).Len` | done |
+| `TextLayout::text` | method | 949 |  | `(TextLayout).Text` | done |
+| `TextLayout::wrapped_text` | method | 961 |  | `(TextLayout).WrappedText` | done |
+| `InteractiveText` | struct | 985 |  | `InteractiveText` | done |
+| `InteractiveTextState` | struct | 1003 |  | `InteractiveTextState` | done |
+| `InteractiveText::new` | assoc-fn | 1013 |  | `NewInteractiveText` | done |
+| `InteractiveText::on_click` | method | 1027 |  | `(InteractiveText).OnClick` | done |
+| `InteractiveText::on_hover` | method | 1046 |  | `(InteractiveText).OnHover` | done |
+| `InteractiveText::tooltip` | method | 1055 |  | `(InteractiveText).Tooltip` | done |
+| `impl Element for Text` | impl | 167 |  | `(Text).RequestLayout` | done |
+| `impl Element for &'static str` | impl | 245 |  | `(*Parent).ChildText` | dev:D-INTO |
+| `impl IntoElement for String` | impl | 297 |  | `(*Parent).ChildText` | dev:D-INTO |
+| `impl IntoElement for Cow<'static, str>` | impl | 305 |  | `(*Parent).ChildText` | dev:D-INTO |
+| `impl Element for SharedString` | impl | 313 |  | `(SharedString).IntoAnyElement` | done |
+| `impl Element for StyledText` | impl | 521 |  | `(*StyledText).IntoAnyElement` | done |
+| `impl Element for InteractiveText` | impl | 1066 |  | `(*InteractiveText).IntoAnyElement` | done |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `test_into_element_for` | test | 1284 |  | `TestText_IntoElementFor` | done |
+| `text_macro_id` | test | 1295 |  | `TestText_TextMacroID` | done |
+
+## gpui/src/elements/uniform_list.rs
+
+Go target: `elements_uniform_list.go` (package `gpui`), tests in `elements_uniform_list_test.go`
+
+| Upstream item | Kind | Line | Cfg | Go symbol | Status |
+|---|---|---|---|---|---|
+| `uniform_list` | fn | 22 |  | `NewUniformList` | done |
+| `UniformList` | struct | 58 |  | `UniformList` | done |
+| `UniformListFrameState` | struct | 72 |  | `UniformListFrameState` | done |
+| `UniformListScrollHandle` | struct | 80 |  | `UniformListScrollHandle` | dev:D-UNIFORMHANDLE |
+| `ScrollStrategy` | enum | 84 |  | `ScrollStrategy` | done |
+| `DeferredScrollToItem` | struct | 103 |  | `DeferredScrollToItem` | done |
+| `UniformListScrollState` | struct | 115 |  | `UniformListScrollState` | done |
+| `ItemSize` | struct | 126 |  | `ItemSize` | done |
+| `UniformListScrollHandle::new` | assoc-fn | 136 |  | `NewUniformListScrollHandle` | done |
+| `UniformListScrollHandle::scroll_to_item` | method | 150 |  | `(UniformListScrollHandle).ScrollToItem` | done |
+| `UniformListScrollHandle::scroll_to_item_strict` | method | 163 |  | `(UniformListScrollHandle).ScrollToItemStrict` | done |
+| `UniformListScrollHandle::scroll_to_item_with_offset` | method | 182 |  | `(UniformListScrollHandle).ScrollToItemWithOffset` | done |
+| `UniformListScrollHandle::scroll_to_item_strict_with_offset` | method | 201 |  | `(UniformListScrollHandle).ScrollToItemStrictWithOffset` | done |
+| `UniformListScrollHandle::y_flipped` | method | 216 |  | `(UniformListScrollHandle).YFlipped` | done |
+| `UniformListScrollHandle::logical_scroll_top_index` | method | 222 | feat:test-support | `(UniformListScrollHandle).LogicalScrollTopIndex` | done |
+| `UniformListScrollHandle::is_scrollable` | method | 231 |  | `(UniformListScrollHandle).IsScrollable` | done |
+| `UniformListScrollHandle::is_scrolled_to_end` | method | 241 |  | `(UniformListScrollHandle).IsScrolledToEnd` | done |
+| `UniformListScrollHandle::scroll_to_bottom` | method | 252 |  | `(UniformListScrollHandle).ScrollToBottom` | done |
+| `UniformListDecoration` | trait | 575 |  | `UniformListDecoration` | done |
+| `UniformListDecoration::compute` | trait-method | 578 |  | `UniformListDecoration.Compute` | done |
+| `impl UniformListDecoration for Entity<T>` | impl | 590 |  | `UniformListDecorationFromEntity` | dev:D-UNIFORMDECOR |
+| `UniformList::with_width_from_item` | method | 617 |  | `(UniformList).WithWidthFromItem` | done |
+| `UniformList::with_sizing_behavior` | method | 623 |  | `(UniformList).WithSizingBehavior` | done |
+| `UniformList::with_horizontal_sizing_behavior` | method | 631 |  | `(UniformList).WithHorizontalSizingBehavior` | done |
+| `UniformList::with_decoration` | method | 648 |  | `(UniformList).WithDecoration` | done |
+| `UniformList::track_scroll` | method | 678 |  | `(UniformList).TrackUniformListScroll` | dev:D-UNIFORMTRACK |
+| `UniformList::y_flipped` | method | 685 |  | `(UniformList).YFlipped` | done |
+
+| Upstream test | Attr | Line | Cfg | Go test | Status |
+|---|---|---|---|---|---|
+| `test_scroll_strategy_nearest` | gpui::test | 720 |  | `TestUniformList_ScrollStrategyNearest` | done |
+| `test_item_positions_far_down_long_list` | gpui::test | 862 |  | `TestUniformList_ItemPositionsFarDownLongList` | done |
+
+## Deviations registered here
+
+| Id | Deviation | Upstream | Reason |
+|---|---|---|---|
+| D-ANIMEXT | `AnimationExt`, a blanket extension trait over every `IntoElement`, is three free generic functions `WithAnimation(e, id, animation, animator)`, `WithAnimations`, `WithSpring`; `WithSpring`'s animator takes the resolved output type `O` (inferred from the closure) | `gpui/src/elements/animation.rs:95-170` | Go cannot add methods to every element type; mirrors D-TASKEXT / D-GLOBAL |
+| D-UNIFORMTRACK | `UniformList::track_scroll` is `TrackUniformListScroll`, because `TrackScroll` is a `StatefulInteractive` mixin method and an embedder may not declare a mixin method name (paritycheck -lint) | `gpui/src/elements/uniform_list.rs:678` | mixin shadowing rule, api-contracts 3 |
+| D-UNIFORMHANDLE | `UniformListScrollHandle`'s tuple field `.0` (`Rc<RefCell<UniformListScrollState>>`) is the exported field `State *UniformListScrollState`; the zero handle has no state, so `Default` is `NewUniformListScrollHandle()` | `gpui/src/elements/uniform_list.rs:80` | Go has no tuple fields; `ScrollHandle`'s zero value is not usable either |
+| D-UNIFORMDECOR | `impl UniformListDecoration for Entity<T>` is the adapter `UniformListDecorationFromEntity[T, *T](entity)`, which borrows the handle | `gpui/src/elements/uniform_list.rs:590-614` | Go cannot implement an interface on `Entity[T]` conditionally on `T` |
+| D-SURFACE | `SurfaceSource` is a struct holding the `CVPixelBufferRef` as `uintptr`, and `NewSurface` exists on every platform; `Paint` draws only on darwin / ios and reads the buffer size through a function the Apple platform registers with `RegisterSurfaceSourceSize`, since the root package may not call CoreVideo | `gpui/src/elements/surface.rs:13-35`, `:95-119` | root import rules (DESIGN 4); `Window.PaintSurface` already takes a `uintptr` |
+| D-LISTCELL | `ListState`'s tuple field `.0` (`Rc<RefCell<StateInner>>`) is an unexported pointer shared by copies, with no `RefCell` borrow tracking: a scroll handler or measurement-readiness predicate that calls back into the same `ListState` while the list holds it does not panic with `already borrowed` as upstream does; `SpliceFocusable` takes over the passed focus handles and releases those of removed items | `gpui/src/elements/list.rs:54`, `:497-538` | Go has no `RefCell`; D-RAII for the moved `FocusHandle`s |
+| D-WEAKIMAGECACHE | `AnyImageCache` holds an `AnyWeakEntity` and upgrades it on `Load` (panicking with `Option::unwrap` if the entity is gone), instead of a counted `AnyEntity`: Go copies the value into `Window.imageCacheStack` and `Div.provideImageCache` without a drop point, so a strong handle would leak; the caller (or the element state of `RetainAll`) keeps the entity alive | `gpui/src/elements/image_cache.rs:24-41` | D-RAII has no implicit drop for copied values |
+| D-IMAGECACHEENTITY | `impl From<Entity<I>> for AnyImageCache` and `impl ImageCacheProvider for Entity<T>` are `AnyImageCacheFromEntity[I, *I](entity)`, and `AnyImageCache` is its own `ImageCacheProvider`; `Img::image_cache(&Entity<I>)` takes that `AnyImageCache` | `gpui/src/elements/image_cache.rs:34-41`, `:207-211`, `gpui/src/elements/img.rs:226` | Go cannot implement an interface on `Entity[T]` conditionally on `T` |
+| D-STATEFULIMG | `StyledImage` is the mixin `StyledImage[*Img]`; `Stateful[*Img]` (from `ID`) does not carry it or deref to `Img`, so image style methods are called before `ID` | `gpui/src/elements/img.rs:181-246` | `Stateful[E]`'s mixins are fixed in elements_div_paint.go (D-COND) |
+| D-SEC-IMGPATH | `ImageAssetLoader.Load` of a path resource, and the `Svg.ExternalPath` asset loader (`svgAsset.Load`), read only regular files: they stat the path and refuse anything but a regular file, open it with `O_NONBLOCK`, check the opened file is the same regular file, and cap the read at 512 MiB (`imageAssetMaxBytes`), so `/dev/zero`, FIFOs and devices fail with an error instead of exhausting memory or blocking (SEC-007, R2-05) | `gpui/src/elements/img.rs:611` | `elements_img.go` |
+| D-SEC-HTTPBODY | `ImageAssetLoader.Load` of a URI sends the request with a 60 s context deadline (`imageRequestTimeout`), caps the response body at 512 MiB, and builds the non-2xx error from at most 4 KiB of body, cut to its first line, 1 KiB, with control and bidi-control characters removed (SEC-012, 014, 015); the `HTTPClient` contract is unchanged | `gpui/src/elements/img.rs:611` | `elements_img.go` |
+| D-SEC-SVGKEY | `Svg.Data` keys its atlas entry with `\x00svg-data\x00` plus two 64-bit `maphash` words under per-process random seeds instead of the unkeyed SipHash-1-3 `__binary_svg__<hash>`, `ExternalPath` sources are keyed under `\x00svg-file\x00<path>`, and `Svg.Path` refuses a path that starts with `\x00` (`errSvgReservedPath`), so neither a crafted byte string nor an asset path can collide with another SVG's cache entry (R2-04, SEC-076) | `gpui/src/elements/svg.rs` (`Svg::data`) | A collision lets attacker-supplied SVG bytes replace another SVG's rendered pixels in the atlas |

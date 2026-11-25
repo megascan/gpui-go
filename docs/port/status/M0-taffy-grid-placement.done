@@ -1,0 +1,1 @@
+M0-taffy-grid-placement: sh docs/port/verify.sh M0-taffy-grid-placement exit 0 (build, vet, test, gofmt on internal/taffy); paritycheck -area ext-taffy -done implicit_grid.rs,explicit_grid.rs,placement.rs passes.

@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M0-text-elements exit 0 (go build/vet/test . pass, gofmt clean, paritycheck core-text,core-elements -done line.rs,text.rs,text_system.rs,line_wrapper.rs: 732 rows checked)

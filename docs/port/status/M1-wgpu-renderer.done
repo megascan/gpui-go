@@ -1,0 +1,3 @@
+# M1-wgpu-renderer
+
+verify.sh M1-wgpu-renderer: exit 0 (build, vet, test incl. 4 headless GPU tests + solid-quad pixel test on RTX 4060 Vulkan, gofmt, paritycheck -area wgpu -done gpui_wgpu/src/). js/wasm vet of render/wgpu also clean.

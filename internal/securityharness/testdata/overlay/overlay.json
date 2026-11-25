@@ -1,0 +1,22 @@
+{
+  "Replace": {
+    "/home/strange/Projects/gpui-go-wt/sec/platform/linux/internal/common/s04_security_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s04/testdata/overlay/platform/linux/internal/common/s04_security_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/platform/linux/s04_security_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s04/testdata/overlay/platform/linux/s04_security_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/examples/internal/support/s16_security_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s16/testdata/overlay/examples/internal/support/s16_security_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/platform/linux/b3_s05_fileuri_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s05/testdata/overlay/platform/linux/b3_s05_fileuri_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/platform/linux/wayland/b3_s05_fileurl_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s05/testdata/overlay/platform/linux/wayland/b3_s05_fileurl_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/platform/linux/x11/b3_s05_urlpath_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s05/testdata/overlay/platform/linux/x11/b3_s05_urlpath_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/platform/linux/internal/common/b3_s05_readfd_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s05/testdata/overlay/platform/linux/internal/common/b3_s05_readfd_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/platform/linux/x11/internal/xrm/b3_s06a_xrm_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s06a/testdata/overlay/platform/linux/x11/internal/xrm/b3_s06a_xrm_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/platform/linux/x11/internal/xcursor/b3_s06a_xcursor_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s06a/testdata/overlay/platform/linux/x11/internal/xcursor/b3_s06a_xcursor_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/platform/linux/x11/internal/xim/b3_s06a_xim_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s06a/testdata/overlay/platform/linux/x11/internal/xim/b3_s06a_xim_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/platform/linux/b3_s07_filechooser_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s07/testdata/overlay/platform/linux/b3_s07_filechooser_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/platform/linux/internal/dbus/b3_s07_security_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s07/testdata/overlay/platform/linux/internal/dbus/b3_s07_security_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/a11y/atspi/bus/b3_s08a_bus_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s08a/testdata/overlay/a11y/atspi/bus/b3_s08a_bus_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/a11y/atspi/b3_s08b_node_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s08b/testdata/overlay/a11y/atspi/b3_s08b_node_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/text/gotext/v1_s03_strike_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s03/testdata/overlay/text/gotext/v1_s03_strike_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/platform/linux/wayland/v1_s05_mime_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s05/testdata/overlay/platform/linux/wayland/v1_s05_mime_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/platform/linux/x11/v1_s06b_incr_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s06b/testdata/overlay/platform/linux/x11/v1_s06b_incr_test.go",
+    "/home/strange/Projects/gpui-go-wt/sec/a11y/atspi/v1_s08b_paragraph_test.go": "/home/strange/Projects/gpui-go-wt/sec/internal/securityharness/s08b/testdata/overlay/a11y/atspi/v1_s08b_paragraph_test.go"
+  }
+}

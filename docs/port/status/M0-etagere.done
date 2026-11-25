@@ -1,0 +1,1 @@
+M0-etagere: sh docs/port/verify.sh M0-etagere exit 0 (go build/vet/test ./internal/etagere/..., gofmt clean, paritycheck -area ext-etagere: 77 rows). 13 bucketed.rs tests pass; no cross-compile targets apply (no platform code).

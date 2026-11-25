@@ -1,0 +1,1 @@
+- YOU: in an example app on Wayland and X11, call `cx.PromptForPaths` and `cx.PromptForNewPath`; check the xdg-desktop-portal file dialog opens, titled "Open File" / "Open Folder" / "Save File", and the chosen path comes back.

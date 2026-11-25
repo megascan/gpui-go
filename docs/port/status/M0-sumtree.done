@@ -1,0 +1,1 @@
+M0-sumtree: sh docs/port/verify.sh M0-sumtree exit 0 (go build/vet/test ./sumtree/..., gofmt clean, paritycheck -area sumtree -done sum_tree/: 135 rows). CGO_ENABLED=0 go vet and go test -c -o /dev/null pass for darwin/amd64, windows/amd64, js/wasm.

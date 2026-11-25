@@ -1,0 +1,1 @@
+verify: sh docs/port/verify.sh M1-wayland-window exited 0 (2026-11-24): build, vet, test, gofmt on platform/linux/wayland; paritycheck -area linux-wayland -done gpui_linux/src/linux/wayland (108 rows). Gated TestClient_AttachClose passed under dbus-run-session with GPUI_TEST_DISPLAY=1.

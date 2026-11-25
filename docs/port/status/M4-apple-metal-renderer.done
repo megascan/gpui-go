@@ -1,0 +1,1 @@
+M4-apple-metal-renderer: sh docs/port/verify.sh M4-apple-metal-renderer exit 0 (darwin arm64/amd64 vet + test -c, gofmt, paritycheck -area apple -all-done: 74 rows). Metal/CoreVideo runtime tests run only on the macOS CI runner.

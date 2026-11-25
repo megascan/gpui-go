@@ -1,0 +1,6 @@
+# M4-windows-a11y-node handoff
+
+- For M4-windows-a11y: replace stubs.go (Adapter, QueuedEvents, SubclassingAdapter, platformRange, newPlatformRange) with adapter.go / subclass.go / text.go / lib.go. `newPlatformRange` must return a *com.Object with one reference whose Interface(0) is ITextRangeProvider (`iidITextRangeProvider` is in uia.go); `FindAttribute` takes a VARIANT by value (passed by reference on x64 and arm64, so a plain callback works).
+- Context.Release is the drop of the last Arc<Context>; call it where upstream's Adapter drops its context. queuedEvent.release is the drop of a QueuedEvent (releases the element and clears both VARIANTs); QueuedEvents.raise must call it after raising each event.
+- For an exit stage: DESIGN 5.2's Drop table has no rows for accesskit_windows `StringBuffer` (Go: stringBuffer.release), the implicit drops of `QueuedEvent` (queuedEvent.release) and `Arc<Context>` (Context.Release); add them.
+- For M4-windows-a11y: please drive `IUIAutomation::ElementFromPoint` and `IUIAutomationRangeValuePattern::SetValue` in the tests/ CI suite so the amd64 float trampolines (D-WINFLOAT) run in CI; arm64 stays an owner check (docs/port/owner-checks/M4-windows-a11y-node.md).

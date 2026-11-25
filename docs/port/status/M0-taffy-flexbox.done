@@ -1,0 +1,1 @@
+M0-taffy-flexbox verify: sh docs/port/verify.sh M0-taffy-flexbox exit 0 (2026-11-24). TestXml/flex 2512 pass, 136 n/a, 60 blocked on block/grid; leaf 60/60; paritycheck -area ext-taffy -done src/compute/flexbox.rs,src/compute/oof.rs passes.

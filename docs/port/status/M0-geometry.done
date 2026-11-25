@@ -1,0 +1,1 @@
+M0-geometry: sh docs/port/verify.sh M0-geometry exit 0 (2026-11-24). go build/vet/test . ok, gofmt clean, paritycheck -area core-geometry,foundation -done gpui_shared_string/,gpui/src/shared_uri.rs: 377 rows checked. go generate ./geometry.go byte-identical (sha256). Root package also vets and test-compiles for darwin/arm64, windows/amd64, js/wasm, linux/arm64.
