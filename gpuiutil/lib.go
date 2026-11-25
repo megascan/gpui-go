@@ -187,8 +187,11 @@ func packagePath(function string) string {
 	return function[:slash+1+dot]
 }
 
-// LogErr logs err at error level with the caller's location.
+// LogErr logs err at error level with the caller's location; a nil err (Ok) logs nothing.
 func LogErr(err error) {
+	if err == nil {
+		return
+	}
 	logErrorWithCaller(CallerLocation(1), err.Error(), slog.LevelError)
 }
 

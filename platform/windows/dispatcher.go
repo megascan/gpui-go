@@ -4,10 +4,10 @@ package windows
 
 import (
 	"fmt"
+	"runtime"
 	"sync"
 	"sync/atomic"
 	"time"
-	"unsafe"
 
 	xwin "golang.org/x/sys/windows"
 
@@ -17,12 +17,16 @@ import (
 	"github.com/megascan/gpui-go/scheduler"
 )
 
-// WindowsDispatcher is the PlatformDispatcher on the Windows thread pool, waking the main thread
-// with a message to the platform's message window.
+// WindowsDispatcher is the PlatformDispatcher: background runnables run on Go worker goroutines,
+// main-thread runnables wake the main thread with a message to the platform's message window.
+// Upstream uses the Windows thread pool; Go callbacks from pool threads are internally locked to
+// foreign OS threads, and an iter.Pull coroutine resumed on another pool thread is a fatal error.
 type WindowsDispatcher struct {
 	gpui.PlatformDispatcherDefaults
 	WakePosted           atomic.Bool
 	mainSender           *gpui.PriorityQueueSender[gpui.RunnableVariant]
+	backgroundSender     *gpui.PriorityQueueSender[gpui.RunnableVariant]
+	closed               atomic.Bool
 	mainThreadID         uint32
 	PlatformWindowHandle SafeHwnd
 	validationNumber     uintptr
@@ -35,53 +39,26 @@ func NewWindowsDispatcher(mainSender *gpui.PriorityQueueSender[gpui.RunnableVari
 	mainThreadID := xwin.GetCurrentThreadId()
 	mainOSThreadID.Store(mainThreadID)
 
+	backgroundSender, backgroundReceiver := gpui.NewPriorityQueueReceiver[gpui.RunnableVariant]()
+	for range max(runtime.NumCPU(), minWorkerThreads) {
+		receiver := backgroundReceiver.Clone()
+		go func() {
+			for runnable := range receiver.Iter() {
+				WindowsDispatcherExecuteRunnable(runnable)
+			}
+		}()
+	}
+	backgroundReceiver.Close()
+
 	d := &WindowsDispatcher{
 		mainSender:           mainSender,
+		backgroundSender:     backgroundSender,
 		mainThreadID:         mainThreadID,
 		PlatformWindowHandle: SafeHwndFrom(platformWindowHandle),
 		validationNumber:     validationNumber,
 	}
 	gpui.BindPlatformDispatcherDefaults(&d.PlatformDispatcherDefaults, d)
 	return d
-}
-
-func (d *WindowsDispatcher) dispatchOnThreadpool(priority int32, runnable gpui.RunnableVariant) {
-	environ := win32.TP_CALLBACK_ENVIRON_V3{
-		Version:          3,
-		CallbackPriority: priority,
-	}
-	environ.Size = uint32(unsafe.Sizeof(environ))
-
-	context := runnables.Insert(runnable)
-
-	if err := win32.TrySubmitThreadpoolCallback(runWorkCallbackPtr(), context, &environ); err != nil {
-		gpuiutil.LogErr(err)
-		if runnable, ok := runnables.Take(context); ok {
-			go WindowsDispatcherExecuteRunnable(runnable)
-		}
-	}
-}
-
-func (d *WindowsDispatcher) dispatchOnThreadpoolAfter(runnable gpui.RunnableVariant, duration time.Duration) {
-	context := runnables.Insert(runnable)
-
-	timer, err := win32.CreateThreadpoolTimer(runTimerCallbackPtr(), context, nil)
-	if err != nil {
-		gpuiutil.LogErr(err)
-		if runnable, ok := runnables.Take(context); ok {
-			time.AfterFunc(max(duration, 0), func() {
-				WindowsDispatcherExecuteRunnable(runnable)
-			})
-		}
-		return
-	}
-	ticks := max(duration, 0).Nanoseconds() / 100
-	due := uint64(-ticks)
-	dueTime := win32.FILETIME{
-		LowDateTime:  uint32(due),
-		HighDateTime: uint32(due >> 32),
-	}
-	win32.SetThreadpoolTimer(timer, &dueTime, 0, 0)
 }
 
 // WindowsDispatcherExecuteRunnable runs a runnable with the profiler hooks.
@@ -99,20 +76,14 @@ func (d *WindowsDispatcher) IsMainThread() bool {
 	return xwin.GetCurrentThreadId() == d.mainThreadID
 }
 
-// Dispatch runs runnable on the thread pool at the matching callback priority.
+// Dispatch runs runnable on a worker goroutine in priority order.
 func (d *WindowsDispatcher) Dispatch(runnable gpui.RunnableVariant, priority gpui.Priority) {
-	var tpPriority int32
-	switch priority {
-	case scheduler.PriorityRealtimeAudio:
+	if priority == scheduler.PriorityRealtimeAudio {
 		panic("RealtimeAudio priority should use spawn_realtime, not dispatch")
-	case scheduler.PriorityHigh:
-		tpPriority = win32.TP_CALLBACK_PRIORITY_HIGH
-	case scheduler.PriorityMedium:
-		tpPriority = win32.TP_CALLBACK_PRIORITY_NORMAL
-	case scheduler.PriorityLow:
-		tpPriority = win32.TP_CALLBACK_PRIORITY_LOW
 	}
-	d.dispatchOnThreadpool(tpPriority, runnable)
+	if err := d.backgroundSender.Send(priority, runnable); err != nil && !d.closed.Load() {
+		gpuiutil.LogErr(err)
+	}
 }
 
 // DispatchOnMainThread queues runnable for the main thread and posts one wake-up message until
@@ -134,9 +105,11 @@ func (d *WindowsDispatcher) DispatchOnMainThread(runnable gpui.RunnableVariant, 
 	}
 }
 
-// DispatchAfter runs runnable on the thread pool after duration.
+// DispatchAfter runs runnable on a timer goroutine after duration.
 func (d *WindowsDispatcher) DispatchAfter(duration time.Duration, runnable gpui.RunnableVariant) {
-	d.dispatchOnThreadpoolAfter(runnable, duration)
+	time.AfterFunc(max(duration, 0), func() {
+		WindowsDispatcherExecuteRunnable(runnable)
+	})
 }
 
 // SpawnRealtime runs f on a new native thread at THREAD_PRIORITY_TIME_CRITICAL.
@@ -150,8 +123,12 @@ func (d *WindowsDispatcher) SpawnRealtime(f func()) {
 	xwin.CloseHandle(handle)
 }
 
-// Close drops the dispatcher's main-thread sender.
+// Close drops the dispatcher's senders, which ends the worker goroutines.
 func (d *WindowsDispatcher) Close() {
+	if d.closed.Swap(true) {
+		return
+	}
+	d.backgroundSender.Close()
 	d.mainSender.Close()
 }
 
@@ -163,33 +140,20 @@ func (d *WindowsDispatcher) IncreaseTimerResolution() gpui.TimerResolutionGuard 
 	})
 }
 
+const minWorkerThreads = 2
+
 var (
-	runnables            win32.Handles[gpui.RunnableVariant]
-	realtimeFuncs        win32.Handles[func()]
-	callbacksOnce        sync.Once
-	runWorkCallbackAddr  uintptr
-	runTimerCallbackAddr uintptr
-	realtimeStartAddr    uintptr
-	mainOSThreadID       atomic.Uint32
-	profilerThreads      sync.Map
+	realtimeFuncs     win32.Handles[func()]
+	callbacksOnce     sync.Once
+	realtimeStartAddr uintptr
+	mainOSThreadID    atomic.Uint32
+	profilerThreads   sync.Map
 )
 
 func initCallbacks() {
 	callbacksOnce.Do(func() {
-		runWorkCallbackAddr = xwin.NewCallback(runWorkCallbackFn)
-		runTimerCallbackAddr = xwin.NewCallback(runTimerCallbackFn)
 		realtimeStartAddr = xwin.NewCallback(realtimeThreadStartFn)
 	})
-}
-
-func runWorkCallbackPtr() uintptr {
-	initCallbacks()
-	return runWorkCallbackAddr
-}
-
-func runTimerCallbackPtr() uintptr {
-	initCallbacks()
-	return runTimerCallbackAddr
 }
 
 func realtimeThreadStartPtr() uintptr {
@@ -208,21 +172,6 @@ func currentProfilerThread() gpui.ThreadID {
 	}
 	id, _ := profilerThreads.LoadOrStore(osThread, gpui.NewThreadID(name))
 	return id.(gpui.ThreadID)
-}
-
-func runWorkCallbackFn(_ uintptr, context uintptr) uintptr {
-	if runnable, ok := runnables.Take(context); ok {
-		WindowsDispatcherExecuteRunnable(runnable)
-	}
-	return 0
-}
-
-func runTimerCallbackFn(_ uintptr, context uintptr, timer win32.PTP_TIMER) uintptr {
-	if runnable, ok := runnables.Take(context); ok {
-		WindowsDispatcherExecuteRunnable(runnable)
-	}
-	win32.CloseThreadpoolTimer(timer)
-	return 0
 }
 
 func realtimeThreadStartFn(parameter uintptr) uintptr {

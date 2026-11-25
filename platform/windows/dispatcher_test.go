@@ -47,16 +47,13 @@ func newTestDispatcher(t *testing.T) (*WindowsDispatcher, *gpui.PriorityQueueRec
 	return d, receiver
 }
 
-func TestDispatcher_DispatchRunsOnThreadPool(t *testing.T) {
+func TestDispatcher_DispatchRunsOnWorkers(t *testing.T) {
 	d, _ := newTestDispatcher(t)
 	var _ gpui.PlatformDispatcher = d
 	for _, p := range []gpui.Priority{scheduler.PriorityHigh, scheduler.PriorityMedium, scheduler.PriorityLow} {
 		ran := make(chan uint32, 1)
 		d.Dispatch(spawnProbe(t, ran), p)
 		waitRan(t, ran)
-	}
-	if runnables.Len() != 0 {
-		t.Errorf("%d runnables left in the handle table", runnables.Len())
 	}
 }
 
@@ -79,9 +76,6 @@ func TestDispatcher_RealtimeAudioPanics(t *testing.T) {
 	defer func() {
 		if got := recover(); got != "RealtimeAudio priority should use spawn_realtime, not dispatch" {
 			t.Fatalf("recover() = %v", got)
-		}
-		if runnables.Len() != 0 {
-			t.Fatal("panicking dispatch left its runnable in the handle table")
 		}
 	}()
 	d.Dispatch(r, scheduler.PriorityRealtimeAudio)
@@ -160,5 +154,41 @@ func TestDispatcher_CallbackEnvironmentLayout(t *testing.T) {
 	var environ win32.TP_CALLBACK_ENVIRON_V3
 	if unsafe.Sizeof(environ) != 72 || unsafe.Offsetof(environ.CallbackPriority) != 60 {
 		t.Fatalf("TP_CALLBACK_ENVIRON_V3 size %d, CallbackPriority at %d", unsafe.Sizeof(environ), unsafe.Offsetof(environ.CallbackPriority))
+	}
+}
+
+func TestDispatcher_CoroutineResumesAcrossWorkers(t *testing.T) {
+	d, _ := newTestDispatcher(t)
+	const hops = 64
+	done := make(chan int, 1)
+	future := scheduler.Async(func(s *scheduler.Scope) int {
+		n := 0
+		for range hops {
+			yielded := false
+			scheduler.Await(s, scheduler.PollFn(func(cx *scheduler.Context) (struct{}, bool) {
+				if yielded {
+					return struct{}{}, true
+				}
+				yielded = true
+				cx.Waker().WakeByRef()
+				return struct{}{}, false
+			}))
+			n++
+		}
+		done <- n
+		return n
+	})
+	runnable, task := scheduler.SpawnAsyncTask(scheduler.NewRunnableMetaWithCallersLocation(), future, func(r *scheduler.Runnable) {
+		d.Dispatch(r, scheduler.PriorityMedium)
+	})
+	task.Detach()
+	d.Dispatch(runnable, scheduler.PriorityMedium)
+	select {
+	case n := <-done:
+		if n != hops {
+			t.Fatalf("body ran %d hops, want %d", n, hops)
+		}
+	case <-time.After(10 * time.Second):
+		t.Fatal("coroutine did not finish")
 	}
 }

@@ -320,15 +320,21 @@ func TestSimple_ElementFromPointAndRangeValueSetValue(t *testing.T) {
 		if err := com.CallHR(pattern.Ptr(), rangeValueSetValue, uintptr(math.Float64bits(7.5))); err != nil {
 			return err
 		}
-		select {
-		case request := <-handler.requests:
-			if request.Action != a11y.ActionSetValue || request.Data != a11y.ActionData(a11y.ActionDataNumericValue(7.5)) {
-				t.Fatalf("got request %+v", request)
+		for {
+			select {
+			case request := <-handler.requests:
+				// Real UIA calls the provider's SetFocus on the slider before SetValue; Wine does not.
+				if request.Action == a11y.ActionFocus && request.TargetNode == sliderID {
+					continue
+				}
+				if request.Action != a11y.ActionSetValue || request.Data != a11y.ActionData(a11y.ActionDataNumericValue(7.5)) {
+					t.Fatalf("got request %+v", request)
+				}
+				return nil
+			default:
+				t.Fatal("SetValue sent no action request")
 			}
-		default:
-			t.Fatal("SetValue sent no action request")
 		}
-		return nil
 	})
 	if err != nil {
 		t.Fatal(err)
