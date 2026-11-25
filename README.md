@@ -1,33 +1,34 @@
 # gpui-go
 
-A Go port of [GPUI](https://github.com/zed-industries/zed/tree/main/crates/gpui), the GPU-accelerated UI framework behind the [Zed](https://zed.dev) editor.
+gpui-go is a Go port of [GPUI](https://github.com/zed-industries/zed/tree/main/crates/gpui), the GPU-accelerated UI framework that the [Zed](https://zed.dev) editor is built on.
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/megascan/gpui-go.svg)](https://pkg.go.dev/github.com/megascan/gpui-go)
 
-gpui-go tracks upstream GPUI at Zed commit `6501df15`. Types and functions keep their upstream names, converted to Go casing, and behave the same way. If you know GPUI in Rust, [Coming from Rust GPUI](docs/guide/from-rust-gpui.md) maps one onto the other.
+The port follows upstream GPUI at Zed commit [`6501df15`](https://github.com/zed-industries/zed/tree/6501df15765d66d6c2a2b66b1eb22434ccef3f86/crates/gpui). Types and functions keep their upstream names in Go casing and behave the same way. Where Go forces a different shape, the change is a numbered deviation (see [Parity with upstream](#parity-with-upstream)). If you know GPUI in Rust, start with [Coming from Rust GPUI](docs/guide/from-rust-gpui.md).
 
 ## Status
 
 | Platform | State |
 |---|---|
-| Linux (Wayland, X11) | Works. The examples run and are checked by screenshot. |
-| macOS, Windows, iOS, web (`GOOS=js`) | Ported and compiling, but not yet run on real hardware or in a browser. |
+| Linux (Wayland, X11) | Tested. Every example runs, and each is checked with a screenshot. |
+| macOS, Windows | Ported and cross-compiled. Not yet run on real hardware. |
+| iOS, web (`GOOS=js`) | Ported and cross-compiled. Not yet run on a device or in a browser. |
 
-The macOS, Windows, iOS and web backends are checked by cross-compiling, `go vet` and building the tests. Windows unit tests also run under Wine. Runs on real machines are pending; see [TECH_DEBT.md](TECH_DEBT.md#pending-real-os-tests). Known limits are listed in [Platforms](docs/guide/platforms.md#known-limits).
+The non-Linux backends are checked by cross-compiling, `go vet` and building their tests. Windows unit tests also run under Wine. Expect bugs on those platforms until they have been run on real machines; the open items are tracked in [TECH_DEBT.md](TECH_DEBT.md#pending-real-os-tests), and known limits are in [Platforms](docs/guide/platforms.md#known-limits).
 
-There is no tagged release yet, and the API can still change.
+There is no tagged release yet, and the API may still change.
 
 ## Install
 
-You need Go 1.27.3 or newer.
+Requires Go 1.27.3 or newer.
 
-There are no version tags yet. Track the `dev` branch:
+There are no version tags yet, so track the `dev` branch:
 
 ```sh
 go get github.com/megascan/gpui-go@dev
 ```
 
-Or work against a local checkout with a `replace` directive in your `go.mod`:
+To work against a local checkout instead, add a `replace` directive to your `go.mod` and run `go mod tidy`:
 
 ```
 require github.com/megascan/gpui-go v0.0.0
@@ -35,119 +36,98 @@ require github.com/megascan/gpui-go v0.0.0
 replace github.com/megascan/gpui-go => ../gpui-go
 ```
 
-Then run `go mod tidy` to fill in `go.sum`.
-
 ### System requirements
 
-**Linux**
+- **Linux**: cgo and a C compiler (`gcc` or `clang`), because the renderer links wgpu-native through cgo; `CGO_ENABLED=0` does not build. At run time it loads `libwayland-client.so.0`, `libwayland-cursor.so.0` and `libxkbcommon.so.0` (Wayland) or `libxkbcommon-x11.so.0` and `libxcb.so.1` (X11), plus a Vulkan driver, with OpenGL as a fallback. These are loaded with `dlopen`, so no development headers are needed.
+- **macOS**: no cgo. Renders with Metal.
+- **Windows**: no cgo. Uses Direct3D 11, DirectComposition and DirectWrite.
+- **Web**: build with `GOOS=js GOARCH=wasm`. Needs a browser with WebGPU or WebGL2.
 
-- cgo and a C compiler (`gcc` or `clang`). The renderer links wgpu-native through cgo, so `CGO_ENABLED=0` does not build.
-- At run time: `libwayland-client.so.0`, `libwayland-cursor.so.0` and `libxkbcommon.so.0` for Wayland; `libxkbcommon-x11.so.0` and `libxcb.so.1` for X11; a Vulkan driver (OpenGL works as a fallback). These are loaded with `dlopen`, so no development headers are needed.
-
-**macOS**: no cgo needed. Uses Metal.
-
-**Windows**: no cgo needed. Uses Direct3D 11, DirectComposition and DirectWrite.
-
-**Web**: build with `GOOS=js GOARCH=wasm`. Needs a browser with WebGPU or WebGL2.
-
-Details for each platform are in [Platforms](docs/guide/platforms.md).
+Per-platform details are in [Platforms](docs/guide/platforms.md).
 
 ## Hello, world
-
-From [examples/hello_world/main.go](examples/hello_world/main.go):
 
 ```go
 package main
 
 import (
-	"fmt"
-
 	"github.com/megascan/gpui-go"
 	"github.com/megascan/gpui-go/platform"
 )
 
-// HelloWorld is the hello_world example view.
-type HelloWorld struct {
-	text gpui.SharedString
-}
+type Hello struct{}
 
-func swatch(bg, border gpui.Hsla) *gpui.Div {
-	return gpui.NewDiv().
-		Size8().
-		Bg(bg).
-		Border1().
-		BorderDashed().
-		RoundedMd().
-		BorderColor(border)
-}
-
-// Render renders the view.
-func (h *HelloWorld) Render(_ *gpui.Window, _ *gpui.Context[HelloWorld]) gpui.IntoElement {
+func (h *Hello) Render(_ *gpui.Window, _ *gpui.Context[Hello]) gpui.IntoElement {
 	return gpui.NewDiv().
 		Flex().
-		FlexCol().
-		Gap3().
-		Bg(gpui.Rgb(0x505050)).
-		Size(gpui.Px(500.0)).
+		Size(gpui.Px(400)).
 		JustifyCenter().
 		ItemsCenter().
-		ShadowLg().
-		Border1().
-		BorderColor(gpui.Rgb(0x0000ff)).
-		TextXl().
+		Bg(gpui.Rgb(0x1e1e1e)).
 		TextColor(gpui.Rgb(0xffffff)).
-		ChildText(fmt.Sprintf("Hello, %s!", h.text)).
-		Child(
-			gpui.NewDiv().
-				Flex().
-				Gap2().
-				Child(swatch(gpui.Red(), gpui.White())).
-				Child(swatch(gpui.Green(), gpui.White())).
-				Child(swatch(gpui.Blue(), gpui.White())).
-				Child(swatch(gpui.Yellow(), gpui.White())).
-				Child(swatch(gpui.Black(), gpui.White()).RoundedMd()).
-				Child(swatch(gpui.White(), gpui.Black())),
-		)
+		TextXl().
+		ChildText("Hello, world!")
 }
 
-func runExample() {
+func main() {
 	platform.Application().Run(func(cx *gpui.App) {
-		bounds := gpui.BoundsCentered(gpui.None[gpui.DisplayID](), gpui.NewSize(gpui.Px(500.), gpui.Px(500.0)), cx)
 		options := gpui.DefaultWindowOptions()
-		options.WindowBounds = gpui.Some(gpui.WindowBoundsWindowed(bounds))
-		if _, err := cx.OpenWindow(options, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[HelloWorld] {
-			return cx.New(func(_ *gpui.Context[HelloWorld]) *HelloWorld {
-				return &HelloWorld{text: "World"}
-			})
-		}); err != nil {
+		_, err := cx.OpenWindow(options, func(_ *gpui.Window, cx *gpui.App) gpui.Entity[Hello] {
+			return cx.New(func(_ *gpui.Context[Hello]) *Hello { return &Hello{} })
+		})
+		if err != nil {
 			panic(err)
 		}
 		cx.Activate(true)
 	})
 }
-
-func main() {
-	runExample()
-}
 ```
 
-Run it from a checkout:
+`platform.Application()` picks the backend for the current OS. The window's root view is an entity, and its `Render` method returns a fresh element tree each frame.
+
+## Examples
+
+[examples/](examples/) has about 50 programs ported from upstream, covering layout, text, images, SVG, lists, input, drag and drop, animation and window management. Run one from a checkout:
 
 ```sh
 go run ./examples/hello_world
+go run ./examples/counter
+go run ./examples/uniform_list
 ```
 
-## Learn more
+Some examples only build on one platform (for example `layer_shell` on Wayland, `native_view_appkit_field` on macOS, `web_hello_web` for `GOOS=js`).
+
+## Documentation
 
 - [Getting started](docs/guide/getting-started.md): build a counter app step by step.
-- [The guide](docs/guide/README.md): styling, actions and focus, async, lists, testing, platforms, concepts and pitfalls.
-- [Examples](examples/): about 50 runnable programs, from layout and text to drag and drop and window management.
+- [The guide](docs/guide/README.md): styling, actions and focus, async work, lists, testing, platforms, concepts and common pitfalls.
 - [API reference](https://pkg.go.dev/github.com/megascan/gpui-go) on pkg.go.dev.
 
-## Credits
+The code in the guide is compiled and tested as part of the repo.
 
-gpui-go is a port of GPUI by Zed Industries, Inc., which is licensed under the Apache License 2.0. It also ports parts of several Rust crates that GPUI depends on, such as taffy, lyon and accesskit. [NOTICE](NOTICE) lists them with their licenses.
+## Parity with upstream
 
-## License
+The goal is functional parity with GPUI at `zed@6501df15765d66d6c2a2b66b1eb22434ccef3f86`. [docs/port/PARITY.md](docs/port/PARITY.md) maps every upstream public item and test to a Go symbol, a Go test or a registered deviation, split by area under [docs/port/parity/](docs/port/parity/).
 
-Apache License 2.0. See [LICENSE](LICENSE).
+Where Go cannot express the Rust API directly, the port uses deviations with `D-*` ids, for example `D-RAII` (explicit `Release` instead of `Drop`), `D-OPT` (Option and Result) and `D-ASYNC` (coroutines in place of futures). They are defined in [DESIGN.md section 5](docs/port/DESIGN.md) and listed in [PARITY.md section 5](docs/port/PARITY.md#5-deviations-and-limits), together with the known limits (`L-*`).
+
+## Security
+
+The library has been through two rounds of security review. The threat model, findings and fixes are in [docs/security/LEDGER.md](docs/security/LEDGER.md). Fixes that depart from upstream behaviour are registered as deviations.
+
+## Claude Code skill
+
+[skills/gpui-go/](skills/gpui-go/) is a [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill for writing, testing and debugging gpui-go apps. To install it, copy it into your skills directory:
+
+```sh
+mkdir -p ~/.claude/skills
+cp -r skills/gpui-go ~/.claude/skills/
+```
+
+To use it in one project only, copy it to that project's `.claude/skills/` instead.
+
+## Credits and license
+
+gpui-go is a port of GPUI by Zed Industries, Inc., licensed under the Apache License 2.0. It also ports parts of Rust crates that GPUI depends on, including taffy, lyon, cosmic-text and accesskit. [NOTICE](NOTICE) lists each one with its license and copyright.
+
+gpui-go is licensed under the Apache License 2.0. See [LICENSE](LICENSE).
