@@ -306,11 +306,11 @@ Crash class note: recoverable panics (SEC-002, 008, 011, 024 panic half, 032) ar
 | SEC-021 | S07 | Forged FileChooser `Response` from a monitoring peer injects chosen paths | platform/linux/platform.go:652-689 | 346 | FIXED | LOW | HIGH | MEDIUM→MEDIUM | opus medium | B3, S07 rev, MAP L9 | 1 | s07/02-filechooser-portal.sh (TestSecB3_S07_FileChooserResponseForgedByMonitoringPeer) | unknown → D-SEC-DBUSSENDER | FAIL at HEAD; blind spray PASS (8 random token bytes), so attacker must monitor the bus (same-user) Fix (round 1, uncommitted): `TestSecurity_SEC021_FileChooserResponseFromNonPortalIgnored`. |
 | SEC-022 | S07 | Forged Secret Service prompt `Completed` | platform/linux/internal/dbus/secret_service.go:166-188 | 346 | FIXED | LOW | HIGH | MEDIUM→MEDIUM | opus medium | B3, S07 rev | 1 | s07/01-dbus-session-services.sh (TestSecB3_S07_SecretPromptCompletedForgedByPeer) | unknown → D-SEC-DBUSSENDER | FAIL at HEAD Fix (round 1, uncommitted): `TestSecurity_SEC022_PromptCompletedFromNonOwnerIgnored`. |
 | SEC-023 | S07 | Secret Service falls back to a `plain` session, sending the password unencrypted on the bus | platform/linux/internal/dbus/secret_service.go:76-84 | 319 | FIXED | LOW | HIGH | MEDIUM→MEDIUM | opus medium | B3, S07 rev | 1 | s07/01-dbus-session-services.sh (TestSecB3_S07_SecretServicePlainFallbackLeaksPassword) | yes (raw note: same fallback upstream) → D-SEC-SECRETPLAIN | FAIL at HEAD; reader must be a same-user monitor Fix (round 1, uncommitted): `TestSecurity_SEC023_PlainSecretSessionRefused`. |
-| SEC-024 | S09b/S05 | Wayland keymap fd size not checked against the file (SIGBUS); bad keymap panics | internal/linux/xkb/xkb.go:181 NewKeymapFromFd; platform/linux/wayland/client_input.go:120 | 125 | FIXED | LOW | HIGH | LOW→LOW | haiku | B3, MAP L11 | 1 | s09b/01-keymap-fd-size.sh | unknown → D-SEC-KEYMAPFD | FAIL at HEAD (child SIGBUS); source = compositor (semi-trusted) Fix (round 1, uncommitted): `TestSecurity_SEC024_keymap_fd_size`. |
+| SEC-024 | S09b/S05 | Wayland keymap fd size not checked against the file (SIGBUS); bad keymap panics, and `modifiers`/`key` events then panic on the nil keymap state | internal/linux/xkb/xkb.go:181 NewKeymapFromFd; platform/linux/wayland/client_input.go:120 (keymap), :171 (modifiers), :217 handleKey | 125 | FIXED | LOW | HIGH | LOW→LOW | haiku | B3, MAP L11 | 1 | s09b/01-keymap-fd-size.sh | unknown → D-SEC-KEYMAPFD | FAIL at HEAD (child SIGBUS); source = compositor (semi-trusted) Fix (round 1, b59d184): `TestSecurity_SEC024_keymap_fd_size` (fd size and rejected keymap only). Round 1 left the `panic(unwrapNone)` in the `modifiers` and `key` handlers, reached once a keymap is refused (final review FV-3): fixed in the final pass, events are ignored until a keymap loads, `TestSecurity_FV3_nil_keymap_input_ignored` (platform/linux/wayland). |
 | SEC-025 | S06a | xrm `#include` from RESOURCE_MANAGER reads `/dev/zero`, blocks on FIFO, fans out 2^100 | platform/linux/x11/internal/xrm/xrm.go:196-211 | 400 | FIXED | LOW | HIGH | LOW→LOW | haiku | B3, S06a rev, MAP L8 | 1 | s06a/01-xrm-include.sh | unknown → D-SEC-XRMINCLUDE | TestSecB3_S06a_XrmIncludeFromRootProperty FAIL; any X client sets the root property (same-display peer → LOW) Fix (round 1, uncommitted): `TestSecurity_SEC025_xrm_include_guards`. |
 | SEC-026 | S06a | xcursor allocates `4*w*h` before reading and the TOC fans out | platform/linux/x11/internal/xcursor/parser.go:85/125 | 789 | FIXED | LOW | HIGH | LOW→LOW | haiku | B3 | 1 | s06a/02-xcursor.sh | unknown → D-SEC-XCURSOR | TestSecB3_S06a_XcursorAllocationFromHeader FAIL; source = cursor theme files Fix (round 1, uncommitted): `TestSecurity_SEC026_xcursor_allocation_from_header`. |
 | SEC-027 | S05 | ReadFdWithTimeout has a per-chunk timeout but no total deadline (trickling clipboard owner freezes the reader) | platform/linux/internal/common/common.go:628 | 400 | FIXED | LOW | HIGH | LOW→LOW | haiku | B3, S05 rev, MAP L7 | 1 | s05/01-readfd-timeout.sh | unknown → D-SEC-READFD | TestSecB3_S05_ReadFdWithTimeoutTrickleHasNoTotalDeadline FAIL; over-cap PASS Fix (round 1, uncommitted): `TestSecurity_SEC027_ReadFdWithTimeoutHasTotalDeadline`. |
-| SEC-028 | S05 | File-URL converters accept NUL, `..`, `%2F` | wayland/client_input.go:951 fileURLToPath; x11/client.go:1222 urlToFilePath; platform/linux/platform.go:692 fileURIToPath | 22 | CONFIRMED | INFO | MEDIUM | - | - | B3 | 1 | s05/02,03,04 (differential, PASS by design) | unknown | Logged differential lines only; no boundary crossed (paths are what the drag source names). Not fixed by default |
+| SEC-028 | S05 | File-URL converters accept NUL, `..`, `%2F` | wayland/client_input.go:951 fileURLToPath; x11/client.go:1222 urlToFilePath; platform/linux/platform.go:692 fileURIToPath | 22 | CONFIRMED | INFO | MEDIUM | - | - | B3 | 1 | s05/02,03,04 (differential, PASS by design) | unknown | Logged differential lines only; no boundary crossed (paths are what the drag source names). Not fixed by default; TECH_DEBT SEC-INFO |
 | SEC-029 | S06b | X11 INCR start: owner-controlled `minDataLen` passed to `slices.Grow` before the 512 MiB cap | platform/linux/x11/clipboard.go:535 handleReadSelectionNotify | 789 | FIXED | LOW | HIGH | LOW→LOW | haiku | S06b rev (verifier repro) | 1 | s06b/01-incr-mindatalen.sh (TestSecV1_S06b_IncrMinDataLenGrow) | yes (D-X11-CLIPBOARD row: upstream reads unbounded) → extend D-X11-CLIPBOARD | `attack_4GiB_len: verdict=oom ... cannot allocate 4294967296-byte block ... clipboard.go:535`; control len 16 PASS. Needs the owner to re-set the INCR property between the two GetProperty calls (:512 deletes it); a spamming owner wins in < 3 tries. Also `ValueLen == 4` is a port bug (counts items, not bytes) Fix (round 1, uncommitted): `TestSecurity_SEC029_incr_start_hint_capped`. |
 | SEC-030 | S05 | Wayland DataOffer MIME list copied on every append (quadratic) | platform/linux/wayland/clipboard.go:62 AddMimeType | 407 | FIXED | LOW | MEDIUM | LOW→LOW | haiku | S05 rev (verifier repro) | 1 | s05/05-mime-quadratic.sh (TestSecV1_S05_DataOfferMimeAppendQuadratic) | none (Go-only `slices.Clip`) | `200000 mime offers still being appended after 5s`; 1000 offers 3 ms. Runs on the Wayland dispatch (UI) thread Fix (round 1, uncommitted): `TestSecurity_SEC030_data_offer_mime_append_linear`. |
 | SEC-031 | S15 | Asset cache keys and `Image.ID` use an unkeyed 64-bit FxHash: forged collisions poison cached images | asset_cache.go:181/206 Hash; elements_image_cache.go:222 RetainAllImageCache.Load | 328 | FIXED | MEDIUM | HIGH | MEDIUM→MEDIUM | opus medium | B4 | 1 | s15/run.sh (TestS15_ImageIDCollision, TestS15_AssetCacheKeyCollision) | unknown → D-SEC-ASSETHASH | `victim=https://cdn.trusted.example/.../profile-picture-128x128.png attacker=https://evil.example/aaaaaaaaaaaBxk_T-... (found in 183023 tries, 15ms)`; distinct bytes share Image.ID Fix (round 1, uncommitted): `TestSecurity_SEC031_AssetKeyCollisionResistant`, `TestSecurity_SEC031_ImageIDKeyed`. Clipboard image IDs on X11, Wayland, Windows and macOS also switched to `ImageFromBytes` (seeded) at integration. |
@@ -320,8 +320,8 @@ Crash class note: recoverable panics (SEC-002, 008, 011, 024 panic half, 032) ar
 | SEC-035 | S13 | Font feature and fallback intern tables never evicted; `liga` value truncated to uint32 (fallback-interning duplicate merged) | text_system_font_features.go:111; text_system_font_fallbacks.go:50 | 770 | FIXED | LOW | HIGH | MEDIUM→MEDIUM | opus medium | B4, S03 rev | 1 | s13/run.sh (TestS13_FontFeaturesJSON, TestS13_InternTablesRetainDistinctInputs) | unknown → D-SEC-FONTINTERN | both FAIL at HEAD Fix (round 1, uncommitted): `TestSecurity_SEC035_FontInternBoundedAndLigaRange`. |
 | SEC-036 | S15 | Asset cache is unbounded and failed loads never expire (S02 "SVG renders retained up to 256 MiB each" merged) | asset_cache.go:186 assetEntry; elements_image_cache.go | 770 | FIXED | LOW | HIGH | MEDIUM→MEDIUM | opus medium | B4, S02 rev | 1 | s15/run.sh (TestS15_AssetCacheUnbounded) | unknown → D-SEC-ASSETCACHE | FAIL at HEAD (100k distinct URIs retained) Fix (round 1, uncommitted): `TestSecurity_SEC036_AssetCacheBounded`, `TestSecurity_SEC036_AssetCacheByteBudget`. |
 | SEC-037 | S15 | A panic in a background task kills the process (amplifier for every recoverable panic above) | platform/linux/internal/common/dispatcher.go:41; platform_threaded_dispatcher.go:148; scheduler/future.go:168/204 | 248 | FIXED | MEDIUM | HIGH | HIGH→HIGH | opus medium | B4, S15 rev, all reviewer panic-to-crash notes | 1 | s15/run.sh (TestS15_BackgroundPanicKillsProcess) | unknown → D-SEC-TASKPANIC | FAIL at HEAD. No trigger of its own; severity from the chain SEC-002 (remote PAM → panic → exit) Fix (round 1, uncommitted): `TestSecurity_SEC037_BackgroundPanicResolvesWithError`, `TestSecurity_SEC037_ForegroundPanicStillPropagates`, `TestSecurity_SEC037_BackgroundCancelStillUnwinds`. |
-| SEC-038 | S13 | jsonschema Reflect overflows the stack on recursive non-struct types | jsonschema/reflect.go:89/122/299 | 674 | CONFIRMED | INFO | HIGH | - | - | B4 | 1 | s13/run.sh (TestS13_SchemaRecursiveNonStruct) | no | Fatal stack overflow, but types are the app's own (no untrusted input). Not fixed by default |
-| SEC-039 | S19 | Bidi override characters are rendered (Trojan-Source style labels) | text_system_line*.go | 451 | CONFIRMED | INFO | HIGH | - | - | B4 | 1 | s19/run.sh (TestS19_BidiOverrideReordersGlyphs, log-only PASS) | unknown | Log-only; same as every text renderer. Not fixed by default |
+| SEC-038 | S13 | jsonschema Reflect overflows the stack on recursive non-struct types | jsonschema/reflect.go:89/122/299 | 674 | CONFIRMED | INFO | HIGH | - | - | B4 | 1 | s13/run.sh (TestS13_SchemaRecursiveNonStruct) | no | Fatal stack overflow, but types are the app's own (no untrusted input). Not fixed by default; TECH_DEBT SEC-INFO. s13 subtest is log-only since the final pass |
+| SEC-039 | S19 | Bidi override characters are rendered (Trojan-Source style labels) | text_system_line*.go | 451 | CONFIRMED | INFO | HIGH | - | - | B4 | 1 | s19/run.sh (TestS19_BidiOverrideReordersGlyphs, log-only PASS) | unknown | Log-only; same as every text renderer. Not fixed by default; TECH_DEBT SEC-INFO |
 | SEC-040 | S08b | AT-SPI paragraph granularity livelocks when a line starts with an empty text run, holding the tree RLock | a11y/consumer/text.go:500 BackwardToParagraphStart (via a11y/atspi/util.go:80) | 835 | FIXED | LOW | HIGH | LOW→LOW | haiku | S08a/S08b rev (verifier repro) | 1 | s08b/02-paragraph-livelock.sh (TestSecV1_S08b_ParagraphGranularityLivelock) | unknown → D-SEC-A11YPARA | `StringAtOffset(5, Paragraph) still running after 3s (livelock); tree write lock blocked=true`. Precondition: the app builds a text-run tree with an empty run linked by next_on_line (no gpui producer of RoleTextRun outside a11y/); the bus client only picks the offset Fix (round 1, uncommitted): `TestSecurity_SEC040_paragraph_backward_terminates`. |
 | SEC-041 | S17 | NOTICE names ported crates without their copyright lines or MIT/Apache permission texts | NOTICE:13-17 | 1104 | PARTIAL | LOW | HIGH | LOW→LOW | haiku | S17 rev | 1 | - (non-executable) | n/a | NOTICE lists taffy, etagere, lyon, tiny-skia, accesskit, cosmic-text, swash, zeno, scap, windows-capture, pipewire-rs, wgpu, xim-rs, x11-clipboard, x11rb, xkbcommon-rs with no copyright notices or MIT permission text; MIT requires both in substantial portions (ported code is a translation) Fix: NOTICE gained copyright and permission texts for most crates; taffy, lyon, accesskit texts still missing and scap/xkbcommon-rs need an owner decision (TECH_DEBT SEC-FOLLOWUP). |
 | SEC-042 | S10b | Bare-name `LoadLibraryA("amd_ags_x64.dll")`/`nvapi64.dll` without LOAD_LIBRARY_SEARCH_SYSTEM32 (DLL planting) | platform/windows/util.go:158 withDllLibrary; directx_renderer.go:1668/1708 | 427 | PLAUSIBLE | - | MEDIUM | LOW | haiku | S10b rev, MAP L10 | 1 | - | unknown → D-SEC-DLLLOAD | amd_ags_x64.dll is not a system DLL, so the search reaches app dir/CWD/PATH. Decisive fact: Procmon on a Windows host showing the CWD/PATH probe |
@@ -370,7 +370,9 @@ Crash class note: recoverable panics (SEC-002, 008, 011, 024 panic half, 032) ar
 | SEC-085 | S16 | Example `web_hello_web` font fetch reads the response with an unbounded `io.ReadAll` | examples/web_hello_web/dynamic_fonts.go readBodyOffTask | 400 | FIXED | LOW | HIGH | LOW→LOW | opus medium | R2 reviewer (R2-06) | 2 | - | none (Go-only example) | Fix (round 2): 32 MiB cap (`maxFontBodyBytes`); no unit test (js/wasm example, cross-compiled by the gate). |
 | SEC-086 | S15 | Example `image_gallery` keys its LRU by `gpui.Hash(resource)`, so colliding resources share an entry (regresses SEC-031) | examples/image_gallery/main.go SimpleLruCache.Load | 328 | FIXED | LOW | HIGH | LOW→LOW | opus medium | R2 breaker (R2-12) | 2 | - | restores upstream keying by resource (no dev id) | Fix (round 2): keyed by `gpui.Resource`; no unit test. |
 | SEC-087 | S15 | `Scoped` drops its child task errors, so a panicking scoped task reads as success; `SpawnRealtime`, `SpawnDedicated` and `DedicatedExecutor` bodies were not wrapped by `recoverBackgroundPanic` (regresses SEC-037) | executor.go BackgroundExecutor.scopedPriority; scheduler/executor.go SpawnRealtimeAt, boxDedicated, DedicatedExecutor.SpawnAt | 755 | FIXED | LOW | HIGH | MEDIUM→MEDIUM | opus medium + integration (Scoped) | R2 breaker (R2-13) | 2 | - | unknown → D-SEC-TASKPANIC (amended), D-SEC-R2-13 (public API: `Scoped`/`ScopedPriority` now return `error`) | Fix (round 2): `TestSecurity_R2_13_RealtimeAndDedicatedPanicsSurfaceAsErrors`, `TestSecurity_R2_13_ScopedSurfacesChildPanic`; `TestExecutor_SpawnRealtimePanicIsIsolated` updated to expect `*PanicError`. |
-| SEC-088 | S10a | Windows clipboard image decode has no budget | platform/windows/clipboard.go:414 | 789 | INFO | - | MEDIUM | - | - | R2 breaker | 2 | - | unknown | Not fixed: user-initiated paste, Windows untestable here (CI-BILLING); TECH_DEBT SEC-FOLLOWUP |
+| SEC-088 | S10a | Windows clipboard image decode has no budget | platform/windows/clipboard.go:414 | 789 | INFO | - | MEDIUM | - | - | R2 breaker | 2 | - | unknown | Not fixed: user-initiated paste, Windows untestable here (CI-BILLING); TECH_DEBT SEC-INFO |
+| SEC-089 | S01 | TIFF strip guard inflates every declared strip, including unused and duplicate ones: 4096 strip entries pointing at one 256 MiB zlib run cost 4096 inflations before the decode is refused (CPU amplification in the SEC-070 fix) | image_decode_limits.go tiffDecodeBytes | 400 | FIXED | MEDIUM | HIGH | LOW→LOW | final fixer | final review (FV-1) | 3 | - (unit test only) | unknown → D-SEC-R2-5 (amended) | Fix (final pass): only the `ceil(w/bw)*ceil(h/bh)` blocks the decoder reads are inflated, duplicate (offset, count) pairs once, total capped at blocks×blockBytes, too few offsets/counts refused; `TestSecurity_FV1_TiffManyStripsBounded` (pre-fix: still inflating at the 60 s test timeout; post-fix: refused well under 1 s). |
+| SEC-090 | S02 | SVGZ decompression bomb: `checkTextPaths` and okage `FromData` each inflate the whole gzip stream with no limit (2 MB svgz → 2 GiB, fatal OOM); same for embedded gzip `data:` SVGs | svg_textpath_guard.go:58-63 checkTextPaths; svg_renderer.go parseTree, parseOptions resolveData | 789 | FIXED | MEDIUM | HIGH | LOW→LOW | final fixer | final review (FV-2) | 3 | s02/r2_run.sh (TestR3_S02_01_SvgzBomb) | unknown → D-SEC-SVGZ | Fix (final pass): `decompressSvgz` inflates once through a 32 MiB `io.LimitReader` (`svgzMaxDecompressedBytes`, `errSvgzTooLarge`), both the textPath check and the parse read the plain bytes; nested gzip `data:` SVGs are decompressed the same way before `defaultData`; `TestSecurity_FV2_SvgzBombRefused`. |
 
 Deduplication record: S16-1 + "F1-HTTP" → SEC-012 (body size) and SEC-001 (decode reached via HTTP, TestS01_22); B4-F7 + all panic-to-crash notes → SEC-037; B4-F3/F4 + S13 reviewer → SEC-033/034; B4-F5 + fallback-interning duplicate → SEC-035; S04-3 Linux/Windows/macOS/iOS/web → SEC-018; S02 SVG cache retention → SEC-036; S03 zeno/scale uint32 → SEC-009.
 
@@ -379,7 +381,7 @@ Deduplication record: S16-1 + "F1-HTTP" → SEC-012 (body size) and SEC-001 (dec
 Built by union of each finding's fix-file set (the files the fix edits, not only the sink); no file appears in two clusters. INFO (SEC-028, 038, 039) and REJECTED rows are not scheduled. PLAUSIBLE rows need a TECH_DEBT entry and a `YOU:` item (manager), and are fixed only if the owner agrees.
 Ordering and isolation:
 - At most one fixer per cluster at a time; inside a cluster run the Opus item(s) first, then the Haiku batch.
-- CL-01, CL-02, CL-03, CL-12, CL-13, CL-14 and CL-15 (via `platform_threaded_dispatcher.go`) all edit root package `gpui`: run them serially or each in its own worktree, otherwise concurrent edits break each other's `go test` build.
+- CL-01, CL-02, CL-03, CL-12, CL-13, CL-14 and CL-15 (via `executor.go` in round 2) all edit root package `gpui`: run them serially or each in its own worktree, otherwise concurrent edits break each other's `go test` build.
 - CL-03 (SVG) runs after CL-01: SEC-005 reuses the decode-budget helper SEC-001 adds in platform.go.
 - Deviation ids: several clusters share area files under `docs/port/parity/`, so fixers report the D-SEC id they need and the manager registers them after each cluster lands.
 
@@ -399,7 +401,7 @@ Ordering and isolation:
 | CL-12 Keymap context | keymap_context.go | SEC-033, SEC-034 | - | - |
 | CL-13 Line wrapper | text_system_line_wrapper.go | SEC-032 | - | - |
 | CL-14 Font intern | text_system_font_features.go, text_system_font_fallbacks.go | - | SEC-035 | - |
-| CL-15 Task panics | platform/linux/internal/common/dispatcher.go, platform_threaded_dispatcher.go, scheduler/future.go | - | SEC-037 | - |
+| CL-15 Task panics | scheduler/executor.go (round 1); executor.go, scheduler/executor.go (round 2, SEC-087). The sinks dispatcher.go, platform_threaded_dispatcher.go and scheduler/future.go were not edited | - | SEC-037 | - |
 | CL-16 A11y consumer | a11y/consumer/text.go | SEC-040 | - | - |
 | CL-17 Example HTTP client | examples/internal/support/http_client.go | SEC-013 | - | - |
 | CL-18 Licensing | NOTICE | SEC-041 | - | - |
@@ -423,45 +425,46 @@ MAP leads (unverified, for reviewers/breakers to confirm or refute; not findings
 
 ## Harness index
 
-Paths relative to $HARNESS. R1 = verifier rerun at 3fffd94 (2026-11-24); R1 post-fix = integration run on the uncommitted round 1 fixes (2026-11-24; s04 FIFO writers made O_NONBLOCK, s07 plain-fallback refusal = PASS and prompt test with crypto allowed, s15 refetch after RunUntilParked); "(verifier)" = script added by VERIFY. Expected-PASS rows are controls, differential/INFO probes or spheres with no finding. R2 = integration run on the uncommitted round 2 fixes (2026-11-25, `run-all.sh` + `r2-run-all.sh` at nice 19); for r2_* scripts the round 2 breaker pre-fix result is shown first.
+Paths relative to $HARNESS. R1 = verifier rerun at 3fffd94 (2026-11-24); R1 post-fix = integration run on the uncommitted round 1 fixes (2026-11-24; s04 FIFO writers made O_NONBLOCK, s07 plain-fallback refusal = PASS and prompt test with crypto allowed, s15 refetch after RunUntilParked); "(verifier)" = script added by VERIFY. Expected-PASS rows are controls, differential/INFO probes or spheres with no finding. R2 = integration run on the uncommitted round 2 fixes (2026-11-25, `run-all.sh` + `r2-run-all.sh` at nice 19); for r2_* scripts the round 2 breaker pre-fix result is shown first. Final = run on the final-review fixes (FV-1..7, 2026-11-25, `run-all.sh` 29/29 PASS and `r2-run-all.sh` 6/6 PASS at nice 19, both exit 0).
 
-| Script | Sphere | Ledger ID | Added round | R1 | R1 post-fix | R2 |
-|---|---|---|---|---|---|---|
-| s01/run.sh | S01 | SEC-001, 002, 003, 007 | 1 | FAIL | PASS | PASS |
-| s02/run.sh | S02 | SEC-004, 005, 006 | 1 | FAIL | PASS | PASS |
-| s03/run.sh | S03 | SEC-008, 009 | 1 | FAIL | PASS | PASS |
-| s03/01-strike-overlay.sh | S03 | SEC-010, 011 | 1 | FAIL (verifier) | PASS | PASS |
-| s04/01-open-launch-common.sh | S04 | SEC-016, 018 | 1 | FAIL | PASS | PASS |
-| s04/02-open-with-system.sh | S04 | SEC-017 | 1 | FAIL | PASS | PASS |
-| s04/03-real-xdg-open-dash-impact.sh | S04 | SEC-017 (impact probe) | 1 | PASS | PASS | PASS |
-| s05/01-readfd-timeout.sh | S05 | SEC-027 | 1 | FAIL | PASS | PASS |
-| s05/02-fileurl-wayland.sh | S05 | SEC-028 (INFO) | 1 | PASS | PASS | PASS |
-| s05/03-fileurl-x11.sh | S05 | SEC-028 (INFO) | 1 | PASS | PASS | PASS |
-| s05/04-fileuri-portal.sh | S05 | SEC-028 (INFO) | 1 | PASS | PASS | PASS |
-| s05/05-mime-quadratic.sh | S05 | SEC-030 | 1 | FAIL (verifier) | PASS | PASS |
-| s06a/01-xrm-include.sh | S06a | SEC-025 | 1 | FAIL | PASS | PASS |
-| s06a/02-xcursor.sh | S06a | SEC-026 | 1 | FAIL | PASS | PASS |
-| s06a/03-xim-decode.sh | S06a | - | 1 | PASS | PASS | PASS |
-| s06b/01-incr-mindatalen.sh | S06b | SEC-029 | 1 | FAIL (verifier) | PASS | PASS |
-| s07/01-dbus-session-services.sh | S07 | SEC-020, 022, 023 | 1 | FAIL | PASS | PASS |
-| s07/02-filechooser-portal.sh | S07 | SEC-021 | 1 | FAIL | PASS | PASS |
-| s08a/01-bus-hostile-race.sh | S08a | - | 1 | PASS | PASS | PASS |
-| s08b/01-platformnode-args.sh | S08b | - | 1 | PASS | PASS | PASS |
-| s08b/02-paragraph-livelock.sh | S08b | SEC-040 | 1 | FAIL (verifier) | PASS | PASS |
-| s09b/01-keymap-fd-size.sh | S09b | SEC-024 | 1 | FAIL | PASS | PASS |
-| s13/run.sh | S13 | SEC-033, 034, 035, 038 | 1 | FAIL | FAIL (SEC-038 INFO only, unfixed by design) | FAIL (SEC-038 INFO only, unfixed by design) |
-| s14/run.sh | S14 | - | 1 | PASS | PASS | PASS |
-| s15/run.sh | S15 | SEC-031, 036, 037 | 1 | FAIL | PASS | PASS |
-| s16/01-image-loader.sh | S16 | SEC-012, 014, 015 | 1 | FAIL | PASS | PASS |
-| s16/02-support-client.sh | S16 | SEC-013 | 1 | FAIL | PASS | PASS |
-| s18/run.sh | S18 | - | 1 | PASS | PASS | PASS |
-| s19/run.sh | S19 | SEC-032, 039 | 1 | FAIL | PASS | PASS |
-| s01/r2_run.sh | S01 | SEC-069, 070, 071, 072 | 2 | - | - | FAIL → PASS |
-| s02/r2_run.sh | S02 | SEC-073, 074, 075 | 2 | - | - | FAIL → PASS |
-| s04/r2_run.sh | S04 | SEC-082, 083 | 2 | - | - | FAIL → PASS (TestR2_S04_02 now checks mailto field names, not a substring) |
-| s07/r2_screencap.sh | S07 | SEC-080 | 2 | - | - | FAIL → PASS |
-| s09b/r2_run.sh | S09b | SEC-084 | 2 | - | - | FAIL → PASS |
-| s15/r2_run.sh | S15 | SEC-078, 079 | 2 | - | - | FAIL → PASS |
+| Script | Sphere | Ledger ID | Added round | R1 | R1 post-fix | R2 | Final |
+|---|---|---|---|---|---|---|---|
+| s01/run.sh | S01 | SEC-001, 002, 003, 007 | 1 | FAIL | PASS | PASS | PASS |
+| s02/run.sh | S02 | SEC-004, 005, 006 | 1 | FAIL | PASS | PASS | PASS |
+| s03/run.sh | S03 | SEC-008, 009 | 1 | FAIL | PASS | PASS | PASS |
+| s03/01-strike-overlay.sh | S03 | SEC-010, 011 | 1 | FAIL (verifier) | PASS | PASS | PASS |
+| s04/01-open-launch-common.sh | S04 | SEC-016, 018 | 1 | FAIL | PASS | PASS | PASS |
+| s04/02-open-with-system.sh | S04 | SEC-017 | 1 | FAIL | PASS | PASS | PASS |
+| s04/03-real-xdg-open-dash-impact.sh | S04 | SEC-017 (impact probe) | 1 | PASS | PASS | PASS | PASS |
+| s05/01-readfd-timeout.sh | S05 | SEC-027 | 1 | FAIL | PASS | PASS | PASS |
+| s05/02-fileurl-wayland.sh | S05 | SEC-028 (INFO) | 1 | PASS | PASS | PASS | PASS |
+| s05/03-fileurl-x11.sh | S05 | SEC-028 (INFO) | 1 | PASS | PASS | PASS | PASS |
+| s05/04-fileuri-portal.sh | S05 | SEC-028 (INFO) | 1 | PASS | PASS | PASS | PASS |
+| s05/05-mime-quadratic.sh | S05 | SEC-030 | 1 | FAIL (verifier) | PASS | PASS | PASS |
+| s06a/01-xrm-include.sh | S06a | SEC-025 | 1 | FAIL | PASS | PASS | PASS |
+| s06a/02-xcursor.sh | S06a | SEC-026 | 1 | FAIL | PASS | PASS | PASS |
+| s06a/03-xim-decode.sh | S06a | - | 1 | PASS | PASS | PASS | PASS |
+| s06b/01-incr-mindatalen.sh | S06b | SEC-029 | 1 | FAIL (verifier) | PASS | PASS | PASS (Xvfb `-noreset` + readiness wait; was flaky: Xvfb reset after the last client closed, so the next child got "unreachable") |
+| s07/01-dbus-session-services.sh | S07 | SEC-020, 022, 023 | 1 | FAIL | PASS | PASS | PASS |
+| s07/02-filechooser-portal.sh | S07 | SEC-021 | 1 | FAIL | PASS | PASS | PASS |
+| s08a/01-bus-hostile-race.sh | S08a | - | 1 | PASS | PASS | PASS | PASS |
+| s08b/01-platformnode-args.sh | S08b | - | 1 | PASS | PASS | PASS | PASS |
+| s08b/02-paragraph-livelock.sh | S08b | SEC-040 | 1 | FAIL (verifier) | PASS | PASS | PASS |
+| s09b/01-keymap-fd-size.sh | S09b | SEC-024 | 1 | FAIL | PASS | PASS | PASS |
+| s13/run.sh | S13 | SEC-033, 034, 035, 038 | 1 | FAIL | FAIL (SEC-038 INFO only, unfixed by design) | FAIL (SEC-038 INFO only, unfixed by design) | PASS (SEC-038 subtest log-only) |
+| s14/run.sh | S14 | - | 1 | PASS | PASS | PASS | PASS |
+| s15/run.sh | S15 | SEC-031, 036, 037 | 1 | FAIL | PASS | PASS | PASS |
+| s16/01-image-loader.sh | S16 | SEC-012, 014, 015 | 1 | FAIL | PASS | PASS | PASS |
+| s16/02-support-client.sh | S16 | SEC-013 | 1 | FAIL | PASS | PASS | PASS |
+| s18/run.sh | S18 | - | 1 | PASS | PASS | PASS | PASS |
+| s19/run.sh | S19 | SEC-032, 039 | 1 | FAIL | PASS | PASS | PASS |
+| s01/r2_run.sh | S01 | SEC-069, 070, 071, 072 | 2 | - | - | FAIL → PASS | PASS |
+| s02/r2_run.sh | S02 | SEC-073, 074, 075 | 2 | - | - | FAIL → PASS | PASS (now also runs TestR3_S02_*) |
+| s04/r2_run.sh | S04 | SEC-082, 083 | 2 | - | - | FAIL → PASS (TestR2_S04_02 now checks mailto field names, not a substring) | PASS |
+| s07/r2_screencap.sh | S07 | SEC-080 | 2 | - | - | FAIL → PASS | PASS |
+| s09b/r2_run.sh | S09b | SEC-084 | 2 | - | - | FAIL → PASS | PASS |
+| s15/r2_run.sh | S15 | SEC-078, 079 | 2 | - | - | FAIL → PASS | PASS |
+| s02/r3_svgz_test.go (via s02/r2_run.sh) | S02 | SEC-090 | 3 | - | - | - | - → PASS (TestR3_S02_01/02 refused, 03 control renders; no pre-fix run: an unbounded 2 GiB inflate would OOM the gate machine) |
 
 ## Rounds
 
@@ -469,3 +472,4 @@ Paths relative to $HARNESS. R1 = verifier rerun at 3fffd94 (2026-11-24); R1 post
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | 2026-11-24 | 3fffd94 | S01-S20 (MAP, reviewers, B1-B4, VERIFY) | B1-B4 | pending | - → 67 IDs | 40 CONFIRMED (37 to fix + 3 INFO; 5 from verifier repros of S-items) + SEC-068 (fixer) / 3 PLAUSIBLE (+ SEC-018 non-Linux parts) / 24 REJECTED | 36 FIXED + SEC-068 (SEC-018 Linux only, SEC-041 PARTIAL), uncommitted | yes except s13 (SEC-038 INFO, by design) | clean | - |
 | 2 | 2026-11-25 | 4e9eafd | S01, S02, S04, S07, S09b, S15, S16 (round-1 fix regressions: breaker + reviewer) | R2 breaker | pending | 22 raw (R2-1..13, R2-01..06, BR-1/2, I-1, 2 INFO; CMYK INFO folded into SEC-072, I-1 into SEC-079) → 20 IDs | 20 CONFIRMED (SEC-069..088; 1 INFO) | 19 FIXED (SEC-069..087), SEC-088 INFO open; commit "security: sweep round 2 fixes" | yes (run-all: all PASS except s13 SEC-038 INFO by design; r2-run-all: 6/6 PASS) | clean | - |
+| 3 (final review) | 2026-11-25 | 554b891 | final reviewer over rounds 1-2 | - | 2 blockers + 5 items (FV-1..7) | 7 | FV-1 → SEC-089, FV-2 → SEC-090 (FIXED); FV-3 folded into SEC-024; FV-4 font lock defer; FV-5 TECH_DEBT; FV-6/7 harness and ledger | SEC-089, SEC-090, FV-3, FV-4 fixed; commit "security: final review fixes (FV-1..7)" | yes (run-all 29/29 PASS, exit 0; r2-run-all 6/6 PASS) | clean | - |

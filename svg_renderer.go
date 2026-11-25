@@ -2,12 +2,14 @@ package gpui
 
 import (
 	"bytes"
+	"compress/gzip"
 	"errors"
 	"fmt"
 	"image"
 	"image/gif"
 	"image/jpeg"
 	"image/png"
+	"io"
 	"io/fs"
 	"log/slog"
 	"math"
@@ -249,9 +251,11 @@ func NewSvgRenderer(assetSource AssetSource) SvgRenderer {
 		if !ok {
 			return 0, false
 		}
-		fontdb.mu.Lock()
-		ownedFace := fontdb.ownedFace(db, face)
-		fontdb.mu.Unlock()
+		ownedFace := func() svg.FontID {
+			fontdb.mu.Lock()
+			defer fontdb.mu.Unlock()
+			return fontdb.ownedFace(db, face)
+		}()
 		if slices.Contains(fonts, ownedFace) {
 			return face, true
 		}
@@ -284,6 +288,13 @@ func (r SvgRenderer) parseOptions() []svg.Option {
 	resolveData = func(mime string, data []byte) (svg.ImageKind, bool) {
 		if defaultData == nil {
 			defaultData = svg.DefaultDataResolver(options...)
+		}
+		if bytes.HasPrefix(data, []byte{0x1f, 0x8b}) && (mime == "image/svg+xml" || mime == "text/plain") {
+			plain, err := decompressSvgz(data)
+			if err != nil {
+				return nil, false
+			}
+			data, mime = plain, "image/svg+xml"
 		}
 		if r.checkTextPaths(data) != nil {
 			return nil, false
@@ -543,7 +554,36 @@ func (r SvgRenderer) renderAlphaMask(params RenderSvgParams, bytes []byte) (Size
 	return Size[DevicePixels]{}, nil, false, nil
 }
 
+const svgzMaxDecompressedBytes = 32 << 20
+
+var errSvgzTooLarge = errors.New("SVGZ data decompresses beyond the size limit")
+
+func decompressSvgz(data []byte) ([]byte, error) {
+	if !bytes.HasPrefix(data, []byte{0x1f, 0x8b}) {
+		return data, nil
+	}
+	zr, err := gzip.NewReader(bytes.NewReader(data))
+	if err != nil {
+		return nil, okage.ErrSVGMalformedGZip
+	}
+	zr.Multistream(false)
+	decoded, err := io.ReadAll(io.LimitReader(zr, svgzMaxDecompressedBytes+1))
+	switch {
+	case err != nil:
+		return nil, okage.ErrSVGMalformedGZip
+	case len(decoded) > svgzMaxDecompressedBytes:
+		return nil, errSvgzTooLarge
+	case bytes.HasPrefix(decoded, []byte{0x1f, 0x8b}):
+		return nil, okage.ErrSVGNotAnUTF8Str
+	}
+	return decoded, nil
+}
+
 func (r SvgRenderer) parseTree(data []byte) (*svg.Tree, error) {
+	data, err := decompressSvgz(data)
+	if err != nil {
+		return nil, err
+	}
 	if err := r.checkTextPaths(data); err != nil {
 		return nil, err
 	}

@@ -55,13 +55,6 @@ type svgTextPathMeasure struct {
 }
 
 func (r SvgRenderer) checkTextPaths(data []byte) error {
-	if bytes.HasPrefix(data, []byte{0x1f, 0x8b}) {
-		decoded, err := svg.DecompressSVGZ(data)
-		if err != nil {
-			return nil
-		}
-		data = decoded
-	}
 	if !bytes.Contains(data, []byte("textPath")) && !bytes.Contains(data, []byte("<!ENTITY")) {
 		return nil
 	}

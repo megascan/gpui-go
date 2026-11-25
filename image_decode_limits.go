@@ -363,16 +363,36 @@ func tiffDecodeBytes(data []byte, config image.Config) ([]uint64, error) {
 	default:
 		return []uint64{2 * blockBytes, blockBytes}, nil
 	}
-	offsets, counts := ifd.values(offsetsTag), ifd.values(countsTag)
-	for i := range min(len(offsets), len(counts)) {
-		start, n := offsets[i], counts[i]
-		if start > uint64(len(data)) {
-			continue
-		}
-		end := min(start+n, uint64(len(data)))
-		if tiffInflatedSize(compression, data[start:end], blockBytes) > blockBytes {
+	var blocks uint64
+	if width != 0 && height != 0 {
+		if blockWidth == 0 || blockHeight == 0 {
 			return nil, errImageLimitsExceeded
 		}
+		blocks = (width + blockWidth - 1) / blockWidth * ((height + blockHeight - 1) / blockHeight)
+	}
+	offsets, counts := ifd.values(offsetsTag), ifd.values(countsTag)
+	if uint64(len(offsets)) < blocks || uint64(len(counts)) < blocks {
+		return nil, errImageLimitsExceeded
+	}
+	type tiffBlock struct{ start, count uint64 }
+	seen := make(map[tiffBlock]struct{}, min(blocks, 1<<16))
+	remaining := blocks * blockBytes
+	for i := range blocks {
+		block := tiffBlock{offsets[i], counts[i]}
+		if _, dup := seen[block]; dup {
+			continue
+		}
+		seen[block] = struct{}{}
+		if block.start > uint64(len(data)) {
+			continue
+		}
+		end := min(block.start+min(block.count, uint64(len(data))), uint64(len(data)))
+		limit := min(blockBytes, remaining)
+		inflated := tiffInflatedSize(compression, data[block.start:end], limit)
+		if inflated > limit {
+			return nil, errImageLimitsExceeded
+		}
+		remaining -= inflated
 	}
 	return []uint64{2 * blockBytes, blockBytes}, nil
 }
