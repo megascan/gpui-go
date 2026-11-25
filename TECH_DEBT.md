@@ -10,6 +10,7 @@ Hacks, workarounds and known issues. Remove entries when resolved. Stages write 
 | L-WEBTHREADS | platform/web | no multi-threaded web dispatcher |
 | GO-DIRECTIVE | go.mod | `go 1.27.3` instead of `go 1.27` |
 | CI-BILLING | .github | Actions jobs are not started (billing / spending limit, macos-14 runner config) |
+| WIN-REAL | platform/windows, platform/apple, scheduler | items only a real Windows (or macOS) host can confirm after the 2026-11-25 Windows 11 run |
 | WINE-TEST | windows tests | Windows test failures that only happen under Wine (local substitute for CI) |
 | M0-EXIT-OPEN | root | handoff items M0-exit left open |
 | STAGE-DEBT | all | per-stage debt folded below |
@@ -32,6 +33,14 @@ github.com/xo/okage v0.20.1 declares `go 1.27.3`, so the main module's go line c
 ## CI-BILLING
 
 GitHub Actions refuses to start the ci workflow's jobs on megascan/gpui-go: ubuntu and windows report "recent account payments have failed or your spending limit needs to be increased", macos-14 reports "The configuration 'macos-14-arm64-us-xl' is not supported". Every run on feat/port is cancelled after a few seconds, so the macOS and Windows compile checks have never run. Owner action: fix billing / the spending limit, then re-run the workflow on the draft PR.
+
+## WIN-REAL
+
+From the Windows 11 / RTX 3080 run of ebd634b (results in `~/.cache/gpui-win/results/`). Fixed on fix/windows-native, re-test on real Windows: counter hover (LogErr(nil) crash), image_example / image_loading / image_gallery / gif_viewer / toggle_headless (coro fatal), a11y/windows TestSimple_ElementFromPointAndRangeValueSetValue, close-time stderr noise (placement, ScreenToClient, ShowWindowAsync, RevokeDragDrop, DestroyWindow, RedrawWindow).
+- Never verified on real Windows: clipboard, IME (composition/candidate window), Narrator, toast notifications, mixed-DPI (per-monitor scale changes while moving a window).
+- Main-thread coroutines: iter.Pull requires each resume at the same OS-thread lock depth as creation. Main-thread runnables run inside the message window's wndproc (one callback level); a runnable first polled inside a nested modal loop (window move/size, dialogs) and resumed outside it, or the reverse, would hit the same fatal. Not observed; needs a real-Windows drag/resize test with a pending foreground task.
+- platform/apple dispatcher runs runnables in GCD callbacks on foreign threads: same coro hazard as the old Windows thread-pool dispatcher. Move background work to Go worker goroutines like windows/linux once a Mac can verify.
+- `logLastError` reads `GetLastError` after the call returns; the Go runtime may clear it in between, so failures can log "X failed" with no cause. Convert the bool-returning win32 wrappers (ScreenToClient, ShowWindowAsync, ValidateRect, Imm*, FlashWindowEx, EnumThreadWindows) to return the error captured by `proc.Call`.
 
 ## WINE-TEST
 

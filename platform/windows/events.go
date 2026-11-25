@@ -82,8 +82,15 @@ func lparamPtr[T any](l win32.LPARAM) *T {
 
 func logLastError(ok bool, what string) {
 	if !ok {
-		gpuiutil.LogErr(fmt.Errorf("%s: %w", what, xwin.GetLastError()))
+		gpuiutil.LogErr(lastErrorFor(what, xwin.GetLastError()))
 	}
+}
+
+func lastErrorFor(what string, err error) error {
+	if err == nil {
+		return fmt.Errorf("%s failed", what)
+	}
+	return fmt.Errorf("%s: %w", what, err)
 }
 
 func logIfErr(err error) {
@@ -329,6 +336,7 @@ func (w *WindowsWindowInner) handleCloseMsg() msgResult {
 }
 
 func (w *WindowsWindowInner) handleDestroyMsg(handle HWND) msgResult {
+	w.state.windowPlacement()
 	callback := w.state.callbacks.close
 	w.state.callbacks.close = nil
 	if w.parentHwnd != 0 {

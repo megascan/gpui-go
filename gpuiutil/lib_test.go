@@ -157,3 +157,15 @@ func TestGpuiUtil_MiscHelpers(t *testing.T) {
 		t.Fatal("CanonicalFloatBits")
 	}
 }
+
+func TestGpuiUtil_LogErrNilIsOk(t *testing.T) {
+	_, file, _, _ := runtime.Caller(0)
+	var records []loggedRecord
+	prev := slog.Default()
+	slog.SetDefault(slog.New(testLogger{t: t, file: file, records: &records}))
+	defer slog.SetDefault(prev)
+	LogErr(nil)
+	if len(records) != 0 {
+		t.Fatalf("LogErr(nil) logged %v", records)
+	}
+}

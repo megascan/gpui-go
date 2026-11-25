@@ -76,6 +76,8 @@ type WindowsWindowState struct {
 	hwnd              HWND
 	a11y              a11yCell
 	mousePosition     gpui.Point[gpui.Pixels]
+	destroyed         bool
+	lastPlacement     gpui.Option[win32.WINDOWPLACEMENT]
 }
 
 // WindowsWindowInner is the window procedure's view of a window.
@@ -163,12 +165,22 @@ func (s *WindowsWindowState) bounds() gpui.Bounds[gpui.Pixels] {
 }
 
 func (s *WindowsWindowState) calculateWindowBounds() (gpui.Bounds[gpui.Pixels], bool) {
+	placement := s.windowPlacement()
+	return calculateClientRect(placement.RcNormalPosition, &s.borderOffset, s.scaleFactor),
+		placement.ShowCmd == win32.SW_SHOWMAXIMIZED
+}
+
+func (s *WindowsWindowState) windowPlacement() win32.WINDOWPLACEMENT {
+	if s.destroyed {
+		return s.lastPlacement.UnwrapOrDefault()
+	}
 	placement := win32.WINDOWPLACEMENT{Length: uint32(unsafe.Sizeof(win32.WINDOWPLACEMENT{}))}
 	if err := win32.GetWindowPlacement(s.hwnd, &placement); err != nil {
 		gpuiutil.LogErr(fmt.Errorf("failed to get window placement: %w", err))
+		return s.lastPlacement.UnwrapOr(placement)
 	}
-	return calculateClientRect(placement.RcNormalPosition, &s.borderOffset, s.scaleFactor),
-		placement.ShowCmd == win32.SW_SHOWMAXIMIZED
+	s.lastPlacement = gpui.Some(placement)
+	return placement
 }
 
 func (s *WindowsWindowState) windowBounds() gpui.WindowBounds {
@@ -517,16 +529,23 @@ func (w *WindowsWindow) Close() {
 	w.closed = true
 	inner := w.inner
 	inner.dialogOwner.close()
-	logLastError(win32.ShowWindowAsync(inner.hwnd, win32.SW_HIDE), "ShowWindowAsync")
+	if !inner.state.destroyed {
+		logLastError(win32.ShowWindowAsync(inner.hwnd, win32.SW_HIDE), "ShowWindowAsync")
+	}
 	inner.state.callbacks.visibilityChange = nil
 	inner.executor.Spawn(func(s *scheduler.Scope) (struct{}, error) {
 		scheduler.Await(s, inner.dialogOwner.whenIdle())
 		handle := inner.hwnd
-		logIfErr(win32.RevokeDragDrop(handle))
+		destroyed := inner.state.destroyed
+		if !destroyed {
+			logIfErr(win32.RevokeDragDrop(handle))
+		}
 		inner.state.directManipulation.Close()
 		inner.state.rendererDestroyed = true
 		inner.state.renderer.Destroy()
-		logIfErr(win32.DestroyWindow(handle))
+		if !destroyed {
+			logIfErr(win32.DestroyWindow(handle))
+		}
 		if inner.dropTargetHelper != nil {
 			inner.dropTargetHelper.Release()
 		}
@@ -590,6 +609,9 @@ func (w *WindowsWindow) MousePosition() gpui.Point[gpui.Pixels] {
 	var point win32.POINT
 	if err := win32.GetCursorPos(&point); err != nil {
 		gpuiutil.LogErr(fmt.Errorf("unable to get cursor position: %w", err))
+	}
+	if w.inner.state.destroyed {
+		return w.inner.state.mousePosition
 	}
 	screenToClient(w.inner.hwnd, &point)
 	return logicalPoint(float32(point.X), float32(point.Y), scaleFactor)
@@ -1399,6 +1421,9 @@ func windowProcedure(hwnd HWND, msg uint32, wparam win32.WPARAM, lparam win32.LP
 			inner.dialogOwner.close()
 		}
 		result = uintptr(inner.handleMsg(hwnd, msg, wparam, lparam))
+		if msg == win32.WM_NCDESTROY {
+			inner.state.destroyed = true
+		}
 	} else {
 		result = uintptr(win32.DefWindowProcW(hwnd, msg, wparam, lparam))
 	}

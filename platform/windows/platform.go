@@ -474,7 +474,7 @@ func (p *WindowsPlatform) beginVsyncThread() {
 						hwnd.frameSignal.Take()
 					}
 				}
-				if !win32.RedrawWindow(hwnd.asRaw(), nil, 0, win32.RDW_INVALIDATE) {
+				if !win32.RedrawWindow(hwnd.asRaw(), nil, 0, win32.RDW_INVALIDATE) && win32.IsWindow(hwnd.asRaw()) {
 					gpuiutil.LogErr(errors.New("RedrawWindow failed"))
 				}
 			}
