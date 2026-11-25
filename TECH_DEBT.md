@@ -45,7 +45,7 @@ From the Windows 11 / RTX 3080 runs of ebd634b and 2feb18e (results in `~/.cache
 - Clipboard: never verified on real Windows.
 - platform/apple dispatcher (fix/macos-dispatcher, D-APPLE-NESTEDLOOP): only cross-compiled. On a Mac run TestDispatcher_* in platform/apple, then live-resize and title-drag an image/async example while tasks are pending; no coro fatal, tasks resume after the drag.
 - `logLastError` reads `GetLastError` after the call returns; the Go runtime may clear it in between, so failures can log "X failed" with no cause. Convert the bool-returning win32 wrappers (ScreenToClient, ShowWindowAsync, ValidateRect, Imm*, FlashWindowEx, EnumThreadWindows) to return the error captured by `proc.Call`.
-- Foreground tasks pause during nested modal loops (D-WINMODALLOOP, D-APPLE-NESTEDLOOP) where upstream keeps running them. Lifting this needs foreground futures that are not iter.Pull coroutines.
+- Foreground tasks pause during nested modal loops (D-WINMODALLOOP, D-APPLE-NESTEDLOOP) where upstream keeps running them. Lifting this needs foreground futures that are not iter.Pull coroutines. A per-task goroutine handoff is ruled out: bodies would leave the main OS thread (Win32 window calls hang, AppKit is main-thread only; Wine probe 2026-11-25). Remaining routes: explicit state-machine futures (rewrites every Scope body) or main-thread forwarding of all thread-affine calls; both need real Windows/Mac to verify.
 
 ## WINE-TEST
 
