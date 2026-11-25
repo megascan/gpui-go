@@ -77,6 +77,7 @@ type WindowsWindowState struct {
 	a11y              a11yCell
 	mousePosition     gpui.Point[gpui.Pixels]
 	destroyed         bool
+	released          bool
 	lastPlacement     gpui.Option[win32.WINDOWPLACEMENT]
 }
 
@@ -533,6 +534,9 @@ func (w *WindowsWindow) Close() {
 		logLastError(win32.ShowWindowAsync(inner.hwnd, win32.SW_HIDE), "ShowWindowAsync")
 	}
 	inner.state.callbacks.visibilityChange = nil
+	inner.state.released = true
+	inner.state.callbacks = Callbacks{close: inner.state.callbacks.close}
+	inner.state.restoreFromMinimized = nil
 	inner.executor.Spawn(func(s *scheduler.Scope) (struct{}, error) {
 		scheduler.Await(s, inner.dialogOwner.whenIdle())
 		handle := inner.hwnd

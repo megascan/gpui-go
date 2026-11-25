@@ -3,6 +3,7 @@ package scheduler
 import (
 	"errors"
 	"iter"
+	"runtime"
 )
 
 // ErrCanceled reports that the other half of a oneshot, or a task, was dropped before producing a value.
@@ -391,5 +392,32 @@ func Join2[A, B any](cx Awaiter, a Future[A], b Future[B]) (A, B) {
 			return va, vb
 		}
 		s.park()
+	}
+}
+
+// CallbackDepth returns the number of native-to-Go callback frames on the calling goroutine's
+// stack. Each one raises the OS-thread lock count that an Async coroutine records when it starts;
+// resuming it at another depth is a fatal runtime error, so a main-thread dispatcher polls
+// foreground tasks only at one fixed depth.
+func CallbackDepth() int {
+	pcs := make([]uintptr, 256)
+	for {
+		n := runtime.Callers(1, pcs)
+		if n < len(pcs) {
+			pcs = pcs[:n]
+			break
+		}
+		pcs = make([]uintptr, 2*len(pcs))
+	}
+	depth := 0
+	frames := runtime.CallersFrames(pcs)
+	for {
+		frame, more := frames.Next()
+		if frame.Function == "runtime.cgocallbackg" {
+			depth++
+		}
+		if !more {
+			return depth
+		}
 	}
 }

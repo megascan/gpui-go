@@ -21,9 +21,13 @@ import (
 // main-thread runnables wake the main thread with a message to the platform's message window.
 // Upstream uses the Windows thread pool; Go callbacks from pool threads are internally locked to
 // foreign OS threads, and an iter.Pull coroutine resumed on another pool thread is a fatal error.
+// For the same reason main-thread runnables run only from a window procedure entered directly by
+// the top-level message loop; a wake-up dispatched inside a nested modal loop sets
+// ForegroundDeferred and the top-level loop posts it again once the modal loop returns.
 type WindowsDispatcher struct {
 	gpui.PlatformDispatcherDefaults
 	WakePosted           atomic.Bool
+	ForegroundDeferred   atomic.Bool
 	mainSender           *gpui.PriorityQueueSender[gpui.RunnableVariant]
 	backgroundSender     *gpui.PriorityQueueSender[gpui.RunnableVariant]
 	closed               atomic.Bool
@@ -141,6 +145,25 @@ func (d *WindowsDispatcher) IncreaseTimerResolution() gpui.TimerResolutionGuard 
 }
 
 const minWorkerThreads = 2
+
+const foregroundCallbackDepth = 1
+
+// RepostDeferredWake posts the main-thread wake-up a nested modal loop deferred. The top-level
+// message loop calls it after each dispatched message.
+func (d *WindowsDispatcher) RepostDeferredWake() {
+	if !d.ForegroundDeferred.Swap(false) {
+		return
+	}
+	if err := win32.PostMessageW(
+		d.PlatformWindowHandle.AsRaw(),
+		WM_GPUI_TASK_DISPATCHED_ON_MAIN_THREAD,
+		win32.WPARAM(d.validationNumber),
+		win32.LPARAM(0),
+	); err != nil {
+		d.WakePosted.Store(false)
+		gpuiutil.LogErr(err)
+	}
+}
 
 var (
 	realtimeFuncs     win32.Handles[func()]

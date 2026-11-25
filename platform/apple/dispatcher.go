@@ -23,6 +23,9 @@ import (
 // main-thread runnables run on GCD's main queue and timers on time.AfterFunc. Upstream uses GCD's
 // global queues; Go callbacks from GCD threads are locked to foreign OS threads, and an iter.Pull
 // coroutine resumed on another GCD thread is a fatal error.
+// For the same reason main-thread runnables run only from a main-queue callback entered directly
+// by the run loop; one that arrives inside a nested event-tracking loop (live resize, menus,
+// modal sessions) is queued and retried until the nested loop returns.
 type AppleDispatcher struct {
 	gpui.PlatformDispatcherDefaults
 	backgroundSender *gpui.PriorityQueueSender[gpui.RunnableVariant]
@@ -259,7 +262,51 @@ func trampoline(context uintptr) {
 	if !ok {
 		return
 	}
+	if scheduler.CallbackDepth() != foregroundCallbackDepth {
+		deferredMain = append(deferredMain, runnable)
+		scheduleDeferredRetry()
+		return
+	}
+	runDeferredMain()
 	executeRunnable(runnable)
+}
+
+const (
+	foregroundCallbackDepth = 1
+	deferredRetryInterval   = 8 * time.Millisecond
+)
+
+var (
+	deferredMain         []gpui.RunnableVariant
+	deferredRetryPending bool
+)
+
+func scheduleDeferredRetry() {
+	if deferredRetryPending {
+		return
+	}
+	deferredRetryPending = true
+	gcd.MainQueue().AsyncAfter(gcd.After(deferredRetryInterval), retryDeferredMain)
+}
+
+func retryDeferredMain() {
+	deferredRetryPending = false
+	if scheduler.CallbackDepth() != foregroundCallbackDepth {
+		if len(deferredMain) != 0 {
+			scheduleDeferredRetry()
+		}
+		return
+	}
+	runDeferredMain()
+}
+
+func runDeferredMain() {
+	for len(deferredMain) != 0 {
+		runnable := deferredMain[0]
+		deferredMain[0] = nil
+		deferredMain = deferredMain[1:]
+		executeRunnable(runnable)
+	}
 }
 
 func executeRunnable(runnable gpui.RunnableVariant) {

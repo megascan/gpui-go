@@ -440,3 +440,9 @@ func TestFuture_SelectWithNoCasesPanics(t *testing.T) {
 		t.Fatalf("got %v", got)
 	}
 }
+
+func TestFuture_CallbackDepthOutsideCallbacks(t *testing.T) {
+	if depth := CallbackDepth(); depth != 0 {
+		t.Fatalf("CallbackDepth() = %d outside native callbacks, want 0", depth)
+	}
+}

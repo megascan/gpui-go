@@ -3,6 +3,7 @@
 package windows
 
 import (
+	"runtime"
 	"testing"
 	"time"
 	"unsafe"
@@ -191,4 +192,126 @@ func TestDispatcher_CoroutineResumesAcrossWorkers(t *testing.T) {
 	case <-time.After(10 * time.Second):
 		t.Fatal("coroutine did not finish")
 	}
+}
+
+func TestDispatcher_ForegroundDeferredInNestedModalLoop(t *testing.T) {
+	failure := make(chan string, 1)
+	go func() {
+		runtime.LockOSThread()
+		defer runtime.UnlockOSThread()
+		failure <- nestedModalLoopRoundTrip()
+	}()
+	select {
+	case message := <-failure:
+		if message != "" {
+			t.Fatal(message)
+		}
+	case <-time.After(30 * time.Second):
+		t.Fatal("nested modal loop round trip timed out")
+	}
+}
+
+const testModalLoopMsg = win32.WM_USER + 0x200
+
+func nestedModalLoopRoundTrip() string {
+	var inner *windowsPlatformInner
+	var resumeWaker scheduler.Waker
+	released := false
+	finished := false
+	modalFailure := ""
+
+	nestedModalLoop := func() {
+		released = true
+		resumeWaker.Wake()
+		deadline := time.Now().Add(300 * time.Millisecond)
+		var msg win32.MSG
+		for time.Now().Before(deadline) {
+			for win32.PeekMessageW(&msg, 0, 0, 0, win32.PM_REMOVE) {
+				win32.TranslateMessage(&msg)
+				win32.DispatchMessageW(&msg)
+			}
+			time.Sleep(time.Millisecond)
+		}
+		if finished {
+			modalFailure = "foreground task resumed inside the nested modal loop"
+		}
+		if !inner.dispatcher.ForegroundDeferred.Load() {
+			modalFailure = "wake-up inside the nested modal loop was not deferred"
+		}
+	}
+
+	wndProc := xwin.NewCallback(func(hwnd, msg, wparam, lparam uintptr) uintptr {
+		if inner == nil {
+			return uintptr(win32.DefWindowProcW(HWND(hwnd), uint32(msg), win32.WPARAM(wparam), win32.LPARAM(lparam)))
+		}
+		if uint32(msg) == testModalLoopMsg {
+			nestedModalLoop()
+			return 0
+		}
+		return uintptr(inner.handleMsg(HWND(hwnd), uint32(msg), win32.WPARAM(wparam), win32.LPARAM(lparam)))
+	})
+
+	className := win32.UTF16PtrFromString("GpuiNestedModalLoopTestClass")
+	instance, err := win32.GetModuleHandleW(nil)
+	if err != nil {
+		return err.Error()
+	}
+	if _, err := win32.RegisterClassW(&win32.WNDCLASSW{LpfnWndProc: wndProc, HInstance: instance, LpszClassName: className}); err != nil {
+		return err.Error()
+	}
+	defer win32.UnregisterClassW(className, instance)
+	hwnd, err := win32.CreateWindowExW(0, className, nil, 0, 0, 0, 0, 0, HWND(win32.HWND_MESSAGE), 0, instance, 0)
+	if err != nil {
+		return err.Error()
+	}
+	defer win32.DestroyWindow(hwnd)
+
+	sender, receiver := gpui.NewPriorityQueueReceiver[gpui.RunnableVariant]()
+	dispatcher := NewWindowsDispatcher(sender, hwnd, 1)
+	defer func() {
+		dispatcher.Close()
+		receiver.Close()
+	}()
+	inner = &windowsPlatformInner{validationNumber: 1, mainReceiver: receiver, dispatcher: dispatcher}
+
+	future := scheduler.Async(func(s *scheduler.Scope) int {
+		scheduler.Await(s, scheduler.PollFn(func(cx *scheduler.Context) (struct{}, bool) {
+			if released {
+				return struct{}{}, true
+			}
+			resumeWaker = cx.Waker().Clone()
+			return struct{}{}, false
+		}))
+		finished = true
+		return 0
+	})
+	runnable, task := scheduler.SpawnAsyncTask(scheduler.NewRunnableMetaWithCallersLocation(), future, func(r *scheduler.Runnable) {
+		dispatcher.DispatchOnMainThread(r, scheduler.PriorityMedium)
+	})
+	task.Detach()
+	dispatcher.DispatchOnMainThread(runnable, scheduler.PriorityMedium)
+	if err := win32.PostMessageW(hwnd, testModalLoopMsg, 0, 0); err != nil {
+		return err.Error()
+	}
+
+	deadline := time.Now().Add(20 * time.Second)
+	var msg win32.MSG
+	for !finished && time.Now().Before(deadline) {
+		if win32.GetMessageW(&msg, 0, 0, 0) <= 0 {
+			return "message loop ended early"
+		}
+		win32.TranslateMessage(&msg)
+		win32.DispatchMessageW(&msg)
+		dispatcher.RepostDeferredWake()
+	}
+	if modalFailure != "" {
+		return modalFailure
+	}
+	if !finished {
+		return "foreground task did not finish after the nested modal loop returned"
+	}
+	if dispatcher.ForegroundDeferred.Load() {
+		return "deferred wake-up was not reposted"
+	}
+	return ""
 }
